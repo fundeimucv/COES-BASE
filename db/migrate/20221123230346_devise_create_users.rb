@@ -11,11 +11,6 @@ class DeviseCreateUsers < ActiveRecord::Migration[7.0]
       t.string :last_name
       t.string :number_phone
       t.integer :sex
-      t.integer :nacionality
-      t.integer :marital_status
-      t.date :birth_date
-      t.string :origin_country
-      t.string :origin_city
 
       ## Recoverable
       # t.string   :reset_password_token
