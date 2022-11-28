@@ -12,7 +12,7 @@ class CreateStudents < ActiveRecord::Migration[7.0]
 
       t.timestamps
     end
-    add_foreign_key :students, :users, column: :user_id, on_delete: :cascade, on_update: :cascade
+    # add_foreign_key :students, :users, column: :user_id, on_delete: :cascade, on_update: :cascade
   end
 end
 

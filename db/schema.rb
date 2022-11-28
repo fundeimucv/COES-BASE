@@ -10,8 +10,42 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 0) do
+ActiveRecord::Schema[7.0].define(version: 2022_11_25_153533) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
+  create_table "students", primary_key: "user_id", force: :cascade do |t|
+    t.boolean "active", default: true
+    t.integer "disability"
+    t.integer "nacionality"
+    t.integer "marital_status"
+    t.string "origin_country"
+    t.string "origin_city"
+    t.date "birth_date"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_students_on_user_id"
+  end
+
+  create_table "users", force: :cascade do |t|
+    t.string "email", default: "", null: false
+    t.string "ci", null: false
+    t.string "encrypted_password", default: "", null: false
+    t.string "name"
+    t.string "last_name"
+    t.string "number_phone"
+    t.integer "sex"
+    t.datetime "remember_created_at"
+    t.integer "sign_in_count", default: 0, null: false
+    t.datetime "current_sign_in_at"
+    t.datetime "last_sign_in_at"
+    t.string "current_sign_in_ip"
+    t.string "last_sign_in_ip"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["ci"], name: "index_users_on_ci", unique: true
+    t.index ["email"], name: "index_users_on_email", unique: true
+  end
+
+  add_foreign_key "students", "users"
 end
