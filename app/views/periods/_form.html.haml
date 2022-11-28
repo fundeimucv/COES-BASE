@@ -1,0 +1,12 @@
+-# frozen_string_literal: true
+= simple_form_for(@period) do |f|
+  = f.error_notification
+  = f.error_notification message: f.object.errors[:base].to_sentence if f.object.errors[:base].present?
+
+  .form-inputs
+    = f.input :name
+    = f.input :year, type: :number, html: {step: 1, min: 1950, max: 2200}
+    = f.input :modality
+
+  .form-actions
+    = f.button :submit

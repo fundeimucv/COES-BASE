@@ -5,6 +5,18 @@ Rails.application.configure do
   # Settings specified here will take precedence over those in config/application.rb.
 
   # Code is not reloaded between requests.
+
+  # config.action_mailer.delivery_method = :smtp
+  # config.action_mailer.smtp_settings = {
+  #   address: ENV['EMAIL_PROVIDER_ADDRESS'],
+  #   port: 587,
+  #   domain: ENV['EMAIL_PROVIDER_DOMAIN_NAME'],
+  #   authentication: "plain",
+  #   enable_starttls_auto: true,
+  #   user_name: ENV['EMAIL_PROVEDER_USER_NAME'],
+  #   password: ENV['EMAIL_PROVIDER_PASSWORD']
+  # }
+
   config.cache_classes = true
 
   # Eager load code on boot. This eager loads most of Rails and
