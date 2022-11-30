@@ -65,6 +65,6 @@ class PeriodsController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def period_params
-      params.require(:period).permit(:name, :year, :type)
+      params.require(:period).permit(:ordinal, :year, :modality)
     end
 end

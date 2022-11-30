@@ -13,9 +13,9 @@
   %tbody
     - @periods.each do |period|
       %tr
-        %td= period.name
+        %td= period.ordinal
         %td= period.year
-        %td= period.type
+        %td= period.modality
         %td= link_to 'Show', period
         %td= link_to 'Edit', edit_period_path(period)
         %td= link_to 'Destroy', period, method: :delete, data: { confirm: 'Are you sure?' }
