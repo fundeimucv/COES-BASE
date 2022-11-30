@@ -3,8 +3,8 @@
 %table
   %thead
     %tr
+      %th Code
       %th Name
-      %th Descripcion
       %th Enable subject retreat
       %th Enable change course
       %th Enable dependents
@@ -15,8 +15,8 @@
   %tbody
     - @schools.each do |school|
       %tr
+        %td= school.code
         %td= school.name
-        %td= school.description
         %td= school.enable_subject_retreat
         %td= school.enable_change_course
         %td= school.enable_dependents

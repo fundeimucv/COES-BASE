@@ -23,8 +23,8 @@ ActiveRecord::Schema[7.0].define(version: 2022_11_28_165915) do
   end
 
   create_table "schools", force: :cascade do |t|
+    t.string "code"
     t.string "name"
-    t.string "description"
     t.boolean "enable_subject_retreat"
     t.boolean "enable_change_course"
     t.boolean "enable_dependents"

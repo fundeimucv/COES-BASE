@@ -17,8 +17,8 @@ es:
         ordinal: 'Orden'
         modality: 'Modalidad'
       school:
+        code: 'Código'
         name: 'Nombre'
-        description: 'Descripción'
         enable_subject_retreat: 'Activar Retiro de Asignaturas'
         enable_change_course: 'Activar Cambio de Cursos'
         enable_dependents: 'Activar Dependencias'
