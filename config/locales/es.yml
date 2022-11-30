@@ -220,99 +220,22 @@ es:
       <<: *errors
   activerecord:
     models:
-      send_mail:
-        one: 'Enviar Correo'
-        other: 'Enviar Correos'      
-      content:
-        one: 'Contenido Multimedia'
-        other: 'Contenidos Multimedia'
-      administrator:
-        one: 'Administrador'
-        other: 'Administradores'
-      billboard:
-        one: 'Cartelera'
-        other: 'Carteleras'
-      instructor:
-        one: "Instructor"
-        other: "Instructores"
-      bank:
-        one: "Banco"
-        other: "Bancos"
-      bank_account:
-        one: "Cuenta Bancaria"
-        other: "Cuentas Bancarias"
-      career:
-        one: "Idioma Cursado"
-        other: "Idiomas Cursados"
-      course_period:
-        one: "Programación"
-        other: "Programaciones"
-      payment_detail:
-        one: "Reporte de Pago"
-        other: "Reportes de Pagos"
-      section:
-        one: "Sección"
-        other: "Secciones"
-      student:
-        one: "Estudiante"
-        other: "Estudiantes"
-      qualification_detail:
-        one: "Detalle de Calificación"
-        other: "Detalles de Calificaciones"
-      level:
-        one: "Nivel"
-        other: "Niveles"
-      language:
-        one: "Idioma"
-        other: "Idiomas"
-      language_category:
-        one: "Idioma (Categoría)"
-        other: "Idiomas (Categorías)"        
-      course:
-        one: "Curso"
-        other: "Cursos"
-      agreement:
-        one: "Convenio"
-        other: "Convenios"
-      user:
-        one: "Usuario"
-        other: "Usuarios"
       period:
-        one: "Periodo"
-        other: "Periodos"
-      academic_record:
-        one: "Inscripción"
-        other: "Inscripciones"
-      qualification_schema:
-        one: "Esquema de Calificación"
-        other: "Esquemas de calificaciones"
-      general_setup:
-        one: "Parámetro General"
-        other: "Parámetros Generales"
-      content_visibility:
-        one: "¿Para quién?"
-        other: "¿Para quienes?"
-      payment_method:
-        one: 'Método de Pago'
-        other: 'Métodos de Pago'
+        one: 'Periodo'
+        other: 'Periodos'
+      school:
+        one: 'Escuela'
+        other: 'Escuelas'
 
     errors:
       models:
-        payment_detail:
+        period:
           attributes:
-            bank_account:
-              required: 'Cuenta de Banco requerida'
-            source_bank:
-              required: 'Banco Origen Requerido'
-        academic_record:
-          attributes:
-            required: "%{attribute_name} requerido"
-            student:
-              required: 'Estudiante requerido'
-            section:
-              required: 'Seccion requerida'
-            agreement:
-              required: 'Convenio requerido'
+            name:
+              required: 'Nombre requerido'
+            description:
+              required: 'Descripción Requerida'
+
       <<: *errors
   flash:
     actions:

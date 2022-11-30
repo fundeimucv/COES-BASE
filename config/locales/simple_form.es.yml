@@ -11,7 +11,22 @@ es:
     error_notification:
       default_message: "Por favor, revise los inconvenientes:"
     # Examples
-    # labels:
+    labels:
+      period:
+        year: 'Año'
+        ordinal: 'Orden'
+        modality: 'Modalidad'
+      school:
+        name: 'Nombre'
+        description: 'Descripción'
+        enable_subject_retreat: 'Activar Retiro de Asignaturas'
+        enable_change_course: 'Activar Cambio de Cursos'
+        enable_dependents: 'Activar Dependencias'
+        period_active: 'Periodo Activo'
+        period_enroll: 'Periodo de Inscripción'
+
+
+
     #   defaults:
     #     password: 'Password'
     #   user:
