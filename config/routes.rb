@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  resources :study_plans
   resources :schools
   resources :periods
   devise_for :users

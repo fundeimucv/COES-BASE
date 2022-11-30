@@ -24,7 +24,30 @@ es:
         enable_dependents: 'Activar Dependencias'
         period_active: 'Periodo Activo'
         period_enroll: 'Periodo de Inscripción'
+      plan:
+        code: 'Código'
+        name: 'Nombre'        
 
+
+
+    # labels:
+    #   user:
+    #     username: 'User name'
+    #     password: 'Password'
+    # hints:
+    #   user:
+    #     username: 'User name to sign in.'
+    #     password: 'No special characters, please.'
+    # placeholders:
+    #   user:
+    #     username: 'Your username'
+    #     password: '****'
+    # include_blanks:
+    #   user:
+    #     age: 'Rather not say'
+    # prompts:
+    #   user:
+    #     role: 'Select your role'
 
 
     #   defaults:
