@@ -1,0 +1,21 @@
+%p#notice= notice
+
+%p
+  %b Name:
+  = @school.name
+%p
+  %b Descripcion:
+  = @school.description
+%p
+  %b Enable subject retreat:
+  = @school.enable_subject_retreat
+%p
+  %b Enable change course:
+  = @school.enable_change_course
+%p
+  %b Enable dependents:
+  = @school.enable_dependents
+
+= link_to 'Edit', edit_school_path(@school)
+\|
+= link_to 'Back', schools_path

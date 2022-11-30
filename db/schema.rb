@@ -10,16 +10,30 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_11_25_223200) do
+ActiveRecord::Schema[7.0].define(version: 2022_11_28_165915) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
   create_table "periods", force: :cascade do |t|
-    t.string "name"
+    t.integer "ordinal"
     t.integer "year"
     t.integer "modality"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "schools", force: :cascade do |t|
+    t.string "name"
+    t.string "description"
+    t.boolean "enable_subject_retreat"
+    t.boolean "enable_change_course"
+    t.boolean "enable_dependents"
+    t.bigint "period_active_id"
+    t.bigint "period_enroll_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["period_active_id"], name: "index_schools_on_period_active_id"
+    t.index ["period_enroll_id"], name: "index_schools_on_period_enroll_id"
   end
 
   create_table "students", primary_key: "user_id", force: :cascade do |t|
@@ -55,5 +69,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_11_25_223200) do
     t.index ["email"], name: "index_users_on_email", unique: true
   end
 
+  add_foreign_key "schools", "periods", column: "period_active_id"
+  add_foreign_key "schools", "periods", column: "period_enroll_id"
   add_foreign_key "students", "users"
 end
