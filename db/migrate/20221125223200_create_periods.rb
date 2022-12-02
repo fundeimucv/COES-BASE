@@ -1,9 +1,9 @@
 class CreatePeriods < ActiveRecord::Migration[7.0]
   def change
     create_table :periods do |t|
-      t.integer :ordinal
-      t.integer :year
-      t.integer :modality
+      t.integer :ordinal, null: false
+      t.integer :year, null: false
+      t.integer :modality, null: false
 
       t.timestamps
     end
