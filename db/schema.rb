@@ -10,9 +10,19 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_11_30_014720) do
+ActiveRecord::Schema[7.0].define(version: 2022_11_30_203035) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "areas", force: :cascade do |t|
+    t.string "name", null: false
+    t.bigint "school_id", null: false
+    t.bigint "area_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["area_id"], name: "index_areas_on_area_id"
+    t.index ["school_id"], name: "index_areas_on_school_id"
+  end
 
   create_table "periods", force: :cascade do |t|
     t.integer "ordinal"
@@ -58,6 +68,20 @@ ActiveRecord::Schema[7.0].define(version: 2022_11_30_014720) do
     t.index ["school_id"], name: "index_study_plans_on_school_id"
   end
 
+  create_table "subjects", force: :cascade do |t|
+    t.string "code", null: false
+    t.string "name", null: false
+    t.boolean "active", default: true
+    t.integer "unit_credits", default: 24, null: false
+    t.integer "ordinal", default: 0, null: false
+    t.integer "qualification_type"
+    t.integer "modality"
+    t.bigint "area_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["area_id"], name: "index_subjects_on_area_id"
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "email", default: "", null: false
     t.string "ci", null: false
@@ -78,8 +102,11 @@ ActiveRecord::Schema[7.0].define(version: 2022_11_30_014720) do
     t.index ["email"], name: "index_users_on_email", unique: true
   end
 
+  add_foreign_key "areas", "areas"
+  add_foreign_key "areas", "schools"
   add_foreign_key "schools", "periods", column: "period_active_id"
   add_foreign_key "schools", "periods", column: "period_enroll_id"
   add_foreign_key "students", "users"
   add_foreign_key "study_plans", "schools"
+  add_foreign_key "subjects", "areas"
 end

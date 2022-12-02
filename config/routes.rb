@@ -1,4 +1,6 @@
 Rails.application.routes.draw do
+  resources :subjects
+  resources :areas
   resources :study_plans
   resources :schools
   resources :periods

@@ -1,0 +1,35 @@
+%h1 Listing subjects
+
+%table
+  %thead
+    %tr
+      %th Code
+      %th Name
+      %th Active
+      %th Unit credits
+      %th Ordinal
+      %th Qualification type
+      %th Modality
+      %th Area
+      %th
+      %th
+      %th
+
+  %tbody
+    - @subjects.each do |subject|
+      %tr
+        %td= subject.code
+        %td= subject.name
+        %td= subject.active
+        %td= subject.unit_credits
+        %td= subject.ordinal
+        %td= subject.qualification_type
+        %td= subject.modality
+        %td= subject.area
+        %td= link_to 'Show', subject
+        %td= link_to 'Edit', edit_subject_path(subject)
+        %td= link_to 'Destroy', subject, method: :delete, data: { confirm: 'Are you sure?' }
+
+%br
+
+= link_to 'New Subject', new_subject_path
