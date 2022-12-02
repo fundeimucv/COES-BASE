@@ -6,15 +6,16 @@
     %ul#menu.nav.nav-pills.flex-column.mb-sm-auto.mb-0.align-items-start
       %li.nav-item
         %a.nav-link.text-truncate{href: root_path}
-          %i.fs-5.bi-house
+          %i.fs-5.fa.fa-house
+
           %span.ms-1.d-none.d-sm-inline Home
       %li
         %a.nav-link.text-truncate{"data-bs-toggle": :collapse, href: "#submenu1"}
-          %i.fs-5.bi-speedometer2
+          %i.fs-5.fa.fa-dashboard
           %span.ms-1.d-none.d-sm-inline Dashboard
       %li.dropdown
         %a#dropdown.nav-link.dropdown-toggle.text-truncate{"aria-expanded": false, "data-bs-toggle": :dropdown, href: "#"}
-          %i.fs-5.bi-bootstrap
+          %i.fs-5.fa.fa-gear
           %span.ms-1.d-none.d-sm-inline Estructurales
         %ul.dropdown-menu.text-small.shadow{"aria-labelledby": :dropdown}
           %li

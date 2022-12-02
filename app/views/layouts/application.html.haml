@@ -8,14 +8,14 @@
     = csp_meta_tag
     = stylesheet_link_tag "application", "data-turbo-track": "reload"
     = javascript_include_tag "application", "data-turbo-track": "reload", defer: true
-  %body.bg-main
-    = render "shared/sidebar"
-    = render "shared/navbar"
+  %body
+    =# render "shared/sidebar"
+    =# render "shared/navbar"
     = render "shared/flashes"
     .container-fluid
       .row
         .col.min-vh-100.p-3
-          %button.btn.btn-primary.float-end{"data-bs-target" => "#offcanvas", "data-bs-toggle" => "offcanvas", role: :button}
-            👈🏽 Menú
-            %i.bi.bi-arrow-right-square-fill.fs-3{"data-bs-target" => "#offcanvas", "data-bs-toggle" => "offcanvas"}
+          - if false
+            %button.btn.btn-primary.float-end{"data-bs-toggle": :offcanvas, role: :button, 'data-bs-toggle': :tooltip, title: 'Menú'}
+              %i.fa.fa-chevron-left.fs-3{"data-bs-target": "#offcanvas", "data-bs-toggle": "offcanvas"}
           = yield
