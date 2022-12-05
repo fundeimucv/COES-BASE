@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_12_05_180918) do
+ActiveRecord::Schema[7.0].define(version: 2022_12_05_201209) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -93,6 +93,14 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_05_180918) do
     t.index ["area_id"], name: "index_subjects_on_area_id"
   end
 
+  create_table "teachers", primary_key: "user_id", force: :cascade do |t|
+    t.bigint "area_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["area_id"], name: "index_teachers_on_area_id"
+    t.index ["user_id"], name: "index_teachers_on_user_id"
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "email", default: "", null: false
     t.string "ci", null: false
@@ -122,4 +130,6 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_05_180918) do
   add_foreign_key "students", "users"
   add_foreign_key "study_plans", "schools"
   add_foreign_key "subjects", "areas"
+  add_foreign_key "teachers", "areas"
+  add_foreign_key "teachers", "users"
 end
