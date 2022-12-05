@@ -1,11 +1,11 @@
-%h1 Listing periods
+%h1= @periods.model_name.human.pluralize
 
-%table
+%table.table
   %thead
     %tr
-      %th Name
-      %th Year
-      %th Type
+      %th= @periods.human_attribute_name(:year)
+      %th= @periods.human_attribute_name(:modality)
+      %th= @periods.human_attribute_name(:ordinal)
       %th
       %th
       %th
@@ -13,9 +13,9 @@
   %tbody
     - @periods.each do |period|
       %tr
-        %td= period.ordinal
         %td= period.year
         %td= period.modality
+        %td= period.ordinal
         %td= link_to 'Show', period
         %td= link_to 'Edit', edit_period_path(period)
         %td= link_to 'Destroy', period, method: :delete, data: { confirm: 'Are you sure?' }

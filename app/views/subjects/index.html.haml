@@ -1,16 +1,16 @@
-%h1 Listing subjects
+%h1= @subjects.model_name.human.pluralize
 
-%table
+%table.table
   %thead
     %tr
-      %th Code
-      %th Name
-      %th Active
-      %th Unit credits
-      %th Ordinal
-      %th Qualification type
-      %th Modality
-      %th Area
+      %th= @subjects.human_attribute_name(:code)
+      %th= @subjects.human_attribute_name(:name)
+      %th= @subjects.human_attribute_name(:active)
+      %th= @subjects.human_attribute_name(:unit_credits)
+      %th= @subjects.human_attribute_name(:ordinal)
+      %th= @subjects.human_attribute_name(:qualification_type)
+      %th= @subjects.human_attribute_name(:modality)
+      %th= @subjects.human_attribute_name(:area)
       %th
       %th
       %th
@@ -25,7 +25,7 @@
         %td= subject.ordinal
         %td= subject.qualification_type
         %td= subject.modality
-        %td= subject.area
+        %td= subject.area.name
         %td= link_to 'Show', subject
         %td= link_to 'Edit', edit_subject_path(subject)
         %td= link_to 'Destroy', subject, method: :delete, data: { confirm: 'Are you sure?' }

@@ -9,8 +9,8 @@
     = f.input :active
     = f.input :unit_credits
     = f.input :ordinal
-    = f.input :qualification_type
-    = f.input :modality
+    = f.input :qualification_type, collection: Subject.qualification_types.keys, as: :radio_buttons
+    = f.input :modality, collection: Subject.modalities.keys, as: :radio_buttons
     = f.association :area
 
   .form-actions

@@ -219,25 +219,86 @@ es:
     errors:
       <<: *errors
   activerecord:
+    errors:
+      models:
+        subject:
+          attributes:
+            area:
+              required: 'requerida'
+
     models:
+      student:
+        one: 'Estudiante'
+        other: 'Estudiantes'
+      user:
+        one: 'Usuario'
+        other: 'Usuarios'
       period:
         one: 'Periodo'
         other: 'Periodos'
       school:
         one: 'Escuela'
         other: 'Escuelas'
-
-    errors:
-      models:
-        period:
-          attributes:
-            name:
-              required: 'Nombre requerido'
-            description:
-              required: 'Descripción Requerida'
+      areas:
+        one: 'Área'
+        other: 'Áreas'
+      subject:
+        one: 'Asignatura'
+        other: 'Asignaturas'
+      study_plan:
+        one: 'Plan de Estudio'
+        other: 'Planes de Estudio'
+    
+    attributes:
+      period:
+        year: 'Año'
+        modality: 'Modalidad'
+        ordinal: 'Ordinalidad'
+      area:
+        name: 'Nombre'
+      school:        
+        code: 'Código'
+        name: 'Nombre'
+        enable_subject_retreat: 'Activar retiro de Asignturas'
+        enable_change_course: 'Activar cambio de Sección'
+        enable_dependents: 'Activar Dependencias'
+        period_active_id: 'Identificador de Periodo Activo '
+        period_enroll_id: 'Identidicador de Periodo Inscripción'
+      student:
+        active: 'Activo'
+        disability: 'Discapacidad'
+        nationality: 'Nacionalidad'
+        marital_status: 'Estado Civil'
+        origin_country: 'País de origen'
+        origin_city: 'Ciudad de origen'
+        birth_date: 'Fecha de nacimiento'
+      study_plan:
+        code: 'Código'
+        name: 'Nombre'
+      subject:
+        code: 'Código'
+        name: 'Nombre'
+        active: 'Activa'
+        unit_credits: 'Unidad de Créditos'
+        ordinal: 'Orden'
+        qualification_type: 'Tipo de calificación'
+        modality: 'Modalidad'
+        area: 'Área'
+      user:
+        email: 'Correo Electrónico'
+        ci: 'Cédula de identidad'
+        password: 'Contraseña'
+        name: 'Nombre'
+        last_name: 'Apellido'
+        number_phone: 'Número telefónico'
+        sex: 'Sexo'
 
       <<: *errors
   flash:
     actions:
+      destroy:
+        notice: '¡Recurso eliminado del sistema!'      
+      update:
+        notice: '¡Recurso actualizado con éxito!'
       create:
-        notice: "Tu %{resource_name} ha sido creado!"
+        notice: "¡Recurso creado con éxito!"
