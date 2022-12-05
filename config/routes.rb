@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  resources :faculties
   resources :profiles
   resources :academic_processes
   resources :subjects
