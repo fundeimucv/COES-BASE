@@ -1,20 +1,22 @@
 %p#notice= notice
 
 %p
-  %b Code:
+  %b= @school.human_attribute_name(:code)
   = @school.code
 %p
-  %b Name:
+  %b= @school.human_attribute_name(:name)
   = @school.name
 %p
-  %b Enable subject retreat:
+  %b= @school.human_attribute_name(:enable_subject_retreat)
   = @school.enable_subject_retreat
 %p
-  %b Enable change course:
+  %b= @school.human_attribute_name(:enable_change_course)
   = @school.enable_change_course
 %p
-  %b Enable dependents:
+  %b= @school.human_attribute_name(:enable_dependents)
   = @school.enable_dependents
+
+
 
 = link_to 'Edit', edit_school_path(@school)
 \|

@@ -1,0 +1,18 @@
+%p#notice= notice
+
+%p
+  %b School:
+  = @academic_process.school
+%p
+  %b Period:
+  = @academic_process.period
+%p
+  %b Max credit:
+  = @academic_process.max_credit
+%p
+  %b Max subjects:
+  = @academic_process.max_subjects
+
+= link_to 'Edit', edit_academic_process_path(@academic_process)
+\|
+= link_to 'Back', academic_processes_path

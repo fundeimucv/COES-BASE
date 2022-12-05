@@ -1,0 +1,27 @@
+%h1 Listing academic_processes
+
+%table
+  %thead
+    %tr
+      %th School
+      %th Period
+      %th Max credit
+      %th Max subjects
+      %th
+      %th
+      %th
+
+  %tbody
+    - @academic_processes.each do |academic_process|
+      %tr
+        %td= academic_process.school
+        %td= academic_process.period
+        %td= academic_process.max_credit
+        %td= academic_process.max_subjects
+        %td= link_to 'Show', academic_process
+        %td= link_to 'Edit', edit_academic_process_path(academic_process)
+        %td= link_to 'Destroy', academic_process, method: :delete, data: { confirm: 'Are you sure?' }
+
+%br
+
+= link_to 'New Academic process', new_academic_process_path

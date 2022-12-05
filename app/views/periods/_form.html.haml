@@ -6,7 +6,8 @@
 
     .form-inputs
       = f.input :ordinal, collection: Period.ordinals.keys, as: :radio_buttons, checked: true
-      = f.input :year, input_html: {step: 1, min: 1980, max: 2200}
+      =# f.input :year, input_html: {step: 1, min: 1980, max: 2200}
+      = f.range_field :year, in: 1980..2100 
       = f.input :modality, collection: Period.modalities.keys, as: :radio_buttons
 
     .form-actions
