@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_12_07_194708) do
+ActiveRecord::Schema[7.0].define(version: 2022_12_07_201132) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -70,6 +70,17 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_07_194708) do
     t.datetime "updated_at", null: false
     t.index ["academic_process_id"], name: "index_courses_on_academic_process_id"
     t.index ["subject_id"], name: "index_courses_on_subject_id"
+  end
+
+  create_table "enroll_academic_procces", force: :cascade do |t|
+    t.bigint "grade_id", null: false
+    t.bigint "academic_process_id", null: false
+    t.integer "enroll_status"
+    t.integer "permanence_state"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["academic_process_id"], name: "index_enroll_academic_procces_on_academic_process_id"
+    t.index ["grade_id"], name: "index_enroll_academic_procces_on_grade_id"
   end
 
   create_table "faculties", force: :cascade do |t|
@@ -232,6 +243,8 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_07_194708) do
   add_foreign_key "areas", "schools"
   add_foreign_key "courses", "academic_processes"
   add_foreign_key "courses", "subjects"
+  add_foreign_key "enroll_academic_procces", "academic_processes"
+  add_foreign_key "enroll_academic_procces", "grades"
   add_foreign_key "grades", "admission_types"
   add_foreign_key "grades", "students", primary_key: "user_id", on_update: :cascade, on_delete: :cascade
   add_foreign_key "grades", "study_plans"

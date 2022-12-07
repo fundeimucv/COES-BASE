@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  resources :enroll_academic_procces
   resources :sections
   resources :courses
   resources :grades
