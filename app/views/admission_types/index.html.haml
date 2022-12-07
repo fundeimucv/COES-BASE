@@ -1,0 +1,25 @@
+%h1 Listing admission_types
+
+%table
+  %thead
+    %tr
+      %th Code
+      %th Name
+      %th School
+      %th
+      %th
+      %th
+
+  %tbody
+    - @admission_types.each do |admission_type|
+      %tr
+        %td= admission_type.code
+        %td= admission_type.name
+        %td= admission_type.school
+        %td= link_to 'Show', admission_type
+        %td= link_to 'Edit', edit_admission_type_path(admission_type)
+        %td= link_to 'Destroy', admission_type, method: :delete, data: { confirm: 'Are you sure?' }
+
+%br
+
+= link_to 'New Admission type', new_admission_type_path

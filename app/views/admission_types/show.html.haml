@@ -1,0 +1,15 @@
+%p#notice= notice
+
+%p
+  %b Code:
+  = @admission_type.code
+%p
+  %b Name:
+  = @admission_type.name
+%p
+  %b School:
+  = @admission_type.school
+
+= link_to 'Edit', edit_admission_type_path(@admission_type)
+\|
+= link_to 'Back', admission_types_path

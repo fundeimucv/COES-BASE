@@ -1,5 +1,5 @@
 Rails.application.routes.draw do
-  resources :grades
+  resources :admission_types
   resources :payment_reports
   resources :banks
   resources :faculties

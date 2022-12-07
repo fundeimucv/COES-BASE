@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_12_07_142031) do
+ActiveRecord::Schema[7.0].define(version: 2022_12_07_171640) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -36,6 +36,15 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_07_142031) do
     t.index ["user_id"], name: "index_admins_on_user_id"
   end
 
+  create_table "admission_types", force: :cascade do |t|
+    t.string "code"
+    t.string "name"
+    t.bigint "school_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["school_id"], name: "index_admission_types_on_school_id"
+  end
+
   create_table "areas", force: :cascade do |t|
     t.string "name", null: false
     t.bigint "school_id", null: false
@@ -57,24 +66,6 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_07_142031) do
     t.string "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-  end
-
-  create_table "grades", force: :cascade do |t|
-    t.bigint "student_id", null: false
-    t.bigint "study_plan_id", null: false
-    t.integer "role"
-    t.integer "enroll_state"
-    t.integer "admission"
-    t.integer "normative"
-    t.boolean "university_registred"
-    t.float "efficiency"
-    t.float "weighted_average"
-    t.float "simple_average"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["student_id", "study_plan_id"], name: "index_grades_on_student_id_and_study_plan_id", unique: true
-    t.index ["student_id"], name: "index_grades_on_student_id"
-    t.index ["study_plan_id"], name: "index_grades_on_study_plan_id"
   end
 
   create_table "payment_reports", force: :cascade do |t|
@@ -188,10 +179,9 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_07_142031) do
   add_foreign_key "academic_processes", "periods"
   add_foreign_key "academic_processes", "schools"
   add_foreign_key "admins", "users"
+  add_foreign_key "admission_types", "schools"
   add_foreign_key "areas", "areas"
   add_foreign_key "areas", "schools"
-  add_foreign_key "grades", "students", primary_key: "user_id", on_update: :cascade, on_delete: :cascade
-  add_foreign_key "grades", "study_plans"
   add_foreign_key "payment_reports", "banks", column: "origin_bank_id"
   add_foreign_key "schools", "periods", column: "period_active_id"
   add_foreign_key "schools", "periods", column: "period_enroll_id"
