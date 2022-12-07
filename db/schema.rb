@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_12_07_173002) do
+ActiveRecord::Schema[7.0].define(version: 2022_12_07_193628) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -60,6 +60,16 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_07_173002) do
     t.string "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "courses", force: :cascade do |t|
+    t.bigint "academic_process_id", null: false
+    t.bigint "subject_id", null: false
+    t.boolean "offer_as_pci"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["academic_process_id"], name: "index_courses_on_academic_process_id"
+    t.index ["subject_id"], name: "index_courses_on_subject_id"
   end
 
   create_table "faculties", force: :cascade do |t|
@@ -128,6 +138,20 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_07_173002) do
     t.index ["faculty_id"], name: "index_schools_on_faculty_id"
     t.index ["period_active_id"], name: "index_schools_on_period_active_id"
     t.index ["period_enroll_id"], name: "index_schools_on_period_enroll_id"
+  end
+
+  create_table "sections", force: :cascade do |t|
+    t.string "code"
+    t.integer "capacity"
+    t.bigint "course_id", null: false
+    t.bigint "teacher_id", null: false
+    t.boolean "qualified"
+    t.integer "modality"
+    t.boolean "enabled"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["course_id"], name: "index_sections_on_course_id"
+    t.index ["teacher_id"], name: "index_sections_on_teacher_id"
   end
 
   create_table "students", primary_key: "user_id", force: :cascade do |t|
@@ -200,12 +224,16 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_07_173002) do
   add_foreign_key "admission_types", "schools"
   add_foreign_key "areas", "areas"
   add_foreign_key "areas", "schools"
+  add_foreign_key "courses", "academic_processes"
+  add_foreign_key "courses", "subjects"
   add_foreign_key "grades", "admission_types"
   add_foreign_key "grades", "students", primary_key: "user_id", on_update: :cascade, on_delete: :cascade
   add_foreign_key "grades", "study_plans"
   add_foreign_key "payment_reports", "banks", column: "origin_bank_id"
   add_foreign_key "schools", "periods", column: "period_active_id"
   add_foreign_key "schools", "periods", column: "period_enroll_id"
+  add_foreign_key "sections", "courses"
+  add_foreign_key "sections", "teachers", primary_key: "user_id", on_update: :cascade, on_delete: :cascade
   add_foreign_key "students", "users"
   add_foreign_key "study_plans", "schools"
   add_foreign_key "subjects", "areas"

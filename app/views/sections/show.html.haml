@@ -1,0 +1,27 @@
+%p#notice= notice
+
+%p
+  %b Code:
+  = @section.code
+%p
+  %b Capacity:
+  = @section.capacity
+%p
+  %b Course:
+  = @section.course
+%p
+  %b Teacher:
+  = @section.teacher
+%p
+  %b Qualified:
+  = @section.qualified
+%p
+  %b Modality:
+  = @section.modality
+%p
+  %b Enabled:
+  = @section.enabled
+
+= link_to 'Edit', edit_section_path(@section)
+\|
+= link_to 'Back', sections_path
