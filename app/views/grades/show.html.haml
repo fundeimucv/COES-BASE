@@ -1,0 +1,36 @@
+%p#notice= notice
+
+%p
+  %b Student:
+  = @grade.student
+%p
+  %b Plan:
+  = @grade.plan
+%p
+  %b Role:
+  = @grade.role
+%p
+  %b Enroll state:
+  = @grade.enroll_state
+%p
+  %b Admission:
+  = @grade.admission
+%p
+  %b Normative:
+  = @grade.normative
+%p
+  %b University registred:
+  = @grade.university_registred
+%p
+  %b Efficiency:
+  = @grade.efficiency
+%p
+  %b Weighted average:
+  = @grade.weighted_average
+%p
+  %b Simple average:
+  = @grade.simple_average
+
+= link_to 'Edit', edit_grade_path(@grade)
+\|
+= link_to 'Back', grades_path

@@ -1,0 +1,39 @@
+%h1 Listing grades
+
+%table
+  %thead
+    %tr
+      %th Student
+      %th Plan
+      %th Role
+      %th Enroll state
+      %th Admission
+      %th Normative
+      %th University registred
+      %th Efficiency
+      %th Weighted average
+      %th Simple average
+      %th
+      %th
+      %th
+
+  %tbody
+    - @grades.each do |grade|
+      %tr
+        %td= grade.student
+        %td= grade.plan
+        %td= grade.role
+        %td= grade.enroll_state
+        %td= grade.admission
+        %td= grade.normative
+        %td= grade.university_registred
+        %td= grade.efficiency
+        %td= grade.weighted_average
+        %td= grade.simple_average
+        %td= link_to 'Show', grade
+        %td= link_to 'Edit', edit_grade_path(grade)
+        %td= link_to 'Destroy', grade, method: :delete, data: { confirm: 'Are you sure?' }
+
+%br
+
+= link_to 'New Grade', new_grade_path

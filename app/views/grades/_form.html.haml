@@ -1,0 +1,19 @@
+-# frozen_string_literal: true
+= simple_form_for(@grade) do |f|
+  = f.error_notification
+  = f.error_notification message: f.object.errors[:base].to_sentence if f.object.errors[:base].present?
+
+  .form-inputs
+    = f.association :student
+    = f.association :plan
+    = f.input :role
+    = f.input :enroll_state
+    = f.input :admission
+    = f.input :normative
+    = f.input :university_registred
+    = f.input :efficiency
+    = f.input :weighted_average
+    = f.input :simple_average
+
+  .form-actions
+    = f.button :submit
