@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  resources :payment_reports
   resources :banks
   resources :faculties
   resources :profiles

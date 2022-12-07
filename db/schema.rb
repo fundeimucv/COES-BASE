@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_12_06_185854) do
+ActiveRecord::Schema[7.0].define(version: 2022_12_06_191516) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -28,10 +28,11 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_06_185854) do
   create_table "admins", force: :cascade do |t|
     t.bigint "user_id", null: false
     t.integer "role"
-    t.bigint "environme_authorize_id"
-    t.string "environme_authorize_type"
+    t.string "env_authorizable_type", default: "Faculty"
+    t.bigint "env_authorizable_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["env_authorizable_type", "env_authorizable_id"], name: "index_admins_on_env_authorizable"
     t.index ["user_id"], name: "index_admins_on_user_id"
   end
 
@@ -56,6 +57,20 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_06_185854) do
     t.string "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "payment_reports", force: :cascade do |t|
+    t.float "amount"
+    t.string "transaction_id"
+    t.integer "transaction_type"
+    t.date "transaction_date"
+    t.bigint "origin_bank_id", null: false
+    t.string "payable_type"
+    t.bigint "payable_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["origin_bank_id"], name: "index_payment_reports_on_origin_bank_id"
+    t.index ["payable_type", "payable_id"], name: "index_payment_reports_on_payable"
   end
 
   create_table "periods", force: :cascade do |t|
@@ -157,6 +172,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_06_185854) do
   add_foreign_key "admins", "users"
   add_foreign_key "areas", "areas"
   add_foreign_key "areas", "schools"
+  add_foreign_key "payment_reports", "banks", column: "origin_bank_id"
   add_foreign_key "schools", "periods", column: "period_active_id"
   add_foreign_key "schools", "periods", column: "period_enroll_id"
   add_foreign_key "students", "users"

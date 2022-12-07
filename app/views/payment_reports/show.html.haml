@@ -1,0 +1,24 @@
+%p#notice= notice
+
+%p
+  %b Amount:
+  = @payment_report.amount
+%p
+  %b Transaction:
+  = @payment_report.transaction_id
+%p
+  %b Transaction type:
+  = @payment_report.transaction_type
+%p
+  %b Transaction date:
+  = @payment_report.transaction_date
+%p
+  %b Origin bank:
+  = @payment_report.origin_bank
+%p
+  %b Payable:
+  = @payment_report.payable
+
+= link_to 'Edit', edit_payment_report_path(@payment_report)
+\|
+= link_to 'Back', payment_reports_path

@@ -1,0 +1,31 @@
+%h1 Listing payment_reports
+
+%table
+  %thead
+    %tr
+      %th Amount
+      %th Transaction
+      %th Transaction type
+      %th Transaction date
+      %th Origin bank
+      %th Payable
+      %th
+      %th
+      %th
+
+  %tbody
+    - @payment_reports.each do |payment_report|
+      %tr
+        %td= payment_report.amount
+        %td= payment_report.transaction_id
+        %td= payment_report.transaction_type
+        %td= payment_report.transaction_date
+        %td= payment_report.origin_bank
+        %td= payment_report.payable
+        %td= link_to 'Show', payment_report
+        %td= link_to 'Edit', edit_payment_report_path(payment_report)
+        %td= link_to 'Destroy', payment_report, method: :delete, data: { confirm: 'Are you sure?' }
+
+%br
+
+= link_to 'New Payment report', new_payment_report_path
