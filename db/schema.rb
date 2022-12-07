@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_12_07_193628) do
+ActiveRecord::Schema[7.0].define(version: 2022_12_07_194708) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -154,6 +154,12 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_07_193628) do
     t.index ["teacher_id"], name: "index_sections_on_teacher_id"
   end
 
+  create_table "sections_teachers", id: false, force: :cascade do |t|
+    t.bigint "section_id", null: false
+    t.bigint "teacher_id", null: false
+    t.index ["section_id", "teacher_id"], name: "index_sections_teachers_on_section_id_and_teacher_id", unique: true
+  end
+
   create_table "students", primary_key: "user_id", force: :cascade do |t|
     t.boolean "active", default: true
     t.integer "disability"
@@ -234,6 +240,8 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_07_193628) do
   add_foreign_key "schools", "periods", column: "period_enroll_id"
   add_foreign_key "sections", "courses"
   add_foreign_key "sections", "teachers", primary_key: "user_id", on_update: :cascade, on_delete: :cascade
+  add_foreign_key "sections_teachers", "sections"
+  add_foreign_key "sections_teachers", "teachers", primary_key: "user_id"
   add_foreign_key "students", "users"
   add_foreign_key "study_plans", "schools"
   add_foreign_key "subjects", "areas"
