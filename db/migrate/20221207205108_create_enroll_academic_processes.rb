@@ -1,6 +1,6 @@
-class CreateEnrollAcademicProcces < ActiveRecord::Migration[7.0]
+class CreateEnrollAcademicProcesses < ActiveRecord::Migration[7.0]
   def change
-    create_table :enroll_academic_procces do |t|
+    create_table :enroll_academic_processes do |t|
       t.references :grade, null: false, foreign_key: true
       t.references :academic_process, null: false, foreign_key: true
       t.integer :enroll_status

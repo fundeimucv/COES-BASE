@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_12_07_201132) do
+ActiveRecord::Schema[7.0].define(version: 2022_12_07_205319) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -23,6 +23,22 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_07_201132) do
     t.datetime "updated_at", null: false
     t.index ["period_id"], name: "index_academic_processes_on_period_id"
     t.index ["school_id"], name: "index_academic_processes_on_school_id"
+  end
+
+  create_table "academic_records", force: :cascade do |t|
+    t.bigint "section_id", null: false
+    t.bigint "enroll_academic_process_id", null: false
+    t.float "first_q"
+    t.float "second_q"
+    t.float "third_q"
+    t.float "final_q"
+    t.float "post_q"
+    t.integer "status_q"
+    t.integer "type_q"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["enroll_academic_process_id"], name: "index_academic_records_on_enroll_academic_process_id"
+    t.index ["section_id"], name: "index_academic_records_on_section_id"
   end
 
   create_table "admins", force: :cascade do |t|
@@ -72,15 +88,15 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_07_201132) do
     t.index ["subject_id"], name: "index_courses_on_subject_id"
   end
 
-  create_table "enroll_academic_procces", force: :cascade do |t|
+  create_table "enroll_academic_processes", force: :cascade do |t|
     t.bigint "grade_id", null: false
     t.bigint "academic_process_id", null: false
     t.integer "enroll_status"
     t.integer "permanence_state"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["academic_process_id"], name: "index_enroll_academic_procces_on_academic_process_id"
-    t.index ["grade_id"], name: "index_enroll_academic_procces_on_grade_id"
+    t.index ["academic_process_id"], name: "index_enroll_academic_processes_on_academic_process_id"
+    t.index ["grade_id"], name: "index_enroll_academic_processes_on_grade_id"
   end
 
   create_table "faculties", force: :cascade do |t|
@@ -237,14 +253,16 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_07_201132) do
 
   add_foreign_key "academic_processes", "periods"
   add_foreign_key "academic_processes", "schools"
+  add_foreign_key "academic_records", "enroll_academic_processes"
+  add_foreign_key "academic_records", "sections"
   add_foreign_key "admins", "users"
   add_foreign_key "admission_types", "schools"
   add_foreign_key "areas", "areas"
   add_foreign_key "areas", "schools"
   add_foreign_key "courses", "academic_processes"
   add_foreign_key "courses", "subjects"
-  add_foreign_key "enroll_academic_procces", "academic_processes"
-  add_foreign_key "enroll_academic_procces", "grades"
+  add_foreign_key "enroll_academic_processes", "academic_processes"
+  add_foreign_key "enroll_academic_processes", "grades"
   add_foreign_key "grades", "admission_types"
   add_foreign_key "grades", "students", primary_key: "user_id", on_update: :cascade, on_delete: :cascade
   add_foreign_key "grades", "study_plans"

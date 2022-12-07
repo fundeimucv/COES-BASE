@@ -1,0 +1,33 @@
+%p#notice= notice
+
+%p
+  %b Section:
+  = @academic_record.section
+%p
+  %b Enroll academic process:
+  = @academic_record.enroll_academic_process
+%p
+  %b First q:
+  = @academic_record.first_q
+%p
+  %b Second q:
+  = @academic_record.second_q
+%p
+  %b Third q:
+  = @academic_record.third_q
+%p
+  %b Final q:
+  = @academic_record.final_q
+%p
+  %b Post q:
+  = @academic_record.post_q
+%p
+  %b Status q:
+  = @academic_record.status_q
+%p
+  %b Type q:
+  = @academic_record.type_q
+
+= link_to 'Edit', edit_academic_record_path(@academic_record)
+\|
+= link_to 'Back', academic_records_path

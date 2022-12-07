@@ -1,0 +1,37 @@
+%h1 Listing academic_records
+
+%table
+  %thead
+    %tr
+      %th Section
+      %th Enroll academic process
+      %th First q
+      %th Second q
+      %th Third q
+      %th Final q
+      %th Post q
+      %th Status q
+      %th Type q
+      %th
+      %th
+      %th
+
+  %tbody
+    - @academic_records.each do |academic_record|
+      %tr
+        %td= academic_record.section
+        %td= academic_record.enroll_academic_process
+        %td= academic_record.first_q
+        %td= academic_record.second_q
+        %td= academic_record.third_q
+        %td= academic_record.final_q
+        %td= academic_record.post_q
+        %td= academic_record.status_q
+        %td= academic_record.type_q
+        %td= link_to 'Show', academic_record
+        %td= link_to 'Edit', edit_academic_record_path(academic_record)
+        %td= link_to 'Destroy', academic_record, method: :delete, data: { confirm: 'Are you sure?' }
+
+%br
+
+= link_to 'New Academic record', new_academic_record_path
