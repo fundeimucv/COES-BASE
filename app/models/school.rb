@@ -6,6 +6,7 @@ class School < ApplicationRecord
 
   has_many :areas
   has_many :subjects, through: :areas
+  has_many :admins, as: :env_authorizable 
 
   has_many :academic_processes
 
