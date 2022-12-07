@@ -5,12 +5,11 @@
 
   .form-inputs
     = f.association :student
-    = f.association :plan
-    = f.input :role
+    = f.association :study_plan
+    = f.input :graduate_status
     = f.input :enroll_state
-    = f.input :admission
-    = f.input :normative
-    = f.input :university_registred
+    = f.association :admission_type
+    = f.input :registration_status
     = f.input :efficiency
     = f.input :weighted_average
     = f.input :simple_average

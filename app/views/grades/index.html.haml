@@ -4,12 +4,11 @@
   %thead
     %tr
       %th Student
-      %th Plan
-      %th Role
+      %th Study plan
+      %th Graduate status
       %th Enroll state
-      %th Admission
-      %th Normative
-      %th University registred
+      %th Admission type
+      %th Registration status
       %th Efficiency
       %th Weighted average
       %th Simple average
@@ -21,12 +20,11 @@
     - @grades.each do |grade|
       %tr
         %td= grade.student
-        %td= grade.plan
-        %td= grade.role
+        %td= grade.study_plan
+        %td= grade.graduate_status
         %td= grade.enroll_state
-        %td= grade.admission
-        %td= grade.normative
-        %td= grade.university_registred
+        %td= grade.admission_type
+        %td= grade.registration_status
         %td= grade.efficiency
         %td= grade.weighted_average
         %td= grade.simple_average
