@@ -6,6 +6,7 @@
   .form-inputs
     = f.input :code
     = f.input :name
+    = f.input :type_entity, collection: School.type_entities.keys, as: :radio_buttons, checked: true
     = f.association :faculty
     = f.input :enable_subject_retreat
     = f.input :enable_change_course

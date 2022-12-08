@@ -5,7 +5,7 @@ class Subject < ApplicationRecord
 
   # ENUMS:
   enum qualification_type: [:Numerica, :Absoluta, :Parcial3]
-  enum modality: [:Electiva, :Obligatoria, :Optativa, :Proyecto] 
+  enum modality: [:Obligatoria, :Electiva, :Optativa, :Proyecto] 
 
   # VALIDATIONS:
   validates :code, presence: true, uniqueness: true

@@ -65,6 +65,6 @@ class EnrollAcademicProcessesController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def enroll_academic_process_params
-      params.require(:enroll_academic_process).permit(:grade_id, :academic_process_id, :enroll_status, :permanence_state)
+      params.require(:enroll_academic_process).permit(:grade_id, :academic_process_id, :enroll_status, :permanence_status)
     end
 end

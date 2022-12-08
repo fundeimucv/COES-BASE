@@ -17,7 +17,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_07_205319) do
   create_table "academic_processes", force: :cascade do |t|
     t.bigint "school_id", null: false
     t.bigint "period_id", null: false
-    t.integer "max_credit"
+    t.integer "max_credits"
     t.integer "max_subjects"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -53,7 +53,6 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_07_205319) do
   end
 
   create_table "admission_types", force: :cascade do |t|
-    t.string "code"
     t.string "name"
     t.bigint "school_id", null: false
     t.datetime "created_at", null: false
@@ -64,10 +63,10 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_07_205319) do
   create_table "areas", force: :cascade do |t|
     t.string "name", null: false
     t.bigint "school_id", null: false
-    t.bigint "area_id"
+    t.bigint "parent_area_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["area_id"], name: "index_areas_on_area_id"
+    t.index ["parent_area_id"], name: "index_areas_on_parent_area_id"
     t.index ["school_id"], name: "index_areas_on_school_id"
   end
 
@@ -92,7 +91,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_07_205319) do
     t.bigint "grade_id", null: false
     t.bigint "academic_process_id", null: false
     t.integer "enroll_status"
-    t.integer "permanence_state"
+    t.integer "permanence_status"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["academic_process_id"], name: "index_enroll_academic_processes_on_academic_process_id"
@@ -100,6 +99,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_07_205319) do
   end
 
   create_table "faculties", force: :cascade do |t|
+    t.string "code"
     t.string "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -109,7 +109,6 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_07_205319) do
     t.bigint "student_id", null: false
     t.bigint "study_plan_id", null: false
     t.integer "graduate_status"
-    t.integer "enroll_state"
     t.bigint "admission_type_id", null: false
     t.integer "registration_status"
     t.float "efficiency"
@@ -138,9 +137,8 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_07_205319) do
   end
 
   create_table "periods", force: :cascade do |t|
-    t.integer "ordinal"
-    t.integer "year"
-    t.integer "modality"
+    t.integer "year", null: false
+    t.integer "modality", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -152,8 +150,9 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_07_205319) do
   end
 
   create_table "schools", force: :cascade do |t|
-    t.string "code"
-    t.string "name"
+    t.string "code", null: false
+    t.string "name", null: false
+    t.integer "type_entity", default: 0, null: false
     t.boolean "enable_subject_retreat"
     t.boolean "enable_change_course"
     t.boolean "enable_dependents"
@@ -257,7 +256,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_07_205319) do
   add_foreign_key "academic_records", "sections"
   add_foreign_key "admins", "users"
   add_foreign_key "admission_types", "schools"
-  add_foreign_key "areas", "areas"
+  add_foreign_key "areas", "areas", column: "parent_area_id"
   add_foreign_key "areas", "schools"
   add_foreign_key "courses", "academic_processes"
   add_foreign_key "courses", "subjects"

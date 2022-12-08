@@ -1,23 +1,23 @@
 %p#notice= notice
 
 %p
-  %b= @school.human_attribute_name(:code)
+  %b= School.human_attribute_name(:code)
   = @school.code
 %p
-  %b= @school.human_attribute_name(:name)
+  %b= School.human_attribute_name(:name)
   = @school.name
 %p
-  %b= @school.human_attribute_name(:enable_subject_retreat)
+  %b= School.human_attribute_name(:enable_subject_retreat)
   = @school.enable_subject_retreat
 %p
-  %b= @school.human_attribute_name(:enable_change_course)
+  %b= School.human_attribute_name(:enable_change_course)
   = @school.enable_change_course
 %p
-  %b= @school.human_attribute_name(:enable_dependents)
+  %b= School.human_attribute_name(:enable_dependents)
   = @school.enable_dependents
 
 
 
-= link_to 'Edit', edit_school_path(@school)
+= link_to 'Edit', edit_school_path(@school), class: 'btn btn-sm btn-primary'
 \|
-= link_to 'Back', schools_path
+= link_to 'Back', schools_path, class: 'btn btn-sm btn-secondary'

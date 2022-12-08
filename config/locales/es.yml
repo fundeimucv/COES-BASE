@@ -164,7 +164,7 @@ es:
         separator: ! ','
         significant: false
         strip_insignificant_zeros: false
-        unit: €
+        unit: Bs
     format:
       delimiter: .
       precision: 3
@@ -221,40 +221,141 @@ es:
   activerecord:
     errors:
       models:
+        school:
+          attributes:
+            faculty:
+              required: 'requerida'
         subject:
           attributes:
             area:
               required: 'requerida'
 
     models:
-      student:
-        one: 'Estudiante'
-        other: 'Estudiantes'
-      user:
-        one: 'Usuario'
-        other: 'Usuarios'
-      period:
+      academic_processes:
+        one: 'Proceso Académico'
+        other: 'Procesos Académicos'
+      academic_records:
+        one: 'Registro Académico'
+        other: 'Registros Académicos'
+      admins:
+        one: 'Administrador'
+        other: 'Administradores'
+      admission_types:
+        one: 'Tipo de Admisión'  
+        others: 'Tipos de Admisión'
+      areas:
+        one: 'Área de Conocimiento'
+        other: 'Áreas de Conocimiento'
+      banks:
+        one: 'Banco'
+        others: 'Bancos'
+      courses:
+        one: 'Curso'
+        other: 'Cursos'
+      enroll_academic_processes:
+        one: 'Inscripción en Proceso Académico'
+        others: 'Inscripciones en Proceso Académico'
+      faculties:
+        one: 'Facultad'
+        other: 'Facultades'
+      grades:
+        one: 'Grado'
+        others: 'Grados'
+      payment_reports:
+        one: 'Reporte de Pago'
+        others: 'Reportes de Pago'
+      periods:
         one: 'Periodo'
         other: 'Periodos'
-      school:
+      profiles:
+        one: 'Perfil'
+        others: 'Perfiles'
+      schools:
         one: 'Escuela'
         other: 'Escuelas'
-      areas:
-        one: 'Área'
-        other: 'Áreas'
-      subject:
-        one: 'Asignatura'
-        other: 'Asignaturas'
-      study_plan:
+      sections:
+        one: 'Sección'
+        others: 'Secciones'
+      students:
+        one: 'Estudiante'
+        other: 'Estudiantes'
+      study_plans:
         one: 'Plan de Estudio'
         other: 'Planes de Estudio'
+      subjects:
+        one: 'Asignatura'
+        other: 'Asignaturas'
+      teachers:
+        one: 'Profesor'
+        others: 'Profesores'
+      users:
+        one: 'Usuario'
+        other: 'Usuarios'
+
+
+
     
     attributes:
-      period:
+      academic_processes:
+        school: 'Escuela'
+        period: 'Periodo'
+        max_credit: 'Máximo Créditos'
+        max_subjects: 'Máximas Asignaturas'
+      academic_records:
+        section: 'Sección'
+        enroll_academic_process: 'Inscripción en Proceso Académico'
+        first_q: 'Primera Calificación'
+        second_q: 'Segunda Calificación'
+        third_q: 'Tercera Calificación'
+        final_q: 'Calificación Final'
+        post_q: 'Calificación Posterior'
+        status_q: 'Estado de Calificación'
+        type_q: 'Tipo de Calificación'
+      admins:
+        user: 'Usuario'
+        role: 'Rol'
+        env_authorizable: 'Entorno Autorizado' 
+      admission_types:
+        name: 'Nombre'
+        school: 'Escuela'
+      area:
+        name: 'Nombre'
+        school: 'Escuela'
+        parent_area: 'Area Madre'
+      banks:
+        code: 'Código'
+        name: 'Nombre'
+      courses:
+        academic_processes: 'Proceso Académico'
+        subject: 'Asignatura'
+        offer_as_pci: 'Ofertar cómo PCI'
+      enroll_academic_processes:
+        grade: 'Grado'
+        academic_process: 'Proceso Académico'
+        enroll_status: 'Estado de Inscripción'
+        permanence_status: 'Estado de Permanencia'
+      faculties:
+        name: 'Nombre'
+      grades:
+        student: 'Estudiante'
+        study_plan: 'Plan de Estudio'
+        graduate_status: 'Estado de Graduación'
+        admission_type: 'Tipo de Admisión'
+        registration_status: 'Estado de Registro'
+        efficiency: 'Eficiencia'
+        weighted_average: 'Promedio Ponderado'
+        simple_average: 'Promedio Simple'
+      payment_reports:
+        amount: 'Monto'
+        transaction_id: 'Número de Transacción'
+        transaction_type: 'Tipo de Transacción'
+        origin_bank: 'Banco Origen'
+        payable: 'Pagable'
+      periods:
         year: 'Año'
         modality: 'Modalidad'
         ordinal: 'Ordinalidad'
-      area:
+      profiles:
         name: 'Nombre'
       school:        
         code: 'Código'
@@ -264,6 +365,15 @@ es:
         enable_dependents: 'Activar Dependencias'
         period_active_id: 'Identificador de Periodo Activo '
         period_enroll_id: 'Identidicador de Periodo Inscripción'
+        faculty: 'Facultad'
+      sections:
+        code: 'Número'
+        capacity: 'Capacidad'
+        course: 'Curso'
+        teacher: 'Profesor'
+        qualified: '¿Calificada?'
+        modality: 'Modalidad'
+        enabled: 'Activa'
       student:
         active: 'Activo'
         disability: 'Discapacidad'
@@ -283,6 +393,8 @@ es:
         ordinal: 'Orden'
         qualification_type: 'Tipo de calificación'
         modality: 'Modalidad'
+        area: 'Área'
+      teachers:
         area: 'Área'
       user:
         email: 'Correo Electrónico'

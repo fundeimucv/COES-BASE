@@ -14,6 +14,8 @@ class School < ApplicationRecord
 
   accepts_nested_attributes_for :areas, :academic_processes, :periods
 
+  # ENUMERATIONS:
+  enum type_entity: [:pregrado, :postgrado]
 
   # VALIDATIONS
   validates :code, presence: true

@@ -4,7 +4,7 @@ class CreateEnrollAcademicProcesses < ActiveRecord::Migration[7.0]
       t.references :grade, null: false, foreign_key: true
       t.references :academic_process, null: false, foreign_key: true
       t.integer :enroll_status
-      t.integer :permanence_state
+      t.integer :permanence_status
 
       t.timestamps
     end

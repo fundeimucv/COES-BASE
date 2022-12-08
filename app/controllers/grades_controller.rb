@@ -65,6 +65,6 @@ class GradesController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def grade_params
-      params.require(:grade).permit(:student_id, :study_plan_id, :graduate_status, :enroll_state, :admission_type_id, :registration_status, :efficiency, :weighted_average, :simple_average)
+      params.require(:grade).permit(:student_id, :study_plan_id, :graduate_status, :admission_type_id, :registration_status, :efficiency, :weighted_average, :simple_average)
     end
 end

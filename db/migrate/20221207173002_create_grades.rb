@@ -4,7 +4,6 @@ class CreateGrades < ActiveRecord::Migration[7.0]
       t.references :student, null: false, foreign_key: {primary_key: :user_id, on_delete: :cascade, on_update: :cascade}
       t.references :study_plan, null: false, foreign_key: true
       t.integer :graduate_status
-      t.integer :enroll_state
       t.references :admission_type, null: false, foreign_key: true
       t.integer :registration_status
       t.float :efficiency

@@ -3,6 +3,7 @@ class CreateSchools < ActiveRecord::Migration[7.0]
     create_table :schools do |t|
       t.string :code, null: false, unique: true
       t.string :name, null: false, unique: true
+      t.integer :type_entity, null: false, default: 0
       t.boolean :enable_subject_retreat
       t.boolean :enable_change_course
       t.boolean :enable_dependents
