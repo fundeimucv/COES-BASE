@@ -15,7 +15,12 @@ p '      Creado Primer Admin!    '.center(200, '=') if Admin.create(user_id: use
 
 p '      Creada Escuela!    '.center(200, '=') if escuela = School.create(code: 'EAU', name: 'Escuela de Arquitactura y urbanismo', faculty: fau)
 
-p '      Creados Primeros Períodos!    '.center(200, '=') if Period.create([{year: 2022, modality: 'I'}, {year: 2022, modality: 'II'}])
+
+
+p '      Creados Primeros Tipos de Períodos!    '.center(200, '=') if PeriodType.create([{code: 'I', name: 'Primero'}, {code: 'II', name: 'Segundo'}, {code: 'U', name: 'Único'}, {code: 'E', name: 'Especial (Intensivo)'}])
+
+
+p '      Creados Primeros Períodos!    '.center(200, '=') if Period.create([{year: 2022, period_type_id: 1}, {year: 2022, period_type_id: 2}])
 
 p '      Creado Primer Plan de Estudio!    '.center(200, '=') if StudyPlan.create(code: 'B001', name: 'Arquitecto')
 

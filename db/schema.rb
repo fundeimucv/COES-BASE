@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_12_07_205319) do
+ActiveRecord::Schema[7.0].define(version: 2022_12_09_150301) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -136,11 +136,20 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_07_205319) do
     t.index ["payable_type", "payable_id"], name: "index_payment_reports_on_payable"
   end
 
+  create_table "period_types", force: :cascade do |t|
+    t.string "code"
+    t.string "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "periods", force: :cascade do |t|
     t.integer "year", null: false
     t.integer "modality", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "period_type_id"
+    t.index ["period_type_id"], name: "index_periods_on_period_type_id"
   end
 
   create_table "profiles", force: :cascade do |t|

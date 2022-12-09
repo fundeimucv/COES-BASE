@@ -1,22 +1,27 @@
 Rails.application.routes.draw do
-  resources :academic_records
-  resources :enroll_academic_processes
-  resources :sections
-  resources :courses
-  resources :grades
-  resources :admission_types
-  resources :payment_reports
-  resources :banks
-  resources :faculties
-  resources :profiles
-  resources :academic_processes
-  resources :subjects
-  resources :areas
-  resources :study_plans
-  resources :schools
-  resources :periods
+  resources :period_types
+  resources :academic_processes, :enroll_academic_processes, :academic_records, :periods, :profiles
+
+  resources :courses do
+    resources :sections
+  end
+
+  resources :banks do
+    resources :payment_reports
+  end
+  
+  resources :faculties do
+    resources :schools do
+      resources :admission_types, :grades, :study_plans
+      resources :areas do
+        resources :subjects
+      end
+    end
+  end
+
   devise_for :users
   root to: "pages#home"
+
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
   # Defines the root path route ("/")

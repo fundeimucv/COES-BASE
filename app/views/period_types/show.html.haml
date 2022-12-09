@@ -1,0 +1,12 @@
+%p#notice= notice
+
+%p
+  %b Code:
+  = @period_type.code
+%p
+  %b Name:
+  = @period_type.name
+
+= link_to 'Edit', edit_period_type_path(@period_type)
+\|
+= link_to 'Back', period_types_path
