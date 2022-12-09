@@ -1,6 +1,6 @@
 class PaymentReport < ApplicationRecord
   # ASSOCIATIONS:
-  belongs_to :origin_bank
+  belongs_to :origin_bank, class_name: 'Bank'
   belongs_to :payable, polymorphic: true
 
   # VALIDATIONS:
