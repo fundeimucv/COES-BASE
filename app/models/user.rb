@@ -6,8 +6,8 @@ class User < ApplicationRecord
   devise :database_authenticatable, :registerable, :rememberable
 
   # ASSOCIATIONS:
-  has_one :administrator#, inverse_of: :user
-  accepts_nested_attributes_for :administrator
+  has_one :admin#, inverse_of: :user
+  accepts_nested_attributes_for :admin
   
   has_one :student#, inverse_of: :user, foreign_key: :user_id
   accepts_nested_attributes_for :student
