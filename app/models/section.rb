@@ -29,7 +29,8 @@ class Section < ApplicationRecord
   has_and_belongs_to_many :secondary_teachers, class_name: 'SectionTeacher'
 
   #ENUMERIZE:
-  enum modality: [:"equivalencia_externa", :"equivalencia_interna", :diferido, :"nota_final", :reparación, :suficiencia]   
+  enum modality: [:"equivalencia_externa", :"equivalencia_interna", :diferido, :"nota_final", :reparación, :suficiencia]
+
 
   # VALIDATIONS:
   validates :code, presence: true

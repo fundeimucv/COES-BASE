@@ -7,6 +7,6 @@ class Bank < ApplicationRecord
 	has_many :payment_reports
 
 	# VALIDATIONS:
-	valdiates :code, presence: true 
-	valdiates :name, presence: true 
+	validates :code, presence: true 
+	validates :name, presence: true 
 end

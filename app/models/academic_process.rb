@@ -16,9 +16,9 @@ class AcademicProcess < ApplicationRecord
   has_many :students, through: :grades
 
   #VALIDATIONS:
-  validates school: presence: true
-  validates period: presence: true
-  validates max_credits: presence: true
-  validates max_subjects: presence: true
+  validates :school, presence: true
+  validates :period, presence: true
+  validates :max_credits, presence: true
+  validates :max_subjects, presence: true
 
 end

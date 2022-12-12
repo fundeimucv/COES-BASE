@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_12_09_230218) do
+ActiveRecord::Schema[7.0].define(version: 2022_12_12_143934) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -122,6 +122,20 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_09_230218) do
     t.index ["student_id", "study_plan_id"], name: "index_grades_on_student_id_and_study_plan_id", unique: true
     t.index ["student_id"], name: "index_grades_on_student_id"
     t.index ["study_plan_id"], name: "index_grades_on_study_plan_id"
+  end
+
+  create_table "locations", force: :cascade do |t|
+    t.bigint "student_id", null: false
+    t.string "state"
+    t.string "municipality"
+    t.string "city"
+    t.string "sector"
+    t.string "street"
+    t.integer "house_type"
+    t.string "house_name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["student_id"], name: "index_locations_on_student_id"
   end
 
   create_table "payment_reports", force: :cascade do |t|
@@ -276,6 +290,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_09_230218) do
   add_foreign_key "grades", "admission_types"
   add_foreign_key "grades", "students", primary_key: "user_id", on_update: :cascade, on_delete: :cascade
   add_foreign_key "grades", "study_plans"
+  add_foreign_key "locations", "students", primary_key: "user_id", on_update: :cascade, on_delete: :cascade
   add_foreign_key "payment_reports", "banks", column: "origin_bank_id"
   add_foreign_key "schools", "periods", column: "period_active_id"
   add_foreign_key "schools", "periods", column: "period_enroll_id"
