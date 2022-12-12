@@ -10,7 +10,7 @@ class Grade < ApplicationRecord
   # t.float "simple_average"
 
   # ASSOCIATIONS:
-  belongs_to :student
+  belongs_to :student, primary_key: :user_id
   belongs_to :study_plan
   belongs_to :admission_type
   has_one :school, through: :study_plan
