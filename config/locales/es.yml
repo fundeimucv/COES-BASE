@@ -261,6 +261,9 @@ es:
       grades:
         one: 'Grado'
         others: 'Grados'
+      locations:
+        one: 'Dirección'
+        others: 'Direcciones'
       payment_reports:
         one: 'Reporte de Pago'
         others: 'Reportes de Pago'
@@ -348,6 +351,15 @@ es:
         efficiency: 'Eficiencia'
         weighted_average: 'Promedio Ponderado'
         simple_average: 'Promedio Simple'
+      locations:
+        state: 'Estado'
+        municipality: 'Municipio'
+        city: 'Ciudad'
+        sector: 'Sector'
+        street: 'Calle'
+        house_type: 'Tipo de Vivienda'
+        house_name: 'Nombre de Vivienda'
+        student: 'Estudiante'
       payment_reports:
         amount: 'Monto'
         transaction_id: 'Número de Transacción'

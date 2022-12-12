@@ -1,0 +1,30 @@
+%p#notice= notice
+
+%p
+  %b Student:
+  = @location.student
+%p
+  %b State:
+  = @location.state
+%p
+  %b Municipality:
+  = @location.municipality
+%p
+  %b City:
+  = @location.city
+%p
+  %b Sector:
+  = @location.sector
+%p
+  %b Street:
+  = @location.street
+%p
+  %b House type:
+  = @location.house_type
+%p
+  %b House name:
+  = @location.house_name
+
+= link_to 'Edit', edit_location_path(@location)
+\|
+= link_to 'Back', locations_path

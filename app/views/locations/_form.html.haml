@@ -1,0 +1,17 @@
+-# frozen_string_literal: true
+= simple_form_for(@location) do |f|
+  = f.error_notification
+  = f.error_notification message: f.object.errors[:base].to_sentence if f.object.errors[:base].present?
+
+  .form-inputs
+    = f.association :student
+    = f.input :state
+    = f.input :municipality
+    = f.input :city
+    = f.input :sector
+    = f.input :street
+    = f.input :house_type
+    = f.input :house_name
+
+  .form-actions
+    = f.button :submit

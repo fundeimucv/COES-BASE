@@ -6,6 +6,10 @@ Rails.application.routes.draw do
     resources :sections
   end
 
+  resources :students do
+    resources :locations
+  end
+
   resources :banks do
     resources :payment_reports
   end
