@@ -267,6 +267,9 @@ es:
       periods:
         one: 'Periodo'
         other: 'Periodos'
+      period_types:
+        one: 'Tipo de Periodo'
+        other: 'Tipos de Periodos'
       profiles:
         one: 'Perfil'
         others: 'Perfiles'
@@ -353,8 +356,10 @@ es:
         payable: 'Pagable'
       periods:
         year: 'Año'
-        modality: 'Modalidad'
-        ordinal: 'Ordinalidad'
+        period_type: 'Tipo Periodo'
+      period_types:
+        code: 'Código'
+        name: 'Nombre'        
       profiles:
         name: 'Nombre'
       school:        

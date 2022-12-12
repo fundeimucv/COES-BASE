@@ -1,24 +1,34 @@
 class School < ApplicationRecord
+  # SCHEMA:
+  # t.string "code", null: false
+  # t.string "name", null: false
+  # t.integer "type_entity", default: 0, null: false
+  # t.boolean "enable_subject_retreat"
+  # t.boolean "enable_change_course"
+  # t.boolean "enable_dependents"
+  # t.bigint "period_active_id"
+  # t.bigint "period_enroll_id"
+  
   # ASSOCIATIONS
   belongs_to :period_active, foreign_key: 'period_active_id', class_name: 'Period', optional: true
   belongs_to :period_enroll, foreign_key: 'period_enroll_id', class_name: 'Period', optional: true
   belongs_to :faculty
 
+  has_many :admission_types
+  has_many :academic_processes
   has_many :areas
   has_many :subjects, through: :areas
+  has_many :periods, through: :academic_processes
   has_many :admins, as: :env_authorizable 
 
-  has_many :academic_processes
-
-  has_many :periods, through: :academic_processes
-
-  accepts_nested_attributes_for :areas, :academic_processes, :periods
+  accepts_nested_attributes_for :areas, :academic_processes, :admission_types
 
   # ENUMERATIONS:
   enum type_entity: [:pregrado, :postgrado]
 
   # VALIDATIONS
-  validates :code, presence: true
-  validates :name, presence: true
+  validates :type_entity, presence: true
+  validates :code, presence: true, uniqueness: true
+  validates :name, presence: true, uniqueness: true
 
 end

@@ -1,5 +1,9 @@
 class Area < ApplicationRecord
-
+  # SCHEMA:
+  # t.string "name", null: false
+  # t.bigint "school_id", null: false
+  # t.bigint "parent_area_id"
+  
   # ASSOCITATIONS:
   belongs_to :school
   belongs_to :parent_area, optional: true, class_name: 'Area', primary_key: :parent_area_id
