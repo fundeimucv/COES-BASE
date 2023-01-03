@@ -17,6 +17,7 @@ class School < ApplicationRecord
   has_many :admission_types
   has_many :academic_processes
   has_many :areas
+  has_many :study_plans
   has_many :subjects, through: :areas
   has_many :periods, through: :academic_processes
   has_many :admins, as: :env_authorizable 

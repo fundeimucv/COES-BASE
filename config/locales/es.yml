@@ -231,83 +231,80 @@ es:
               required: 'requerida'
 
     models:
-      academic_processes:
+      academic_process:
         one: 'Proceso Académico'
         other: 'Procesos Académicos'
-      academic_records:
+      academic_record:
         one: 'Registro Académico'
         other: 'Registros Académicos'
-      admins:
+      admin:
         one: 'Administrador'
         other: 'Administradores'
-      admission_types:
+      admission_type:
         one: 'Tipo de Admisión'  
-        others: 'Tipos de Admisión'
-      areas:
+        other: 'Tipos de Admisión'
+      area:
         one: 'Área de Conocimiento'
         other: 'Áreas de Conocimiento'
-      banks:
+      bank:
         one: 'Banco'
-        others: 'Bancos'
-      courses:
+        other: 'Bancos'
+      course:
         one: 'Curso'
         other: 'Cursos'
-      enroll_academic_processes:
+      enroll_academic_process:
         one: 'Inscripción en Proceso Académico'
-        others: 'Inscripciones en Proceso Académico'
-      faculties:
+        other: 'Inscripciones en Proceso Académico'
+      faculty:
         one: 'Facultad'
         other: 'Facultades'
-      grades:
+      grade:
         one: 'Grado'
-        others: 'Grados'
-      locations:
+        other: 'Grados'
+      location:
         one: 'Dirección'
-        others: 'Direcciones'
-      payment_reports:
+        other: 'Direcciones'
+      payment_report:
         one: 'Reporte de Pago'
-        others: 'Reportes de Pago'
-      periods:
+        other: 'Reportes de Pago'
+      period:
         one: 'Periodo'
         other: 'Periodos'
-      period_types:
+      period_type:
         one: 'Tipo de Periodo'
         other: 'Tipos de Periodos'
-      profiles:
+      profile:
         one: 'Perfil'
-        others: 'Perfiles'
-      schools:
+        other: 'Perfiles'
+      school:
         one: 'Escuela'
         other: 'Escuelas'
-      sections:
+      section:
         one: 'Sección'
-        others: 'Secciones'
-      students:
+        other: 'Secciones'
+      student:
         one: 'Estudiante'
         other: 'Estudiantes'
-      study_plans:
+      study_plan:
         one: 'Plan de Estudio'
         other: 'Planes de Estudio'
-      subjects:
+      subject:
         one: 'Asignatura'
         other: 'Asignaturas'
-      teachers:
+      teacher:
         one: 'Profesor'
-        others: 'Profesores'
-      users:
+        other: 'Profesores'
+      user:
         one: 'Usuario'
         other: 'Usuarios'
-
-
-
     
     attributes:
-      academic_processes:
+      academic_process:
         school: 'Escuela'
         period: 'Periodo'
         max_credit: 'Máximo Créditos'
         max_subjects: 'Máximas Asignaturas'
-      academic_records:
+      academic_record:
         section: 'Sección'
         enroll_academic_process: 'Inscripción en Proceso Académico'
         first_q: 'Primera Calificación'
@@ -317,10 +314,11 @@ es:
         post_q: 'Calificación Posterior'
         status_q: 'Estado de Calificación'
         type_q: 'Tipo de Calificación'
-      admins:
+      admin:
         user: 'Usuario'
         role: 'Rol'
-        env_authorizable: 'Entorno Autorizado' 
+        env_authorizable: 'Entorno Autorizado'
+        profile: 'Perfil de Usuario' 
       admission_types:
         name: 'Nombre'
         school: 'Escuela'
@@ -328,21 +326,22 @@ es:
         name: 'Nombre'
         school: 'Escuela'
         parent_area: 'Area Madre'
-      banks:
+      bank:
         code: 'Código'
         name: 'Nombre'
-      courses:
-        academic_processes: 'Proceso Académico'
+      course:
+        academic_process: 'Proceso Académico'
         subject: 'Asignatura'
         offer_as_pci: 'Ofertar cómo PCI'
-      enroll_academic_processes:
+      enroll_academic_process:
         grade: 'Grado'
         academic_process: 'Proceso Académico'
         enroll_status: 'Estado de Inscripción'
         permanence_status: 'Estado de Permanencia'
-      faculties:
+      faculty:
+        code: 'Código'
         name: 'Nombre'
-      grades:
+      grade:
         student: 'Estudiante'
         study_plan: 'Plan de Estudio'
         graduate_status: 'Estado de Graduación'
@@ -351,7 +350,7 @@ es:
         efficiency: 'Eficiencia'
         weighted_average: 'Promedio Ponderado'
         simple_average: 'Promedio Simple'
-      locations:
+      location:
         state: 'Estado'
         municipality: 'Municipio'
         city: 'Ciudad'
@@ -360,30 +359,32 @@ es:
         house_type: 'Tipo de Vivienda'
         house_name: 'Nombre de Vivienda'
         student: 'Estudiante'
-      payment_reports:
+      payment_report:
         amount: 'Monto'
         transaction_id: 'Número de Transacción'
         transaction_type: 'Tipo de Transacción'
         origin_bank: 'Banco Origen'
         payable: 'Pagable'
-      periods:
+      period:
         year: 'Año'
-        period_type: 'Tipo Periodo'
-      period_types:
+        period_type: 'Tipo de Periodo'
+        name: 'Nombre'
+      period_type:
         code: 'Código'
         name: 'Nombre'        
-      profiles:
+      profile:
         name: 'Nombre'
       school:        
         code: 'Código'
         name: 'Nombre'
+        type_entity: 'Tipo de Entidad'
         enable_subject_retreat: 'Activar retiro de Asignturas'
         enable_change_course: 'Activar cambio de Sección'
         enable_dependents: 'Activar Dependencias'
         period_active_id: 'Identificador de Periodo Activo '
         period_enroll_id: 'Identidicador de Periodo Inscripción'
         faculty: 'Facultad'
-      sections:
+      section:
         code: 'Número'
         capacity: 'Capacidad'
         course: 'Curso'
@@ -411,7 +412,7 @@ es:
         qualification_type: 'Tipo de calificación'
         modality: 'Modalidad'
         area: 'Área'
-      teachers:
+      teacher:
         area: 'Área'
       user:
         email: 'Correo Electrónico'
@@ -421,7 +422,33 @@ es:
         last_name: 'Apellido'
         number_phone: 'Número telefónico'
         sex: 'Sexo'
-
+    scopes:
+      academic_record:
+        sin_calificar: 'Sin Calificar'
+        sc: 'Sin Calificar'
+        not_sin_calificar: 'Calificados'
+        not_sc: 'Calificados'
+        aprobado: 'Aprobados'
+        a: 'Aprobados'
+        aplazado: 'Aplazados'
+        ap: 'Aplazados'
+        retirado: 'Retirados'
+        re: 'Retirados'
+        trimestre1: 'Primer Trimestre'
+        t1: 'Primer Trimestre'
+        trimestre2: 'Segundo Trimestre'
+        t2: 'Segundo Trimestre'
+        diferido: 'Diferidos'
+        nd: 'Diferidos'
+        final: 'Final'
+        nf: 'Final'
+        reparacion: 'Reparación'
+        nr: 'Reparación'
+        perdida_por_inasistencia: 'Pérdida por Inasistencia'
+        pi: 'Pérdida por Inasistencia'
+        parcial: 'Parciales'
+        par: 'Parciales'
+        
       <<: *errors
   flash:
     actions:

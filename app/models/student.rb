@@ -13,7 +13,7 @@ class Student < ApplicationRecord
   ESTADOS_CIVILES = ['soltero/a', 'casado/a', 'concubinato', 'divorciado/a', 'viudo/a']
   NACIONALIDAD = ['venezolano/a', 'venezolano/a vacionalizado/a', 'extranjero/a']
 
-  DISCAPACIDADES = ['SENSORIAL VISUAL', 'SENSORIAL AUDITIVA', 'MOTORA MIEMBROS INFERIORES', 'MOTORA MIEMBROS SUPERIORES', 'MOTORA AMBOS MIEMBROS']
+  DISCAPACIDADES = ['NINGUNA', 'SENSORIAL VISUAL', 'SENSORIAL AUDITIVA', 'MOTORA MIEMBROS INFERIORES', 'MOTORA MIEMBROS SUPERIORES', 'MOTORA AMBOS MIEMBROS']
 
   enum nacionality: NACIONALIDAD
   enum disability: DISCAPACIDADES
@@ -34,5 +34,6 @@ class Student < ApplicationRecord
   validates :birth_date, presence: true, unless: :new_record?
   # validates :location, presence: true, unless: :new_record?
   # How to validate if student is not created for assosiation
+
 
 end

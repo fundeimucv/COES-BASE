@@ -4,7 +4,7 @@
   %thead
     %tr
       %th= @periods.human_attribute_name(:year)
-      %th= @periods.human_attribute_name(:modality)
+      %th= @periods.human_attribute_name(:period_type)
       %th
       %th
       %th
@@ -13,7 +13,7 @@
     - @periods.each do |period|
       %tr
         %td= period.year
-        %td= period.modality
+        %td= period.period_type.name
         %td= link_to 'Show', period
         %td= link_to 'Edit', edit_period_path(period)
         %td= link_to 'Destroy', period, method: :delete, data: { confirm: 'Are you sure?' }

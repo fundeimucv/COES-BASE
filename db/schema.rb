@@ -41,8 +41,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_12_143934) do
     t.index ["section_id"], name: "index_academic_records_on_section_id"
   end
 
-  create_table "admins", force: :cascade do |t|
-    t.bigint "user_id", null: false
+  create_table "admins", primary_key: "user_id", force: :cascade do |t|
     t.integer "role"
     t.string "env_authorizable_type", default: "Faculty"
     t.bigint "env_authorizable_id"
@@ -161,7 +160,6 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_12_143934) do
 
   create_table "periods", force: :cascade do |t|
     t.integer "year", null: false
-    t.integer "modality", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "period_type_id"

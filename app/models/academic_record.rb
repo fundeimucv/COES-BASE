@@ -11,8 +11,11 @@ class AcademicRecord < ApplicationRecord
   # t.integer "type_q"
 
   #ENUMERIZE:
-  enum type_q: [:sin_calificar, :aprobado, :aplazado, :retirado, :trimestre1, :trimestre2]
-  enum type_q: [:diferido, :final, :reparacion, :perdida_por_inasistencia, :parcial]
+
+  # enum type_q: [:sin_calificar, :aprobado, :aplazado, :retirado, :trimestre1, :trimestre2]
+  # enum type_q: [:diferido, :final, :reparacion, :perdida_por_inasistencia, :parcial]
+  enum type_q: [:sc, :a, :ap, :re, :t1, :t2]
+  enum type_q: [:nd, :nf, :rep, :pi, :par]
 
   # ASSOCIATIONS:
   belongs_to :section
