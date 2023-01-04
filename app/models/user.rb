@@ -24,10 +24,10 @@ class User < ApplicationRecord
   devise :database_authenticatable, :registerable, :rememberable
 
   # ASSOCIATIONS:
-  has_one :admin#, inverse_of: :user
-  accepts_nested_attributes_for :admin
+  has_one :admin, inverse_of: :user, foreign_key: :user_id
+  # accepts_nested_attributes_for :admin
   
-  has_one :student#, inverse_of: :user, foreign_key: :user_id
+  has_one :student, inverse_of: :user, foreign_key: :user_id
   accepts_nested_attributes_for :student
 
   has_one :teacher#, inverse_of: :user
@@ -36,12 +36,11 @@ class User < ApplicationRecord
   #VALIDATIONS
   validates :ci, presence: true, uniqueness: true
   validates :email, presence: true, uniqueness: true
-  validates :name, presence: true, unless: :new_record?
-  validates :last_name, presence: true, unless: :new_record?
+  validates :name, presence: true#, unless: :new_record?
+  validates :last_name, presence: true#, unless: :new_record?
   validates :number_phone, presence: true, unless: :new_record?
   validates :sex, presence: true, unless: :new_record?
   validates :password, presence: true
-  validates :password, confirmation: true
 
 
 end

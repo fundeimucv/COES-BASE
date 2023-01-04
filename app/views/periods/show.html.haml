@@ -3,8 +3,8 @@
   %b Year:
   = @period.year
 %p
-  %b Modalidad:
-  = @period.modality
+  %b Tipo:
+  = @period.period_type.name
 
 = link_to 'Edit', edit_period_path(@period)
 \|
