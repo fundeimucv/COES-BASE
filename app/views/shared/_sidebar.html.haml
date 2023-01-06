@@ -1,28 +1,140 @@
-#offcanvas.offcanvas.offcanvas-start.w-25{"data-bs-backdrop": "false", "data-bs-keyboard": "false", tabindex: "-1"}
-  .offcanvas-header
-    %h6#offcanvas.offcanvas-title.d-none.d-sm-block Menú
-    %button.btn-close.text-reset{"aria-label": "Close", "data-bs-dismiss": :offcanvas, type: :button}
-  .offcanvas-body.px-0
-    %ul#menu.nav.nav-pills.flex-column.mb-sm-auto.mb-0.align-items-start
-      %li.nav-item
-        %a.nav-link.text-truncate{href: root_path}
-          %i.fs-5.fa.fa-house
+- if false
+  #offcanvas.offcanvas.offcanvas-start.w-25{"data-bs-backdrop": "false", "data-bs-keyboard": "false", tabindex: "-1"}
+    .offcanvas-header
+      %h6#offcanvas.offcanvas-title.d-none.d-sm-block Menú
+      %button.btn-close.text-reset{"aria-label": "Close", "data-bs-dismiss": :offcanvas, type: :button}
+    .offcanvas-body.px-0
+      %ul#menu.nav.nav-pills.flex-column.mb-sm-auto.mb-0.align-items-start
+        %li.nav-item
+          %a.nav-link.text-truncate{href: root_path}
+            %i.fs-5.fa.fa-house
 
-          %span.ms-1.d-none.d-sm-inline Home
-      %li
-        %a.nav-link.text-truncate{"data-bs-toggle": :collapse, href: "#submenu1"}
-          %i.fs-5.fa.fa-dashboard
-          %span.ms-1.d-none.d-sm-inline Dashboard
-      %li.dropdown
-        %a#dropdown.nav-link.dropdown-toggle.text-truncate{"aria-expanded": false, "data-bs-toggle": :dropdown, href: "#"}
-          %i.fs-5.fa.fa-gear
-          %span.ms-1.d-none.d-sm-inline Estructurales
-        %ul.dropdown-menu.text-small.shadow{"aria-labelledby": :dropdown}
-          %li
-            %a.dropdown-item{href: schools_path} Escuelas
-          %li
-            %a.dropdown-item{href: periods_path} Periodos
-          %li
-            %hr.dropdown-divider/
-          %li
-            %a.dropdown-item{href: "#"} Sign out
+            %span.ms-1.d-none.d-sm-inline Home
+        %li
+          %a.nav-link.text-truncate{"data-bs-toggle": :collapse, href: "#submenu1"}
+            %i.fs-5.fa.fa-dashboard
+            %span.ms-1.d-none.d-sm-inline Dashboard
+        %li.dropdown
+          %a#dropdown.nav-link.dropdown-toggle.text-truncate{"aria-expanded": false, "data-bs-toggle": :dropdown, href: "#"}
+            %i.fs-5.fa.fa-gear
+            %span.ms-1.d-none.d-sm-inline Estructurales
+          %ul.dropdown-menu.text-small.shadow{"aria-labelledby": :dropdown}
+            %li
+              %a.dropdown-item{href: '#'} Escuelas
+            %li
+              %a.dropdown-item{href: periods_path} Periodos
+            %li
+              %hr.dropdown-divider/
+            %li
+              %a.dropdown-item{href: "#"} Sign out
+
+
+- if true
+  / Sidebar START
+  %nav.navbar.sidebar.navbar-expand-xl.navbar-dark.bg-dark
+    / Navbar brand for xl START
+    .d-flex.align-items-center
+      %a.navbar-brand{:href => "index.html"}
+        %img.navbar-brand-item{:alt => "", :src => "/assets/eduport/logo-light.svg"}/
+    / Navbar brand for xl END
+    #offcanvasSidebar.offcanvas.offcanvas-start.flex-row.custom-scrollbar.h-100{"data-bs-backdrop" => "true", :tabindex => "-1"}
+      .offcanvas-body.sidebar-content.d-flex.flex-column.bg-dark
+        / Sidebar menu START
+        %ul#navbar-sidebar.navbar-nav.flex-column
+          / Menu item 1
+          %li.nav-item
+            %a.nav-link.active{:href => "admin-dashboard.html"}
+              %i.bi.bi-house.fa-fw.me-2
+              Dashboard
+              - if false
+                %button.btn.btn-secondary{"data-bs-placement": :top, "data-bs-toggle": :tooltip, title: "Title Tooltip on top", type: :button}
+                  Tooltip on top
+          / Title
+          %li.nav-item.ms-2.my-2 Pages
+          / menu item 2
+          %li.nav-item
+            %a.nav-link{"aria-controls" => "collapsepage", "aria-expanded" => "false", "data-bs-toggle" => "collapse", :href => "#collapsepage", :role => "button"}
+              %i.bi.bi-basket.fa-fw.me-2>
+              Courses
+            / Submenu
+            %ul#collapsepage.nav.collapse.flex-column{"data-bs-parent" => "#navbar-sidebar"}
+              %li.nav-item
+                %a.nav-link{:href => "admin-course-list.html"} All Courses
+              %li.nav-item
+                %a.nav-link{:href => "admin-course-category.html"} Course Category
+              %li.nav-item
+                %a.nav-link{:href => "admin-course-detail.html"} Course Detail
+          / Menu item 3
+          %li.nav-item
+            %a.nav-link{:href => "admin-student-list.html"}
+              %i.fas.fa-user-graduate.fa-fw.me-2>
+              Students
+          / Menu item 4
+          %li.nav-item
+            %a.nav-link{"aria-controls" => "collapseinstructors", "aria-expanded" => "false", "data-bs-toggle" => "collapse", :href => "#collapseinstructors", :role => "button"}
+              %i.fas.fa-user-tie.fa-fw.me-2>
+              Instructors
+            / Submenu
+            %ul#collapseinstructors.nav.collapse.flex-column{"data-bs-parent" => "#navbar-sidebar"}
+              %li.nav-item
+                %a.nav-link{:href => "admin-instructor-list.html"} Instructors
+              %li.nav-item
+                %a.nav-link{:href => "admin-instructor-detail.html"} Instructor Detail
+              %li.nav-item
+                %a.nav-link{:href => "admin-instructor-request.html"}
+                  Instructor requests
+                  %span.badge.text-bg-success.rounded-circle.ms-2 2
+          / Menu item 5
+          %li.nav-item
+            %a.nav-link{:href => "admin-review.html"}
+              %i.far.fa-comment-dots.fa-fw.me-2>
+              Reviews
+          / Menu item 6
+          %li.nav-item
+            %a.nav-link{:href => "admin-earning.html"}
+              %i.far.fa-chart-bar.fa-fw.me-2>
+              Earnings
+          / Menu item 7
+          %li.nav-item
+            %a.nav-link{:href => "admin-setting.html"}
+              %i.fas.fa-user-cog.fa-fw.me-2>
+              Admin Settings
+          / Menu item 8
+          %li.nav-item
+            %a.nav-link{"aria-controls" => "collapseauthentication", "aria-expanded" => "false", "data-bs-toggle" => "collapse", :href => "#collapseauthentication", :role => "button"}
+              %i.bi.bi-lock.fa-fw.me-2>
+              Authentication
+            / Submenu
+            %ul#collapseauthentication.nav.collapse.flex-column{"data-bs-parent" => "#navbar-sidebar"}
+              %li.nav-item
+                %a.nav-link{:href => "sign-up.html"} Sign Up
+              %li.nav-item
+                %a.nav-link{:href => "sign-in.html"} Sign In
+              %li.nav-item
+                %a.nav-link{:href => "forgot-password.html"} Forgot Password
+              %li.nav-item
+                %a.nav-link{:href => "admin-error-404.html"} Error 404
+          / Title
+          %li.nav-item.ms-2.my-2 Documentation
+          / Menu item 9
+          %li.nav-item
+            %a.nav-link{:href => "docs/index.html"}
+              %i.far.fa-clipboard.fa-fw.me-2>
+              Documentation
+          / Menu item 10
+          %li.nav-item
+            %a.nav-link{:href => "docs/changelog.html"}
+              %i.fas.fa-sitemap.fa-fw.me-2>
+              Changelog
+        / Sidebar menu end
+        / Sidebar footer START
+        .px-3.mt-auto.pt-3
+          .d-flex.align-items-center.justify-content-between.text-primary-hover
+            %a.h5.mb-0.text-body{"data-bs-placement" => "top", "data-bs-toggle" => "tooltip", :href => "admin-setting.html", :title => "Settings"}
+              %i.bi.bi-gear-fill
+            %a.h5.mb-0.text-body{"data-bs-placement" => "top", "data-bs-toggle" => "tooltip", :href => "index.html", :title => "Home"}
+              %i.bi.bi-globe
+            %a.h5.mb-0.text-body{"data-bs-placement" => "top", "data-bs-toggle" => "tooltip", :href => "sign-in.html", :title => "Sign out"}
+              %i.bi.bi-power
+        / Sidebar footer END
+  / Sidebar END

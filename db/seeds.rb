@@ -6,14 +6,14 @@
 #   movies = Movie.create([{ name: "Star Wars" }, { name: "Lord of the Rings" }])
 #   Character.create(name: "Luke", movie: movies.first)
 
-p '      Creada Facultad!    '.center(200, '=') if fau = Faculty.create(code: 'FAU', name: 'Facultad de Arquitectura y urbanismo')
+p '      Creada Facultad!    '.center(200, '=') if fau = Faculty.create(code: 'FAU', name: 'Facultad de Arquitectura y Urbanismo')
 
 p '      Creado Primer Usuario!    '.center(200, '=') if user = User.create(email: 'moros.daniel@gmail.com', ci: '1', password: 123123)
 
 
 p '      Creado Primer Admin!    '.center(200, '=') if Admin.create(user_id: user.id, role: :ninja, env_authorizable: fau)
 
-p '      Creada Escuela!    '.center(200, '=') if escuela = School.create(code: 'EAU', name: 'Escuela de Arquitectura y urbanismo', faculty: fau)
+p '      Creada Escuela!    '.center(200, '=') if escuela = School.create(code: 'EACRV', name: 'Escuela de Arquitectura Carlos Raúl Villanueva', faculty: fau)
 
 
 

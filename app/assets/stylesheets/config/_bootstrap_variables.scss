@@ -11,15 +11,24 @@ $font-size-base: 1rem;
 
 // Colors
 $body-color: $gray;
-$primary:    $blue;
-$success:    $green;
-$info:       $yellow;
-$danger:     $red;
-$warning:    $orange;
+
+$primary:    $cool-primary;
+$success:    $cool-success;
+$info:       $cool-info;
+$danger:     $cool-danger;
+$warning:    $cool-warning;
+$light:      $cool-light;
 
 // Buttons & inputs' radius
-$border-radius:    2px;
-$border-radius-lg: 2px;
-$border-radius-sm: 2px;
+$border-radius:    1px;
+$border-radius-lg: 1px;
+$border-radius-sm: 1px;
 
 // Override other variables below!
+
+// Force light color for top-nav links
+$navbar-dark-color: white;
+
+// Contrast ratio used to calculate color for text within elements (ie. buttons)
+// https://getbootstrap.com/docs/5.0/customize/sass/#color-contrast
+$min-contrast-ratio: 2;

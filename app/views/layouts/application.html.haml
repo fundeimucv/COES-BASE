@@ -7,15 +7,21 @@
     = csrf_meta_tags
     = csp_meta_tag
     = stylesheet_link_tag "application", "data-turbo-track": "reload"
+    = stylesheet_link_tag "fontawesome", "data-turbo-track": "reload"
+    =# stylesheet_link_tag "style", "data-turbo-track": "reload", id: 'style-switch'
+    =# stylesheet_link_tag "style-dark", "data-turbo-track": "reload", id: 'style-switch'
     = javascript_include_tag "application", "data-turbo-track": "reload", defer: true
+
   %body
-    =# render "shared/sidebar"
-    =# render "shared/navbar"
-    = render "shared/flashes"
-    .container-fluid
-      .row
-        .col.min-vh-100.p-3
-          - if false
-            %button.btn.btn-primary.float-end{"data-bs-toggle": :offcanvas, role: :button, 'data-bs-toggle': :tooltip, title: 'Menú'}
-              %i.fa.fa-chevron-left.fs-3{"data-bs-target": "#offcanvas", "data-bs-toggle": "offcanvas"}
-          = yield
+    %main
+      = render "shared/sidebar"
+      =# render "shared/navbar"
+      = render "shared/flashes"
+      .container-fluid
+        .row
+          .col.min-vh-100.p-3
+            - if false
+              %button.btn.btn-primary.float-end{"data-bs-toggle": :offcanvas, role: :button, 'data-bs-toggle': :tooltip, title: 'Menú'}
+                %i.fa.fa-chevron-left.fs-3{"data-bs-target": "#offcanvas", "data-bs-toggle": "offcanvas"}
+            
+            = yield

@@ -25,7 +25,7 @@ class School < ApplicationRecord
   accepts_nested_attributes_for :areas, :academic_processes, :admission_types
 
   # ENUMERATIONS:
-  enum type_entity: [:pregrado, :postgrado]
+  enum type_entity: [:pregrado, :postgrado, :extension, :investigacion]
 
   # VALIDATIONS
   validates :type_entity, presence: true
