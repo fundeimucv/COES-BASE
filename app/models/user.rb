@@ -25,7 +25,7 @@ class User < ApplicationRecord
 
   # ASSOCIATIONS:
   has_one :admin, inverse_of: :user, foreign_key: :user_id
-  # accepts_nested_attributes_for :admin
+  accepts_nested_attributes_for :admin
   
   has_one :student, inverse_of: :user, foreign_key: :user_id
   accepts_nested_attributes_for :student
@@ -42,5 +42,17 @@ class User < ApplicationRecord
   validates :sex, presence: true, unless: :new_record?
   validates :password, presence: true
 
+  #FUNCTIONS:
 
+  def admin?
+    self.admin.nil? ? false : true
+  end
+
+  def student?
+    self.student.nil? ? false : true
+  end
+
+  def teacher?
+    self.teacher.nil? ? false : true
+  end
 end

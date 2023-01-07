@@ -1,0 +1,3 @@
+class TeacherSessionController < ApplicationController
+
+end

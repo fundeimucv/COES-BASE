@@ -1,4 +1,6 @@
 Rails.application.routes.draw do
+  
+  resources :page, only: :show
   resources :period_types
   resources :academic_processes, :enroll_academic_processes, :academic_records, :periods, :profiles
 
@@ -25,6 +27,9 @@ Rails.application.routes.draw do
 
   devise_for :users
   root to: "pages#home"
+
+  get 'teacher_session/dashboard', to: 'teacher_session#dashboard'
+  get 'student_session/dashboard', to: 'student_session#dashboard'
 
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 

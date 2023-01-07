@@ -1,9 +1,102 @@
-%h2 Log in
-= simple_form_for(resource, as: resource_name, url: session_path(resource_name), data: { turbo: :false }) do |f|
-  .form-inputs
-    = f.input :email, required: false, autofocus: true, input_html: { autocomplete: "email" }
-    = f.input :password, required: false, input_html: { autocomplete: "current-password" }
-    = f.input :remember_me, as: :boolean if devise_mapping.rememberable?
-  .form-actions
-    = f.button :submit, "Log in"
-= render "devise/shared/links"
+
+%section.p-0.d-flex.align-items-center.position-relative.overflow-hidden
+  .container-fluid
+    .row
+      / left
+      .col-12.col-lg-6.d-md-flex.align-items-center.justify-content-center.bg-primary.bg-opacity-10.vh-lg-100
+        .p-3.p-lg-5
+          / Title
+          .text-center
+            %h2.fw-bold ¡BIENVENIDO A COES-FAU!
+            %p.mb-0.h6.fw-light Universidad Central de Venezuela
+            %p.mb-0.h6.fw-light Facultad de Arquitectura y Urbanismo
+          / SVG Image
+          %img.mt-5{:alt => "", :src => "/assets/eduport/element/02.svg"}/
+      / Right
+      .col-12.col-lg-6.m-auto
+        .row.my-5
+          .col-sm-10.col-xl-8.m-auto
+            / Title
+            %span.mb-0.fs-1 👋
+            %h1.fs-2 Inicio de Sesión
+            / Form START
+            = simple_form_for(resource, as: resource_name, url: session_path(resource_name), data: { turbo: :false }) do |f|
+              / Email
+              .mb-4
+                %label.form-label{:for => "exampleInputEmail1"} Correo electrónico *
+                .input-group.input-group-lg
+                  %span.input-group-text.bg-light.rounded-start.border-0.text-secondary.px-3
+                    %i.fas.fa-envelope
+                  =# f.input :email, required: true, autofocus: true, placeholder: 'example@xmail.com', input_html: { autocomplete: "email", id: 'exampleInputEmail1', class: 'form-control border-0 bg-light rounded-end ps-1', type: :email}
+                  %input#exampleInputEmail1.form-control.border-0.bg-light.rounded-end.ps-1{placeholder: "mail@example.com", type: :email, name: "user[email]"}
+                  - if false
+                    = '<input class="form-control border-0 bg-light rounded-end ps-1" id="exampleInputEmail1" placeholder="E-mail" type="email">'
+
+                    ='<input class="form-control border-0 bg-light rounded-end ps-1" autocomplete="email" id="exampleInputEmail1" type="email" autofocus="autofocus" required="required" aria-required="true" placeholder="example@xmail.com" value="" name="user[email]">'
+
+              / Password
+              .mb-4
+                %label.form-label{:for => "inputPassword5"} Contraseña *
+                .input-group.input-group-lg
+                  %span.input-group-text.bg-light.rounded-start.border-0.text-secondary.px-3
+                    %i.fas.fa-lock
+                  %input#inputPassword5.form-control.border-0.bg-light.rounded-end.ps-1{placeholder: "Contraseña", type: :password, name: 'user[password]'}
+                - if false
+                  #passwordHelpBlock.form-text
+                    Your password must be 8 characters at least
+              / Check box
+              .mb-4.d-flex.justify-content-between.mb-4
+                - if devise_mapping.rememberable?
+                  .form-check
+                    %input#exampleCheck1.form-check-input.boolean.optional{type: :checkbox, name: 'user[remember_me]'}
+                    %label.form-check-label{for: "exampleCheck1"} Recuérdame
+                .text-primary-hover
+                  %a.text-secondary{:href => "forgot-password.html"}
+                    %u ¿Olvidaste tu contraseña?
+              / Button
+              .align-items-center.mt-0
+                .d-grid
+                  %button.btn.btn-primary.mb-0{type: :submit} Entrar
+            / Form END
+            - if false
+              / Social buttons and divider
+              .row
+                / Divider with text
+                .position-relative.my-4
+                  %hr/
+                  %p.small.position-absolute.top-50.start-50.translate-middle.bg-body.px-5 Or
+                / Social btn
+                .col-xxl-6.d-grid
+                  %a.btn.bg-google.mb-2.mb-xxl-0{:href => "#"}
+                    %i.fab.fa-fw.fa-google.text-white.me-2>
+                    Login with Google
+                / Social btn
+                .col-xxl-6.d-grid
+                  %a.btn.bg-facebook.mb-0{:href => "#"}
+                    %i.fab.fa-fw.fa-facebook-f.me-2>
+                    Login with Facebook
+              / Sign up link
+              .mt-4.text-center
+                %span
+                  Don't have an account?
+                  %a{:href => "sign-up.html"} Signup here
+        / Row END
+    / Row END
+/ **************** MAIN CONTENT END ****************
+/ Back to top
+.back-top
+%i.bi.bi-arrow-up-short.position-absolute.top-50.start-50.translate-middle
+
+
+
+
+- if false
+  %h2 Ingresar
+  = simple_form_for(resource, as: resource_name, url: session_path(resource_name), data: { turbo: :false }) do |f|
+    .form-inputs
+      = f.input :email, required: false, autofocus: true, input_html: { autocomplete: "email" }
+      = f.input :password, required: false, input_html: { autocomplete: "current-password" }
+      = f.input :remember_me, as: :boolean if devise_mapping.rememberable?
+    .form-actions
+      = f.button :submit, "Log in"
+  = render "devise/shared/links"
