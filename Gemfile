@@ -3,12 +3,12 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
 ruby "3.1.2"
 
-# Use Active Storage variant
+# Use Active Storage variants [https://guides.rubyonrails.org/active_storage_overview.html#transforming-images]
 gem 'image_processing', '~> 1.2'
-# gem 'mini_magick'
-# gem "aws-sdk-s3", require: false
+gem 'mini_magick'
+gem "aws-sdk-s3", require: false
 
-
+gem 'rails_admin', '~> 3.0'
 # Bundle edge Rails instead: gem "rails", github: "rails/rails", branch: "main"
 gem "rails", "~> 7.0.4"
 
@@ -54,9 +54,6 @@ gem "sassc-rails"
 # Own Gems:
 gem "haml-rails", "~> 2.0"
 
-# Use Active Storage variants [https://guides.rubyonrails.org/active_storage_overview.html#transforming-images]
-# gem "image_processing", "~> 1.2"
-
 gem "devise"
 gem "autoprefixer-rails"
 gem "font-awesome-sass", "~> 6.1"
@@ -86,3 +83,4 @@ group :test do
   gem "selenium-webdriver"
   gem "webdrivers"
 end
+gem "cssbundling-rails"

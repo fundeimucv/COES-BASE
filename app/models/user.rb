@@ -33,10 +33,10 @@ class User < ApplicationRecord
   has_one :teacher#, inverse_of: :user
   accepts_nested_attributes_for :teacher
 
-  has_one_attached :picture_profile do |attachable|
-    attachable.variant(resized_to_limit: [35,35])
-    attachable.variant(resized_to_limit: [100,100])
-  end
+  # has_one_attached :picture_profile do |attachable|
+  #   attachable.variant(resized_to_limit: [35,35])
+  #   attachable.variant(resized_to_limit: [100,100])
+  # end
 
   has_one_attached :image_ci
 

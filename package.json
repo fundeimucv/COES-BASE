@@ -10,13 +10,14 @@
     "bootstrap": "^5.2.3",
     "bootstrap-icons": "^1.10.3",
     "jquery": "^3.6.3",
+    "rails_admin": "3.1.1",
     "sass": "^1.57.1",
     "webpack": "^5.75.0",
     "webpack-cli": "^5.0.0"
   },
   "scripts": {
     "build": "webpack --config webpack.config.js",
+    "build:css": "sass ./app/assets/stylesheets/application.scss:./app/assets/builds/application.css ./app/assets/stylesheets/rails_admin.scss:./app/assets/builds/rails_admin.css --no-source-map --load-path=node_modules", 
     "build:css:fontawesome": "cp -r ./node_modules/@fortawesome/fontawesome-free/webfonts ./app/assets/builds && sass ./app/assets/stylesheets/fontawesome.scss ./app/assets/builds/fontawesome.css --no-source-map --load-path=node_modules --quiet"
-    
   }
 }
