@@ -1,0 +1,188 @@
+# Traducciones adicionales en https://github.com/plataformatec/devise/wiki/I18n
+  
+es:
+  admin:
+    home:
+      name: "Inicio"
+    pagination:
+      next: 'Siguiente' 
+      previous: 'Anterior' 
+      truncate: 'Truncar'
+    toggle_navigation: 'Navegación'
+    loading: 'cargando'
+    misc:
+      bulk_menu_title: "Seleccionados"
+      add_filter: "Agregar Filtro"
+      filter: "Filtrar"
+      navigation: "Opciones"
+      title: "Opciones"
+      class: "nav-header"
+      search: "Buscar"
+      ago: "antes"
+      log_out: "Cerrar sesión"
+      reset_filters: "Resetear filtros"
+      refresh: "Refrescar"
+    form:
+      bulk_delete: 'Confirmación de Eliminación'
+      new_model: 'Nuevo'
+      char_length_of: "Caracteres entre"
+      confirmation: "Confirmado"
+      save: "Guardar"
+      save_and_add_another: "Guardar y agregar otro"
+      save_and_edit: "Guardar y editar"
+      are_you_sure_you_want_to_delete_the_object: "Está completamente seguro que desea eliminar"
+      all_of_the_following_related_items_will_be_deleted: " Todas las siguientes relaciones serán eliminadas"
+      basic_info: "Información Básica"
+      optional: "<span class='label label-default'>Opcional</span>"
+      required: "<span class='label label-danger'>Requerido</span>"
+      char_length_up_to: "máximos caracteres permitidos "
+      cancel: "Cancelar"
+    actions:
+      history_show:
+        title: "Bitácora" 
+        menu: "Bitácora"
+        breadcrumb: "Bitácora"
+      history_index:
+        title: "Bitácora" 
+        menu: "Bitácora"
+        breadcrumb: "Bitácora"
+      import:
+        done: "guardar"
+        menu: "importaciones"
+        breadcrumb: "importaciones"
+        title: "importación"
+      create: "crear"
+      created: "creado"
+      update: "actualizar"
+      updated: "actualizado"
+      deleted: "borrado"
+      export: "exportar"
+      exported: "exportado"       
+      delete: "borrar"
+      delete:
+        link: "Eliminar"
+        done: "eliminado"
+        breadcrumb: "eliminar"
+        title: "Eliminar"
+        menu: "Eliminar"
+      show:
+        title: "Detalle"
+        breadcrumb: "Detalle %{model_label}"
+        menu: "Ver detalle"
+      edit:
+        done: "guardar"
+        link: "editar"
+        title: "Editar"
+        breadcrumb: "Editar %{model_label}"
+        menu: "Editar"
+      index:
+        title: "%{model_label_plural}"
+        menu: "Listado"
+        breadcrumb: "%{model_label}"
+        no_records: "Sin registros"
+      new:
+        done: 'guardar'
+        link: "Agregar"
+        title: "Nuevo"
+        menu: "Agregar Nuevo"
+        breadcrumb: "Agregar %{model_label}"
+      bulk_delete:
+        title: "Seguro que desea eliminar %{model_label} seleccionados"
+        bulk_link: "Eliminar %{model_label} seleccionados"
+        menu: "Eliminar"
+        breadcrumb: "Eliminar %{model_label}"
+      export:
+        title: "Exportar %{model_label}"
+        bulk_link: "Exportar %{model_label} seleccionados"
+        link: "Exportar filtrados"
+        menu: "Exportar"
+        breadcrumb: "Exportar %{model_label}"
+      dashboard:
+        menu: "Dashboard"
+        title: "Dashboard"
+        breadcrumb: "Dashboard"    
+    dashboard:
+      menu: "Dashboard"
+      title: "Dashboard"
+      breadcrumb: "Dashboard"      
+      pagename: "Administración del sitio"
+      name: "Panel"
+      model_name: "Nombre del modelo"
+      last_used: "Último uso"
+      records: "Registros"
+      modify: "Modificar"
+      add_new: "Agregar"
+      show: "Mostrar"
+      ago: "atrás"
+    history:
+      name: "Histórico"
+      page_name: "Histórico de %{name}"
+      no_activity: "No hubo actividad"
+    credentials:
+      log_out: "Cerrar sesión"
+    list:
+      edit_action: "Editar"
+      delete_action: "Eliminar"
+      select_action: "Seleccionar"
+      export_action: "Exportar vista actual"
+      export_selected: "Exportar seleccionado"
+      delete_selected: "Borrar seleccionado"
+      add_new: "Agregar"
+      search: "BUSCAR"
+      select: "Seleccione %{name} para editar"
+      show_all: "Mostrar todos"
+      add_filter: "Agregar filtro"
+    new:
+      basic_info: "Información Básica"
+      required: "Obligatorio"
+      optional: "Opcional"
+      one_char: "carácter"
+      many_chars: "caracteres o menos"
+      chosen: "Seleccionado %{name}"
+      select_choice: "Seleccione su(s) elección(es) y haga clic"
+      chose_all: "Elegir todos"
+      clear_all: "Limpiar todos"
+      up: "Subir"
+      down: "Bajar"
+      save: "Guardar"
+      save_and_add_another: "Guardar y agregar otro"
+      save_and_edit: "Guardar y editar"
+      cancel: "Cancelar"
+    delete:
+      all_of_the_following_related_items_will_be_deleted: "? Todos los elementos siguientes serán borrados:"
+      are_you_sure_you_want_to_delete_the_object: "Estás seguro que quieres borrar %{model_name}"
+      confirmation: "Sí, estoy seguro"
+      delete_confirmation: "Confirmación de Borrado"
+    export:
+      click_to_reverse_selection: "Click para invertir selección"
+      confirmation: "Exportar a %{name}"
+      select: "Selecciona los campos a exportar"
+      fields_from: "Campos de %{name}"
+      fields_from_associated: "Campos asociados de %{name}"
+      display: "Mostrar %{name}: %{type}"
+      options_for: "Opciones de %{name}"
+      empty_value_for_associated_objects: "<vacio>"
+      csv: 
+        header_for_root_methods: "%{name}" # 'model' esta disponible
+        header_for_association_methods: "%{name} [%{association}]"
+        encoding_to: "Codificado a"
+        encoding_to_help: "Seleccionar la codificación de salida. Dejar vacío para dejar el formato de salida actual sin cambios: (%{name})"
+        skip_header: "Sin encabezado"
+        skip_header_help: "No mostrar el encabezado (Sin campos de descripción)"
+        default_col_sep: ","
+        col_sep: "Separador de Columna"
+        col_sep_help: "Dejar vacío por defecto ('%{value}')" # el valor es default_col_sep
+    flash:
+      successful: "Acción completada correctamente"
+      error: "%{name} no se pudo %{action} correctamente"
+      noaction: "No se realizó ninguna acción"     
+    breadcrumbs:
+      delete: "borrar"
+      history: "historial"
+      edit: "editar"
+      export: "exportar"
+      bulk_destroy: "borrar"
+      new: "nuevo"
+      model_history: "historial"
+      list: "lista"
+      dashboard: "Dashboard"

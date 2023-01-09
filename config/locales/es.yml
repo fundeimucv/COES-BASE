@@ -1,5 +1,8 @@
 es:
   admin:
+    actions:
+      index:
+        title: 'Listado'
     flash:
       object_not_found: 'Recurso no encontrado'
 
@@ -418,8 +421,8 @@ es:
         email: 'Correo Electrónico'
         ci: 'Cédula de identidad'
         password: 'Contraseña'
-        name: 'Nombre'
-        last_name: 'Apellido'
+        name: 'Nombres'
+        last_name: 'Apellidos'
         number_phone: 'Número telefónico'
         sex: 'Sexo'
     scopes:

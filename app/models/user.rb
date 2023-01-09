@@ -24,21 +24,34 @@ class User < ApplicationRecord
   devise :database_authenticatable, :registerable, :rememberable
 
   # ASSOCIATIONS:
-  has_one :admin, inverse_of: :user, foreign_key: :user_id
+  has_one :admin, inverse_of: :user, foreign_key: :user_id, dependent: :destroy
   accepts_nested_attributes_for :admin
   
-  has_one :student, inverse_of: :user, foreign_key: :user_id
+  has_one :student, inverse_of: :user, foreign_key: :user_id, dependent: :destroy
   accepts_nested_attributes_for :student
 
-  has_one :teacher#, inverse_of: :user
+  has_one :teacher, inverse_of: :user, dependent: :destroy
   accepts_nested_attributes_for :teacher
 
-  # has_one_attached :picture_profile do |attachable|
-  #   attachable.variant(resized_to_limit: [35,35])
-  #   attachable.variant(resized_to_limit: [100,100])
-  # end
+  has_one_attached :picture_profile do |attachable|
+    attachable.variant :icon, resize_to_limit: [35, 35]
+    attachable.variant :thumb, resize_to_limit: [100, 100]
+  end
 
-  has_one_attached :image_ci
+  def picture_profile_as_thumb
+    picture_profile.variant(resize_to_limit: [100, 100]).processed
+  end
+
+  attr_accessor :remove_picture_profile
+  after_save { picture_profile.purge if remove_picture_profile.eql? '1' } 
+
+  has_one_attached :image_ci do |attachable|
+    attachable.variant :thumb, resize_to_limit: [100,100]
+  end
+
+  attr_accessor :remove_image_ci
+  after_save { image_ci.purge if remove_image_ci.eql? '1' } 
+
 
   #VALIDATIONS
   validates :ci, presence: true, uniqueness: true
@@ -47,7 +60,40 @@ class User < ApplicationRecord
   validates :last_name, presence: true#, unless: :new_record?
   validates :number_phone, presence: true, unless: :new_record?
   validates :sex, presence: true, unless: :new_record?
-  validates :password, presence: true
+
+  # RAILS_ADMIN:
+
+  rails_admin do
+    edit do
+      fields :ci, :email, :name, :last_name, :number_phone, :sex, :password
+      field :picture_profile, :active_storage do
+        label 'Adjunto'
+        delete_method :remove_picture_profile
+      end
+      field :image_ci, :active_storage do
+        label 'Adjunto'
+        delete_method :remove_image_ci
+      end      
+    end
+
+    show do
+      field :picture_profile, :active_storage  do
+        label 'Perfil'
+        formatted_value do
+          bindings[:view].render(partial: "rails_admin/main/image", locals: {object: bindings[:object]})
+        end        
+      end
+      field :image_ci, :active_storage  do
+        label 'Perfil'
+      end      
+      fields :ci, :email, :name, :last_name, :number_phone, :sex, :password
+
+    end
+
+    list do
+      # parent :Usuarios
+    end
+  end
 
   #FUNCTIONS:
 

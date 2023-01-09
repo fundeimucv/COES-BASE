@@ -11,7 +11,7 @@ class Faculty < ApplicationRecord
 	has_many :periods, through: :academic_processes
 	# has_many :grades, through: :schools
 	# has_many :students, through: :grades
-
+	has_one_attached :logo
 	# VALIDATIONS:
 	validates :code, presence: true, uniqueness: true
 	validates :name, presence: true, uniqueness: true
