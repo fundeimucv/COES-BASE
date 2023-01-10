@@ -1,5 +1,5 @@
 Arguments: 
-  /usr/local/Cellar/node@14/14.17.1/bin/node /usr/local/Cellar/yarn/1.22.10/libexec/bin/yarn.js add gobject 2.0.0
+  /usr/local/Cellar/node@14/14.17.1/bin/node /usr/local/Cellar/yarn/1.22.10/libexec/bin/yarn.js install
 
 PATH: 
   /Users/danielmoros/.rvm/gems/ruby-3.1.2@coesfau/bin:/Users/danielmoros/.rvm/gems/ruby-3.1.2@global/bin:/Users/danielmoros/.rvm/rubies/ruby-3.1.2/bin:/Users/danielmoros/.rvm/bin:/usr/local/opt/node@14/bin:/usr/local/bin:/usr/local/sbin:/usr/bin:/bin:/usr/sbin:/sbin:/opt/X11/bin
@@ -14,17 +14,12 @@ Platform:
   darwin x64
 
 Trace: 
-  Error: https://registry.yarnpkg.com/gobject: Not found
-      at Request.params.callback [as _callback] (/usr/local/Cellar/yarn/1.22.10/libexec/lib/cli.js:66988:18)
-      at Request.self.callback (/usr/local/Cellar/yarn/1.22.10/libexec/lib/cli.js:140749:22)
-      at Request.emit (events.js:375:28)
-      at Request.<anonymous> (/usr/local/Cellar/yarn/1.22.10/libexec/lib/cli.js:141721:10)
-      at Request.emit (events.js:375:28)
-      at IncomingMessage.<anonymous> (/usr/local/Cellar/yarn/1.22.10/libexec/lib/cli.js:141643:12)
-      at Object.onceWrapper (events.js:481:28)
-      at IncomingMessage.emit (events.js:387:35)
-      at endReadableNT (internal/streams/readable.js:1317:12)
-      at processTicksAndRejections (internal/process/task_queues.js:82:21)
+  SyntaxError: /Users/danielmoros/Documents/desarrollo/COESFAU/coesfau/package.json: Unexpected token / in JSON at position 275
+      at JSON.parse (<anonymous>)
+      at /usr/local/Cellar/yarn/1.22.10/libexec/lib/cli.js:1625:59
+      at Generator.next (<anonymous>)
+      at step (/usr/local/Cellar/yarn/1.22.10/libexec/lib/cli.js:310:30)
+      at /usr/local/Cellar/yarn/1.22.10/libexec/lib/cli.js:321:13
 
 npm manifest: 
   {
@@ -37,7 +32,7 @@ npm manifest:
       "@popperjs/core": "^2.11.6",
       "apexcharts": "^3.36.3",
       "bootstrap": "^5.2.3",
-      "bootstrap-icons": "^1.10.3",
+      // "bootstrap-icons": "^1.10.3",
       "jquery": "^3.6.3",
       "rails_admin": "3.1.1",
       "sass": "^1.57.1",
