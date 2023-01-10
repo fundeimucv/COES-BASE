@@ -2,7 +2,6 @@
 %br
 .text-center
   = image_tag image_url('build_website.png'), width: '40%'
-  - image = User.last.image_ci
   =# image_tag image_url(image)
   =# image_tag main_app.url_for(User.last.image_ci) 
   =# image_tag main_app.url_for(image.variant(resize_to_limit: [35, 35]))
