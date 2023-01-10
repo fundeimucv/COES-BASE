@@ -7,7 +7,7 @@ ruby "3.1.2"
 gem 'image_processing', '~> 1.2'
 gem 'mini_magick'
 
-# gem "aws-sdk-s3", require: false
+gem "aws-sdk-s3", require: false
 
 gem 'rails_admin', '~> 3.0'
 # Bundle edge Rails instead: gem "rails", github: "rails/rails", branch: "main"
