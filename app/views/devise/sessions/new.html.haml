@@ -8,12 +8,12 @@
           / Title
           .text-center
             =# image_tag 'banner_sign_in.png', class: 'mt-3', alt: 'Vista FAU', width: '90%'
-            %div{style: "background-image: url(/assets/banner_sign_in.png);background-position: center center;background-size: 100% auto;background-repeat: no-repeat;"}
+            %div{style: "background-image: url(#{asset_path 'banner_sign_in.png'});background-position: center center;background-size: 100% auto;background-repeat: no-repeat;"}
               %h3.fw-bold ¡BIENVENIDO A COES-FAU!
               %p.mb-0.h6.fw-light Universidad Central de Venezuela
               %p.mb-0.h6.fw-light Facultad de Arquitectura y Urbanismo
           / SVG Image
-          = image_tag 'bg_vista_fau_cuadros.png', class: 'mt-3 img-fluid rounded', alt: 'Vista FAU'
+          = image_tag 'bg_vista_fau_cuadros2.jpeg', class: 'mt-3 img-fluid rounded', alt: 'Vista FAU'
       / Right
       .col-12.col-lg-6.m-auto
         .row.my-5
@@ -48,13 +48,14 @@
                     Your password must be 8 characters at least
               / Check box
               .mb-4.d-flex.justify-content-between.mb-4
-                - if devise_mapping.rememberable?
+                - if false and devise_mapping.rememberable?
                   .form-check
                     %input#exampleCheck1.form-check-input.boolean.optional{type: :checkbox, name: 'user[remember_me]'}
                     %label.form-check-label{for: "exampleCheck1"} Recuérdame
-                .text-primary-hover
-                  %a.text-secondary{:href => "forgot-password.html"}
-                    %u ¿Olvidaste tu contraseña?
+                - if false
+                  .text-primary-hover
+                    %a.text-secondary{:href => "forgot-password.html"}
+                      %u ¿Olvidaste tu contraseña?
               / Button
               .align-items-center.mt-0
                 .d-grid
