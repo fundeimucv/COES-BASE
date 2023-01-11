@@ -14,4 +14,9 @@ class Teacher < ApplicationRecord
   def name
     self.user.name if self.user
   end
+
+  rails_admin do
+    navigation_label 'Gestión de Usuarios'
+    navigation_icon 'fa-regular fa-chalkboard-user'    
+  end
 end

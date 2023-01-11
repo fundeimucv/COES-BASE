@@ -91,7 +91,6 @@ class User < ApplicationRecord
     end
 
     list do
-      # parent :Usuarios
     end
   end
 

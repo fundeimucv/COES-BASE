@@ -20,4 +20,9 @@ class EnrollAcademicProcess < ApplicationRecord
   validates :enroll_status, presence: true
   validates :permanence_status, presence: true
 
+  rails_admin do
+    navigation_label 'Inscripciones'
+    navigation_icon 'fa-solid fa-calendar-check'
+  end
+
 end

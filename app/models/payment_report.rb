@@ -9,10 +9,15 @@ class PaymentReport < ApplicationRecord
   # t.bigint "payable_id"  
 
   # ASSOCIATIONS:
-  belongs_to :origin_bank, class_name: 'Bank'
+  belongs_to :origin_bank, class_name: 'Bank', foreign_key: 'origin_bank_id'
   belongs_to :payable, polymorphic: true
 
   # VALIDATIONS:
   validates :payable_id, presence: true
   validates :payable_type, presence: true
+
+  rails_admin do
+    navigation_label 'Finanzas'
+    navigation_icon 'fa-solid fa-cash-register'
+  end  
 end

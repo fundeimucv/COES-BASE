@@ -27,4 +27,9 @@ class Grade < ApplicationRecord
   validates :study_plan, presence: true
   validates :admission_type, presence: true
 
+  rails_admin do
+    navigation_label 'Gestión Adadémica'
+    navigation_icon 'fa-solid fa-graduation-cap'
+  end
+
 end

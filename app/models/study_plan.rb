@@ -15,4 +15,9 @@ class StudyPlan < ApplicationRecord
   validates :name, presence: true, uniqueness: true
   validates :school, presence: true
 
+  rails_admin do
+    navigation_label 'Gestión Adadémica'
+    navigation_icon 'fa-solid fa-award'
+  end
+
 end

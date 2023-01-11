@@ -8,8 +8,9 @@
 
 p '      Creada Facultad!    '.center(200, '=') if fau = Faculty.create(code: 'FAU', name: 'Facultad de Arquitectura y Urbanismo')
 
-p '      Creado Primer Usuario!    '.center(200, '=') if user = User.create!(email: 'moros.daniel@gmail.com', name: 'Daniel Moros', last_name: 'Moros Castillo', ci: '15573230', password: 123123)
+p '      Creado Primer Usuario!    '.center(200, '=') if user = User.create!(email: 'moros.daniel@gmail.com', name: 'Daniel Josué', last_name: 'Moros Castillo', ci: '15573230', password: 123123)
 
+p '      Creado Segundo Usuario!    '.center(200, '=') if user = User.create!(email: 'saavedraazuaje@gmail.com', name: 'Carlos Alberto', last_name: 'Saavedra Azuaje', ci: '10264009', password: 123123)
 
 p '      Creado Primer Admin!    '.center(200, '=') if Admin.create!(user_id: user.id, role: :ninja, env_authorizable: fau)
 
@@ -22,7 +23,7 @@ p '      Creados Primeros Tipos de Períodos!    '.center(200, '=') if PeriodTyp
 
 p '      Creados Primeros Períodos!    '.center(200, '=') if Period.create([{year: 2022, period_type_id: 1}, {year: 2022, period_type_id: 2}])
 
-p '      Creado Primer Plan de Estudio!    '.center(200, '=') if StudyPlan.create(code: 'B001', name: 'Arquitecto')
+p '      Creado Primer Plan de Estudio!    '.center(200, '=') if StudyPlan.create(code: 'B001', name: 'Arquitecto', school_id: School.first.id)
 
 p '      Creadas Primeras Asignturas Madres!    '.center(200, '=') if Area.create([{school_id: escuela.id, name: "Diseño Arquitectónico"},
 {school_id: escuela.id, name: "Métodos"},
@@ -48,6 +49,48 @@ area = Area.where(name: "Tecnología").first
 Area.create([{school_id: escuela.id, name: "Construcción", parent_area_id: area.id},
 {school_id: escuela.id, name: "Instalaciones", parent_area_id: area.id},
 {school_id: escuela.id, name: "Estructura", parent_area_id: area.id}])
+
+Bank.create([{code: "0006", name: "Banco de Coro"},
+{code: "0007", name: "Banfoandes"},
+{code: "0008", name: "Banco Guayana"},
+{code: "0102", name: "Banco de Venezuela"},
+{code: "0104", name: "Banco Venezolano de Crédito"},
+{code: "0105", name: "Banco Mercantil"},
+{code: "0108", name: "Banco Provincial"},
+{code: "0114", name: "Bancaribe"},
+{code: "0115", name: "Banco Exterior"},
+{code: "0116", name: "Banco Occidental de Descuento"},
+{code: "0121", name: "Corp Banca"},
+{code: "0128", name: "Banco Caroní"},
+{code: "0133", name: "Banco Federal"},
+{code: "0134", name: "Banesco"},
+{code: "0137", name: "Banco Sofitasa"},
+{code: "0138", name: "Banco Plaza"},
+{code: "0140", name: "Banco Canarias de Venezuela"},
+{code: "0141", name: "Banco Confederado"},
+{code: "0145", name: "Banco de Comercio Exterior"},
+{code: "0146", name: "Banco de la Gente Emprendedora"},
+{code: "0148", name: "Total Bank"},
+{code: "0151", name: "Banco Fondo Común"},
+{code: "0156", name: "100% Banco"},
+{code: "0157", name: "Banco Del Sur"},
+{code: "0158", name: "Central Banco Universal"},
+{code: "0161", name: "Banpro"},
+{code: "0163", name: "Banco Del Tesoro"},
+{code: "0166", name: "Banco Agrícola de Venezuela"},
+{code: "0168", name: "Bancrecer"},
+{code: "0169", name: "Mi Banco"},
+{code: "0171", name: "Banco Activo"},
+{code: "0172", name: "Bancamiga"},
+{code: "0173", name: "Banco Internacional de Desarrollo"},
+{code: "0174", name: "Banplus"},
+{code: "0175", name: "Banco Bicentenario"},
+{code: "0176", name: "Novo Banco"},
+{code: "0177", name: "Banco de la Fuerza Armada Nacional Bolivariana"},
+{code: "0190", name: "Citibank"},
+{code: "0191", name: "Banco Nacional de Crédito"},
+{code: "0601", name: "Instituto Municipal de Crédito Popular"}])
+
 
 p '      Creadas Subasignturas!    '.center(200, '=')
 p '      FINAL    '.center(400, '*')

@@ -26,17 +26,36 @@ RailsAdmin.config do |config|
 
   config.actions do
     dashboard                     # mandatory
-    index                         # mandatory
+    index do                         # mandatory
+
+      except [Location, Faculty, School, SectionTeacher, Profile, User, PeriodType]
+
+    end
     new
     export
     bulk_delete
     show
     edit
     delete
-    show_in_app
+    # show_in_app
 
     ## With an audit adapter, you can add:
     # history_index
     # history_show
+  end
+
+
+  # config.model "ActionText::RichText" do
+  #   visible false
+  # end
+
+  config.model "ActiveStorage::Blob" do
+    visible false
+  end
+  config.model "ActiveStorage::Attachment" do
+    visible false
+  end
+  config.model "ActiveStorage::VariantRecord" do
+    visible false
   end
 end

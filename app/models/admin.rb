@@ -19,4 +19,9 @@ class Admin < ApplicationRecord
   validates :role, presence: true
 
   # validates :env_authorizable_type, presence: true
+
+  rails_admin do
+    navigation_label 'Gestión de Usuarios'
+    navigation_icon 'fa-regular fa-user-tie'
+  end
 end

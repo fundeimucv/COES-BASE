@@ -22,4 +22,9 @@ class Area < ApplicationRecord
     "#{self.id}: #{self.name}"
   end
 
+  rails_admin do
+    navigation_label 'Gestión Adadémica'
+    navigation_icon 'fa-solid fa-brain'
+  end
+
 end

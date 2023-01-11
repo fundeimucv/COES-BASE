@@ -305,8 +305,11 @@ es:
       academic_process:
         school: 'Escuela'
         period: 'Periodo'
-        max_credit: 'Máximo Créditos'
+        max_credits: 'Máximo Créditos'
         max_subjects: 'Máximas Asignaturas'
+        enroll_academic_processes: 'Inscripciones en Proceso Académico'
+        grades: 'Grados'
+        students: 'Estudiantes'
       academic_record:
         section: 'Sección'
         enroll_academic_process: 'Inscripción en Proceso Académico'

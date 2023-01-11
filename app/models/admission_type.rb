@@ -11,4 +11,9 @@ class AdmissionType < ApplicationRecord
   #VALIDATIONS:
   validates :name, presence: true
 
+  rails_admin do
+    navigation_label 'Gestión de Usuarios'
+    navigation_icon 'fa-regular fa-user-tag'
+  end
+
 end

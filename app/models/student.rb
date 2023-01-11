@@ -34,6 +34,9 @@ class Student < ApplicationRecord
   validates :birth_date, presence: true, unless: :new_record?
   # validates :location, presence: true, unless: :new_record?
   # How to validate if student is not created for assosiation
-
+  rails_admin do
+    navigation_label 'Gestión de Usuarios'
+    navigation_icon 'fa-regular fa-user-graduate'
+  end
 
 end

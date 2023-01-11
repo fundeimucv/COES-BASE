@@ -30,4 +30,9 @@ class AcademicRecord < ApplicationRecord
   validates :type_q, presence: true
   validates :status_q, presence: true
 
+  rails_admin do
+    navigation_label 'Inscripciones'
+    navigation_icon 'fa-solid fa-signature'
+  end  
+
 end

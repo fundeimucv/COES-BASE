@@ -28,7 +28,7 @@ class Subject < ApplicationRecord
   validates :unit_credits, presence: true
   validates :area, presence: true
 
-  def modality_initial
+  def modality_initial_letter
     case modality
     when :obligatoria
       'OB'
@@ -39,6 +39,11 @@ class Subject < ApplicationRecord
     when :proyecto
       'P'
     end      
+  end
+
+  rails_admin do
+    navigation_label 'Gestión Adadémica'
+    navigation_icon 'fa-regular fa-book'
   end
 
 end

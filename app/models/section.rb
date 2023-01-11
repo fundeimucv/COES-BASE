@@ -36,4 +36,10 @@ class Section < ApplicationRecord
   validates :code, presence: true
   validates :capacity, presence: true
   validates :course, presence: true
+
+  rails_admin do
+    navigation_label 'Inscripciones'
+    navigation_icon 'fa-solid fa-list'
+  end
+
 end

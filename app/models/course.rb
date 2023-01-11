@@ -15,5 +15,10 @@ class Course < ApplicationRecord
   #VALIDATIONS:
   validates :subject, presence: true
   validates :academic_process, presence: true
+
+  rails_admin do
+    navigation_label 'Gestión Adadémica'
+    navigation_icon 'fa-solid fa-shapes'
+  end
   
 end

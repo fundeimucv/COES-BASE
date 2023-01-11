@@ -21,4 +21,8 @@ class AcademicProcess < ApplicationRecord
   validates :max_credits, presence: true
   validates :max_subjects, presence: true
 
+  rails_admin do
+    navigation_label 'Inscripciones'
+    navigation_icon 'fa-solid fa-calendar'
+  end
 end

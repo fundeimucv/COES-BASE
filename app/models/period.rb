@@ -21,4 +21,13 @@ class Period < ApplicationRecord
 		"#{year}-#{period_type.code.upcase}"
 	end
 
+  rails_admin do
+    navigation_label 'Inscripciones'
+    navigation_icon 'fa-solid fa-clock'
+
+    edit do
+    	fields :year, :period_type
+    end
+  end
+
 end

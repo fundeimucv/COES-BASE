@@ -11,6 +11,7 @@ es:
     toggle_navigation: 'Navegación'
     loading: 'cargando'
     misc:
+      show_all: 'Ver Todos'
       bulk_menu_title: "Seleccionados"
       add_filter: "Agregar Filtro"
       filter: "Filtrar"
