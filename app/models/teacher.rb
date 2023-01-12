@@ -7,6 +7,8 @@ class Teacher < ApplicationRecord
   belongs_to :area
   # has_and_belongs_to_many :secondary_teachers, class_name: 'SectionTeacher'
 
+  has_many :sections
+
   # VALIDATIONS:
   validates :area, presence: true
   validates :user, presence: true
@@ -17,6 +19,19 @@ class Teacher < ApplicationRecord
 
   rails_admin do
     navigation_label 'Gestión de Usuarios'
-    navigation_icon 'fa-regular fa-chalkboard-user'    
+    navigation_icon 'fa-regular fa-chalkboard-user'
+
+    list do
+      exclude_fields :updated_at
+    end
+
+    show do
+      fields :user, :area, :sections
+    end
+
+    edit do
+      fields :user, :area
+    end
+
   end
 end

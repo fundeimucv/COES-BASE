@@ -330,7 +330,7 @@ es:
         role: 'Rol'
         env_authorizable: 'Entorno Autorizado'
         profile: 'Perfil de Usuario' 
-        created_at: 'Creado el'
+        created_at: 'Fecha Registro'
       admission_type:
         name: 'Nombre'
         school: 'Escuela'
@@ -420,13 +420,14 @@ es:
       student:
         active: 'Activo'
         disability: 'Discapacidad'
-        nationality: 'Nacionalidad'
+        nacionality: 'Nacionalidad'
         marital_status: 'Estado Civil'
         origin_country: 'País de origen'
         origin_city: 'Ciudad de origen'
         birth_date: 'Fecha de nacimiento'
         location: 'Dirección'
         created_at: 'Fecha de Registro'
+        user: 'Usuario'
       study_plan:
         code: 'Código'
         name: 'Nombre'
@@ -443,6 +444,9 @@ es:
         updated_at: 'Fecha de Actualización'
       teacher:
         area: 'Área'
+        user: 'Usuario'
+        created_at: 'Fecha de Registro'
+        sections: 'Secciones'
       user:
         email: 'Correo Electrónico'
         ci: 'Cédula de identidad'
