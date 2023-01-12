@@ -232,7 +232,6 @@ es:
           attributes:
             area:
               required: 'requerida'
-
     models:
       academic_process:
         one: 'Proceso Académico'
@@ -247,11 +246,14 @@ es:
         one: 'Tipo de Admisión'  
         other: 'Tipos de Admisión'
       area:
-        one: 'Área de Conocimiento'
-        other: 'Áreas de Conocimiento'
+        one: 'Area de Conocimiento'
+        other: 'Areas de Conocimiento'
       bank:
         one: 'Banco'
         other: 'Bancos'
+      bank_account:
+        one: 'Cuenta Bancaria'
+        other: 'Cuentas Bancarias'
       course:
         one: 'Curso'
         other: 'Cursos'
@@ -320,21 +322,34 @@ es:
         post_q: 'Calificación Posterior'
         status_q: 'Estado de Calificación'
         type_q: 'Tipo de Calificación'
+        student: 'Estudiante'
+        period: 'Periodo'
+        subject: 'Asignatura'
       admin:
         user: 'Usuario'
         role: 'Rol'
         env_authorizable: 'Entorno Autorizado'
         profile: 'Perfil de Usuario' 
-      admission_types:
+        created_at: 'Creado el'
+      admission_type:
         name: 'Nombre'
         school: 'Escuela'
+        total_students: 'Total Estudiantes'
+        created_at: 'Fecha de Registro'
       area:
         name: 'Nombre'
         school: 'Escuela'
         parent_area: 'Area Madre'
+        subjects: 'Asignaturas Propias'
+        subarea: 'Subáreas'
       bank:
         code: 'Código'
         name: 'Nombre'
+      bank_account:
+        number: 'Número'
+        holder: 'Titular'
+        bank: 'Banco'
+        account_type: 'Tipo de Cuenta'
       course:
         academic_process: 'Proceso Académico'
         subject: 'Asignatura'
@@ -344,6 +359,8 @@ es:
         academic_process: 'Proceso Académico'
         enroll_status: 'Estado de Inscripción'
         permanence_status: 'Estado de Permanencia'
+        student: 'Estudiante'
+        period: 'Periodo'
       faculty:
         code: 'Código'
         name: 'Nombre'
@@ -390,6 +407,8 @@ es:
         period_active_id: 'Identificador de Periodo Activo '
         period_enroll_id: 'Identidicador de Periodo Inscripción'
         faculty: 'Facultad'
+        periods: 'Periodos'
+        areas: 'Áreas'
       section:
         code: 'Número'
         capacity: 'Capacidad'
@@ -406,6 +425,8 @@ es:
         origin_country: 'País de origen'
         origin_city: 'Ciudad de origen'
         birth_date: 'Fecha de nacimiento'
+        location: 'Dirección'
+        created_at: 'Fecha de Registro'
       study_plan:
         code: 'Código'
         name: 'Nombre'
@@ -418,6 +439,8 @@ es:
         qualification_type: 'Tipo de calificación'
         modality: 'Modalidad'
         area: 'Área'
+        created_at: 'Fecha de Registro'
+        updated_at: 'Fecha de Actualización'
       teacher:
         area: 'Área'
       user:

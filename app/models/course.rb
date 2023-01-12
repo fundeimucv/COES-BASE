@@ -7,6 +7,8 @@ class Course < ApplicationRecord
   # ASSOCIATIONS:
   # belongs_to
   belongs_to :academic_process
+  has_one :period, through: :academic_process
+  has_one :school, through: :academic_process
   belongs_to :subject
   
   # has_many
@@ -16,9 +18,32 @@ class Course < ApplicationRecord
   validates :subject, presence: true
   validates :academic_process, presence: true
 
+  def name 
+    "#{self.period.name}-#{self.subject.name}" if self.period and self.school and self.subject
+  end
+
+  def total_sections
+    sections.count
+  end
+
   rails_admin do
-    navigation_label 'Gestión Adadémica'
+    navigation_label 'Inscripciones'
     navigation_icon 'fa-solid fa-shapes'
+
+    list do
+      fields :academic_process, :subject
+      field :total_sections
+    end
+
+    show do
+      fields :academic_process, :subject, :sections
+    end
+
+    edit do
+      fields :academic_process, :subject, :sections
+    end
+
+
   end
   
 end

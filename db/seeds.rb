@@ -10,7 +10,7 @@ p '      Creada Facultad!    '.center(200, '=') if fau = Faculty.create(code: 'F
 
 p '      Creado Primer Usuario!    '.center(200, '=') if user = User.create!(email: 'moros.daniel@gmail.com', name: 'Daniel Josué', last_name: 'Moros Castillo', ci: '15573230', password: 123123)
 
-p '      Creado Segundo Usuario!    '.center(200, '=') if user = User.create!(email: 'saavedraazuaje@gmail.com', name: 'Carlos Alberto', last_name: 'Saavedra Azuaje', ci: '10264009', password: 123123)
+p '      Creado Segundo Usuario!    '.center(200, '=') if user = User.create!(email: 'saavedraazuaje73@gmail.com', name: 'Carlos Alberto', last_name: 'Saavedra Azuaje', ci: '10264009', password: 123123)
 
 p '      Creado Primer Admin!    '.center(200, '=') if Admin.create!(user_id: user.id, role: :ninja, env_authorizable: fau)
 
@@ -92,7 +92,30 @@ Bank.create([{code: "0006", name: "Banco de Coro"},
 {code: "0601", name: "Instituto Municipal de Crédito Popular"}])
 
 
-p '      Creadas Subasignturas!    '.center(200, '=')
+e = School.first
+
+e.admission_types.create([{name: 'OPSU'},
+{name: 'OPSU/COLA'},
+{name: 'SIMADI'},
+{name: 'ACTA CONVENIO (DOCENTE)'},
+{name: 'ACTA CONVENIO (ADMIN)'},
+{name: 'ACTA CONVENIO (OBRERO)'},
+{name: 'DISCAPACIDAD'},
+{name: 'DIPLOMATICO'},
+{name: 'COMPONENTE DOCENTE'},
+{name: 'EQUIVALENCIA'},
+{name: 'ART. 25 (CULTURA)'},
+{name: 'ART. 25 (DEPORTE)'},
+{name: 'CAMBIO: 158'},
+{name: 'ART. 6'},
+{name: 'EGRESADO'},
+{name: 'SAMUEL ROBINSON'},
+{name: 'DELTA AMACURO'},
+{name: 'AMAZONAS'},
+{name: 'PRODES'},
+{name: 'CREDENCIALES'},
+{name: 'SIMULTANEOS'}])
+
 p '      FINAL    '.center(400, '*')
 
 

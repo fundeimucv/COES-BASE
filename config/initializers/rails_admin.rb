@@ -28,7 +28,7 @@ RailsAdmin.config do |config|
     dashboard                     # mandatory
     index do                         # mandatory
 
-      except [Location, Faculty, School, SectionTeacher, Profile, User, PeriodType]
+      except [Location, SectionTeacher, Profile, User, PeriodType, StudyPlan, Period, Course]
 
     end
     new

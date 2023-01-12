@@ -6,7 +6,7 @@ class Admin < ApplicationRecord
   # t.bigint "env_authorizable_id"
 
   # ENUMERIZE:
-  enum role: [:ninja, :super, :admin_escuela, :admin_departamento, :taquilla, :jefe_control_estudio]
+  enum role: [:super, :jefe_control_estudio, :director, :jefe_departamento, :asistente]
 
   # ASSOCIATIONS:
   belongs_to :user
@@ -23,5 +23,20 @@ class Admin < ApplicationRecord
   rails_admin do
     navigation_label 'Gestión de Usuarios'
     navigation_icon 'fa-regular fa-user-tie'
+
+    list do
+      fields :user, :role, :env_authorizable, :created_at
+    end
+
+    edit do
+      fields :user, :role, :env_authorizable
+
+      # field :role do
+      #   html_attributes do
+      #     {:onChange => "alert($(this).val())"}
+
+      #   end
+      # end
+    end
   end
 end

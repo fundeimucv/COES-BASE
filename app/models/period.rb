@@ -18,7 +18,7 @@ class Period < ApplicationRecord
 	validates_uniqueness_of :year, scope: [:period_type], message: 'Periodo existente', field_name: false
 
 	def name
-		"#{year}-#{period_type.code.upcase}"
+		"#{year}-#{period_type.code.upcase}" if period_type
 	end
 
   rails_admin do

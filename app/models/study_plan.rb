@@ -15,6 +15,10 @@ class StudyPlan < ApplicationRecord
   validates :name, presence: true, uniqueness: true
   validates :school, presence: true
 
+  def desc
+    "(#{code}) #{name}"
+  end
+
   rails_admin do
     navigation_label 'Gestión Adadémica'
     navigation_icon 'fa-solid fa-award'

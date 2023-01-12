@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_01_07_005908) do
+ActiveRecord::Schema[7.0].define(version: 2023_01_12_003605) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -97,6 +97,16 @@ ActiveRecord::Schema[7.0].define(version: 2023_01_07_005908) do
     t.datetime "updated_at", null: false
     t.index ["parent_area_id"], name: "index_areas_on_parent_area_id"
     t.index ["school_id"], name: "index_areas_on_school_id"
+  end
+
+  create_table "bank_accounts", force: :cascade do |t|
+    t.string "number", null: false
+    t.string "holder", null: false
+    t.bigint "bank_id", null: false
+    t.integer "acount_type"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["bank_id"], name: "index_bank_accounts_on_bank_id"
   end
 
   create_table "banks", force: :cascade do |t|
@@ -212,6 +222,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_01_07_005908) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "faculty_id"
+    t.bigint "bank_account_id"
+    t.index ["bank_account_id"], name: "index_schools_on_bank_account_id"
     t.index ["faculty_id"], name: "index_schools_on_faculty_id"
     t.index ["period_active_id"], name: "index_schools_on_period_active_id"
     t.index ["period_enroll_id"], name: "index_schools_on_period_enroll_id"
@@ -311,6 +323,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_01_07_005908) do
   add_foreign_key "admission_types", "schools"
   add_foreign_key "areas", "areas", column: "parent_area_id"
   add_foreign_key "areas", "schools"
+  add_foreign_key "bank_accounts", "banks"
   add_foreign_key "courses", "academic_processes"
   add_foreign_key "courses", "subjects"
   add_foreign_key "enroll_academic_processes", "academic_processes"

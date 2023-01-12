@@ -12,16 +12,18 @@ class AcademicRecord < ApplicationRecord
 
   #ENUMERIZE:
 
-  # enum type_q: [:sin_calificar, :aprobado, :aplazado, :retirado, :trimestre1, :trimestre2]
-  # enum type_q: [:diferido, :final, :reparacion, :perdida_por_inasistencia, :parcial]
-  enum type_q: [:sc, :a, :ap, :re, :t1, :t2]
-  enum type_q: [:nd, :nf, :rep, :pi, :par]
+  enum status_q: [:sin_calificar, :aprobado, :aplazado, :retirado, :trimestre1, :trimestre2]
+  enum type_q: [:diferido, :final, :reparacion, :perdida_por_inasistencia, :parcial]
+  # enum status_q: [:sc, :a, :ap, :re, :t1, :t2]
+  # enum type_q: [:nd, :nf, :rep, :pi, :par]
 
   # ASSOCIATIONS:
   belongs_to :section
   belongs_to :enroll_academic_process
 
   has_one :academic_process, through: :enroll_academic_process
+  has_one :grade, through: :enroll_academic_process
+  has_one :student, through: :grade
   has_one :period, through: :academic_process
 
   #VALIDATIONS:
@@ -33,6 +35,29 @@ class AcademicRecord < ApplicationRecord
   rails_admin do
     navigation_label 'Inscripciones'
     navigation_icon 'fa-solid fa-signature'
+
+    list do
+      field :period do
+        searchable :name
+        filterable :name
+        sortable :name
+      end
+      field :subject do
+        searchable :name
+        filterable :name
+        sortable :name
+      end
+      field :student do
+        searchable :name
+        filterable :name
+        sortable :name
+      end
+      fields :final_q, :status_q, :type_q
+    end
+
+    edit do
+      fields :section, :student, :first_q, :second_q, :third_q, :final_q, :post_q, :status_q, :type_q
+    end
   end  
 
 end

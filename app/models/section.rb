@@ -29,17 +29,53 @@ class Section < ApplicationRecord
   has_and_belongs_to_many :secondary_teachers, class_name: 'SectionTeacher'
 
   #ENUMERIZE:
-  enum modality: [:"equivalencia_externa", :"equivalencia_interna", :diferido, :"nota_final", :reparación, :suficiencia]
+  enum modality: [:"nota_final", :"equivalencia_externa", :"equivalencia_interna", :diferido, :reparación, :suficiencia]
 
 
   # VALIDATIONS:
   validates :code, presence: true
   validates :capacity, presence: true
   validates :course, presence: true
+  validates :modality, presence: true
+
+  def name
+    "#{self.code}-#{self.course.name}" if self.course
+  end
 
   rails_admin do
     navigation_label 'Inscripciones'
     navigation_icon 'fa-solid fa-list'
+
+    list do
+      field :code do
+        label 'Id'
+      end
+      fields :course, :teacher, :qualified#, :enabled
+    end
+
+    show do
+      field :name do
+        label 'Descripción'
+      end
+      fields :teacher, :academic_records
+    end
+
+    edit do
+      field :code do
+        label 'Identificación'
+        html_attributes do
+          {:length => 8, :size => 8, :onInput => "$(this).val($(this).val().toUpperCase().replace(/[^A-Za-z0-9]/g,''))"}
+        end
+      end
+      fields :course, :teacher, :modality
+
+      field :capacity do
+        html_attributes do
+          {:min => 1}
+        end
+      end
+
+    end
   end
 
 end

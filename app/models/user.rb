@@ -1,7 +1,6 @@
 class User < ApplicationRecord
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
-
   # SCHEMA:
   # t.string "email", default: "", null: false
   # t.string "ci", null: false
@@ -52,8 +51,9 @@ class User < ApplicationRecord
   attr_accessor :remove_image_ci
   after_save { image_ci.purge if remove_image_ci.eql? '1' } 
 
+  attr_accessor :allow_blank_password
 
-  #VALIDATIONS
+  # VALIDATIONS:
   validates :ci, presence: true, uniqueness: true
   validates :email, presence: true, uniqueness: true
   validates :name, presence: true#, unless: :new_record?
@@ -61,11 +61,46 @@ class User < ApplicationRecord
   validates :number_phone, presence: true, unless: :new_record?
   validates :sex, presence: true, unless: :new_record?
 
+
+  # FUNCTIONS:
+
+  def description
+    "(#{self.ci}) #{self.name} #{self.last_name} #{self.email}"
+  end
+
   # RAILS_ADMIN:
 
   rails_admin do
     edit do
-      fields :ci, :email, :name, :last_name, :number_phone, :sex, :password
+      field :ci do
+        html_attributes do
+          {:length => 8, :size => 8, :onInput => "$(this).val($(this).val().toUpperCase().replace(/[^0-9]/g,''))"}
+        end
+      end
+      field :email
+      fields :name, :last_name do
+        searchable [:email, :name, :last_name]
+        formatted_value do
+          value.to_s.upcase
+        end
+        html_attributes do
+          {:onInput => "$(this).val($(this).val().toUpperCase().replace(/[^A-Za-z| ]/g,''))"}
+        end  
+      end
+      field :number_phone do
+        html_attributes do
+          {length: 8, size: 8, onInput: "$(this).val($(this).val().toUpperCase().replace(/[^0-9]/g,''))"}
+        end
+      end
+
+      field :sex do
+        html_attributes do
+          {:type => :radio }
+        end        
+      end
+
+      field :password
+
       field :picture_profile, :active_storage do
         label 'Adjunto'
         delete_method :remove_picture_profile
@@ -80,8 +115,11 @@ class User < ApplicationRecord
       field :picture_profile, :active_storage  do
         label 'Perfil'
         formatted_value do
-          bindings[:view].render(partial: "rails_admin/main/image", locals: {object: bindings[:object]})
-        end        
+          bindings[:view].tag(:img, { :src => bindings[:object].picture_profile }) << value
+        end
+        # formatted_value do
+        #   bindings[:view].render(partial: "rails_admin/main/image", locals: {object: bindings[:object]})
+        # end
       end
       field :image_ci, :active_storage  do
         label 'Perfil'
