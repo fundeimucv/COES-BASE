@@ -13,8 +13,8 @@ class School < ApplicationRecord
   belongs_to :period_active, foreign_key: 'period_active_id', class_name: 'Period', optional: true
   belongs_to :period_enroll, foreign_key: 'period_enroll_id', class_name: 'Period', optional: true
   belongs_to :faculty
-  belongs_to :bank_account
 
+  has_many :bank_accounts
   has_many :admission_types
   has_many :academic_processes
   has_many :areas
@@ -42,7 +42,7 @@ class School < ApplicationRecord
     navigation_icon 'fa-regular fa-school'
 
     list do
-      fields :code, :name, :faculty, :period_enroll, :period_active, :type_entity
+      fields :code, :name, :faculty, :type_entity
     end
 
     show do
@@ -50,11 +50,11 @@ class School < ApplicationRecord
         label 'Descripción'
       end
       fields :period_enroll, :period_active, :periods, :areas
-      field :bank_account
+      field :bank_accounts
     end
 
     edit do
-      exclude_fields :created_at, :updated_at, :enable_dependents, :areas, :subjects, :periods, :admins, :admission_types
+      fields :faculty, :code, :name, :type_entity, :bank_accounts
     end
   end
 

@@ -56,7 +56,7 @@ class AcademicRecord < ApplicationRecord
     end
 
     edit do
-      fields :section, :student, :first_q, :second_q, :third_q, :final_q, :post_q, :status_q, :type_q
+      fields :section, :enroll_academic_process, :first_q, :second_q, :third_q, :final_q, :post_q, :status_q, :type_q
     end
   end  
 

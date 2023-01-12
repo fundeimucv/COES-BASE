@@ -8,6 +8,7 @@ class EnrollAcademicProcess < ApplicationRecord
   # ASSOCIATIONS:
   belongs_to :grade
   has_one :student, through: :grade
+  has_one :school, through: :grade
   belongs_to :academic_process
   has_one :period, through: :academic_process
   has_many :payment_reports, as: :payable
@@ -23,8 +24,13 @@ class EnrollAcademicProcess < ApplicationRecord
   validates :enroll_status, presence: true
   # validates :permanence_status, presence: true
 
+  # FUNCTIONS:
   def total_academic_records
     self.academic_records.count
+  end
+
+  def name
+    "(#{self.school.code}) #{self.period.name}:#{self.student.name}" if ( self.period and self.school and self.student)
   end
 
   rails_admin do

@@ -32,7 +32,7 @@ RailsAdmin.config do |config|
 
     end
     new
-    export
+    # export
     bulk_delete
     show
     edit
