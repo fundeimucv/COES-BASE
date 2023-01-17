@@ -1,0 +1,23 @@
+%br
+%br
+.text-center
+  =# image_tag image_url('build_website.png'), width: '40%'
+  =# image_tag image_url(image)
+  =# image_tag main_app.url_for(User.last.image_ci) 
+  =# image_tag main_app.url_for(image.variant(resize_to_limit: [35, 35]))
+  %h3 Sistema de Control de Estudios
+  %h3= Faculty.first.name.titleize if Faculty.any?
+  %h3 UNIVERSIDAD CENTRAL DE VENEZUELA 
+
+  .alert.alert-info
+    %h6.text-orange= 'Por Favor Selecione un rol:'
+    - @roles.each do |rol| 
+      - redirect = rails_admin_path if rol.eql? 'admin'
+      - redirect = student_session_dashboard_path if rol.eql? 'student'
+      - redirect = teacher_session_dashboard_path if rol.eql? 'teacher'
+      = link_to rol.camelize.constantize.model_name.human, redirect, class: 'btn btn-sm btn-warning mx-2'
+    - if false 
+      - exceptionsModels = ['sections_teachers', 'schema_migrations', 'ar_internal_metadata', 'active_storage_blobs', 'active_storage_attachments', 'active_storage_variant_records']
+      - @models.each do |modelName| 
+        - if !exceptionsModels.include? modelName
+          %h5= modelName.capitalize.singularize.camelize.constantize.model_name.human

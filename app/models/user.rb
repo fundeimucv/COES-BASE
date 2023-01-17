@@ -111,24 +111,24 @@ class User < ApplicationRecord
     end
 
     show do
-      field :picture_profile, :active_storage  do
-        label 'Perfil'
-        formatted_value do
-          bindings[:view].tag(:img, { :src => bindings[:object].picture_profile }) << value
-        end
+      # field :picture_profile, :active_storage  do
+
+        # formatted_value do
+        #   bindings[:view].tag(:img, { :src => bindings[:object].picture_profile }) << value
+        # end
         # formatted_value do
         #   bindings[:view].render(partial: "rails_admin/main/image", locals: {object: bindings[:object]})
         # end
-      end
-      field :image_ci, :active_storage  do
-        label 'Perfil'
-      end      
+      # end
+      field :picture_profile, :active_storage 
+      field :image_ci, :active_storage 
       fields :ci, :email, :name, :last_name, :number_phone, :sex, :password
 
     end
 
     list do
       search_by [:email, :name, :last_name, :ci]
+      fields :ci, :email, :name, :last_name, :number_phone, :sex, :picture_profile
     end
 
     export do

@@ -14,6 +14,7 @@ class Admin < ApplicationRecord
   belongs_to :profile, optional: true
 
   # VALIDATIONS:
+  validates :user, presence: true, uniqueness: true
   validates :env_authorizable, presence: true
   validates :user, presence: true
   validates :role, presence: true
@@ -27,6 +28,10 @@ class Admin < ApplicationRecord
   rails_admin do
     navigation_label 'Gestión de Usuarios'
     navigation_icon 'fa-regular fa-user-tie'
+
+    show do
+      fields :user, :role, :env_authorizable, :created_at
+    end
 
     list do
       fields :user, :role, :env_authorizable, :created_at

@@ -28,6 +28,7 @@ Rails.application.routes.draw do
 
   devise_for :users
   root to: "pages#home"
+  get 'pages/multirols', to: 'pages#multirols'
 
   get 'teacher_session/dashboard', to: 'teacher_session#dashboard'
   get 'student_session/dashboard', to: 'student_session#dashboard'

@@ -28,6 +28,7 @@ class Student < ApplicationRecord
   has_many :grades
 
   # VALIDATIONS:
+  validates :user, presence: true, uniqueness: true
   validates :nacionality, presence: true, unless: :new_record?
   validates :marital_status, presence: true, unless: :new_record?
   validates :origin_country, presence: true, unless: :new_record?
@@ -71,7 +72,7 @@ class Student < ApplicationRecord
 
     list do
       search_by :my_search
-      fields :user, :nacionality, :origin_country, :origin_city, :birth_date, :marital_status, :location, :created_at
+      fields :user, :nacionality, :origin_country, :origin_city, :birth_date, :marital_status, :created_at
     end
 
     export do

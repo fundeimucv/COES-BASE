@@ -1,5 +1,9 @@
-es:
+es:  
   admin:
+    table_headers:
+      model_name: 'Entidad'
+      last_created: 'Último Creado'
+      records: 'Registros'
     actions:
       index:
         title: 'Listado'
@@ -476,6 +480,8 @@ es:
         last_name: 'Apellidos'
         number_phone: 'Número telefónico'
         sex: 'Sexo'
+        picture_profile: 'Foto de Perfil'
+        image_ci: 'Imagen de CI'
     scopes:
       academic_record:
         sin_calificar: 'Sin Calificar'

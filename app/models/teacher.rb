@@ -11,7 +11,7 @@ class Teacher < ApplicationRecord
 
   # VALIDATIONS:
   validates :area, presence: true
-  validates :user, presence: true
+  validates :user, presence: true, uniqueness: true
 
   def name
     self.user.name if self.user
