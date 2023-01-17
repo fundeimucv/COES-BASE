@@ -6,7 +6,7 @@ Rails.application.configure do
   # Settings specified here will take precedence over those in config/application.rb.
 
   # Code is not reloaded between requests.
-  config.active_storage.variant_proccessor = :mini_magick  
+  config.active_storage.variant_processor = :mini_magick
   # install libvips:
   # sudo apt install libvips
 
