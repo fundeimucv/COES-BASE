@@ -9,10 +9,9 @@ class AdmissionType < ApplicationRecord
   has_many :students, through: :grades
 
   #VALIDATIONS:
-  validates :name, presence: true
+  validates :name, presence: true, uniqueness: true
 
   rails_admin do
-    navigation_label 'Gestión de Usuarios'
     navigation_icon 'fa-regular fa-user-tag'
 
     list do
@@ -31,6 +30,10 @@ class AdmissionType < ApplicationRecord
 
     edit do
       fields :name, :school
+    end
+
+    export do
+      fields :name
     end
   end
 

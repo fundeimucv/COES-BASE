@@ -28,11 +28,11 @@ RailsAdmin.config do |config|
     dashboard                     # mandatory
     index do                         # mandatory
 
-      except [Location, SectionTeacher, Profile, User, PeriodType, StudyPlan, Period, Course]
+      except [Location, SectionTeacher, Profile, User, StudyPlan, Period, Course, Faculty]
 
     end
     new
-    # export
+    export
     bulk_delete
     show
     edit

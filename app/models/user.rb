@@ -79,7 +79,6 @@ class User < ApplicationRecord
       end
       field :email
       fields :name, :last_name do
-        searchable [:email, :name, :last_name]
         formatted_value do
           value.to_s.upcase
         end
@@ -129,6 +128,11 @@ class User < ApplicationRecord
     end
 
     list do
+      search_by [:email, :name, :last_name, :ci]
+    end
+
+    export do
+      fields :ci, :email, :name, :last_name, :number_phone, :sex
     end
   end
 

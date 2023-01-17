@@ -31,7 +31,7 @@ class Area < ApplicationRecord
   end
 
   rails_admin do
-    navigation_label 'Gestión Adadémica'
+    navigation_label 'Gestión Académica'
     navigation_icon 'fa-regular fa-brain'
 
     list do
@@ -51,6 +51,10 @@ class Area < ApplicationRecord
     edit do
       fields :name, :parent_area_id, :subjects, :subareas
     end 
+
+    export do
+      fields :name
+    end
 
   end
 

@@ -73,6 +73,10 @@ class Grade < ApplicationRecord
     edit do
       fields :student, :study_plan, :admission_type, :registration_status
     end
+
+    export do
+      fields :student, :study_plan, :admission_type, :registration_status
+    end
   end
 
   after_initialize do

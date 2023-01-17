@@ -17,7 +17,7 @@ class Faculty < ApplicationRecord
 	validates :name, presence: true, uniqueness: true
 
 	rails_admin do
-		navigation_label 'Gestión Adadémica'
+		navigation_label 'Gestión Académica'
 		navigation_icon 'fa-regular fa-building-columns'
 
 		list do

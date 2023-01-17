@@ -38,7 +38,7 @@ class School < ApplicationRecord
   end
 
   rails_admin do
-    navigation_label 'Gestión Adadémica'
+    navigation_label 'Gestión Académica'
     navigation_icon 'fa-regular fa-school'
 
     list do
@@ -55,6 +55,10 @@ class School < ApplicationRecord
 
     edit do
       fields :faculty, :code, :name, :type_entity, :bank_accounts
+    end
+
+    export do
+      fields :code, :name, :type_entity
     end
   end
 

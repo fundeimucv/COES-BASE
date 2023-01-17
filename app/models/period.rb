@@ -28,6 +28,10 @@ class Period < ApplicationRecord
     edit do
     	fields :year, :period_type
     end
+
+    export do
+    	fields :year, :period_type
+    end
   end
 
 end

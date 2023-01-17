@@ -26,6 +26,10 @@ class BankAccount < ApplicationRecord
       end
       fields :holder, :bank, :account_type
     end
+
+    export do
+      exclude_fields :id, :created_at, :updated_at
+    end
   end
 
 end

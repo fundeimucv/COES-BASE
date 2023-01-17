@@ -9,7 +9,7 @@ gem 'mini_magick'
 
 gem "aws-sdk-s3", require: false
 
-gem 'rails_admin', '~> 3.0'
+
 # Bundle edge Rails instead: gem "rails", github: "rails/rails", branch: "main"
 gem "rails", "~> 7.0.4"
 
@@ -55,9 +55,18 @@ gem "sassc-rails"
 # Own Gems:
 gem "haml-rails", "~> 2.0"
 
+# Authentication
 gem "devise"
+
+# Autorization
+# gem 'cancancan'
+
+# Administration
+gem 'rails_admin', '~> 3.0'
+
 gem "autoprefixer-rails"
 gem "font-awesome-sass", "~> 6.1"
+
 gem "simple_form", github: "heartcombo/simple_form"
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem

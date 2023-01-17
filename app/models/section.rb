@@ -12,6 +12,7 @@ class Section < ApplicationRecord
   # belongs_to
   belongs_to :course
   belongs_to :teacher, optional: true
+  has_one :user, through: :teacher
 
   # has_one
   has_one :subject, through: :course
@@ -29,7 +30,7 @@ class Section < ApplicationRecord
   has_and_belongs_to_many :secondary_teachers, class_name: 'SectionTeacher'
 
   #ENUMERIZE:
-  enum modality: [:"nota_final", :"equivalencia_externa", :"equivalencia_interna", :diferido, :reparación, :suficiencia]
+  enum modality: [:nota_final, :equivalencia_externa, :equivalencia_interna, :diferido, :reparacion, :suficiencia]
 
 
   # VALIDATIONS:
@@ -75,6 +76,10 @@ class Section < ApplicationRecord
         end
       end
 
+    end
+
+    export do
+      fields :code, :subject, :user, :qualified, :modality
     end
   end
 

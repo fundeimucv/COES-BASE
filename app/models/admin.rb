@@ -38,5 +38,9 @@ class Admin < ApplicationRecord
       #   end
       # end
     end
+
+    export do
+      fields :role, :user
+    end
   end
 end

@@ -46,6 +46,11 @@ class Student < ApplicationRecord
     user.description if user
   end
 
+  def user_ci
+    self.user.ci if self.user
+  end
+
+
   
   rails_admin do
     navigation_label 'Gestión de Usuarios'
@@ -69,8 +74,11 @@ class Student < ApplicationRecord
       fields :user, :nacionality, :origin_country, :origin_city, :birth_date, :marital_status, :location, :created_at
     end
 
-
+    export do
+      fields :user, :nacionality, :origin_country, :origin_city, :birth_date, :marital_status, :location, :created_at
+    end
 
   end
+
 
 end

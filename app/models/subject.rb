@@ -46,7 +46,7 @@ class Subject < ApplicationRecord
   end
 
   rails_admin do
-    navigation_label 'Gestión Adadémica'
+    navigation_label 'Gestión Académica'
     navigation_icon 'fa-regular fa-book'
 
     list do
@@ -95,6 +95,11 @@ class Subject < ApplicationRecord
       field :qualification_type do
         help 'Parcial3 equivale a asignatura con 3 calificaciones parciales'
       end
+
+    end
+
+    export do
+      fields :code, :name, :area, :unit_credits, :ordinal, :qualification_type, :modality
 
     end
   end

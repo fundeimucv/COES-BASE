@@ -9,6 +9,7 @@ class AcademicProcess < ApplicationRecord
   #belongs_to:
   belongs_to :school
   belongs_to :period
+  has_one :period_type, through: :period
 
   #has_many:
   has_many :enroll_academic_processes, dependent: :destroy
@@ -43,6 +44,10 @@ class AcademicProcess < ApplicationRecord
 
     edit do
       fields :school, :period, :subjects, :max_credits, :max_subjects
+    end
+
+    export do
+      fields :school, :period, :period_type, :max_credits, :max_subjects
     end
   end
 

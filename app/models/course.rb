@@ -43,6 +43,10 @@ class Course < ApplicationRecord
       fields :academic_process, :subject, :sections
     end
 
+    export do
+      fields :academic_process, :subject
+    end
+
 
   end
   

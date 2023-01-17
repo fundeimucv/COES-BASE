@@ -5,6 +5,8 @@ es:
         title: 'Listado'
     flash:
       object_not_found: 'Recurso no encontrado'
+    export:
+      select_all_fields: 'Seccionar Todos'
 
   date:
     abbr_day_names:
@@ -224,10 +226,15 @@ es:
   activerecord:
     errors:
       models:
+
         school:
           attributes:
             faculty:
               required: 'requerida'
+        payment_report:
+          attributes:
+            payable:
+              required: 'requerido'
         subject:
           attributes:
             area:
@@ -325,6 +332,11 @@ es:
         student: 'Estudiante'
         period: 'Periodo'
         subject: 'Asignatura'
+        grade: 'Grado'
+        academic_process: 'Proceso Académico'
+        period_type: 'Tipo de Período'
+        user: 'Usuario'
+        subject: 'Asignatura'
       admin:
         user: 'Usuario'
         role: 'Rol'
@@ -346,10 +358,11 @@ es:
         code: 'Código'
         name: 'Nombre'
       bank_account:
-        number: 'Número'
+        code: 'Número'
         holder: 'Titular'
         bank: 'Banco'
         account_type: 'Tipo de Cuenta'
+        school: 'Escuela'
       course:
         academic_process: 'Proceso Académico'
         subject: 'Asignatura'
@@ -386,8 +399,10 @@ es:
         amount: 'Monto'
         transaction_id: 'Número de Transacción'
         transaction_type: 'Tipo de Transacción'
+        transaction_date: 'Fecha de la Transacción'
         origin_bank: 'Banco Origen'
         payable: 'Pagable'
+        created_at: 'Fecha Registro'
       period:
         year: 'Año'
         period_type: 'Tipo de Periodo'
@@ -417,6 +432,9 @@ es:
         qualified: '¿Calificada?'
         modality: 'Modalidad'
         enabled: 'Activa'
+        user: 'Profesor'
+        subject: 'Asignatura'
+        nota_final: 'Final'
       student:
         active: 'Activo'
         disability: 'Discapacidad'
@@ -481,6 +499,17 @@ es:
         pi: 'Pérdida por Inasistencia'
         parcial: 'Parciales'
         par: 'Parciales'
+      section:
+        nota_final: 'Final'
+        equivalencia_externa: 'Equivalencia Externa'
+        equivalencia_interna: 'Equivalencia Interna' 
+        diferido: 'Diferido' 
+        reparacion: 'Reparación'
+        suficiencia: 'Suficiencia'
+      payment_report:
+        transferencia: 'Transferencia'
+        efectivo: 'Efectivo'
+        punto_venta: 'Punto de venta'
         
       <<: *errors
   flash:

@@ -33,5 +33,9 @@ class Teacher < ApplicationRecord
       fields :user, :area
     end
 
+    export do
+      fields :user, :area, :created_at
+    end
+
   end
 end

@@ -24,7 +24,13 @@ class AcademicRecord < ApplicationRecord
   has_one :academic_process, through: :enroll_academic_process
   has_one :grade, through: :enroll_academic_process
   has_one :student, through: :grade
+  has_one :location, through: :student
+  has_one :user, through: :student
   has_one :period, through: :academic_process
+  has_one :period_type, through: :period
+  has_one :course, through: :section
+  has_one :teacher, through: :section
+  has_one :subject, through: :course
 
   #VALIDATIONS:
   validates :section, presence: true
@@ -58,6 +64,13 @@ class AcademicRecord < ApplicationRecord
     edit do
       fields :section, :enroll_academic_process, :first_q, :second_q, :third_q, :final_q, :post_q, :status_q, :type_q
     end
+
+
+    export do
+      fields :final_q, :status_q, :type_q, :section, :enroll_academic_process, :period, :period_type, :student, :user, :location, :subject
+    end
+
+
   end  
 
 end

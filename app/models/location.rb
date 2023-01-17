@@ -15,6 +15,10 @@ class Location < ApplicationRecord
   #ASSOCIATIONS:  
   belongs_to :student, primary_key: :user_id
 
+  def description
+    "#{city} - #{state}: #{municipality}. #{sector}: #{street}, #{house_type} #{house_name}"
+  end
+
   # VALIDATIONS:
   validates :student, presence: true
   validates :state, presence: true
@@ -25,5 +29,11 @@ class Location < ApplicationRecord
   validates :house_type, presence: true
   validates :house_name, presence: true
 
+
+  rails_admin do
+    export do
+      exclude_fields :id, :created_at, :updated_at
+    end
+  end
 
 end

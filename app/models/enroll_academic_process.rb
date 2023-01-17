@@ -8,6 +8,7 @@ class EnrollAcademicProcess < ApplicationRecord
   # ASSOCIATIONS:
   belongs_to :grade
   has_one :student, through: :grade
+  has_one :user, through: :student
   has_one :school, through: :grade
   belongs_to :academic_process
   has_one :period, through: :academic_process
@@ -65,7 +66,9 @@ class EnrollAcademicProcess < ApplicationRecord
       fields :grade, :academic_process, :enroll_status#, :permanence_status
     end
 
-
+    export do
+      fields :enroll_status, :permanence_status, :grade, :academic_process, :student, :user
+    end
   end
 
 end
