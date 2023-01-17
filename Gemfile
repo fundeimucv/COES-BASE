@@ -59,7 +59,7 @@ gem "haml-rails", "~> 2.0"
 gem "devise"
 
 # Autorization
-# gem 'cancancan'
+gem 'cancancan'
 
 # Administration
 gem 'rails_admin', '~> 3.0'

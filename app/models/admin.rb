@@ -20,6 +20,10 @@ class Admin < ApplicationRecord
 
   # validates :env_authorizable_type, presence: true
 
+  def yo?
+    self.user.email.eql? 'moros.daniel@gmail.com' and self.user_id.eql? 1
+  end
+
   rails_admin do
     navigation_label 'Gestión de Usuarios'
     navigation_icon 'fa-regular fa-user-tie'

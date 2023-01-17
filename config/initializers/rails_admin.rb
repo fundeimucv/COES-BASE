@@ -10,7 +10,7 @@ RailsAdmin.config do |config|
   config.current_user_method(&:current_user)
 
   ## == CancanCan ==
-  # config.authorize_with :cancancan
+  config.authorize_with :cancancan
 
   ## == Pundit ==
   # config.authorize_with :pundit
@@ -28,7 +28,8 @@ RailsAdmin.config do |config|
     dashboard                     # mandatory
     index do                         # mandatory
 
-      except [Location, SectionTeacher, Profile, User, StudyPlan, Period, Course, Faculty]
+      except [SectionTeacher, Profile, Location]
+      # except [Location, SectionTeacher, Profile, User, StudyPlan, Period, Course, Faculty]
 
     end
     new

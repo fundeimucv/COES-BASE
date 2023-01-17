@@ -226,7 +226,10 @@ es:
   activerecord:
     errors:
       models:
-
+        admin:
+          attributes:
+            env_authorizable:
+              required: 'requerido'
         school:
           attributes:
             faculty:
