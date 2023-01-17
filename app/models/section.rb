@@ -39,10 +39,13 @@ class Section < ApplicationRecord
   validates :course, presence: true
   validates :modality, presence: true
 
+
+  # FUNCTIONS:
   def name
     "#{self.code}-#{self.course.name}" if self.course
   end
 
+  # RAILS_ADMIN:
   rails_admin do
     navigation_label 'Inscripciones'
     navigation_icon 'fa-solid fa-list'
@@ -59,6 +62,13 @@ class Section < ApplicationRecord
         label 'Descripción'
       end
       fields :teacher, :academic_records
+
+      field :section_list do
+        label 'Listado de seccion'
+        formatted_value do
+          bindings[:view].render(partial: "/sections/download_options", locals: {section: bindings[:object]})
+        end
+      end
     end
 
     edit do

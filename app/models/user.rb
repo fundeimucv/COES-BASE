@@ -64,6 +64,11 @@ class User < ApplicationRecord
 
   # FUNCTIONS:
 
+  def revert_name
+    "#{last_name}, #{name}"    
+  end
+
+
   def description
     "(#{self.ci}) #{self.name} #{self.last_name} #{self.email}"
   end

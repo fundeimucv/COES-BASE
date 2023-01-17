@@ -17,6 +17,16 @@ class Teacher < ApplicationRecord
     self.user.name if self.user
   end
 
+  def description
+    if user
+      aux = user.description
+      aux += " - #{area.name}" if area
+    else
+      aux = 'Sin descripción'
+    end
+    return aux
+  end
+
   rails_admin do
     navigation_label 'Gestión de Usuarios'
     navigation_icon 'fa-regular fa-chalkboard-user'

@@ -26,6 +26,12 @@ Rails.application.routes.draw do
     end
   end
 
+    resources :downloader do
+      member do
+        get 'section_list'
+      end
+    end
+
   devise_for :users
   root to: "pages#home"
   get 'pages/multirols', to: 'pages#multirols'
