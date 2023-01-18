@@ -54,7 +54,7 @@ group :development, :production do
   # Use Sass to process CSS
   gem "sassc-rails"
 
-  gem 'prawn'
+  # gem 'prawn'
   # gem 'prawn-table'
 
   # Own Gems:
