@@ -3,74 +3,78 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
 ruby "3.1.2"
 
-# Use Active Storage variants [https://guides.rubyonrails.org/active_storage_overview.html#transforming-images]
-gem 'image_processing', '~> 1.2'
-gem 'mini_magick'
-
-gem "aws-sdk-s3", require: false
+group :development, :production do
 
 
-# Bundle edge Rails instead: gem "rails", github: "rails/rails", branch: "main"
-gem "rails", "~> 7.0.4"
+  # Use Active Storage variants [https://guides.rubyonrails.org/active_storage_overview.html#transforming-images]
+  gem 'image_processing', '~> 1.2'
+  gem 'mini_magick'
 
-# The original asset pipeline for Rails [https://github.com/rails/sprockets-rails]
-gem "sprockets-rails"
+  gem "aws-sdk-s3", require: false
 
-# Use postgresql as the database for Active Record
-gem "pg", "~> 1.1"
+  # Bundle edge Rails instead: gem "rails", github: "rails/rails", branch: "main"
+  gem "rails", "~> 7.0.4"
 
-# Use the Puma web server [https://github.com/puma/puma]
-gem "puma", "~> 5.0"
+  # The original asset pipeline for Rails [https://github.com/rails/sprockets-rails]
+  gem "sprockets-rails"
 
-# Bundle and transpile JavaScript [https://github.com/rails/jsbundling-rails]
-gem "jsbundling-rails"
+  # Use postgresql as the database for Active Record
+  gem "pg", "~> 1.1"
 
-# Hotwire's SPA-like page accelerator [https://turbo.hotwired.dev]
-gem "turbo-rails"
+  # Use the Puma web server [https://github.com/puma/puma]
+  gem "puma", "~> 5.0"
 
-# Hotwire's modest JavaScript framework [https://stimulus.hotwired.dev]
-gem "stimulus-rails"
+  # Bundle and transpile JavaScript [https://github.com/rails/jsbundling-rails]
+  gem "jsbundling-rails"
 
-# Build JSON APIs with ease [https://github.com/rails/jbuilder]
-gem "jbuilder"
+  # Hotwire's SPA-like page accelerator [https://turbo.hotwired.dev]
+  gem "turbo-rails"
 
-# Use Redis adapter to run Action Cable in production
-gem "redis", "~> 4.0"
+  # Hotwire's modest JavaScript framework [https://stimulus.hotwired.dev]
+  gem "stimulus-rails"
 
-# Use Kredis to get higher-level data types in Redis [https://github.com/rails/kredis]
-# gem "kredis"
+  # Build JSON APIs with ease [https://github.com/rails/jbuilder]
+  gem "jbuilder"
 
-# Use Active Model has_secure_password [https://guides.rubyonrails.org/active_model_basics.html#securepassword]
-# gem "bcrypt", "~> 3.1.7"
+  # Use Redis adapter to run Action Cable in production
+  gem "redis", "~> 4.0"
 
-# Windows does not include zoneinfo files, so bundle the tzinfo-data gem
-gem "tzinfo-data", platforms: %i[ mingw mswin x64_mingw jruby ]
+  # Use Kredis to get higher-level data types in Redis [https://github.com/rails/kredis]
+  # gem "kredis"
 
-# Reduces boot times through caching; required in config/boot.rb
-gem "bootsnap", require: false
+  # Use Active Model has_secure_password [https://guides.rubyonrails.org/active_model_basics.html#securepassword]
+  # gem "bcrypt", "~> 3.1.7"
 
-# Use Sass to process CSS
-gem "sassc-rails"
+  # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
+  gem "tzinfo-data", platforms: %i[ mingw mswin x64_mingw jruby ]
 
-# Own Gems:
-gem "haml-rails", "~> 2.0"
+  # Reduces boot times through caching; required in config/boot.rb
+  gem "bootsnap", require: false
 
-# Authentication
-gem "devise"
+  # Use Sass to process CSS
+  gem "sassc-rails"
 
-# Autorization
-gem 'cancancan'
+  # Own Gems:
+  gem "haml-rails", "~> 2.0"
 
-# Administration
-gem 'rails_admin', '~> 3.0'
+  # Authentication
+  gem "devise"
 
-gem "autoprefixer-rails"
-gem "font-awesome-sass", "~> 6.1"
+  # Autorization
+  gem 'cancancan'
 
-gem 'prawn'
-gem 'prawn-table'
+  # Administration
+  gem 'rails_admin', '~> 3.0'
 
-gem "simple_form", github: "heartcombo/simple_form"
+  gem "autoprefixer-rails"
+  gem "font-awesome-sass", "~> 6.1"
+
+  gem 'prawn'
+  gem 'prawn-table'
+
+  gem "simple_form", github: "heartcombo/simple_form"
+
+end
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
   gem "debug", platforms: %i[ mri mingw x64_mingw ]
