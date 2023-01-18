@@ -54,6 +54,9 @@ group :development, :production do
   # Use Sass to process CSS
   gem "sassc-rails"
 
+  gem 'prawn'
+  # gem 'prawn-table'
+
   # Own Gems:
   gem "haml-rails", "~> 2.0"
 
@@ -68,9 +71,6 @@ group :development, :production do
 
   gem "autoprefixer-rails"
   gem "font-awesome-sass", "~> 6.1"
-
-  gem 'prawn'
-  gem 'prawn-table'
 
   gem "simple_form", github: "heartcombo/simple_form"
 
