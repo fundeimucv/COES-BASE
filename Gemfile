@@ -54,9 +54,8 @@ group :development, :production do
   # Use Sass to process CSS
   gem "sassc-rails"
 
-  # gem 'prawn'
-  gem 'prawn', '~> 2.4'
-  gem 'prawn-table'
+  # gem 'prawn', '~> 2.4'
+  # gem 'prawn-table'
 
   # Own Gems:
   gem "haml-rails", "~> 2.0"
