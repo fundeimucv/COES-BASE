@@ -3,13 +3,13 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
 ruby "3.1.2"
 
-group :production do
-  gem 'wkhtmltopdf-heroku'
-end
+# group :production do
+#   gem 'wkhtmltopdf-heroku'
+# end
 
 group :development, :production do
 
-
+  gem 'wkhtmltopdf-binary'
   # Use Active Storage variants [https://guides.rubyonrails.org/active_storage_overview.html#transforming-images]
   gem 'image_processing', '~> 1.2'
   gem 'mini_magick'
