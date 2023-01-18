@@ -8,6 +8,12 @@ class SectionsController < ApplicationController
 
   # GET /sections/1 or /sections/1.json
   def show
+    respond_to do |format|
+      format.html
+      format.pdf do
+        render pdf: "file_name", template: "sections/show", formats: [:html]
+      end
+    end
   end
 
   # GET /sections/new

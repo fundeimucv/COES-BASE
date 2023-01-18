@@ -3,11 +3,7 @@ Rails.application.routes.draw do
   
   resources :page, only: :show
   resources :period_types
-  resources :academic_processes, :enroll_academic_processes, :academic_records, :periods, :profiles
-
-  resources :courses do
-    resources :sections
-  end
+  resources :academic_processes, :enroll_academic_processes, :academic_records, :periods, :profiles, :sections, :courses
 
   resources :students do
     resources :locations

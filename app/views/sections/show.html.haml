@@ -8,10 +8,10 @@
   = @section.capacity
 %p
   %b Course:
-  = @section.course
+  = @section.course.name
 %p
   %b Teacher:
-  = @section.teacher
+  = @section.teacher.description
 %p
   %b Qualified:
   = @section.qualified
@@ -22,6 +22,16 @@
   %b Enabled:
   = @section.enabled
 
-= link_to 'Edit', edit_section_path(@section)
-\|
-= link_to 'Back', sections_path
+%h3 Estudiantes:
+
+%table.table
+  %thead
+    %tr
+      %th Estudiante
+      %th Calificacion
+
+  %tbody
+    - @section.academic_records.each do |ar|
+      %tr
+        %td= ar.student.name
+        %td= ar.final_q
