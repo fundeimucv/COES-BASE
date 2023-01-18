@@ -67,8 +67,8 @@ gem 'rails_admin', '~> 3.0'
 gem "autoprefixer-rails"
 gem "font-awesome-sass", "~> 6.1"
 
-# gem 'prawn'
-# gem 'prawn-table'
+gem 'prawn'
+gem 'prawn-table'
 
 gem "simple_form", github: "heartcombo/simple_form"
 group :development, :test do
