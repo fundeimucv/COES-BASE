@@ -55,7 +55,8 @@ group :development, :production do
   gem "sassc-rails"
 
   # gem 'prawn'
-  # gem 'prawn-table'
+  gem 'prawn', '~> 2.4'
+  gem 'prawn-table'
 
   # Own Gems:
   gem "haml-rails", "~> 2.0"
