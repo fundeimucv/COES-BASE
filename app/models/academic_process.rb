@@ -4,6 +4,7 @@ class AcademicProcess < ApplicationRecord
     # t.bigint "period_id", null: false
     # t.integer "max_credits"
     # t.integer "max_subjects"
+    # t.integer "modality"
 
   # ASSOCIATIONS:
   #belongs_to:
@@ -17,6 +18,9 @@ class AcademicProcess < ApplicationRecord
   has_many :students, through: :grades
   has_many :courses
   has_many :subjects, through: :courses
+
+  # ENUMERIZE:
+  enum modality: [:semestral, :anual]
 
   #VALIDATIONS:
   validates :school, presence: true
@@ -43,11 +47,11 @@ class AcademicProcess < ApplicationRecord
     end
 
     edit do
-      fields :school, :period, :subjects, :max_credits, :max_subjects
+      fields :school, :period, :modality, :subjects, :max_credits, :max_subjects
     end
 
     export do
-      fields :school, :period, :period_type, :max_credits, :max_subjects
+      fields :school, :period, :period_type, :modality, :max_credits, :max_subjects
     end
   end
 

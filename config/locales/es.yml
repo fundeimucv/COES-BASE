@@ -338,6 +338,7 @@ es:
         enroll_academic_processes: 'Inscripciones en Proceso Académico'
         grades: 'Grados'
         students: 'Estudiantes'
+        modality: 'Modalidad'
       academic_record:
         section: 'Sección'
         enroll_academic_process: 'Inscripción en Proceso Académico'

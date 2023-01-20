@@ -46,6 +46,10 @@ class AcademicRecord < ApplicationRecord
   validates :status_q, presence: true
 
   # FUNCTIONS:
+  def name
+    "#{user.ci_fullname} en #{section.name}" if (user and section)
+  end
+
   def pi?
     perdida_por_inasistencia?
   end

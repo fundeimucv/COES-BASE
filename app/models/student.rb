@@ -38,7 +38,7 @@ class Student < ApplicationRecord
   # How to validate if student is not created for assosiation
 
   # SCOPES:
-  scope :my_search, -> (keyword) { joins(:user).where("users.ci LIKE '%#{keyword}%' OR users.email LIKE '%#{keyword}%' OR users.name LIKE '%#{keyword}%' OR users.last_name LIKE '%#{keyword}%' OR users.number_phone LIKE '%#{keyword}%'") }
+  scope :custom_search, -> (keyword) { joins(:user).where("users.ci LIKE '%#{keyword}%' OR users.email LIKE '%#{keyword}%' OR users.first_name LIKE '%#{keyword}%' OR users.last_name LIKE '%#{keyword}%' OR users.number_phone LIKE '%#{keyword}%'") }
 
 
   # FUNCTIONS:
@@ -58,7 +58,10 @@ class Student < ApplicationRecord
     navigation_icon 'fa-regular fa-user-graduate'
 
     edit do
-      fields :user, :nacionality, :origin_country, :origin_city, :birth_date, :marital_status, :location
+      field :user do
+        # searchable :full_name
+      end
+      fields :nacionality, :origin_country, :origin_city, :birth_date, :marital_status, :location
       # field :nacionality do
       #   formatted_value do 
       #     value.to_s.upcase
@@ -71,8 +74,8 @@ class Student < ApplicationRecord
     end
 
     list do
-      search_by :my_search
-      fields :user, :nacionality, :origin_country, :origin_city, :birth_date, :marital_status, :created_at
+      search_by :custom_search
+      fields :user, :origin_city, :birth_date, :marital_status, :created_at
     end
 
     export do

@@ -37,6 +37,9 @@ class Subject < ApplicationRecord
     self.absoluta? or self.force_absolute?
   end
 
+  def desc
+    "#{code}: #{name}"
+  end
 
   def conv_header
 

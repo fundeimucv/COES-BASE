@@ -56,7 +56,7 @@ class User < ApplicationRecord
   # VALIDATIONS:
   validates :ci, presence: true, uniqueness: true
   validates :email, presence: true, uniqueness: true
-  validates :name, presence: true#, unless: :new_record?
+  validates :first_name, presence: true#, unless: :new_record?
   validates :last_name, presence: true#, unless: :new_record?
   validates :number_phone, presence: true, unless: :new_record?
   validates :sex, presence: true, unless: :new_record?
@@ -65,17 +65,33 @@ class User < ApplicationRecord
   # FUNCTIONS:
 
   def reverse_name
-    "#{last_name}, #{name}"    
+    "#{last_name}, #{first_name}"
   end
 
 
   def description
-    "(#{self.ci}) #{self.name} #{self.last_name} #{self.email}"
+    "#{self.ci} (#{self.email}): #{self.first_name} #{self.last_name}"
+  end
+
+  def ci_fullname
+    "#{ci}: #{full_name}"
+  end
+
+  def name
+    description
+  end
+
+  def full_name
+    "#{first_name} #{last_name}"
   end
 
   # RAILS_ADMIN:
 
   rails_admin do
+    # def self.full_name
+    #   "#{name} #{last_name}"
+    # end
+
     edit do
       field :ci do
         html_attributes do
@@ -83,7 +99,7 @@ class User < ApplicationRecord
         end
       end
       field :email
-      fields :name, :last_name do
+      fields :first_name, :last_name do
         formatted_value do
           value.to_s.upcase
         end
@@ -127,17 +143,17 @@ class User < ApplicationRecord
       # end
       field :picture_profile, :active_storage 
       field :image_ci, :active_storage 
-      fields :ci, :email, :name, :last_name, :number_phone, :sex, :password
+      fields :ci, :email, :first_name, :last_name, :number_phone, :sex, :password
 
     end
 
     list do
-      search_by [:email, :name, :last_name, :ci]
-      fields :ci, :email, :name, :last_name, :number_phone, :sex, :picture_profile
+      search_by [:email, :first_name, :last_name, :ci]
+      fields :ci, :email, :first_name, :last_name, :number_phone, :sex, :picture_profile
     end
 
     export do
-      fields :ci, :email, :name, :last_name, :number_phone, :sex
+      fields :ci, :email, :first_name, :last_name, :number_phone, :sex
     end
   end
 

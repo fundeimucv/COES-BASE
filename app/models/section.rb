@@ -23,6 +23,8 @@ class Section < ApplicationRecord
 
   # has_many
   has_many :academic_records, dependent: :destroy
+  # accepts_nested_attributes_for :academic_records
+
   has_many :enroll_academic_process, through: :academic_records
   has_many :grades, through: :enroll_academic_process
   has_many :students, through: :grades
