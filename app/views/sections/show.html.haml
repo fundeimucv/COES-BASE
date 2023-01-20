@@ -10,7 +10,7 @@
     %tr
       %td
         %b FECHA DE EMISIÓN:
-        = Date.today.strftime('%d/%m/%Y')
+        = Date.today.strftime('%d/%m/%Y %I:%M %p')
       %td
         %b ACTA NO.:
         = @section.number_acta
@@ -19,7 +19,7 @@
         %b EJERCICIO:
         = @section.period.name
       %td
-        %b PERIODO:
+        %b PERIODO ACADÉMICO:
         = @period.name
     %tr
       %td

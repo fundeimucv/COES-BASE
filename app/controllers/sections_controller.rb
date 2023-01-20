@@ -14,7 +14,7 @@ class SectionsController < ApplicationController
     respond_to do |format|
       format.html
       format.pdf do
-        render pdf: "ACTA#{@section.number_acta}", template: "sections/show", formats: [:html], disposition: 'attachment', page_size: 'letter'
+        render pdf: "ACTA#{@section.number_acta}", template: "sections/show", formats: [:html], page_size: 'letter'
       end
     end
   end

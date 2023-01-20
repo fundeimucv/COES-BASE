@@ -121,7 +121,7 @@ class AcademicRecord < ApplicationRecord
 
   def conv_descrip force_final = false # convocados
 
-    data = [self.user.ci, self.user.reverse_name, self.study_plan.name]
+    data = [self.user.ci, self.user.reverse_name, self.study_plan.code]
 
     if force_final
       data << I18n.t('aplazado')
