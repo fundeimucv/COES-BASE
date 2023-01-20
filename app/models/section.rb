@@ -19,6 +19,7 @@ class Section < ApplicationRecord
   has_one :academic_process, through: :course
   has_one :period, through: :academic_process
   has_one :school, through: :academic_process
+  has_one :faculty, through: :school
 
   # has_many
   has_many :academic_records, dependent: :destroy
@@ -41,6 +42,33 @@ class Section < ApplicationRecord
 
 
   # FUNCTIONS:
+
+  def conv_long
+    "U#{self.period.period_type.code}"
+  end
+
+  def conv_type
+    "#{conv_initial_type}S#{self.period.period_type.code.upcase}"
+  end
+
+  def conv_initial_type
+    case modality
+    when 'nota_final'
+      'F'
+    when 'equivalencia_externa'
+      'EE'
+    when 'equivalencia_interna'
+      'EI'
+    else
+      modality.first.upcase if modality
+    end
+  end
+
+
+  def number_acta
+    "#{self.subject.code.upcase}#{self.code.upcase} #{self.period.name_revert}"
+  end
+
   def name
     "#{self.code}-#{self.course.name}" if self.course
   end

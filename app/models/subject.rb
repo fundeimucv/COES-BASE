@@ -8,6 +8,7 @@ class Subject < ApplicationRecord
   # t.integer "qualification_type"
   # t.integer "modality"
   # t.bigint "area_id", null: false  
+  # t.boolean "force_absolute", default: false  
 
   # ASSOCIATIONS:
   belongs_to :area
@@ -32,15 +33,32 @@ class Subject < ApplicationRecord
   scope :custom_search, -> (keyword) {joins([:area]).where("name LIKE ? or code LIKE ? or area.name LIKE ?", "%#{keyword}%", "%#{keyword}%", "%#{keyword}%")} 
 
   # FUNCTIONS: 
+  def as_absolute?
+    self.absoluta? or self.force_absolute?
+  end
+
+
+  def conv_header
+
+    data = ["N°", "CÉDULA DE IDENTIDAD", "APELLIDOS Y NOMBRES", "COD. PLAN", "CALIF. DESCR.", "TIPO", "CALIF. EN LETRAS"]
+
+    data.insert(6, "CALIF. NUM.") unless self.as_absolute?
+
+    return data
+
+  end
+
+
+
   def modality_initial_letter
     case modality
-    when :obligatoria
+    when 'obligatoria'
       'OB'
-    when :electiva
+    when 'electiva'
       'E'
-    when :optativa
+    when 'optativa'
       'OP'
-    when :proyecto
+    when 'proyecto'
       'P'
     end      
   end

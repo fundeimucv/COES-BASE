@@ -64,7 +64,7 @@ class User < ApplicationRecord
 
   # FUNCTIONS:
 
-  def revert_name
+  def reverse_name
     "#{last_name}, #{name}"    
   end
 

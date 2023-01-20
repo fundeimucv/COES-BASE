@@ -1,4 +1,16 @@
-es:  
+es:
+  diferido: 'ND'
+  final: 'NF'
+  reparacion: 'NR'
+  perdida_por_inasistencia: 'PI'
+  parcial: 'PR'
+  retirado: 'RT'
+  aprobado: 'A'
+  aplazado: 'AP'
+  sin_calificar: 'SC'
+  trimestre1: 'SC'
+  trimestre2: 'SC'
+
   admin:
     table_headers:
       model_name: 'Entidad'

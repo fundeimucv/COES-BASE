@@ -1,37 +1,76 @@
-%p#notice= notice
+.text-center.py-2
+  = image_tag wicked_pdf_asset_base64('logo_ucv.png'), class: 'img-fluid mb-2' 
+  %p UNIVERSIDAD CENTRAL DE VENEZUELA
+  %p= "CONTROL DE ESTUDIO #{@school.type_entity.upcase}"
+  %p= @school.name.upcase
+  %p PLANILLA DE EXAMEN
 
-%p
-  %b Code:
-  = @section.code
-%p
-  %b Capacity:
-  = @section.capacity
-%p
-  %b Course:
-  = @section.course.name
-%p
-  %b Teacher:
-  = @section.teacher.description
-%p
-  %b Qualified:
-  = @section.qualified
-%p
-  %b Modality:
-  = @section.modality
-%p
-  %b Enabled:
-  = @section.enabled
-
-%h3 Estudiantes:
-
-%table.table
+%table.table.table-sm.table-bordered
   %thead
     %tr
-      %th Estudiante
-      %th Calificacion
+      %td
+        %b FECHA DE EMISIÓN:
+        = Date.today.strftime('%d/%m/%Y')
+      %td
+        %b ACTA NO.:
+        = @section.number_acta
+    %tr
+      %td
+        %b EJERCICIO:
+        = @section.period.name
+      %td
+        %b PERIODO:
+        = @period.name
+    %tr
+      %td
+        %b FACULTAD:
+        = @section.faculty.name
+      %td
+        %b TIPO DE CONVOCATORIA:
+        = @section.conv_type
+    %tr
+      %td
+        %b ESCUELA:
+        = @school.name
+      %td
+%br
+
+%table.table.table-borderless.table-sm.text-center
+  %thead
+    %tr 
+      %th ASIGNATURA
+      %th COD ASIG
+      %th UNI. CRÉDITOS
+      %th TIPO
+      %th SECCIÓN
+      %th DURACIÓN
 
   %tbody
-    - @section.academic_records.each do |ar|
+    %tr
+      %td= @subject.name
+      %td= @subject.code.upcase
+      %td= @subject.unit_credits
+      %td= @subject.modality_initial_letter
+      %td= @section.code.upcase
+      %td= @section.conv_long
+
+
+%table.table.table-sm.table-striped
+  %thead
+    %tr
+      - @section.subject.conv_header.each do |header| 
+        %th= header.html_safe
+
+  %tbody
+    - @section.academic_records.each_with_index do |ar, i| 
+      - if ar.have_post_q?
+        %tr
+          %td= i+1
+          - conv_descrip = ar.conv_descrip true
+          - conv_descrip.each do |desc|
+            %td= desc
       %tr
-        %td= ar.student.name
-        %td= ar.final_q
+        %td= i+1
+        - ar.conv_descrip.each do |desc|
+          %td= desc
+

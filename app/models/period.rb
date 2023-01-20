@@ -17,6 +17,10 @@ class Period < ApplicationRecord
 	validates :period_type, presence: true
 	validates_uniqueness_of :year, scope: [:period_type], message: 'Periodo existente', field_name: false
 
+	def name_revert
+		"#{period_type.code.upcase}#{year}" if period_type
+	end
+
 	def name
 		"#{year}-#{period_type.code.upcase}" if period_type
 	end
