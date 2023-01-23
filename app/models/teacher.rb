@@ -17,6 +17,15 @@ class Teacher < ApplicationRecord
     self.user.name if self.user
   end
 
+  # CALLBACKS:
+  after_destroy :check_user_for_destroy
+  
+  # HOOKS:
+  def check_user_for_destroy
+    user_aux = User.find self.user_id
+    user_aux.delete if user_aux.without_rol?
+  end  
+
   def description
     if user
       aux = user.description

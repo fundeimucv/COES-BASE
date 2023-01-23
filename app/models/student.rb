@@ -40,6 +40,15 @@ class Student < ApplicationRecord
   # SCOPES:
   scope :custom_search, -> (keyword) { joins(:user).where("users.ci LIKE '%#{keyword}%' OR users.email LIKE '%#{keyword}%' OR users.first_name LIKE '%#{keyword}%' OR users.last_name LIKE '%#{keyword}%' OR users.number_phone LIKE '%#{keyword}%'") }
 
+  # CALLBACKS:
+  after_destroy :check_user_for_destroy
+  
+  # HOOKS:
+  def check_user_for_destroy
+    user_aux = User.find self.user_id
+    user_aux.delete if user_aux.without_rol?
+  end
+
 
   # FUNCTIONS:
 
