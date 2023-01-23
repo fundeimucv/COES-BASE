@@ -50,6 +50,12 @@ RailsAdmin.config do |config|
   #   visible false
   # end
 
+  # config.model 'User' do
+  #   configure :preview do
+  #     children_fields [:name, :last_name, :email, :ci]
+  #   end
+  # end
+
   config.model "ActiveStorage::Blob" do
     visible false
   end
