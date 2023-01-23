@@ -242,6 +242,9 @@ es:
   activerecord:
     errors:
       models:
+        students:
+          attributes:
+            user: 'requerido'
         admin:
           attributes:
             env_authorizable:
@@ -489,7 +492,8 @@ es:
         email: 'Correo Electrónico'
         ci: 'Cédula de identidad'
         password: 'Contraseña'
-        name: 'Nombres'
+        password_confirmation: 'Confirmar Contraseña'
+        first_name: 'Nombres'
         last_name: 'Apellidos'
         number_phone: 'Número telefónico'
         sex: 'Sexo'

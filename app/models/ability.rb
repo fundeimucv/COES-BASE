@@ -9,6 +9,7 @@ class Ability
     alias_action :read, :update, to: :ru
     alias_action :create, :read, to: :cr
     alias_action :create, :update, to: :cu
+    alias_action :create, :update, :export, to: :cue
 
     user ||= User.new
 
@@ -21,8 +22,8 @@ class Ability
       if user.admin.yo?
         can :manage, :all
       elsif user.admin.jefe_control_estudio?
-        can :manage, [User, Admin, Student, Teacher, Area, Subject, School, Bank, BankAccount, PaymentReport, Course, Grade, AcademicProcess, EnrollAcademicProcess, AcademicRecord, Section, AdmissionType, PeriodType, Location]
-        can :read, [Faculty]
+        can :manage, [Admin, Student, Teacher, Area, Subject, School, Bank, BankAccount, PaymentReport, Course, Grade, AcademicProcess, EnrollAcademicProcess, AcademicRecord, Section, AdmissionType, PeriodType, Location]
+        can :crue, [User, Faculty]
       else
         cannot :manage, [User, Admin, Student, Teacher, Area, Subject, School, Bank, BankAccount, PaymentReport, Course, Grade, AcademicProcess, EnrollAcademicProcess, AcademicRecord, Section, AdmissionType, PeriodType, Location]
       end

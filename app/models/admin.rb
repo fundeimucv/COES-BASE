@@ -25,6 +25,15 @@ class Admin < ApplicationRecord
     self.user.email.eql? 'moros.daniel@gmail.com' and self.user_id.eql? 1
   end
 
+  # CALLBACKS:
+  after_destroy :check_user_for_destroy
+  
+  # HOOKS:
+  def check_user_for_destroy
+    user_aux = User.find self.user_id
+    user_aux.delete if user_aux.without_rol?
+  end  
+
   rails_admin do
     navigation_label 'Gestión de Usuarios'
     navigation_icon 'fa-regular fa-user-tie'
