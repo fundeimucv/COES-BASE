@@ -74,6 +74,7 @@ group :development, :production do
 
   # Administration
   gem 'rails_admin', '~> 3.0'
+  gem "rails_admin_import", "~> 3.0"  
 
   gem "autoprefixer-rails"
   gem "font-awesome-sass", "~> 6.1"

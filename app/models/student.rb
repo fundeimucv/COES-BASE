@@ -52,6 +52,12 @@ class Student < ApplicationRecord
   end
 
 
+  # HOOKS OR CALLBACKS:
+  # IMPORT:
+  # def before_import_save(record)
+  #     self.user_id = record[:user_id]
+  #     self.ci = record[:ci]
+  # end  
   
   rails_admin do
     navigation_label 'Gestión de Usuarios'
@@ -80,6 +86,11 @@ class Student < ApplicationRecord
 
     export do
       fields :user, :nacionality, :origin_country, :origin_city, :birth_date, :marital_status, :location, :created_at
+    end
+
+    import do
+      field :user
+      # mapping_key_list [:user_ci, :user_email]
     end
 
   end
