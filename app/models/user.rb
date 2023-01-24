@@ -174,6 +174,7 @@ class User < ApplicationRecord
     end
 
     list do
+      items_per_page 10
       search_by :my_search #[:email, :first_name, :last_name, :ci]
       fields :ci, :email, :first_name, :last_name, :number_phone, :sex, :picture_profile
     end
