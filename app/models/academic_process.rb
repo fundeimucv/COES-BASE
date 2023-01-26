@@ -30,7 +30,7 @@ class AcademicProcess < ApplicationRecord
   validates :max_subjects, presence: true
 
   def name
-    "#{self.school.code} | #{self.period.name}" if self.school and self.period
+    "#{self.school.code} | #{self.period.name}" if (self.school and self.period)
   end
 
   def total_enroll_academic_processes
@@ -48,7 +48,12 @@ class AcademicProcess < ApplicationRecord
     end
 
     edit do
-      fields :school, :period, :modality, :subjects, :max_credits, :max_subjects
+      field :school
+      field :period
+      field :modality
+      field :subjects
+      field :max_credits
+      field :max_subjects
     end
 
     export do
