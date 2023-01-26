@@ -57,7 +57,12 @@ class AcademicProcess < ApplicationRecord
     end
 
     export do
-      fields :school, :period, :period_type, :modality, :max_credits, :max_subjects
+      field :school
+      field :period
+      field :modality
+      field :subjects
+      field :max_credits
+      field :max_subjects
     end
   end
 
