@@ -1,6 +1,10 @@
 Rails.application.routes.draw do
   mount RailsAdmin::Engine => '/admin', as: 'rails_admin'
+
+  # match "/admin/:model_name/import" => "custom_admin#import" , :as => "import", :via => [:get, :post]
   
+  match "/importer/students" => "importer#students" , :as => "importer_students", :via => [:get, :post]
+
   resources :page, only: :show
   resources :period_types
   resources :academic_processes, :enroll_academic_processes, :academic_records, :periods, :profiles, :sections, :courses

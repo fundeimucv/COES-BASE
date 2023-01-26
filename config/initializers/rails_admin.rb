@@ -24,11 +24,21 @@ RailsAdmin.config do |config|
   ## To disable Gravatar integration in Navigation Bar set to false
   config.show_gravatar = false
 
+  # IMPORTER:
+
+  config.configure_with(:import) do |config|
+    config.logging = false
+    config.line_item_limit = 3000
+    config.update_if_exists = true
+    config.rollback_on_error = false
+  end
+
+
   config.actions do
     dashboard                     # mandatory
     index do                         # mandatory
 
-      except [SectionTeacher, Profile, Location]
+      except [SectionTeacher, Profile, Location, Grade, User]
       # except [Location, SectionTeacher, Profile, User, StudyPlan, Period, Course, Faculty]
 
     end

@@ -151,17 +151,7 @@ class AcademicRecord < ApplicationRecord
     navigation_icon 'fa-solid fa-signature'
 
     list do
-      field :period do
-        searchable :name
-        filterable :name
-        sortable :name
-      end
-      field :subject do
-        searchable :name
-        filterable :name
-        sortable :name
-      end
-      field :student do
+      fields :period, :subject, :student do
         searchable :name
         filterable :name
         sortable :name

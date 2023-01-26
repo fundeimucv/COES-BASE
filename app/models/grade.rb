@@ -25,18 +25,20 @@ class Grade < ApplicationRecord
   enum graduate_status: [:no_graduable, :tesista, :posible_graduando, :graduando, :graduado]
 
   # VALIDATIONS:
-  validates :student, presence: true
+  # validates :student, presence: true
   validates :study_plan, presence: true
   validates :admission_type, presence: true
+
+  validates_uniqueness_of :study_plan, scope: [:student], message: 'El estudiante ya tiene el grado asociado', field_name: false
 
   # FUNCTIONS:
 
   def name
-    "#{student.name}| #{study_plan.name}"
+    "#{study_plan.name}: #{student.name} (#{admission_type.name})" if study_plan and student and admission_type
   end
 
   def description
-    "Plan de Estudio: #{self.study_plan.name}, Admitido vía: #{admission_type.name}, Estado de Inscripción: #{registration_status.titleize}"
+    "Plan de Estudio: #{study_plan.name}, Admitido vía: #{admission_type.name}, Estado de Inscripción: #{registration_status.titleize}" if study_plan and admission_type and registration_status
   end
 
   def numbers
@@ -54,24 +56,14 @@ class Grade < ApplicationRecord
 
     show do
       field :student
-      field :numbers do
-        label 'Números'
-      end
-      field :description do
-        label 'Descripción'
-      end
-
-      field :enroll_academic_processes do
-        label 'Inscripciones en Periodo'
-      end
-
-      field :academic_records do
-        label 'Registros Académicos'
-      end
+      field :numbers
+      field :description
+      field :enroll_academic_processes
+      # field :academic_records 
     end
 
     edit do
-      fields :student, :study_plan, :admission_type, :registration_status
+      fields :study_plan, :admission_type, :registration_status
     end
 
     export do

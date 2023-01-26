@@ -13,6 +13,12 @@ class BankAccount < ApplicationRecord
   belongs_to :school
   # has_one :school
 
+
+  # FUNCTIONS:
+  def name
+    "#{holder} - #{account_type} : #{bank.name}" if bank
+  end
+
   rails_admin do
     navigation_label 'Finanzas'
     navigation_icon 'fa-solid fa-piggy-bank'

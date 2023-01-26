@@ -16,8 +16,8 @@ class Ability
     if user.admin?
       can :access, :rails_admin
       can :manage, :dashboard
-      # cannot :import, :all
-      # can :import, [Student, Teacher, Subject, Period, AcademicRecord]
+      cannot :import, :all
+      can :import, [User, Student, Teacher, Subject, Period, AcademicRecord]
 
       if user.admin.yo?
         can :manage, :all

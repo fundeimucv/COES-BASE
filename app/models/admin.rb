@@ -10,6 +10,8 @@ class Admin < ApplicationRecord
 
   # ASSOCIATIONS:
   belongs_to :user
+  accepts_nested_attributes_for :user
+  
   belongs_to :env_authorizable, polymorphic: true
   belongs_to :profile, optional: true
 

@@ -17,7 +17,7 @@ class User < ApplicationRecord
   # t.string "last_sign_in_ip"  
 
   # ENUMERIZE:
-  enum sex: [:masculino, :femenino]
+  enum sex: [:femenino, :masculino]
 
   # DEVISE MODULES:
   devise :database_authenticatable, :registerable, :rememberable
@@ -58,23 +58,30 @@ class User < ApplicationRecord
   validates :email, presence: true, uniqueness: true
   validates :first_name, presence: true#, unless: :new_record?
   validates :last_name, presence: true#, unless: :new_record?
-  validates :number_phone, presence: true, unless: :new_record?
-  validates :sex, presence: true, unless: :new_record?
+
+  # validates :number_phone, presence: true, unless: :new_record?
+  # validates :sex, presence: true, unless: :new_record?
   
   # validates :password, presence: true, confirmation: true
   # validates :password_confirmation, presence: true
   # attr_accessor :password_confirmation
 
   # SCOPES:
-
   scope :my_search, -> (keyword) {where("ci ILIKE '%#{keyword}%' OR email ILIKE '%#{keyword}%' OR first_name ILIKE '%#{keyword}%' OR last_name ILIKE '%#{keyword}%' OR number_phone ILIKE '%#{keyword}%'") }
 
   # CALLBACKS:
   before_save :set_default_values
 
   # HOOKS:
+  def after_import_save(record)
+    # called on the model after it is saved
+    p "<   #{record}   >".center(200, "-") 
+  end
+
+
   def set_default_values
     self.upcases
+    self.set_ci_to_i
     self.set_default_password
   end
 
@@ -97,18 +104,24 @@ class User < ApplicationRecord
 
   def set_default_password
     self.password = self.ci if self.password.blank?
-  end  
+  end
+
+  def set_ci_to_i
+    self.ci = self.ci.to_i.to_s if !self.ci.blank?
+  end 
   # INTENTOS FALLIDOS REGEXP, AHORA INCLUYE Ñ PERO FALTA EL ACENTO
   # regexp_español = "/^[a-zA-ZÀ-ÿ\u00f1\u00d1]+(\s*[a-zA-ZÀ-ÿ\u00f1\u00d1]*)*[a-zA-ZÀ-ÿ\u00f1\u00d1]+$/g"
   # regexp_español2 = "/[^A-Z\u00e0-\u00fc| ]/g"
   # regexp_español3 = "/[^a-zA-Z\u00C0-\u017F| ]/g" 
   # regexp_español4 = "/[^a-zA-ZÀ-ÿ\u00f1\u00d1 ]+(\s*[a-zA-ZÀ-ÿ\u00f1\u00d1]*)*[a-zA-ZÀ-ÿ\u00f1\u00d1]+$/g"
   # regexp_español_ori = "/[^A-Za-z| ]/g"
+  # Para Probar: .replace(/[\x00-\x09\x0B\x0C\x0E-\x1F\x7F-\x9F]/g, '');
 
   regexp_español3 = "/[^a-zA-Z\u00C1\u00C9\u00CD\u00D3\u00DA\u00DC\u00E1\u00E9\u00ED\u00F3\u00FA\u00FC| ]/g" #√
 
   # RAILS_ADMIN:
   rails_admin do
+    navigation_icon 'fa-regular fa-user'
     # def self.full_name
     #   "#{name} #{last_name}"
     # end
@@ -181,6 +194,12 @@ class User < ApplicationRecord
 
     export do
       fields :ci, :email, :first_name, :last_name, :number_phone, :sex
+    end
+
+    import do
+      fields :ci, :email, :first_name, :last_name#, :student, :teacher
+      mapping_key :ci 
+
     end
 
   end

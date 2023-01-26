@@ -4,7 +4,10 @@ class Teacher < ApplicationRecord
 
   # ASSOCIATIONS:
   belongs_to :user
+  accepts_nested_attributes_for :user
+
   belongs_to :area
+  # accepts_nested_attributes_for :area
   # has_and_belongs_to_many :secondary_teachers, class_name: 'SectionTeacher'
 
   has_many :sections
@@ -56,5 +59,8 @@ class Teacher < ApplicationRecord
       fields :user, :area, :created_at
     end
 
+    import do
+      fields :user_id, :area_id
+    end
   end
 end

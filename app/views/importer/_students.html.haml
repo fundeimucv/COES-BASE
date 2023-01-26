@@ -1,0 +1,168 @@
+- title = 'Ver ejemplo de archivo a cargar'
+
+%fieldset
+  .control-group.row.mb-3
+    %label.col-sm-2.col-form-label.text-md-end Ayuda
+    .controls.col-sm-10{"data-nestedone": true}
+      %ul.nav.collapse{style: "display: none;"}
+      .btn-group
+        %a.btn.btn-info.toggler{rel: :tooltip, data: {'bs-original-title': title}, role: :button, onclick: "$('#showInstructions').toggleClass('d-none')"}
+          %i.fas.fa-chevron-right
+          Ejemplo
+        - title =   "El formato del archivo a utilizar es .csv "
+        - title +=   "Para obtener información de cómo exportar archivos .csv en Excel haga click en la ayuda"
+        %a.btn.btn-warning.mx-2{href: 'https://support.office.com/es-es/article/importar-o-exportar-archivos-de-texto-txt-o-csv-5250ac4c-663c-47ce-937b-339e391393ba', target: '_blank', rel: :tooltip, data: {'bs-original-title': title}}
+          %i.fa-solid.fa-arrow-up-right-from-square
+          Ayuda archivos .csv 
+
+    #showInstructions.d-none
+      = render partial: '/importer/instructions_csv_students'
+
+= form_tag("/importer/students", multipart: true, class: 'form-horizontal') do
+
+  %fieldset
+    %h6.alert.alert-danger
+      %span.mb-0 ✋🏽
+      %b !Atención!
+      Los valores seleccionados a continuación se aplicarán a todos los registros que no incluyan la información (por defecto).
+      Si el registro ya existe en el sistema, los datos suministrado serán actualizados.
+
+    #school_field.control-group.row.mb-3.enum_type
+      %label.col-sm-2.col-form-label.text-md-end{for: "school_field"} Escuela
+      .col-sm-10.controls
+        - @school_id = School.first.id #if School.count.eql? 1
+        = select(nil, :school_id, School.all.collect{|o| [ o.description, o.id ] }, { include_blank: 'Seleccione Escuela...', selected: @school_id}, {class: "form-control ra-filtering-select-input ui-autocomplete-input", required: true})
+        .form-text
+          %span.label.label-danger Requerido
+    #options
+      #study_plan_field.control-group.row.mb-3.enum_type
+        %label.col-sm-2.col-form-label.text-md-end{for: "study_plan_field"} Plan de Estudio
+        .col-sm-10.controls
+          - @study_plan_id = StudyPlan.first.id #if StudyPlan.count.eql? 1
+
+          = grouped_collection_select nil, :study_plan_id, School.all, :study_plans, :description, :id, :desc, {:prompt => "Seleccione plan de estudio por defecto...", selected: @study_plan_id}, { class: 'form-control', required: true}
+          .form-text
+            %span.label.label-danger Requerido
+
+      #admission_type_field.control-group.row.mb-3.enum_type
+        %label.col-sm-2.col-form-label.text-md-end{for: "admission_type_field"} Tipo de Ingreso
+        .col-sm-10.controls
+          = grouped_collection_select nil, :admission_type_id, School.all, :admission_types, :description, :id, :name, {:prompt => "Selecciona el tipo de ingreso a la escuela..."}, { class: 'form-control', required: true}
+          .form-text
+            %span.label.label-danger Requerido
+
+    #registration_status_field.control-group.row.mb-3
+      %label.col-sm-2.col-form-label.text-md-end{for: "registration_status_field"} Estado de Registro
+      .col-sm-10.controls
+        - Grade.registration_statuses.map do |k,v|
+          %label.btn.btn-secondary.btn-sm.tooltip-btn{'data_toggle': :tooltip, title: k.titleize}
+            = radio_button_tag 'registration_status', k, false
+            = "#{k.upcase}"
+        .form-text
+          %span.label.label-default Optional
+
+    #file_field.control-group.row.mb-3
+      %label.col-sm-2.col-form-label.text-md-end{for: "file_field"} Archivo
+      .col-sm-10.controls
+        = file_field_tag :datafile, required: true, class: 'form-control', accept: ".csv"
+        .form-text
+          %span.label.label-danger Requerido
+
+
+
+
+  - if false
+    .input-group.filtering-select
+      %h6 Elija la Escuela
+
+      = select(nil, :school_id, School.all.collect{|o| [ o.description, o.id ] }, { include_blank: 'Seleccione Escuela...'}, {class: "form-control ra-filtering-select-input ui-autocomplete-input", required: true})
+
+    #options
+      .input-group
+        %h6 Elija el Plan de Estudio (Por defecto):
+        = grouped_collection_select nil, :study_plan_id, School.all, :study_plans, :description, :id, :desc, {:prompt => "Seleccione plan de estudio por defecto..."}, { class: 'form-control mt-md-1', required: true}
+
+      =# grouped_collection_select nil, :periodo_id, School.all, :periodos, :descripcion, :id, :id, {:prompt => "Selecciona el período de ingreso a la facultad..."}, { class: 'form-control mt-md-3', required: true}
+      .border.mt-3.p-3
+        %h6 Elija el Modalidad de Ingreso (Por defecto):
+        = grouped_collection_select nil, :admission_type_id, School.all, :admission_types, :description, :id, :name, {:prompt => "Selecciona el tipo de ingreso a la escuela..."}, { class: 'form-control mt-md-3', required: true}
+
+    .border.mt-3.p-3
+      %h6 Elija el Estado Inicial de Inscripción (Por defecto):
+
+      - Grade.registration_statuses.map do |k,v|
+        %label.btn.btn-secondary.btn-sm.tooltip-btn{'data_toggle': :tooltip, title: k.titleize}
+          = radio_button_tag '[grade]registration_status', k, false, required: true, class: ''
+          = "#{k.upcase}"
+    
+    = file_field_tag :datafile, required: true, class: 'form-control', accept: ".csv"
+    
+    - if false  
+      .border.mt-3.p-3
+        %h6 
+          ¿Enviar Correo de Bienvenida?:
+          = check_box_tag 'enviar_correo', true, true 
+
+  .control-group.row.mb-3
+    %label.col-sm-2.col-form-label.text-md-end 
+    .controls.col-sm-10{"data-nestedone": true}
+      = submit_tag "Cargar", {class: 'btn btn-success', disable_with: "Cargando..."}
+
+- if false 
+  .form-group.control-group.hidden
+    %label.col-sm-2.control-label
+      = t("admin.import.update_if_exists")
+    .col-sm-10.controls
+      = check_box_tag :update_if_exists, '1', RailsAdminImport.config.update_if_exists, :class => "form-control"
+      %p.help-block
+        = t('admin.import.help.update_if_exists')
+
+
+:javascript
+
+  window.onload = function(){
+   var school = document.querySelector('#school_id');
+    
+    var onchanged = function(){
+      var this_ = this;
+      var value = this_[this_.value].text;
+      var study_plans = document.querySelector("#study_plan_id");
+      var admission_types = document.querySelector("#admission_type_id");
+
+      var alloptionSP = study_plans.querySelectorAll('optgroup');
+      var alloptionAT = admission_types.querySelectorAll('optgroup');
+
+      alloptionSP.forEach(function(element){
+       element.style.display = "none";
+      });
+
+      alloptionAT.forEach(function(element){
+       element.style.display = "none";
+      });
+
+      var getByLabelSP = study_plans.querySelector('[label="'+value+'"]');
+      var getByLabelAT = admission_types.querySelector('[label="'+value+'"]');
+      
+
+      getByLabelSP.style.display = "block";
+      getByLabelAT.style.display = "block";
+
+      // document.getElementById('options').classList.toggle("d-none");
+      
+    };
+    
+   school.onchange = onchanged;
+
+  };
+
+  // function set_escuela(){
+  //   $("#study_plan_id optgroup").hide();
+  //   // $("#periodo_id optgroup").hide();
+  //   var escuela = $("#school_id option:selected").text();
+  //   $("#study_plan_id optgroup[label='" + escuela + "']").show();
+  //   // $("#periodo_id optgroup[label='" + escuela + "']").show();
+  //   $("#study_plan_id").val('');
+  //   // $("#periodo_id").val('');
+  //   // $('#study_plan').removeClass('d-none');
+  // }
+

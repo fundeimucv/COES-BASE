@@ -15,10 +15,15 @@ class School < ApplicationRecord
   belongs_to :faculty
 
   has_many :bank_accounts
+  accepts_nested_attributes_for :bank_accounts
   has_many :admission_types
+  accepts_nested_attributes_for :admission_types
+
   has_many :academic_processes
   has_many :areas
   has_many :study_plans
+  accepts_nested_attributes_for :study_plans
+
   has_many :subjects, through: :areas
   has_many :periods, through: :academic_processes
   has_many :admins, as: :env_authorizable 
@@ -33,6 +38,14 @@ class School < ApplicationRecord
   validates :code, presence: true, uniqueness: true
   validates :name, presence: true, uniqueness: true
 
+  # CALLBAKCS:
+  after_initialize :set_unique_faculty
+
+  # HOOKS:
+  def set_unique_faculty
+    self.faculty_id = Faculty.first.id if Faculty.count.eql? 1
+  end
+  # FUNCTIONS:
   def description
     "#{self.code}: #{self.name}. (#{self.faculty.name}) #{self.type_entity.titleize}"
   end
@@ -46,15 +59,12 @@ class School < ApplicationRecord
     end
 
     show do
-      field :description do
-        label 'Descripción'
-      end
-      fields :period_enroll, :period_active, :periods, :areas
-      field :bank_accounts
+      field :description
+      fields :study_plans, :period_enroll, :period_active, :periods, :areas, :bank_accounts
     end
 
     edit do
-      fields :faculty, :code, :name, :type_entity, :bank_accounts
+      fields :faculty, :code, :name, :type_entity, :bank_accounts, :study_plans, :admission_types
     end
 
     export do

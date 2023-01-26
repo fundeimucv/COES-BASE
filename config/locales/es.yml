@@ -242,9 +242,14 @@ es:
   activerecord:
     errors:
       models:
+        grade:
+          attributes:
+            admission_type:
+              required: requerido
         students:
           attributes:
-            user: 'requerido'
+            user:
+              required: requerido
         admin:
           attributes:
             env_authorizable:
@@ -261,6 +266,10 @@ es:
           attributes:
             area:
               required: 'requerida'
+        student:
+          attributes:
+            user:
+              required: requerido
     models:
       academic_process:
         one: 'Proceso Académico'
@@ -401,6 +410,10 @@ es:
         code: 'Código'
         name: 'Nombre'
       grade:
+        numbers: Números
+        description: Descripción
+        enroll_academic_processes: Inscripciones en Periodo
+        academic_records: Registros Académicos
         student: 'Estudiante'
         study_plan: 'Plan de Estudio'
         graduate_status: 'Estado de Graduación'
@@ -435,7 +448,8 @@ es:
         name: 'Nombre'        
       profile:
         name: 'Nombre'
-      school:        
+      school:
+        description: Descripción        
         code: 'Código'
         name: 'Nombre'
         type_entity: 'Tipo de Entidad'
@@ -447,6 +461,9 @@ es:
         faculty: 'Facultad'
         periods: 'Periodos'
         areas: 'Áreas'
+        bank_accounts: Cuentas Bancarias
+        study_plans: Planes de Estudio
+        admission_types: Tipos de Admisión
       section:
         code: 'Número'
         capacity: 'Capacidad'
@@ -469,6 +486,9 @@ es:
         location: 'Dirección'
         created_at: 'Fecha de Registro'
         user: 'Usuario'
+        grades: Grados
+        study_plans: Planes de Estudio
+        admission_types: Tipos de Admisión
       study_plan:
         code: 'Código'
         name: 'Nombre'

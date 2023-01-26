@@ -1,14 +1,11 @@
 //= require_tree .
-// function replaceClassLabel(ele) {
-//   ele.replace('label', 'badge');
-//   ele.replace('label-danger', 'bg-danger');
-//   ele.replace('label-default', 'bg-secondary');
-// };
+document.addEventListener("rails_admin.dom_ready", function() {
+	$('[rel="tooltip"]').tooltip();
+	$('#update_if_exists').removeClass('form-control');
 
-// $(document).on('ready', function() {
-// 	document.querySelectorAll('.label').forEach(x => replaceClassLabel(x.classList));
-// 	$('[rel="tooltip"]').tooltip();
-// 	$('.tooltip-btn').tooltip();
-// 	$('.popover').popover();
-// });
-$('[rel="tooltip"]').tooltip();
+	$(".diplayModalBtn").on('click', function() {
+		var idModal = $(this).attr('idmodal');
+		$(`#${idModal}`).modal();
+
+	});
+});

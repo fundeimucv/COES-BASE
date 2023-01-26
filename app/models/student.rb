@@ -22,19 +22,27 @@ class Student < ApplicationRecord
   # ASSOCIATIONS:
   #belons_to
   belongs_to :user
+  accepts_nested_attributes_for :user
   # has_one
   has_one :location
   # has_many
   has_many :grades
+  accepts_nested_attributes_for :grades
+
+
+  has_many :study_plans, through: :grades
+  has_many :admission_types, through: :grades
+
 
   # VALIDATIONS:
   validates :user, presence: true, uniqueness: true
-  validates :nacionality, presence: true, unless: :new_record?
-  validates :marital_status, presence: true, unless: :new_record?
-  validates :origin_country, presence: true, unless: :new_record?
-  validates :origin_city, presence: true, unless: :new_record?
-  validates :birth_date, presence: true, unless: :new_record?
-  validates :location, presence: true, unless: :new_record?
+  # validates :nacionality, presence: true, unless: :new_record?
+  # validates :marital_status, presence: true, unless: :new_record?
+  # validates :origin_country, presence: true, unless: :new_record?
+  # validates :origin_city, presence: true, unless: :new_record?
+  # validates :birth_date, presence: true, unless: :new_record?
+  # validates :location, presence: true, unless: :new_record?
+  # validates :grades, presence: true
   # How to validate if student is not created for assosiation
 
   # SCOPES:
@@ -60,12 +68,52 @@ class Student < ApplicationRecord
     self.user.ci if self.user
   end
 
+  # CALLBACKS:
+  # HOOKS:
 
-  # HOOKS OR CALLBACKS:
   # IMPORT:
+
+  def self.before_import_find(record)
+    if (ci = record[:ci])
+      if (user = User.find_by_ci(ci))
+        user.update(first_name: record[:first_name], last_name: record[:last_name], email: record[:email])
+      else
+        user = User.create(ci: record[:ci], first_name: record[:first_name], last_name: record[:last_name], email: record[:email])
+      end
+      self.user_id = user.id
+    end 
+    p "ESTOY AQUI 01"
+
+
+    # if (study_plan = StudyPlan.find_by_code(record[:study_plan_code]) && admission_type = AdmissionType.find_by_code(record[:admission_type_name]))
+    #   p "ESTOY AQUIIIIIII"
+    #   self.grades.create(study_plan_id: study_plan.id, admission_type_id: admission_type.id)
+    # end      
+  end
+
+  def after_import_save(record)
+    if (study_plan = StudyPlan.find_by_code(record[:study_plan_code]) && admission_type = AdmissionType.find_by_code(record[:admission_type_name]))
+      self.grades.create(study_plan_id: study_plan.id, admission_type_id: admission_type.id)
+    end  
+  end
+
+  # def before_import_save(record)
+  #   if (ci = record[:ci])
+  #     if (user = User.find_by_ci(ci))
+  #       user.update(record[:user])
+  #     else
+  #       user = User.create(record[:user])
+  #     end
+  #     self.user_id = user.id
+  #   end
+  # end
+
   # def before_import_save(record)
   #     self.user_id = record[:user_id]
   #     self.ci = record[:ci]
+  # end
+  # def before_import_save(row, map)
+  #   self.created_nested_items(row, map)
   # end  
   
   rails_admin do
@@ -73,24 +121,37 @@ class Student < ApplicationRecord
     navigation_icon 'fa-regular fa-user-graduate'
 
     edit do
-      field :user do
-        # searchable :full_name
-      end
-      fields :nacionality, :origin_country, :origin_city, :birth_date, :marital_status, :location
+      # field :user do
+      #   # searchable :full_name
+      # end
+      field :user
       # field :nacionality do
       #   formatted_value do 
       #     value.to_s.upcase
       #   end
       # end
+
+      field :grades do
+        # inline_add false
+        associated_collection_scope do
+          student = bindings[:object]
+
+          proc { |scope| scope.where(student_id: student.id) }
+        end
+      end
+
+      fields :nacionality, :origin_country, :origin_city, :birth_date, :marital_status, :location
+
     end
 
     show do
-      fields :user, :nacionality, :origin_country, :origin_city, :birth_date, :marital_status, :location, :created_at
+
+      fields :user, :grades, :nacionality, :origin_country, :origin_city, :birth_date, :marital_status, :location, :created_at
     end
 
     list do
       search_by :custom_search
-      fields :user, :origin_city, :birth_date, :marital_status, :created_at
+      fields :user, :study_plans, :origin_city, :birth_date, :marital_status, :created_at
     end
 
     export do
@@ -98,8 +159,15 @@ class Student < ApplicationRecord
     end
 
     import do
-      field :user
-      # mapping_key_list [:user_ci, :user_email]
+      field :ci
+      field :email
+      field :first_name
+      field :last_name
+      field :study_plan_code
+      field :admission_type_name
+
+      # mapping_key_list ['user[ci]', 'user[email]', 'user[first_name]','user[last_name]']
+      # mapping_key_list ['ci', 'email', 'first_name','last_name']
     end
 
   end

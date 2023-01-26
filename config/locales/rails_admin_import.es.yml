@@ -10,8 +10,12 @@ es:
         bulk_link:  Importar
         done:       Importado
     import:
+      enumeration:
+        search: Buscar
+        choose_all: Incluir Todos
+        clear_all: Excluir Todos
       model_fields: Campos del modelo
-      association_fields: Campos de asociación
+      association_fields: Campos asociados a
 
       file:                   Archivo de datos
       missing_file:           Debes seleccionar un archivo
@@ -21,12 +25,12 @@ es:
       invalid_json:           "La información JSON debe ser un arreglo de registros o un objecto con una llave '%{root_key}' y un conjunto a un arreglo de registros"
       update_if_exists:       Actualizar si existe
       update_lookup:          Campo de búsqueda actualización
-      mapping:                empatando
+      mapping:                asociando
       encoding:               Codificando
       legend:
         fields:   Campos a importar
         upload:   Subir archivo
-        mapping:  Empatando campos relacionados
+        mapping:  asociando campos relacionados
       import_success:
         create: "Creado %{name}"
         update: "Actualizado %{name}"
@@ -42,8 +46,8 @@ es:
       help:
         model_fields: Los campos de arriba deben ser incluidos en el archivo de importación.
         association_fields: >
-          Estos campos empatarán con otras tablas en la base de datos, conforme a los atributos seleccionados abajo.
-          Para muchas asociaciones, tu deberás incluir múltiples columnas con el mismo encabezado en el archivo CSV.
-        update_if_exists: Actualizar registros encontrados con el campo de búsqueda de abajo en lugar de crear nuevos registros
+          Estos campos se asociarán con otras tablas en la base de datos, conforme a los atributos seleccionados abajo.
+          Para muchas asociaciones, deberá incluir múltiples columnas con el mismo encabezado en el archivo CSV.
+        update_if_exists: Actualizar registros encontrados
         file_limit: "Por favor limita el archivo de carga a %{limit} lineas."
         encoding:   Escoge archivo para codificar. Deja en blanco para detección automática. Ignorado para JSON.

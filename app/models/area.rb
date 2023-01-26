@@ -56,6 +56,10 @@ class Area < ApplicationRecord
       fields :name
     end
 
+    import do
+      fields :name, :school_id 
+    end
+
   end
 
   after_initialize do
