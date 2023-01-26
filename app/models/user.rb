@@ -120,7 +120,17 @@ class User < ApplicationRecord
         end
       end
       field :email
-      fields :first_name, :last_name do
+      
+      field :first_name do
+        formatted_value do
+          value.to_s.upcase
+        end
+        html_attributes do
+          {:onInput => "$(this).val($(this).val().toUpperCase().replace(#{regexp_español3},''))"}
+        end  
+      end
+
+      field :last_name do
         formatted_value do
           value.to_s.upcase
         end
