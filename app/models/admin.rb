@@ -39,15 +39,23 @@ class Admin < ApplicationRecord
     navigation_icon 'fa-regular fa-user-tie'
 
     show do
-      fields :user, :role, :env_authorizable, :created_at
+     field :user 
+     field :role 
+     field :env_authorizable 
+     field :created_at
     end
 
     list do
-      fields :user, :role, :env_authorizable, :created_at
+      field :user
+      field :role
+      field :env_authorizable
+      field :created_at
     end
 
     edit do
-      fields :user, :role, :env_authorizable
+       field :user, 
+       field :role, 
+       field :env_authorizable
 
       # field :role do
       #   html_attributes do
@@ -58,7 +66,8 @@ class Admin < ApplicationRecord
     end
 
     export do
-      fields :role, :user
+      field :role
+      field :user
     end
   end
 end

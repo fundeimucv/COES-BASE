@@ -41,7 +41,8 @@ class AcademicProcess < ApplicationRecord
     navigation_label 'Inscripciones'
     navigation_icon 'fa-solid fa-calendar'
     list do
-      fields :period, :school
+      field :period 
+      field :school
       field :total_enroll_academic_processes do
         label 'Total Inscritos'
       end
