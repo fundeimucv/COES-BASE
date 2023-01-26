@@ -53,8 +53,8 @@ class Admin < ApplicationRecord
     end
 
     edit do
-       field :user, 
-       field :role, 
+       field :user 
+       field :role 
        field :env_authorizable
 
       # field :role do
