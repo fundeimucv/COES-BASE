@@ -120,7 +120,7 @@ class User < ApplicationRecord
         end
       end
       field :email
-      
+
       field :first_name do
         formatted_value do
           value.to_s.upcase
@@ -151,11 +151,12 @@ class User < ApplicationRecord
         end
       end
 
-      field :sex do
-        html_attributes do
-          {:type => :radio }
-        end        
-      end
+      field :sex
+      # field :sex do
+      #   html_attributes do
+      #     {:type => :radio }
+      #   end        
+      # end
 
       field :picture_profile, :active_storage do
         label 'Adjunto'
@@ -179,18 +180,35 @@ class User < ApplicationRecord
       # end
       field :picture_profile, :active_storage 
       field :image_ci, :active_storage 
-      fields :ci, :email, :first_name, :last_name, :number_phone, :sex, :password
+      field :ci
+      field :email
+      field :first_name
+      field :last_name
+      field :number_phone
+      field :sex
+      field :password
 
     end
 
     list do
       items_per_page 10
       search_by :my_search #[:email, :first_name, :last_name, :ci]
-      fields :ci, :email, :first_name, :last_name, :number_phone, :sex, :picture_profile
+      field :ci
+      field :email
+      field :first_name
+      field :last_name
+      field :number_phone
+      field :sex
+      field :picture_profile
     end
 
     export do
-      fields :ci, :email, :first_name, :last_name, :number_phone, :sex
+      field :ci 
+      field :email 
+      field :first_name 
+      field :last_name 
+      field :number_phone 
+      field :sex
     end
 
   end
