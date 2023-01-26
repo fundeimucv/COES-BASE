@@ -48,13 +48,15 @@ class Area < ApplicationRecord
     show do
       field :name
       field :parent_area_id
-      field :subjects, :subareas
+      field :subjects
+      field :subareas
     end 
 
     edit do
       field :name
       field :parent_area_id
-      field :subjects, :subareas
+      field :subjects
+      field :subareas
     end 
 
     export do
