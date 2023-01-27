@@ -15,7 +15,8 @@ class AdmissionType < ApplicationRecord
     navigation_icon 'fa-regular fa-user-tag'
 
     list do
-      fields :name, :school
+      field :name
+      field :school
 
       field :total_students do
         label 'Total Estudiantes'
@@ -25,11 +26,13 @@ class AdmissionType < ApplicationRecord
     end
 
     show do
-      fields :name, :school
+      field :name
+      field :school
     end
 
     edit do
-      fields :name, :school
+      field :name
+      field :school
     end
 
     export do

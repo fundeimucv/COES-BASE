@@ -156,7 +156,9 @@ class AcademicRecord < ApplicationRecord
         filterable :name
         sortable :name
       end
-      fields :final_q, :status_q, :type_q
+      field :final_q
+      field :status_q
+      field :type_q
     end
 
     edit do

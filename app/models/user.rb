@@ -70,7 +70,8 @@ class User < ApplicationRecord
   scope :my_search, -> (keyword) {where("ci ILIKE '%#{keyword}%' OR email ILIKE '%#{keyword}%' OR first_name ILIKE '%#{keyword}%' OR last_name ILIKE '%#{keyword}%' OR number_phone ILIKE '%#{keyword}%'") }
 
   # CALLBACKS:
-  before_save :set_default_values
+  before_save :upcases
+  before_save :set_default_password, if: :new_record?
 
   # HOOKS:
   def after_import_save(record)
@@ -103,12 +104,13 @@ class User < ApplicationRecord
   end
 
   def set_default_password
-    self.password = self.ci if self.password.blank?
+    self.password ||= self.ci #if self.password.blank?
   end
 
   def set_ci_to_i
     self.ci = self.ci.to_i.to_s if !self.ci.blank?
   end 
+
   # INTENTOS FALLIDOS REGEXP, AHORA INCLUYE Ñ PERO FALTA EL ACENTO
   # regexp_español = "/^[a-zA-ZÀ-ÿ\u00f1\u00d1]+(\s*[a-zA-ZÀ-ÿ\u00f1\u00d1]*)*[a-zA-ZÀ-ÿ\u00f1\u00d1]+$/g"
   # regexp_español2 = "/[^A-Z\u00e0-\u00fc| ]/g"
@@ -133,7 +135,17 @@ class User < ApplicationRecord
         end
       end
       field :email
-      fields :first_name, :last_name do
+
+      field :first_name do
+        formatted_value do
+          value.to_s.upcase
+        end
+        html_attributes do
+          {:onInput => "$(this).val($(this).val().toUpperCase().replace(#{regexp_español3},''))"}
+        end  
+      end
+
+      field :last_name do
         formatted_value do
           value.to_s.upcase
         end
@@ -144,7 +156,7 @@ class User < ApplicationRecord
 
       field :password do
         read_only true
-        aux = 'Si está creando un nuevo usuario La contraseña será igual a la cédula de identidad. Posteriormente, el usuario podrá cambiarla al iniciar sesión. Si está editando uno ya creado, él podrá autogestionar su contraseña mediante la opción olvidé contraseña del inicio de sesión.'
+        aux = 'Si está creando un nuevo usuario, la contraseña será igual a la cédula de identidad. Posteriormente, el usuario mismo podrá cambiarla al iniciar sesión. Si está editando un usuario ya creado, podrá autogestionar su contraseña mediante la opción "olvidé contraseña" del inicio de sesión.'
         help aux
 
       end
@@ -154,11 +166,12 @@ class User < ApplicationRecord
         end
       end
 
-      field :sex do
-        html_attributes do
-          {:type => :radio }
-        end        
-      end
+      field :sex
+      # field :sex do
+      #   html_attributes do
+      #     {:type => :radio }
+      #   end        
+      # end
 
       field :picture_profile, :active_storage do
         label 'Adjunto'
@@ -182,18 +195,35 @@ class User < ApplicationRecord
       # end
       field :picture_profile, :active_storage 
       field :image_ci, :active_storage 
-      fields :ci, :email, :first_name, :last_name, :number_phone, :sex, :password
+      field :ci
+      field :email
+      field :first_name
+      field :last_name
+      field :number_phone
+      field :sex
+      field :password
 
     end
 
     list do
       items_per_page 10
       search_by :my_search #[:email, :first_name, :last_name, :ci]
-      fields :ci, :email, :first_name, :last_name, :number_phone, :sex, :picture_profile
+      field :ci
+      field :email
+      field :first_name
+      field :last_name
+      field :number_phone
+      field :sex
+      field :picture_profile
     end
 
     export do
-      fields :ci, :email, :first_name, :last_name, :number_phone, :sex
+      field :ci 
+      field :email 
+      field :first_name 
+      field :last_name 
+      field :number_phone 
+      field :sex
     end
 
     import do

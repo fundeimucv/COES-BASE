@@ -35,7 +35,8 @@ class Area < ApplicationRecord
     navigation_icon 'fa-regular fa-brain'
 
     list do
-      fields :name, :parent_area_id
+      field :name
+      field :parent_area_id
       field :total_subjects do
         label 'Total Asignaturas'
       end
@@ -45,11 +46,17 @@ class Area < ApplicationRecord
       end
     end
     show do
-      fields :name, :parent_area_id, :subjects, :subareas
+      field :name
+      field :parent_area_id
+      field :subjects
+      field :subareas
     end 
 
     edit do
-      fields :name, :parent_area_id, :subjects, :subareas
+      field :name
+      field :parent_area_id
+      field :subjects
+      field :subareas
     end 
 
     export do

@@ -23,7 +23,6 @@ class Bank < ApplicationRecord
 
     list do
       fields :code, :name
-
       field :total_payment_reports do
         label 'Total Reporte Pagos'
       end
