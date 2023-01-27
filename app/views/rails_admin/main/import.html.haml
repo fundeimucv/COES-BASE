@@ -1,2 +1,4 @@
 - if request.fullpath.include? ('student')
   = render partial: '/importer/students'
+- elsif request.fullpath.include? ('teacher')
+  = render partial: '/importer/teacher'  

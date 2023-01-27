@@ -1,8 +1,6 @@
 class ImportCsv
 	def self.import_student file, escuela_id, plan_id, tipo_ingreso_id, estado_ingreso, usuario_id, ip, enviar_correo= false
 		require 'csv'
-
-
 		# Totales
 		# Usuarios
 		total_usuarios_nuevos = 0
@@ -37,48 +35,24 @@ class ImportCsv
 		total_correos_enviados = 0
 		total_correos_no_enviados = 0
 
-		if not errores_generales.any?
-			p "    INICIANDO PROCESO GENERAL    ".center(150, 'G')
-
+		if !errores_generales.any?
 			csv.group_by{|row| row['ci']}.values.each do |row|
 
 				begin
 					hay_usuario = false
 
-					p "    CONTENIDO DE ROW: #{row}    ".center(150, 'R')
-
-
 					row = row[0] if !row[0].nil?
-					# row['ci'].strip!
-					# row['ci'].delete! '^0-9'
-
-					p "    INICIANDO PROCESO DE REGISTRO: <#{row['ci']}>    ".center(150, 'R')
-					# unless usuario = User.where(ci: row['ci']).first
-					# 	usuario = User.new
-					# 	usuario.ci = row['ci']
-					# end
-
 					usuario = User.find_or_initialize_by(ci: row['ci'])
-					p "    Inicializado usuario con ci: <#{row['ci']}>    ".center(150, 'U')
-
-
 					usuario.last_name = limpiar_cadena row['apellidos']
-					usuario.first_name = limpiar_cadena row['nombres']
-					
+					usuario.first_name = limpiar_cadena row['nombres']					
 					usuario.email = row['email']
 					usuario.number_phone = row['telefono']
-
 					usuario.sex = row['sexo']
-					p "    Set valores: <#{usuario.first_name}>    ".center(150, 'V')
-
-					
-
-
 					nuevo_usuario = usuario.new_record?
 
 					if usuario.save
-						p "    USUARIO REGISTRADO: #{usuario.ci}    ".center(150, 'U')
 						hay_usuario = true
+						nuevo_usuario ? (total_usuarios_nuevos += 1) : (total_usuarios_actualizados += 1)
 					else
 						hay_usuario = false
 						usuarios_no_agregados << row['ci']
@@ -86,18 +60,9 @@ class ImportCsv
 
 					if hay_usuario
 						hay_estudiante = false
-
-						# estudiante = Student.where(user_id: usuario.ci).first
-						# estudiante ||= Student.new(usuario_id: usuario.ci)
-
 						estudiante = Student.find_or_initialize_by(user_id: usuario.id)
-
 						nuevo_estudiante = estudiante.new_record?
-
 						if estudiante.save
-
-							p "    ESTUDIANTE REGISTRADO: #{usuario.ci}    ".center(150, 'E')
-
 							nuevo_estudiante ? (total_estudiantes_nuevos += 1) : (total_estudiantes_actualizados += 1)
 							hay_estudiante = true
 						else
@@ -105,22 +70,12 @@ class ImportCsv
 						end
 
 						if hay_estudiante
-
-							# grado = estudiante.grados.where(study_plan_id: plan_id).first
-											
-							# grado ||= estudiante.grados.new
-
 							grado = Grade.find_or_initialize_by(student_id: estudiante.id, study_plan_id: plan_id)
-
 							grado.admission_type_id = tipo_ingreso_id
 							grado.registration_status = estado_ingreso
-											
 							nuevo_grado = grado.new_record?
 
-
 							if grado.save
-								p "    GRADO REGISTRADO: #{grado.name}    ".center(150, 'G')
-
 								if nuevo_grado
 									total_grados_nuevos += 1
 								else
@@ -129,10 +84,8 @@ class ImportCsv
 							else
 								grados_no_agregados << "#{grado.id} Error: (#{grado.errors.full_messages.to_sentence})"
 							end
-
 						end
 					end
-					
 				rescue Exception => e
 					errores_generales << "#{row} #{e}" 
 				end
@@ -151,12 +104,12 @@ class ImportCsv
 		return [resumen, [estudiantes_no_agregados, usuarios_no_agregados, grados_no_agregados, estudiates_con_plan_errado,estudiates_con_tipo_ingreso_errado, estudiates_con_iniciado_periodo_id_errado, estudiates_con_region_errada, errores_generales, errores_cabeceras]]
 	end
 
-	def self.importar_profesores file
+	def self.import_teacher file, area_id
 		require 'csv'
 		errores_cabeceras = []
 
 		begin
-			csv_text = File.read(file).encode('UTF-8', invalid: :replace, replace: '')
+			csv_text = File.read(file)#.encode('UTF-8', invalid: :replace, replace: '')
 			csv = CSV.parse(csv_text, headers: true)
 		rescue Exception => e
 			errores_cabeceras << "Error al intentar abrir el archivo: #{e}"			
@@ -165,7 +118,6 @@ class ImportCsv
 		errores_cabeceras << "Falta la cabecera 'ci' en el archivo o está mal escrita" unless csv.headers.include? 'ci'
 		errores_cabeceras << "Falta la cabecera 'nombres' en el archivo o está mal escrita" unless csv.headers.include? 'nombres'
 		errores_cabeceras << "Falta la cabecera 'apellidos' en el archivo o está mal escrita" unless csv.headers.include? 'apellidos'
-		errores_cabeceras << "Falta la cabecera 'departamento_id' en el archivo o está mal escrita" unless csv.headers.include? 'departamento_id'
 
 		if errores_cabeceras.count > 0
 			return [0, "Error en las cabaceras del archivo: #{errores_cabeceras.to_sentence}"]
@@ -180,31 +132,29 @@ class ImportCsv
 				begin
 					row['ci'].delete! '^0-9'
 					row['ci'].strip!
-					# if profe = Profesor.where(usuario_id: row.field(0))
-					dpto = Departamento.where("id = '#{row['departamento_id']}' OR descripcion = '#{row['departamento_id']}'").first
-					if dpto.nil? 
-						departamentos_no_encontrados << row['departamento_id']
-					else
-						if profe = Profesor.where(usuario_id: row['ci']).first
-							profesores_existentes << profe.usuario_id
-						elsif usuario = Usuario.where(ci: row['ci']).first
+					
+					if area = Area.find(area_id)
+						if profe = Teacher.where(user_id: row['ci']).first
+							profesores_existentes << profe.user_id
+							profe.update(area_id: area.id)
+						elsif usuario = User.where(ci: row['ci']).first
 							usuarios_existentes << usuario.ci
-							profe = Profesor.new
-							profe.departamento_id = dpto.id
-							profe.usuario_id = usuario.ci
+							profe = Teacher.new
+							profe.area_id = area.id
+							profe.user_id = usuario.ci
 							total_agregados += 1 if profe.save
 						else
-							usuario = Usuario.new
+							usuario = User.new
 							usuario.ci = row['ci']
-							usuario.password = usuario.ci
-							usuario.nombres = row['nombres']
-							usuario.apellidos = row['apellidos']
 							usuario.email = row['email']
-							usuario.telefono_movil = row['telefono']
+							usuario.first_name = row['nombres']
+							usuario.last_name = row['apellidos']
+							usuario.email = row['email']
+							usuario.number_phone = row['telefono']
 							if usuario.save
-								profe = Profesor.new
-								profe.departamento_id = dpto.id
-								profe.usuario_id = usuario.ci
+								profe = Teacher.new
+								profe.area_id = area.id
+								profe.user_id = usuario.id
 								if profe.save
 									total_agregados += 1
 								else

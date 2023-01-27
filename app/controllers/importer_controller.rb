@@ -1,7 +1,6 @@
 class ImporterController < ApplicationController
 
 	def students
-
 		resultado = ImportCsv.import_student params[:datafile].tempfile, params[:school_id], params[:study_plan_id], params[:admission_type_id], params[:registration_status], current_user.id,request.remote_ip, params[:enviar_correo]
 
 		flash[:info] = resultado[0]
@@ -18,10 +17,17 @@ class ImporterController < ApplicationController
 			flash[:danger] += "Error General (#{errores[7].count}): <b>#{errores[7].to_sentence.truncate(200)}</b><hr></hr>" if errores[7].count > 0
 			flash[:danger] += "Error en las cabeceras: Las siguentes cabeceras no se encuentran en el archivo o están mal escritas: <b>#{errores[8].to_sentence} </b>. Por favor vuelva a escribirlas tomando en cuenta que deben estár en minúsculas y elimine espacios agregados al principio o al final de la palabra. <hr></hr>" if errores[8].count > 0
 		end
-
-
-		redirect_back fallback_location: root_path
-
-		
+		redirect_back fallback_location: root_path		
 	end
+
+	def teachers
+		resultado = ImportCsv.import_teacher params[:datafile].tempfile, params[:area_id]
+		if resultado[0].eql? 1
+			flash[:info] = resultado[1]
+		else
+			flash[:danger] = resultado[1]
+		end
+		redirect_back fallback_location: root_path	
+	end
+
 end

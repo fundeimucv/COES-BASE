@@ -42,7 +42,7 @@ class ImportXslx
 
 				begin
 					hay_usuario = false
-
+					
 					p "    CONTENIDO DE ROW: #{row}    ".center(300, '$')
 
 

@@ -14,14 +14,14 @@ class School < ApplicationRecord
   belongs_to :period_enroll, foreign_key: 'period_enroll_id', class_name: 'Period', optional: true
   belongs_to :faculty
 
-  has_many :bank_accounts
+  has_many :bank_accounts, dependent: :destroy
   accepts_nested_attributes_for :bank_accounts
   has_many :admission_types
   accepts_nested_attributes_for :admission_types
 
   has_many :academic_processes
   has_many :areas
-  has_many :study_plans
+  has_many :study_plans, dependent: :destroy
   accepts_nested_attributes_for :study_plans
 
   has_many :subjects, through: :areas

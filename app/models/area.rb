@@ -18,6 +18,11 @@ class Area < ApplicationRecord
   validates :name, presence: true
   validates :school_id, presence: true
 
+  # SCOPES:
+
+  scope :main, -> {where(parent_area_id: nil)}
+
+  # FUNCTIONS:
   def description
     "#{self.id}: #{self.name}"
   end

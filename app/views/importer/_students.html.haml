@@ -1,22 +1,4 @@
-- title = 'Ver ejemplo de archivo a cargar'
-
-%fieldset
-  .control-group.row.mb-3
-    %label.col-sm-2.col-form-label.text-md-end Ayuda
-    .controls.col-sm-10{"data-nestedone": true}
-      %ul.nav.collapse{style: "display: none;"}
-      .btn-group
-        %a.btn.btn-info.toggler{rel: :tooltip, data: {'bs-original-title': title}, role: :button, onclick: "$('#showInstructions').toggleClass('d-none')"}
-          %i.fas.fa-chevron-right
-          Ejemplo
-        - title =   "El formato del archivo a utilizar es .csv "
-        - title +=   "Para obtener información de cómo exportar archivos .csv en Excel haga click en la ayuda"
-        %a.btn.btn-warning.mx-2{href: 'https://support.office.com/es-es/article/importar-o-exportar-archivos-de-texto-txt-o-csv-5250ac4c-663c-47ce-937b-339e391393ba', target: '_blank', rel: :tooltip, data: {'bs-original-title': title}}
-          %i.fa-solid.fa-arrow-up-right-from-square
-          Ayuda archivos .csv 
-
-    #showInstructions.d-none
-      = render partial: '/importer/instructions_csv_students'
+= render partial: '/importer/importer_help', locals: {headers: 'ci, email, nombres, apellidos, sexo', image_name: 'ejem_csv_importar_estudiantes.png'}
 
 = form_tag("/importer/students", multipart: true, class: 'form-horizontal') do
 

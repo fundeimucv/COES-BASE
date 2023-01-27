@@ -174,13 +174,13 @@ class User < ApplicationRecord
       # end
 
       field :picture_profile, :active_storage do
-        label 'Adjunto'
+        label 'Imagen de Perfil'
         delete_method :remove_picture_profile
       end
       field :image_ci, :active_storage do
-        label 'Adjunto'
+        label 'Imagen CI'
         delete_method :remove_image_ci
-      end      
+      end 
     end
 
     show do

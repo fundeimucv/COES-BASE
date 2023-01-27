@@ -1,0 +1,27 @@
+= render partial: '/importer/importer_help', locals: {headers: 'ci, email, nombres, apellidos, sexo, area_id', image_name: 'ejem_csv_importar_profesores.png'}
+
+= form_tag("/importer/teachers", multipart: true) do
+  %fieldset
+    %h6.alert.alert-danger
+      %span.mb-0 ✋🏽
+      %b !Atención!
+      Los valores seleccionados a continuación se aplicarán a todos los registros que no incluyan la información (por defecto).
+      Si el registro ya existe en el sistema, los datos suministrado serán actualizados.
+
+    #area_field.control-group.row.mb-3.enum_type
+      %label.col-sm-2.col-form-label.text-md-end{for: "area_field"} Área de Conocimiento
+      .col-sm-10.controls
+        = select(nil, :area_id, Area.main.collect{|o| [ o.description, o.id ] }, { include_blank: 'Seleccione Área...', selected: @area_id}, {class: "form-control ra-filtering-select-input ui-autocomplete-input", required: true})
+        .form-text
+          %span.label.label-danger Requerido
+
+    #file_field.control-group.row.mb-3
+      %label.col-sm-2.col-form-label.text-md-end{for: "file_field"} Archivo
+      .col-sm-10.controls
+        = file_field_tag :datafile, required: true, class: 'form-control', accept: ".csv"
+        .form-text
+          %span.label.label-danger Requerido
+    .control-group.row.mb-3
+      %label.col-sm-2.col-form-label.text-md-end 
+      .controls.col-sm-10{"data-nestedone": true}
+        = submit_tag "Cargar", {class: 'btn btn-success', disable_with: "Cargando..."}
