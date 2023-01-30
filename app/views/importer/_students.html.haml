@@ -12,7 +12,7 @@
     #school_field.control-group.row.mb-3.enum_type
       %label.col-sm-2.col-form-label.text-md-end{for: "school_field"} Escuela
       .col-sm-10.controls
-        - @school_id = School.first.id #if School.count.eql? 1
+        - @school_id = School.first.id if School.count.eql? 1
         = select(nil, :school_id, School.all.collect{|o| [ o.description, o.id ] }, { include_blank: 'Seleccione Escuela...', selected: @school_id}, {class: "form-control ra-filtering-select-input ui-autocomplete-input", required: true})
         .form-text
           %span.label.label-danger Requerido
@@ -20,7 +20,7 @@
       #study_plan_field.control-group.row.mb-3.enum_type
         %label.col-sm-2.col-form-label.text-md-end{for: "study_plan_field"} Plan de Estudio
         .col-sm-10.controls
-          - @study_plan_id = StudyPlan.first.id #if StudyPlan.count.eql? 1
+          - @study_plan_id = StudyPlan.first.id if StudyPlan.count.eql? 1
 
           = grouped_collection_select nil, :study_plan_id, School.all, :study_plans, :description, :id, :desc, {:prompt => "Seleccione plan de estudio por defecto...", selected: @study_plan_id}, { class: 'form-control', required: true}
           .form-text
