@@ -5,6 +5,8 @@ Rails.application.routes.draw do
   
   match "/importer/students" => "importer#students" , :as => "importer_students", :via => [:get, :post]
   match "/importer/teachers" => "importer#teachers" , :as => "importer_teachers", :via => [:get, :post]
+  match "/importer/subjects" => "importer#subjects" , :as => "importer_subjects", :via => [:get, :post]
+  match "/importer/academic_records" => "importer#academic_records" , :as => "importer_academic_records", :via => [:get, :post]
 
   resources :page, only: :show
   resources :period_types

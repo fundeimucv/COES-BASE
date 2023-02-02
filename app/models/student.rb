@@ -29,7 +29,6 @@ class Student < ApplicationRecord
   has_many :grades
   accepts_nested_attributes_for :grades
 
-
   has_many :study_plans, through: :grades
   has_many :admission_types, through: :grades
 
@@ -47,6 +46,8 @@ class Student < ApplicationRecord
 
   # SCOPES:
   scope :custom_search, -> (keyword) { joins(:user).where("users.ci LIKE '%#{keyword}%' OR users.email LIKE '%#{keyword}%' OR users.first_name LIKE '%#{keyword}%' OR users.last_name LIKE '%#{keyword}%' OR users.number_phone LIKE '%#{keyword}%'") }
+
+  scope :by_ci, -> (ci) {joins(:user).where('users.ci': ci)}
 
   # CALLBACKS:
   after_destroy :check_user_for_destroy

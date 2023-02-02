@@ -1,0 +1,25 @@
+#study_plan_field.control-group.row.mb-3.enum_type
+  %label.col-sm-2.col-form-label.text-md-end{for: "study_plan_field"} Plan de Estudio
+  .col-sm-10.controls
+    - @study_plan_id = StudyPlan.first.id if StudyPlan.count.eql? 1
+
+    = grouped_collection_select nil, :study_plan_id, School.all, :study_plans, :description, :id, :desc, {:prompt => "Seleccione plan de estudio por defecto...", selected: @study_plan_id}, { class: 'form-control', required: true}
+    .form-text
+      %span.label.label-danger Requerido
+
+#period_field.control-group.row.mb-3.enum_type
+  %label.col-sm-2.col-form-label.text-md-end{for: "period_field"} Período
+  .col-sm-10.controls
+    = check_box_tag :period_in_file, nil, false, onChange: "togglePeriodo($(this))" 
+    El periodo está incluido en cada fila del archivo
+
+    = select(nil, :period_id, Period.all.collect{|o| [ o.name, o.id ] }, { include_blank: 'Seleccione Período...'}, {class: "form-control ra-filtering-select-input ui-autocomplete-input"})
+    .form-text
+      %span.label.label-default Opcional
+
+:javascript
+  function togglePeriodo(e){
+    var sele = $('#period_id');
+    sele.prop('disabled', e.is(":checked"));
+
+  }

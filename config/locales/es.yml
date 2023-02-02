@@ -21,6 +21,7 @@ es:
         title: 'Listado'
     flash:
       object_not_found: 'Recurso no encontrado'
+      model_not_found: 'Modelo no encontrado'
     export:
       select_all_fields: 'Seccionar Todos'
 
@@ -311,11 +312,11 @@ es:
         one: 'Reporte de Pago'
         other: 'Reportes de Pago'
       period:
-        one: 'Periodo'
-        other: 'Periodos'
+        one: 'Período'
+        other: 'Períodos'
       period_type:
-        one: 'Tipo de Periodo'
-        other: 'Tipos de Periodos'
+        one: 'Tipo de Período'
+        other: 'Tipos de Períodos'
       profile:
         one: 'Perfil'
         other: 'Perfiles'
@@ -344,7 +345,7 @@ es:
     attributes:
       academic_process:
         school: 'Escuela'
-        period: 'Periodo'
+        period: 'Período'
         max_credits: 'Máximo Créditos'
         max_subjects: 'Máximas Asignaturas'
         enroll_academic_processes: 'Inscripciones en Proceso Académico'
@@ -362,7 +363,7 @@ es:
         status_q: 'Estado de Calificación'
         type_q: 'Tipo de Calificación'
         student: 'Estudiante'
-        period: 'Periodo'
+        period: 'Período'
         subject: 'Asignatura'
         grade: 'Grado'
         academic_process: 'Proceso Académico'
@@ -396,6 +397,10 @@ es:
         account_type: 'Tipo de Cuenta'
         school: 'Escuela'
       course:
+        period: Período
+        school: Escuela
+        sections: Secciones
+        section: Sección
         academic_process: 'Proceso Académico'
         subject: 'Asignatura'
         offer_as_pci: 'Ofertar cómo PCI'
@@ -405,14 +410,14 @@ es:
         enroll_status: 'Estado de Inscripción'
         permanence_status: 'Estado de Permanencia'
         student: 'Estudiante'
-        period: 'Periodo'
+        period: 'Período'
       faculty:
         code: 'Código'
         name: 'Nombre'
       grade:
         numbers: Números
         description: Descripción
-        enroll_academic_processes: Inscripciones en Periodo
+        enroll_academic_processes: Inscripciones en Período
         academic_records: Registros Académicos
         student: 'Estudiante'
         study_plan: 'Plan de Estudio'
@@ -441,7 +446,7 @@ es:
         created_at: 'Fecha Registro'
       period:
         year: 'Año'
-        period_type: 'Tipo de Periodo'
+        period_type: 'Tipo de Período'
         name: 'Nombre'
       period_type:
         code: 'Código'
@@ -456,10 +461,10 @@ es:
         enable_subject_retreat: 'Activar retiro de Asignturas'
         enable_change_course: 'Activar cambio de Sección'
         enable_dependents: 'Activar Dependencias'
-        period_active_id: 'Identificador de Periodo Activo '
-        period_enroll_id: 'Identidicador de Periodo Inscripción'
+        period_active_id: 'Identificador de Período Activo '
+        period_enroll_id: 'Identidicador de Período Inscripción'
         faculty: 'Facultad'
-        periods: 'Periodos'
+        periods: 'Períodos'
         areas: 'Áreas'
         bank_accounts: Cuentas Bancarias
         study_plans: Planes de Estudio
@@ -475,6 +480,14 @@ es:
         user: 'Profesor'
         subject: 'Asignatura'
         nota_final: 'Final'
+        academic_process: Proceso Académico
+        period: Período
+        school: Escuela
+        faculty: Facultad
+        academic_records: 'Registros Académicos'
+        enroll_academic_process: Inscripción en Registro Académico
+        grades: Grados
+        students: Estudiantes
       student:
         active: 'Activo'
         disability: 'Discapacidad'
@@ -493,6 +506,8 @@ es:
         code: 'Código'
         name: 'Nombre'
       subject:
+        school: Escuela
+        courses: Cursos
         code: 'Código'
         name: 'Nombre'
         active: 'Activa'

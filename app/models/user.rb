@@ -70,7 +70,7 @@ class User < ApplicationRecord
   scope :my_search, -> (keyword) {where("ci ILIKE '%#{keyword}%' OR email ILIKE '%#{keyword}%' OR first_name ILIKE '%#{keyword}%' OR last_name ILIKE '%#{keyword}%' OR number_phone ILIKE '%#{keyword}%'") }
 
   # CALLBACKS:
-  before_save :upcases
+  before_save :set_clean_values
   before_save :set_default_password, if: :new_record?
 
   # HOOKS:
@@ -79,11 +79,9 @@ class User < ApplicationRecord
     p "<   #{record}   >".center(200, "-") 
   end
 
-
-  def set_default_values
-    self.upcases
-    self.set_ci_to_i
-    self.set_default_password
+  def set_clean_values
+    self.set_clean_names
+    self.set_clean_ci
   end
 
   def without_rol?
@@ -98,6 +96,22 @@ class User < ApplicationRecord
     return aux
   end
 
+  def set_clean_names
+    self.clean_names
+    self.upcases
+  end
+
+  def set_clean_ci
+    self.ci.delete! '^0-9'
+  end 
+
+  def self.clean_names
+    self.first_name.delete! '^A-Za-z|áÁÄäËëÉéÍÏïíÓóÖöÚúÜüñÑ '
+    self.first_name.strip!
+    self.last_name.delete! '^A-Za-z|áÁÄäËëÉéÍÏïíÓóÖöÚúÜüñÑ '
+    self.last_name.strip!
+  end
+
   def upcases
     self.first_name.upcase!
     self.last_name.upcase!
@@ -106,10 +120,6 @@ class User < ApplicationRecord
   def set_default_password
     self.password ||= self.ci #if self.password.blank?
   end
-
-  def set_ci_to_i
-    self.ci = self.ci.to_i.to_s if !self.ci.blank?
-  end 
 
   # INTENTOS FALLIDOS REGEXP, AHORA INCLUYE Ñ PERO FALTA EL ACENTO
   # regexp_español = "/^[a-zA-ZÀ-ÿ\u00f1\u00d1]+(\s*[a-zA-ZÀ-ÿ\u00f1\u00d1]*)*[a-zA-ZÀ-ÿ\u00f1\u00d1]+$/g"
@@ -137,21 +147,19 @@ class User < ApplicationRecord
       field :email
 
       field :first_name do
-        formatted_value do
-          value.to_s.upcase
-        end
-        html_attributes do
-          {:onInput => "$(this).val($(this).val().toUpperCase().replace(#{regexp_español3},''))"}
-        end  
+        help 'Ningún caracater especial será guardado, expectuando la letra Ñ y cualquier tipo de acento'
+        # OJO: SE LIMPIA EN EL SERVIDOR ANTES DE GUARDAR
+        # html_attributes do
+        #   {:onInput => "$(this).val($(this).val().toUpperCase().replace(#{regexp_español3},''))"}
+        # end  
       end
 
       field :last_name do
-        formatted_value do
-          value.to_s.upcase
-        end
-        html_attributes do
-          {:onInput => "$(this).val($(this).val().toUpperCase().replace(#{regexp_español3},''))"}
-        end  
+        help 'Ningún caracater especial será guardado, expectuando la letra Ñ y cualquier tipo de acento'
+        # OJO: SE LIMPIA EN EL SERVIDOR ANTES DE GUARDAR
+        # html_attributes do
+        #   {:onInput => "$(this).val($(this).val().toUpperCase().replace(#{regexp_español3},''))"}
+        # end  
       end
 
       field :password do

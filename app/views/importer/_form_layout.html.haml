@@ -1,0 +1,16 @@
+= form_tag("/importer/#{entity}", multipart: true, class: 'form-horizontal') do
+  %fieldset
+    = render partial: '/importer/importer_default_fields'
+    = render partial: "/importer/#{entity}_fields"
+
+    #file_field.control-group.row.mb-3
+      %label.col-sm-2.col-form-label.text-md-end{for: "file_field"} Archivo
+      .col-sm-10.controls
+        = file_field_tag :datafile, required: true, class: 'form-control', accept: ".csv"
+        .form-text
+          %span.label.label-danger Requerido
+
+    .control-group.row.mb-3
+      %label.col-sm-2.col-form-label.text-md-end 
+      .controls.col-sm-10{"data-nestedone": true}
+        = submit_tag "Cargar", {class: 'btn btn-success', disable_with: "Cargando..."}

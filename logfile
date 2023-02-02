@@ -1,0 +1,86 @@
+2023-02-01 10:18:08.598 -04 [84826] LOG:  starting PostgreSQL 14.6 (Homebrew) on x86_64-apple-darwin18.7.0, compiled by Apple LLVM version 10.0.1 (clang-1001.0.46.4), 64-bit
+2023-02-01 10:18:08.601 -04 [84826] LOG:  listening on IPv6 address "::1", port 5432
+2023-02-01 10:18:08.602 -04 [84826] LOG:  listening on IPv4 address "127.0.0.1", port 5432
+2023-02-01 10:18:08.603 -04 [84826] LOG:  listening on Unix socket "/tmp/.s.PGSQL.5432"
+2023-02-01 10:18:08.615 -04 [84827] LOG:  database system was shut down at 2023-02-01 10:14:10 -04
+2023-02-01 10:18:08.630 -04 [84826] LOG:  database system is ready to accept connections
+2023-02-01 10:21:14.989 -04 [86545] ERROR:  syntax error at or near "describes" at character 1
+2023-02-01 10:21:14.989 -04 [86545] STATEMENT:  describes sections_teachers;
+2023-02-01 10:29:28.454 -04 [84826] LOG:  received smart shutdown request
+2023-02-01 10:29:28.457 -04 [84826] LOG:  background worker "logical replication launcher" (PID 84833) exited with exit code 1
+2023-02-01 10:29:28.507 -04 [84828] LOG:  shutting down
+2023-02-01 10:29:28.537 -04 [84826] LOG:  database system is shut down
+2023-02-01 10:49:05.950 -04 [9646] LOG:  starting PostgreSQL 14.6 (Homebrew) on x86_64-apple-darwin18.7.0, compiled by Apple LLVM version 10.0.1 (clang-1001.0.46.4), 64-bit
+2023-02-01 10:49:05.953 -04 [9646] LOG:  listening on IPv6 address "::1", port 5432
+2023-02-01 10:49:05.953 -04 [9646] LOG:  listening on IPv4 address "127.0.0.1", port 5432
+2023-02-01 10:49:05.956 -04 [9646] LOG:  listening on Unix socket "/tmp/.s.PGSQL.5432"
+2023-02-01 10:49:06.032 -04 [9647] LOG:  database system was shut down at 2023-02-01 10:29:28 -04
+2023-02-01 10:49:06.052 -04 [9646] LOG:  database system is ready to accept connections
+2023-02-01 16:07:27.346 -04 [40223] ERROR:  column periods.name does not exist at character 41
+2023-02-01 16:07:27.346 -04 [40223] STATEMENT:  SELECT "periods".* FROM "periods" WHERE "periods"."name" = $1 LIMIT $2
+2023-02-01 16:44:45.884 -04 [40223] ERROR:  column courses.code does not exist at character 41
+2023-02-01 16:44:45.884 -04 [40223] STATEMENT:  SELECT "courses".* FROM "courses" WHERE "courses"."code" = $1 AND "courses"."course_id" = $2 AND "courses"."modality" = $3 LIMIT $4
+2023-02-01 16:45:42.174 -04 [40223] ERROR:  null value in column "teacher_id" of relation "sections" violates not-null constraint
+2023-02-01 16:45:42.174 -04 [40223] DETAIL:  Failing row contains (2, A1, 0, 6, null, null, 0, null, 2023-02-01 20:45:42.158383, 2023-02-01 20:45:42.158383).
+2023-02-01 16:45:42.174 -04 [40223] STATEMENT:  INSERT INTO "sections" ("code", "capacity", "course_id", "teacher_id", "qualified", "modality", "enabled", "created_at", "updated_at") VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING "id"
+2023-02-01 16:45:47.358 -04 [40223] ERROR:  null value in column "teacher_id" of relation "sections" violates not-null constraint
+2023-02-01 16:45:47.358 -04 [40223] DETAIL:  Failing row contains (3, A1, 0, 6, null, null, 0, null, 2023-02-01 20:45:47.356165, 2023-02-01 20:45:47.356165).
+2023-02-01 16:45:47.358 -04 [40223] STATEMENT:  INSERT INTO "sections" ("code", "capacity", "course_id", "teacher_id", "qualified", "modality", "enabled", "created_at", "updated_at") VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING "id"
+2023-02-01 17:40:50.600 -04 [26383] LOG:  starting PostgreSQL 14.6 (Homebrew) on x86_64-apple-darwin18.7.0, compiled by Apple LLVM version 10.0.1 (clang-1001.0.46.4), 64-bit
+2023-02-01 17:40:50.603 -04 [26383] LOG:  listening on IPv6 address "::1", port 5432
+2023-02-01 17:40:50.603 -04 [26383] LOG:  listening on IPv4 address "127.0.0.1", port 5432
+2023-02-01 17:40:50.605 -04 [26383] LOG:  listening on Unix socket "/tmp/.s.PGSQL.5432"
+2023-02-01 17:40:50.621 -04 [26384] LOG:  database system was interrupted; last known up at 2023-02-01 16:48:18 -04
+2023-02-01 17:40:51.294 -04 [26384] LOG:  database system was not properly shut down; automatic recovery in progress
+2023-02-01 17:40:51.305 -04 [26384] LOG:  redo starts at 0/88F5578
+2023-02-01 17:40:51.305 -04 [26384] LOG:  invalid record length at 0/88F5660: wanted 24, got 0
+2023-02-01 17:40:51.306 -04 [26384] LOG:  redo done at 0/88F5628 system usage: CPU: user: 0.00 s, system: 0.00 s, elapsed: 0.00 s
+2023-02-01 17:40:51.333 -04 [26383] LOG:  database system is ready to accept connections
+2023-02-01 17:41:01.667 -04 [26513] ERROR:  column "teacher_id" of relation "sections" does not exist
+2023-02-01 17:41:01.667 -04 [26513] STATEMENT:  ALTER TABLE "sections" ALTER COLUMN "teacher_id" TYPE integer, ALTER COLUMN "teacher_id" DROP NOT NULL
+2023-02-01 17:41:17.549 -04 [26668] ERROR:  column "teacher_id" of relation "sections" does not exist
+2023-02-01 17:41:17.549 -04 [26668] STATEMENT:  ALTER TABLE "sections" ALTER COLUMN "teacher_id" TYPE integer, ALTER COLUMN "teacher_id" DROP NOT NULL
+2023-02-01 17:49:22.566 -04 [31131] ERROR:  column "teacher_id" of relation "sections" already exists
+2023-02-01 17:49:22.566 -04 [31131] STATEMENT:  ALTER TABLE "sections" ADD "teacher_id" bigint
+2023-02-01 20:54:44.191 -04 [26383] LOG:  received smart shutdown request
+2023-02-01 20:54:44.194 -04 [26383] LOG:  background worker "logical replication launcher" (PID 26390) exited with exit code 1
+2023-02-01 20:54:44.194 -04 [26385] LOG:  shutting down
+2023-02-01 20:54:44.209 -04 [26383] LOG:  database system is shut down
+2023-02-02 07:14:12.311 -04 [10187] LOG:  starting PostgreSQL 14.6 (Homebrew) on x86_64-apple-darwin18.7.0, compiled by Apple LLVM version 10.0.1 (clang-1001.0.46.4), 64-bit
+2023-02-02 07:14:12.314 -04 [10187] LOG:  listening on IPv6 address "::1", port 5432
+2023-02-02 07:14:12.314 -04 [10187] LOG:  listening on IPv4 address "127.0.0.1", port 5432
+2023-02-02 07:14:12.316 -04 [10187] LOG:  listening on Unix socket "/tmp/.s.PGSQL.5432"
+2023-02-02 07:14:12.401 -04 [10188] LOG:  database system was shut down at 2023-02-01 20:54:44 -04
+2023-02-02 07:14:12.421 -04 [10187] LOG:  database system is ready to accept connections
+2023-02-02 16:23:42.570 -04 [1284] ERROR:  update or delete on table "subjects" violates foreign key constraint "fk_rails_57d52eb461" on table "courses"
+2023-02-02 16:23:42.570 -04 [1284] DETAIL:  Key (id)=(4) is still referenced from table "courses".
+2023-02-02 16:23:42.570 -04 [1284] STATEMENT:  DELETE FROM "subjects" WHERE "subjects"."id" = $1
+2023-02-02 16:24:52.330 -04 [1284] ERROR:  update or delete on table "courses" violates foreign key constraint "fk_rails_20b1e5de46" on table "sections"
+2023-02-02 16:24:52.330 -04 [1284] DETAIL:  Key (id)=(1) is still referenced from table "sections".
+2023-02-02 16:24:52.330 -04 [1284] STATEMENT:  DELETE FROM "courses" WHERE "courses"."id" = $1
+2023-02-02 16:25:40.205 -04 [1284] ERROR:  relation "sections_sections_teachers" does not exist at character 491
+2023-02-02 16:25:40.205 -04 [1284] STATEMENT:  SELECT a.attname, format_type(a.atttypid, a.atttypmod),
+	       pg_get_expr(d.adbin, d.adrelid), a.attnotnull, a.atttypid, a.atttypmod,
+	       c.collname, col_description(a.attrelid, a.attnum) AS comment,
+	       attgenerated as attgenerated
+	  FROM pg_attribute a
+	  LEFT JOIN pg_attrdef d ON a.attrelid = d.adrelid AND a.attnum = d.adnum
+	  LEFT JOIN pg_type t ON a.atttypid = t.oid
+	  LEFT JOIN pg_collation c ON a.attcollation = c.oid AND a.attcollation <> t.typcollation
+	 WHERE a.attrelid = '"sections_sections_teachers"'::regclass
+	   AND a.attnum > 0 AND NOT a.attisdropped
+	 ORDER BY a.attnum
+	
+2023-02-02 16:28:32.300 -04 [1284] ERROR:  relation "sections_sections_teachers" does not exist at character 491
+2023-02-02 16:28:32.300 -04 [1284] STATEMENT:  SELECT a.attname, format_type(a.atttypid, a.atttypmod),
+	       pg_get_expr(d.adbin, d.adrelid), a.attnotnull, a.atttypid, a.atttypmod,
+	       c.collname, col_description(a.attrelid, a.attnum) AS comment,
+	       attgenerated as attgenerated
+	  FROM pg_attribute a
+	  LEFT JOIN pg_attrdef d ON a.attrelid = d.adrelid AND a.attnum = d.adnum
+	  LEFT JOIN pg_type t ON a.atttypid = t.oid
+	  LEFT JOIN pg_collation c ON a.attcollation = c.oid AND a.attcollation <> t.typcollation
+	 WHERE a.attrelid = '"sections_sections_teachers"'::regclass
+	   AND a.attnum > 0 AND NOT a.attisdropped
+	 ORDER BY a.attnum
+	

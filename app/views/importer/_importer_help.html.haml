@@ -6,7 +6,7 @@
     .controls.col-sm-10{"data-nestedone": true}
       %ul.nav.collapse{style: "display: none;"}
       .btn-group
-        %a.btn.btn-info.toggler{rel: :tooltip, data: {'bs-original-title': title}, role: :button, onclick: "$('#showInstructions').toggleClass('d-none')"}
+        %a.btn.btn-info.toggler.active{"aria-expanded": true, rel: :tooltip, data: {'bs-original-title': title, 'bs-target': '#showInstructions'}, role: :button, onclick: "$('#showInstructions').toggleClass('d-none')"}
           %i.fas.fa-chevron-right
           Ejemplo
         - title =   "El formato del archivo a utilizar es .csv "
@@ -18,12 +18,30 @@
     #showInstructions.d-none
       .border.p-2.mt-2
         %h4.text-center Ejemplo de archivo
-        %h6.alert.alert-warning.text-justify 
+        %h6.alert.alert-warning.text-justify
+          %span.mb-0 ✋🏽
+          %b !Atención!
           %b Formato de las cabeceras: 
-          = "#{headers} (en minúscula y sin espacios):"
+          = "#{headers} (en minúscula, sin espacios y sin acentos)."
+
         .text-center
           = image_tag image_url(image_name)#, width: '100%'
-          %p 
-            %div{style: 'color:#87E46E'} #campos opcionales
-            .text-danger #campos obligatorios
-            %div{style: 'color:#76D8FC'} #nombres de la cabecera
+        .text-left
+          %h6 Leyenda: 
+          %div{style: 'color:#87E46E'} Campos Opcionales
+          .text-danger Campos Obligatorios
+          %div{style: 'color:#76D8FC'} Nombres de la Cabecera
+          - if entity.eql? 'subject'
+            .text-dark
+              %div
+                %b creditos: 
+                Número entero que representa las unidades de créditos de la asignatura
+              %div
+                %b modalidad:  
+                obligatoria, electiva ú optativa
+              %div
+                %b orden:  
+                0, 1, 2, 3, 4, 5, 6, 7, 8, 9 o 10 
+              %div
+                %b tipo_calificacion:  
+                numerica o absoluta

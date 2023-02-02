@@ -29,6 +29,9 @@ class AcademicProcess < ApplicationRecord
   validates :max_credits, presence: true
   validates :max_subjects, presence: true
 
+  validates_uniqueness_of :school, scope: [:period], message: 'Proceso academico ya creado', field_name: false
+
+
   def name
     "#{self.school.code} | #{self.period.name}" if (self.school and self.period)
   end

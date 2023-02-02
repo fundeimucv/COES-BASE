@@ -1,4 +1,13 @@
-- if request.fullpath.include? ('student')
-  = render partial: '/importer/students'
-- elsif request.fullpath.include? ('teacher')
-  = render partial: '/importer/teacher'  
+- if entity = params[:model_name].pluralize #= request.path.split("/")[2].pluralize
+  - if entity.eql? ('students')
+    - headers = 'ci, email, nombres, apellidos, sexo, telefono'
+  - elsif entity.eql? ('teachers')
+    - headers = 'ci, email, nombres, apellidos, sexo, telefono'
+  - elsif entity.eql? ('subjects')
+    - headers = 'id, nombre, creditos, modalidad, tipo_calificacion'
+  - elsif entity.eql? ('academic_records')
+    - headers = 'ci, codigo, numero, nombre_periodo, nota'
+
+  =# render partial: '/importer/importer_help', locals: {headers: headers, image_name: "ejem_csv_importar_estudiantes.png", entity: entity}
+  = render partial: '/importer/importer_help', locals: {headers: headers, image_name: "example_csv_import_#{entity}.png", entity: entity}
+  = render partial: "/importer/form_layout", locals: {entity: entity}

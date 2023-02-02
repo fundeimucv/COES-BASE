@@ -1,0 +1,70 @@
+#school_field.control-group.row.mb-3.enum_type
+  %label.col-sm-2.col-form-label.text-md-end{for: "school_field"} Escuela
+  .col-sm-10.controls
+    - @school_id = School.first.id if School.count.eql? 1
+    = select(nil, :school_id, School.all.collect{|o| [ o.description, o.id ] }, { include_blank: 'Seleccione Escuela...', selected: @school_id}, {class: "form-control ra-filtering-select-input ui-autocomplete-input", required: true})
+    .form-text
+      %span.label.label-danger Requerido
+#options
+  #study_plan_field.control-group.row.mb-3.enum_type
+    %label.col-sm-2.col-form-label.text-md-end{for: "study_plan_field"} Plan de Estudio
+    .col-sm-10.controls
+      - @study_plan_id = StudyPlan.first.id if StudyPlan.count.eql? 1
+
+      = grouped_collection_select nil, :study_plan_id, School.all, :study_plans, :description, :id, :desc, {:prompt => "Seleccione plan de estudio por defecto...", selected: @study_plan_id}, { class: 'form-control', required: true}
+      .form-text
+        %span.label.label-danger Requerido
+
+  #admission_type_field.control-group.row.mb-3.enum_type
+    %label.col-sm-2.col-form-label.text-md-end{for: "admission_type_field"} Tipo de Ingreso
+    .col-sm-10.controls
+      = grouped_collection_select nil, :admission_type_id, School.all, :admission_types, :description, :id, :name, {:prompt => "Selecciona el tipo de ingreso a la escuela...", selected: @school_id}, { class: 'form-control', required: true}
+      .form-text
+        %span.label.label-danger Requerido
+
+#registration_status_field.control-group.row.mb-3
+  %label.col-sm-2.col-form-label.text-md-end{for: "registration_status_field"} Estado de Registro
+  .col-sm-10.controls
+    - Grade.registration_statuses.map do |k,v|
+      %label.btn.btn-secondary.btn-sm.tooltip-btn{'data_toggle': :tooltip, title: k.titleize}
+        = radio_button_tag 'registration_status', k, false
+        = "#{k.upcase}"
+    .form-text
+      %span.label.label-default Optional
+
+:javascript
+
+  window.onload = function(){
+   var school = document.querySelector('#school_id');
+    
+    var onchanged = function(){
+      var this_ = this;
+      var value = this_[this_.value].text;
+      var study_plans = document.querySelector("#study_plan_id");
+      var admission_types = document.querySelector("#admission_type_id");
+
+      var alloptionSP = study_plans.querySelectorAll('optgroup');
+      var alloptionAT = admission_types.querySelectorAll('optgroup');
+
+      alloptionSP.forEach(function(element){
+       element.style.display = "none";
+      });
+
+      alloptionAT.forEach(function(element){
+       element.style.display = "none";
+      });
+
+      var getByLabelSP = study_plans.querySelector('[label="'+value+'"]');
+      var getByLabelAT = admission_types.querySelector('[label="'+value+'"]');
+      
+
+      getByLabelSP.style.display = "block";
+      getByLabelAT.style.display = "block";
+
+      // document.getElementById('options').classList.toggle("d-none");
+      
+    };
+    
+   school.onchange = onchanged;
+
+  };

@@ -30,7 +30,7 @@ class Section < ApplicationRecord
   has_many :students, through: :grades
 
   # has_and_belongs_to_namy
-  has_and_belongs_to_many :secondary_teachers, class_name: 'SectionTeacher'
+  # has_and_belongs_to_many :secondary_teachers, class_name: 'SectionTeacher'
 
   #ENUMERIZE:
   enum modality: [:nota_final, :equivalencia_externa, :equivalencia_interna, :diferido, :reparacion, :suficiencia]

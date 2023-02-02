@@ -14,11 +14,11 @@ class Subject < ApplicationRecord
   belongs_to :area
   has_one :school, through: :area
 
-  has_many :courses
+  has_many :courses, dependent: :destroy
 
   # ENUMS:
-  enum qualification_type: [:numerica, :absoluta, :parcial3]
-  enum modality: [:obligatoria, :electiva, :optativa, :proyecto] 
+  enum qualification_type: [:numerica, :absoluta]
+  enum modality: [:obligatoria, :electiva, :optativa] 
 
   # VALIDATIONS:
   validates :code, presence: true, uniqueness: true
@@ -31,6 +31,15 @@ class Subject < ApplicationRecord
 
   # SCOPES: 
   scope :custom_search, -> (keyword) {joins([:area]).where("name LIKE ? or code LIKE ? or area.name LIKE ?", "%#{keyword}%", "%#{keyword}%", "%#{keyword}%")} 
+
+  # HOST:
+  def self.clean_values
+    self.name.delete! '^0-9|^A-Za-z|áÁÄäËëÉéÍÏïíÓóÖöÚúÜüñÑ '
+    self.name.strip!
+    self.code.delete! '^0-9|^A-Za-z|áÁÄäËëÉéÍÏïíÓóÖöÚúÜüñÑ'
+    self.code.strip!    
+  end
+
 
   # FUNCTIONS: 
   def as_absolute?

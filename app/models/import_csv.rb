@@ -1,5 +1,5 @@
 class ImportCsv
-	def self.import_student file, escuela_id, plan_id, tipo_ingreso_id, estado_ingreso, usuario_id, ip, enviar_correo= false
+	def self.import_students file, study_plan_id, admission_type_id, registration_status, send_welcome_emails= false
 		require 'csv'
 		# Totales
 		# Usuarios
@@ -43,8 +43,8 @@ class ImportCsv
 
 					row = row[0] if !row[0].nil?
 					usuario = User.find_or_initialize_by(ci: row['ci'])
-					usuario.last_name = limpiar_cadena row['apellidos']
-					usuario.first_name = limpiar_cadena row['nombres']					
+					usuario.last_name = row['apellidos']
+					usuario.first_name = row['nombres']
 					usuario.email = row['email']
 					usuario.number_phone = row['telefono']
 					usuario.sex = row['sexo']
@@ -70,9 +70,9 @@ class ImportCsv
 						end
 
 						if hay_estudiante
-							grado = Grade.find_or_initialize_by(student_id: estudiante.id, study_plan_id: plan_id)
-							grado.admission_type_id = tipo_ingreso_id
-							grado.registration_status = estado_ingreso
+							grado = Grade.find_or_initialize_by(student_id: estudiante.id, study_plan_id: study_plan_id)
+							grado.admission_type_id = admission_type_id
+							grado.registration_status = registration_status
 							nuevo_grado = grado.new_record?
 
 							if grado.save
@@ -104,7 +104,7 @@ class ImportCsv
 		return [resumen, [estudiantes_no_agregados, usuarios_no_agregados, grados_no_agregados, estudiates_con_plan_errado,estudiates_con_tipo_ingreso_errado, estudiates_con_iniciado_periodo_id_errado, estudiates_con_region_errada, errores_generales, errores_cabeceras]]
 	end
 
-	def self.import_teacher file, area_id
+	def self.import_teachers file, area_id
 		require 'csv'
 		errores_cabeceras = []
 
@@ -185,15 +185,91 @@ class ImportCsv
 
 	end
 
-	def self.importar_inscripciones file, escuela_id, periodo_id=nil
+	def self.import_subjects file, area_id, qualification_type, modality
 		require 'csv'
+		errores_cabeceras = []
 
+		begin
+			csv_text = File.read(file)#.encode('UTF-8', invalid: :replace, replace: '')
+			csv = CSV.parse(csv_text, headers: true)
+		rescue Exception => e
+			errores_cabeceras << "Error al intentar abrir el archivo: #{e}"			
+		end
+
+		errores_cabeceras << "Falta la cabecera 'id' en el archivo o está mal escrita" unless csv.headers.include? 'id'
+		errores_cabeceras << "Falta la cabecera 'nombre' en el archivo o está mal escrita" unless csv.headers.include? 'nombre'
+
+		if errores_cabeceras.count > 0
+			return [0, "Error en las cabaceras del archivo: #{errores_cabeceras.to_sentence}"]
+		else		
+			errores = []
+
+			total_nuevas = 0
+			total_actualizadas = 0
+
+			csv.each do |row|
+				begin
+					row['id'].strip!
+					
+					if area = Area.find(area_id)
+
+						subject = Subject.find_or_initialize_by(code: row['id'])
+
+						nueva = subject.new_record?
+						subject.area_id = area.id
+						subject.name = row['nombre']
+
+			
+						credit = row['creditos'] ? row['creditos'].to_i : 4
+						subject.unit_credits = credit if credit > 0 and credit < 50
+						order = row['orden'] ? row['orden'].to_i : 0
+						subject.ordinal = order if order >= 0 and order < 13
+						tipo_calificacion = row['tipo_calificacion'] ? row['tipo_calificacion'].strip.downcase.to_sym : qualification_type
+
+						tipo_calificacion = :numerica if tipo_calificacion.eql? :numérica
+						subject.qualification_type = tipo_calificacion
+
+						subject.modality = row['modalidad'] ? row['modalidad'].strip.downcase.to_sym : modality
+
+						if subject.save
+							if nueva
+								total_nuevas += 1
+							else
+								total_actualizadas += 1
+							end
+						else
+							errores << subject.errors.full_messages.to_sentence.truncate(50)
+						end
+					end
+				rescue Exception => e
+					errores << "Error General: #{e}"
+				end
+			end
+
+			resumen = ""
+			resumen += "Total Actualizadas: #{total_actualizadas} | "
+			resumen += "Total Nuevas: #{total_nuevas} | "
+
+			resumen += "Total Errores: #{errores.count} | " if errores.any?
+			resumen += "Tipo de Error: #{errores.uniq.to_sentence}" if errores.any?
+			tipo = errores.any? ? 0 : 1
+			return [tipo, "Proceso de importación completado. #{resumen}"]
+		end
+
+	end
+
+
+	def self.import_academic_records file, study_plan_id, periodo_id=nil
+		require 'csv'
 
 		errores_cabeceras = []
 		total_inscritos = 0
 		total_existentes = 0
 		estudiantes_no_inscritos = []
 		total_nuevas_secciones = 0
+		total_secciones_existentes = 0
+		total_nuevos_inscritos_en_proceso = 0
+		total_nuevos_registros_academicos = 0
 		secciones_no_creadas = []
 		estudiantes_inexistentes = []
 		asignaturas_inexistentes = []
@@ -213,8 +289,8 @@ class ImportCsv
 		end
 
 		errores_cabeceras << "Falta la cabecera 'ci' en el archivo" unless csv.headers.include? 'ci'
-		errores_cabeceras << "Falta la cabecera 'id_uxxi' en el archivo" unless csv.headers.include? 'id_uxxi'
-		errores_cabeceras << "Falta la cabecera 'numero' en el archivo" unless csv.headers.include? 'numero'
+		errores_cabeceras << "Falta la cabecera 'codigo' en el archivo. Recuerde no incluir acentos en el nombre de la cabecera" unless csv.headers.include? 'codigo'
+		errores_cabeceras << "Falta la cabecera 'numero' en el archivo. Recuerde no incluir acentos en el nombre de la cabecera" unless csv.headers.include? 'numero'
 
 		if errores_cabeceras.count > 0
 			return [0, "Error en las cabeceras: #{errores_cabeceras.to_sentence}. Corrija el nombre e intente cargar el archivo nuevamente."]
@@ -226,73 +302,93 @@ class ImportCsv
 					row['ci'].strip!
 					row['ci'].delete! '^0-9'
 
-					row['id_uxxi'].strip!
+					row['codigo'].strip!
 					row['numero'].strip! if row['numero']
 
 					# BUSCAR PERIODO
-					if periodo_id.nil?
-						if row['periodo_id']
+					if periodo_id.blank?
+						if row['nombre_periodo']
 
-							row['periodo_id'].strip!
-							row['periodo_id'].upcase!
-							
-							unless Periodo.where(id: row['periodo_id']).any?
-								return [0, "Error: Periodo '#{row['periodo_id']}' es inválido. fila (#{i}): [#{row}]. Revise el archivo e inténtelo nuevamente."]
+							row['nombre_periodo'].strip!
+							row['nombre_periodo'].upcase!
+
+							if period = Period.find_by_name(row['nombre_periodo']).first
+								periodo_id = period.id
+							else 
+								return [0, "Error: Periodo '#{row['nombre_periodo']}' no se encuentra en los registros. fila (#{i}): [#{row}]. Revise el archivo e inténtelo nuevamente."]
 							end
 
 						else
 							return [0, "Sin período para la inscripción: #{row}. Por favor revise el archivo e inténtelo nuevamente."]
 						end
 						periodo_id = row['periodo_id']
+					else
+
+						 return [0, "Período por defecto para la inscripción no encontrado."] unless Period.where(id: periodo_id).any? 
 					end
 
 					# BUCAR ASIGNATURA
-					unless a = Asignatura.where(id_uxxi: row['id_uxxi']).first
-						asignaturas_inexistentes << row['id_uxxi']
+					unless a = Subject.where(code: row['codigo']).first
+						asignaturas_inexistentes << row['codigo']
 					else
-						# BUSCAR O CREAR SECCIÓN
-						s = Seccion.where(numero: row['numero'], periodo_id: periodo_id, asignatura_id: a.id).limit(1).first
-						if s.nil?
-							total_nuevas_secciones += 1 if s = Seccion.create!(numero: row['numero'], periodo_id: periodo_id, asignatura_id: a.id, tipo_seccion_id: 'NF')
-						end
-
-						unless s
-							secciones_no_creadas << row.to_hash
+						# BUSCAR PLAN DE ESTUDIO Y ESCUELA:
+						plan = StudyPlan.find(study_plan_id)
+						if plan.blank?
+							return [0, "Plan de Estudio no encontrado."]
 						else
+
+							escuela = plan.school
+							# BUSCAR O CREAR PROCESO ACADEMICO:
+							proceso_academico = AcademicProcess.find_or_create_by(period_id: periodo_id, school_id: escuela.id)
+
+							# BUSCAR O CREAR EL CURSOS (PROGRAMACIÓN):
+							curso = Course.find_or_create_by(subject_id: subject.id, academic_process_id: proceso_academico.id)
+
+							# BUSCAR O CREAR SECCIÓN
+							s = Section.find_or_initialize_by(code: row['numero'], course_id: curso.id)
+
+							if s.new_record?
+								s.capacity = 20 # OJO: SELECT CAPACITY
+								s.modality = :nota_final # OJO: SELECT MODALITY
+								if s.save
+									total_nuevas_secciones += 1 
+								else
+									secciones_no_creadas << row.to_hash
+								end
+
+							else
+								total_secciones_existentes += 1
+							end
+
 							# BUSCAR ESTUDIANTE
-							estu = Estudiante.where(usuario_id: row['ci']).first
+							estu = (Student.by_ci row['ci']).first
 							if estu.nil?
 								estudiantes_inexistentes << row['ci']
 							else
 								# BUSCAR GRADO
-								unless grado = estu.grados.where(escuela_id: escuela_id).first
+								unless grado = estu.grades.where(study_plan_id: study_plan_id).first
 									estudiantes_sin_grado << estu.id
 								else
-									# BUSCAR O CREAR INSCRIPCIÓN:
-									inscrip = s.inscripcionsecciones.where(estudiante_id: row['ci']).first
-									if inscrip.nil?
-										inscrip = Inscripcionseccion.new
-										escuelaperiodo = Escuelaperiodo.where(periodo_id: periodo_id, escuela_id: a.escuela.id).first
-										escuelaperiodo ||= Escuelaperiodo.create!(periodo_id: periodo_id, escuela_id: a.escuela.id)
-										# BUSCAR O CREAR INSCRIPCIÓN_ESCUELA_PERIODO
-										unless inscrip_escuela_period = estu.inscripcionescuelaperiodos.where(escuelaperiodo_id: escuelaperiodo.id).first
+									# BUSCAR O CREAR INSCRIPCIÓN PROCESO ACADEMICO:
 
-											inscrip_escuela_period = Inscripcionescuelaperiodo.create!(estudiante_id: row['ci'], escuelaperiodo_id: escuelaperiodo.id, tipo_estado_inscripcion_id: 'INS', grado_id: grado.id)
-										end
+									inscrip_proceso_academico = EnrollAcademicProcesses.find_or_initialize_by(academic_process_id: proceso_academico.id, grade_id: grado.id)
 
-										inscrip.inscripcionescuelaperiodo_id = inscrip_escuela_period.id
-
-										inscrip.estudiante_id = estu.id
-										inscrip.escuela_id = escuela_id
-										inscrip.seccion_id = s.id
-										inscrip.grado_id = grado.id
-
+									if inscrip_proceso_academico.new_record?
+										inscrip_proceso_academico.enroll_status = :confirmado
+										inscrip_proceso_academico.permanence_status = :regular
+										
+										total_nuevos_inscritos_en_proceso += 1 if inscrip_proceso_academico.save
 									end
+
+									# BUSCAR O CREAR REGISTRO ACADEMICO
+
+									inscrip = AcademicRecord.find_or_initialize_by(seccion_id: s.id, enroll_academic_process_id: inscrip_proceso_academico.id)
+
 
 									# CALIFICAR:
 									if row['nota'] and !row['nota'].blank?
 										row['nota'].strip!
-										inscrip.calificar row['nota']										
+										inscrip.calificar row['nota']
 										if inscrip.retirado?
 											total_retirados += 1
 										elsif inscrip.aprobado?
@@ -302,7 +398,10 @@ class ImportCsv
 										end
 									end
 
+									nuevo = inscrip.new_record?
+
 									if inscrip.save!
+										total_nuevos_registros_academicos += 1 if nuevo
 										total_inscritos += 1
 										total_calificados += 1
 									else
@@ -317,11 +416,11 @@ class ImportCsv
 					# => OJO AYUDA EN EL ENTORNO DE DESARROLLO COLOCANDO EL BACKTRACE VISIBLE
 					backtrace = (Rails.root.to_s.include? 'localhost') ? "#{e.backtrace.first}" : ''
 
-					return [0, "<b>Error excepcional con el registro #{row.to_hash}: #{e.message} #{backtrace}</b>. #{self.resumen total_inscritos, total_existentes, estudiantes_no_inscritos, total_nuevas_secciones, secciones_no_creadas, estudiantes_inexistentes, asignaturas_inexistentes, total_calificados, total_no_calificados, total_aprobados, total_aplazados, total_retirados, periodo_id, estudiantes_sin_grado }"]
-					
+					return [0, "<b>Error excepcional con el registro #{row.to_hash}: #{e.message} #{backtrace}</b>. #{self.resumen total_inscritos, total_existentes, estudiantes_no_inscritos, total_nuevas_secciones, secciones_no_creadas, estudiantes_inexistentes, asignaturas_inexistentes, total_calificados, total_no_calificados, total_aprobados, total_aplazados, total_retirados, periodo_id, estudiantes_sin_grado, total_nuevos_inscritos_en_proceso, total_nuevos_registros_academicos }"]
+
 				end
 			end
-			return [1, "Resumen procesos de migración: #{self.resumen total_inscritos, total_existentes, estudiantes_no_inscritos, total_nuevas_secciones, secciones_no_creadas, estudiantes_inexistentes, asignaturas_inexistentes, total_calificados, total_no_calificados, total_aprobados, total_aplazados, total_retirados,periodo_id, estudiantes_sin_grado}"]
+			return [1, "Resumen procesos de migración: #{self.resumen total_inscritos, total_existentes, estudiantes_no_inscritos, total_nuevas_secciones, secciones_no_creadas, estudiantes_inexistentes, asignaturas_inexistentes, total_calificados, total_no_calificados, total_aprobados, total_aplazados, total_retirados,periodo_id, estudiantes_sin_grado, total_nuevos_inscritos_en_proceso, total_nuevos_registros_academicos}"]
 		end
 
 	end
@@ -459,7 +558,7 @@ class ImportCsv
 	private
 
 
-	def self.resumen inscritos, existentes, no_inscritos, nuevas_secciones, secciones_no_creadas, estudiantes_inexistentes, asignaturas_inexistentes, total_calificados, total_no_calificados, total_aprobados, total_aplazados, total_retirados, periodo_id, estudiantes_sin_grado
+	def self.resumen inscritos, existentes, no_inscritos, nuevas_secciones, secciones_no_creadas, estudiantes_inexistentes, asignaturas_inexistentes, total_calificados, total_no_calificados, total_aprobados, total_aplazados, total_retirados, periodo_id, estudiantes_sin_grado,  total_nuevos_inscritos_en_proceso= 0, total_nuevos_registros_academicos=0
 		
 		aux = ""
 		aux = "</br>
@@ -468,6 +567,8 @@ class ImportCsv
 			</br></br>Total Nuevos Inscritos: <b>#{inscritos}</b>
 			</br>Total Existentes: <b>#{existentes}</b>
 			</br>Total Nuevas Secciones: <b>#{nuevas_secciones}</b>
+			</br>Total Nuevos Inscritos en Proceso: <b>#{total_nuevos_inscritos_en_proceso}</b>
+			</br>Total Nuevos Registos Académicos: <b>#{total_nuevos_registros_academicos}</b>
 			<hr></hr>Total Secciones No Creadas: <b>#{secciones_no_creadas.count}</b>
 			<hr></hr>Total Asignaturas Inexistentes: <b>#{asignaturas_inexistentes.uniq.count}</b>
 			</br><i>Detalle últimos 50:</i></br> #{asignaturas_inexistentes.uniq.to_sentence}

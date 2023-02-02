@@ -1,0 +1,21 @@
+= render partial: "/importer/area_field_tag"
+
+#qualification_type_field.control-group.row.mb-3
+  %label.col-sm-2.col-form-label.text-md-end{for: "qualification_type_field"} Tipo de Calificación
+  .col-sm-10.controls
+    - Subject.qualification_types.each_with_index.map do |value, i|
+      %label.btn.btn-secondary.btn-sm.tooltip-btn{'data_toggle': :tooltip, title: value[0].titleize}
+        = radio_button_tag 'qualification_type', value[0], i.eql?(0)
+        = "#{value[0].upcase}"
+    .form-text
+      %span.label.label-danger Requerido
+
+#modality_field.control-group.row.mb-3
+  %label.col-sm-2.col-form-label.text-md-end{for: "modality_field"} Modalidad
+  .col-sm-10.controls
+    - Subject.modalities.each_with_index.map do |value, i|
+      %label.btn.btn-secondary.btn-sm.tooltip-btn{'data_toggle': :tooltip, title: value[0].titleize}
+        = radio_button_tag 'modality', value[0], i.eql?(0)
+        = "#{value[0].upcase}"
+    .form-text
+      %span.label.label-danger Requerido

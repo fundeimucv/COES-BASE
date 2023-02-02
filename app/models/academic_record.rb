@@ -46,6 +46,37 @@ class AcademicRecord < ApplicationRecord
   validates :status_q, presence: true
 
   # FUNCTIONS:
+  def calificar valor
+
+    if valor.eql? 'RT'
+      self.status_q = :retirado
+      self.type_q = :final
+    elsif self.subject and self.subject.absoluta?
+      if valor.eql? 'A'
+        self.status_q = :aprobado
+      else
+        self.status_q = :aplazado
+      end
+      self.type_q = :final
+    else
+      self.final_q = valor
+      
+      if self.final_q >= 10
+        self.estado = :aprobado
+      else
+        if self.final_q == 0
+          self.type_q = :perdida_por_inasistencia
+        else
+          self.type_q = :final 
+        end
+        self.estado = :aplazado
+      end
+    end
+  end
+
+
+
+
   def name
     "#{user.ci_fullname} en #{section.name}" if (user and section)
   end

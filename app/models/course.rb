@@ -12,7 +12,7 @@ class Course < ApplicationRecord
   belongs_to :subject
   
   # has_many
-  has_many :sections
+  has_many :sections, dependent: :destroy
 
   #VALIDATIONS:
   validates :subject, presence: true
