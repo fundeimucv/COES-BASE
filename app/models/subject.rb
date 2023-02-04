@@ -30,7 +30,7 @@ class Subject < ApplicationRecord
   validates :area, presence: true
 
   # SCOPES: 
-  scope :custom_search, -> (keyword) {joins([:area]).where("name LIKE ? or code LIKE ? or area.name LIKE ?", "%#{keyword}%", "%#{keyword}%", "%#{keyword}%")} 
+  scope :custom_search, -> (keyword) {joins([:area]).where("subjects.name LIKE ? or subjects.code LIKE ? or areas.name LIKE ?", "%#{keyword}%", "%#{keyword}%", "%#{keyword}%")} 
 
   # HOST:
   def self.clean_values

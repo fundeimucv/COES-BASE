@@ -32,10 +32,16 @@ class ImportCsv
 			errores_generales << "Error al intentar abrir el archivo: #{e}"			
 		end
 
+
+		errores_cabeceras << "'ci'" unless csv.headers.include? 'ci'
+		errores_cabeceras << "'nombres'" unless csv.headers.include? 'nombres'
+		errores_cabeceras << "'apellidos'" unless csv.headers.include? 'apellidos'
+		errores_cabeceras << "'email'" unless csv.headers.include? 'email'
+
 		total_correos_enviados = 0
 		total_correos_no_enviados = 0
 
-		if !errores_generales.any?
+		if !errores_generales.any? and !errores_cabeceras.any?
 			csv.group_by{|row| row['ci']}.values.each do |row|
 
 				begin
@@ -91,15 +97,15 @@ class ImportCsv
 				end
 			end
 		end
-		resumen = "<h6>Resumen de Migración de Datos:</h6>"
-		resumen +=  "</br>Total de registros a procesar: <b>#{csv.group_by{|row| row['ci']}.count}</b><hr></hr>"
-		resumen += "Total Usuarios Nuevos: <b>#{total_usuarios_nuevos}</b><hr></hr>"
-		resumen += "Total Usuarios Actualizados: <b>#{total_usuarios_actualizados}</b><hr></hr>"
-		resumen += "Total Estudiantes Nuevos: <b>#{total_estudiantes_nuevos}</b><hr></hr>"
-		resumen += "Total Estudiantes Actualizados: <b>#{total_estudiantes_actualizados}</b><hr></hr>"
-		resumen += "Total Grados(Carreras) Nuevos: <b>#{total_grados_nuevos}</b><hr></hr>"
-		resumen += "Total Grados(Carreras) Actualizados: <b>#{total_grados_actualizados}</b><hr></hr>"
-		resumen += "Total Correos Procesados: <b>#{total_correos_enviados}</b>"
+		resumen = ""
+		resumen +=  "Total de registros a procesar: #{csv.group_by{|row| row['ci']}.count} | "
+		resumen += "Total Usuarios Nuevos: #{total_usuarios_nuevos} | "
+		resumen += "Total Usuarios Actualizados: #{total_usuarios_actualizados} | "
+		resumen += "Total Estudiantes Nuevos: #{total_estudiantes_nuevos} | "
+		resumen += "Total Estudiantes Actualizados: #{total_estudiantes_actualizados} | "
+		resumen += "Total Grados(Carreras) Nuevos: #{total_grados_nuevos} | "
+		resumen += "Total Grados(Carreras) Actualizados: #{total_grados_actualizados} | "
+		# resumen += "Total Correos Procesados: #{total_correos_enviados}"
 
 		return [resumen, [estudiantes_no_agregados, usuarios_no_agregados, grados_no_agregados, estudiates_con_plan_errado,estudiates_con_tipo_ingreso_errado, estudiates_con_iniciado_periodo_id_errado, estudiates_con_region_errada, errores_generales, errores_cabeceras]]
 	end
@@ -307,6 +313,7 @@ class ImportCsv
 
 					# BUSCAR PERIODO
 					if periodo_id.blank?
+						p "   SIN PERIODO SELECCIONADO    ".center(200, "=")
 						if row['nombre_periodo']
 
 							row['nombre_periodo'].strip!
@@ -314,6 +321,7 @@ class ImportCsv
 
 							if period = Period.find_by_name(row['nombre_periodo']).first
 								periodo_id = period.id
+								p "   PERIODO: #{periodo_id}    ".center(200, "=")
 							else 
 								return [0, "Error: Periodo '#{row['nombre_periodo']}' no se encuentra en los registros. fila (#{i}): [#{row}]. Revise el archivo e inténtelo nuevamente."]
 							end
@@ -327,9 +335,12 @@ class ImportCsv
 						 return [0, "Período por defecto para la inscripción no encontrado."] unless Period.where(id: periodo_id).any? 
 					end
 
+					periodo_id_aux = periodo_id
+
 					# BUCAR ASIGNATURA
-					unless a = Subject.where(code: row['codigo']).first
+					unless subject = Subject.where(code: row['codigo']).first
 						asignaturas_inexistentes << row['codigo']
+						p "   ASIGNATURA INEXISTENTE::::     #{row['codigo']}    ".center(200, "=")
 					else
 						# BUSCAR PLAN DE ESTUDIO Y ESCUELA:
 						plan = StudyPlan.find(study_plan_id)
@@ -339,7 +350,7 @@ class ImportCsv
 
 							escuela = plan.school
 							# BUSCAR O CREAR PROCESO ACADEMICO:
-							proceso_academico = AcademicProcess.find_or_create_by(period_id: periodo_id, school_id: escuela.id)
+							proceso_academico = AcademicProcess.find_or_create_by(period_id: periodo_id_aux, school_id: escuela.id)
 
 							# BUSCAR O CREAR EL CURSOS (PROGRAMACIÓN):
 							curso = Course.find_or_create_by(subject_id: subject.id, academic_process_id: proceso_academico.id)
@@ -416,7 +427,7 @@ class ImportCsv
 					# => OJO AYUDA EN EL ENTORNO DE DESARROLLO COLOCANDO EL BACKTRACE VISIBLE
 					backtrace = (Rails.root.to_s.include? 'localhost') ? "#{e.backtrace.first}" : ''
 
-					return [0, "<b>Error excepcional con el registro #{row.to_hash}: #{e.message} #{backtrace}</b>. #{self.resumen total_inscritos, total_existentes, estudiantes_no_inscritos, total_nuevas_secciones, secciones_no_creadas, estudiantes_inexistentes, asignaturas_inexistentes, total_calificados, total_no_calificados, total_aprobados, total_aplazados, total_retirados, periodo_id, estudiantes_sin_grado, total_nuevos_inscritos_en_proceso, total_nuevos_registros_academicos }"]
+					return [0, "Error excepcional con el registro #{row.to_hash}: #{e.message} #{backtrace}. #{self.resumen total_inscritos, total_existentes, estudiantes_no_inscritos, total_nuevas_secciones, secciones_no_creadas, estudiantes_inexistentes, asignaturas_inexistentes, total_calificados, total_no_calificados, total_aprobados, total_aplazados, total_retirados, periodo_id, estudiantes_sin_grado, total_nuevos_inscritos_en_proceso, total_nuevos_registros_academicos }"]
 
 				end
 			end
@@ -561,28 +572,26 @@ class ImportCsv
 	def self.resumen inscritos, existentes, no_inscritos, nuevas_secciones, secciones_no_creadas, estudiantes_inexistentes, asignaturas_inexistentes, total_calificados, total_no_calificados, total_aprobados, total_aplazados, total_retirados, periodo_id, estudiantes_sin_grado,  total_nuevos_inscritos_en_proceso= 0, total_nuevos_registros_academicos=0
 		
 		aux = ""
-		aux = "</br>
-			<b>Resumen:</b>
-			</br></br>Período: <b>#{periodo_id}</b>
-			</br></br>Total Nuevos Inscritos: <b>#{inscritos}</b>
-			</br>Total Existentes: <b>#{existentes}</b>
-			</br>Total Nuevas Secciones: <b>#{nuevas_secciones}</b>
-			</br>Total Nuevos Inscritos en Proceso: <b>#{total_nuevos_inscritos_en_proceso}</b>
-			</br>Total Nuevos Registos Académicos: <b>#{total_nuevos_registros_academicos}</b>
-			<hr></hr>Total Secciones No Creadas: <b>#{secciones_no_creadas.count}</b>
-			<hr></hr>Total Asignaturas Inexistentes: <b>#{asignaturas_inexistentes.uniq.count}</b>
-			</br><i>Detalle últimos 50:</i></br> #{asignaturas_inexistentes.uniq.to_sentence}
-			<hr></hr>No registrados en la escuela: <b>#{estudiantes_sin_grado.uniq[0..50].to_sentence}</b>
-			<hr></hr>Total Estudiantes Inexistentes: <b>#{estudiantes_inexistentes.uniq.count}</b>
-			</br><i>Detalle últimos 50:</i></br> #{estudiantes_inexistentes.uniq[0..50].to_sentence}"
+		aux = "Período: #{periodo_id} | 
+			Total Nuevos Inscritos: #{inscritos} | 
+			Total Existentes: #{existentes} | 
+			Total Nuevas Secciones: #{nuevas_secciones} | 
+			Total Nuevos Inscritos en Proceso: #{total_nuevos_inscritos_en_proceso} | 
+			Total Nuevos Registos Académicos: #{total_nuevos_registros_academicos} | 
+			Total Secciones No Creadas: #{secciones_no_creadas.count} | 
+			Total Asignaturas Inexistentes: #{asignaturas_inexistentes.uniq.count} | 
+			Detalle últimos 50: #{asignaturas_inexistentes.uniq.to_sentence}
+			No registrados en la escuela: #{estudiantes_sin_grado.uniq[0..50].to_sentence} | 
+			Total Estudiantes Inexistentes: #{estudiantes_inexistentes.uniq.count} | 
+			Detalle últimos 50: #{estudiantes_inexistentes.uniq[0..50].to_sentence} | "
 
 		if total_calificados and total_calificados.to_i > 0
-			aux += "<hr></hr>Calificaciones:"
-			aux += "</br>Total Estudiantes Calificados: <b>#{total_calificados}</b>"
-			aux += "</br>Total Estudiantes Aprobados: <b>#{total_aprobados}</b>"
-			aux += "</br>Total Estudiantes Aplazados: <b>#{total_aplazados}</b>"
-			aux += "</br>Total Estudiantes Retirados: <b>#{total_retirados}</b>"
-			aux += "</br>Total Estudiantes No Calificados: <b>#{total_no_calificados}</b>"
+			aux += "Calificaciones:"
+			aux += "Total Estudiantes Calificados: #{total_calificados} | "
+			aux += "Total Estudiantes Aprobados: #{total_aprobados} | "
+			aux += "Total Estudiantes Aplazados: #{total_aplazados} | "
+			aux += "Total Estudiantes Retirados: #{total_retirados} | "
+			aux += "Total Estudiantes No Calificados: #{total_no_calificados} | "
 
 		end
 		return aux
