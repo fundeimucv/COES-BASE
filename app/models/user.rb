@@ -80,8 +80,57 @@ class User < ApplicationRecord
   end
 
   def set_clean_values
-    self.set_clean_names
-    self.set_clean_ci
+    self.clean_names
+    self.ci.delete! '^0-9'
+
+  end
+
+  def clean_names
+    self.first_name.delete! '^A-Za-z|áÁÄäËëÉéÍÏïíÓóÖöÚúÜüñÑ '
+    self.first_name.strip!
+    self.first_name.upcase!
+
+    self.last_name.delete! '^A-Za-z|áÁÄäËëÉéÍÏïíÓóÖöÚúÜüñÑ '
+    self.last_name.strip!
+    self.last_name.upcase!
+  end
+
+  def set_default_password
+    self.password ||= self.ci #if self.password.blank?
+  end
+
+  #FUNCTIONS:
+
+  def admin?
+    self.admin.nil? ? false : true
+  end
+
+  def student?
+    self.student.nil? ? false : true
+  end
+
+  def teacher?
+    self.teacher.nil? ? false : true
+  end
+
+  def reverse_name
+    "#{last_name}, #{first_name}"
+  end
+
+  def description
+    "#{self.ci} (#{self.email}): #{self.first_name} #{self.last_name}"
+  end
+
+  def ci_fullname
+    "#{ci}: #{full_name}"
+  end
+
+  def name
+    description
+  end
+
+  def full_name
+    "#{first_name} #{last_name}"
   end
 
   def without_rol?
@@ -96,30 +145,6 @@ class User < ApplicationRecord
     return aux
   end
 
-  def set_clean_names
-    self.clean_names
-    self.upcases
-  end
-
-  def set_clean_ci
-    self.ci.delete! '^0-9'
-  end 
-
-  def self.clean_names
-    self.first_name.delete! '^A-Za-z|áÁÄäËëÉéÍÏïíÓóÖöÚúÜüñÑ '
-    self.first_name.strip!
-    self.last_name.delete! '^A-Za-z|áÁÄäËëÉéÍÏïíÓóÖöÚúÜüñÑ '
-    self.last_name.strip!
-  end
-
-  def upcases
-    self.first_name.upcase!
-    self.last_name.upcase!
-  end
-
-  def set_default_password
-    self.password ||= self.ci #if self.password.blank?
-  end
 
   # INTENTOS FALLIDOS REGEXP, AHORA INCLUYE Ñ PERO FALTA EL ACENTO
   # regexp_español = "/^[a-zA-ZÀ-ÿ\u00f1\u00d1]+(\s*[a-zA-ZÀ-ÿ\u00f1\u00d1]*)*[a-zA-ZÀ-ÿ\u00f1\u00d1]+$/g"
@@ -242,37 +267,4 @@ class User < ApplicationRecord
 
   end
 
-  #FUNCTIONS:
-
-  def admin?
-    self.admin.nil? ? false : true
-  end
-
-  def student?
-    self.student.nil? ? false : true
-  end
-
-  def teacher?
-    self.teacher.nil? ? false : true
-  end
-
-  def reverse_name
-    "#{last_name}, #{first_name}"
-  end
-
-  def description
-    "#{self.ci} (#{self.email}): #{self.first_name} #{self.last_name}"
-  end
-
-  def ci_fullname
-    "#{ci}: #{full_name}"
-  end
-
-  def name
-    description
-  end
-
-  def full_name
-    "#{first_name} #{last_name}"
-  end
 end
