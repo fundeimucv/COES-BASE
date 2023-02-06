@@ -15,12 +15,23 @@ class Area < ApplicationRecord
   # accepts_nested_attributes_for :subjects
 
   # VALIDATIONS:
-  validates :name, presence: true, uniqueness: true
+  validates :name, presence: true, uniqueness: {case_sensitive: false}
   validates :school_id, presence: true
 
   # SCOPES:
 
   scope :main, -> {where(parent_area_id: nil)}
+
+  # CALLBACKS:
+  before_save :clean_name
+
+
+  # HOOKS:
+  def clean_name
+    self.name.delete! '^A-Za-z|áÁÄäËëÉéÍÏïíÓóÖöÚúÜüñÑ '
+    self.name.strip!
+    self.name.upcase!
+  end
 
   # FUNCTIONS:
   def description
@@ -60,8 +71,6 @@ class Area < ApplicationRecord
     edit do
       field :name
       field :parent_area
-      field :subjects
-      field :subareas
     end 
 
     export do

@@ -1,4 +1,5 @@
 es:
+  dashboard: 'Escritorio'
   diferido: 'ND'
   final: 'NF'
   reparacion: 'NR'
@@ -285,8 +286,8 @@ es:
         one: 'Tipo de Admisión'  
         other: 'Tipos de Admisión'
       area:
-        one: 'Area de Conocimiento'
-        other: 'Areas de Conocimiento'
+        one: 'Área de Conocimiento'
+        other: 'Áreas de Conocimiento'
       bank:
         one: 'Banco'
         other: 'Bancos'
@@ -384,8 +385,8 @@ es:
       area:
         name: 'Nombre'
         school: 'Escuela'
-        parent_area: 'Area Madre'
-        subjects: 'Asignaturas Propias'
+        parent_area: 'Área Madre'
+        subjects: 'Asignaturas'
         subarea: 'Subáreas'
       bank:
         code: 'Código'

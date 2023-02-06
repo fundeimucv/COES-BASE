@@ -21,8 +21,8 @@ class Subject < ApplicationRecord
   enum modality: [:obligatoria, :electiva, :optativa] 
 
   # VALIDATIONS:
-  validates :code, presence: true, uniqueness: true
-  validates :name, presence: true, uniqueness: true
+  validates :code, presence: true, uniqueness: {case_sensitive: false}
+  validates :name, presence: true, uniqueness: {case_sensitive: false}
   validates :ordinal, presence: true
   validates :modality, presence: true
   validates :qualification_type, presence: true
@@ -32,12 +32,15 @@ class Subject < ApplicationRecord
   # SCOPES: 
   scope :custom_search, -> (keyword) {joins([:area]).where("subjects.name LIKE ? or subjects.code LIKE ? or areas.name LIKE ?", "%#{keyword}%", "%#{keyword}%", "%#{keyword}%")} 
 
-  # HOST:
-  def self.clean_values
+  before_save :clean_values
+  # HOOKS:
+  def clean_values
     self.name.delete! '^0-9|^A-Za-z|áÁÄäËëÉéÍÏïíÓóÖöÚúÜüñÑ '
     self.name.strip!
     self.code.delete! '^0-9|^A-Za-z|áÁÄäËëÉéÍÏïíÓóÖöÚúÜüñÑ'
-    self.code.strip!    
+    self.code.strip!
+    self.name.upcase!
+    self.code.upcase!
   end
 
 
