@@ -15,7 +15,7 @@ class Area < ApplicationRecord
   # accepts_nested_attributes_for :subjects
 
   # VALIDATIONS:
-  validates :name, presence: true
+  validates :name, presence: true, uniqueness: true
   validates :school_id, presence: true
 
   # SCOPES:
@@ -41,7 +41,7 @@ class Area < ApplicationRecord
 
     list do
       field :name
-      field :parent_area_id
+      field :parent_area
       field :total_subjects do
         label 'Total Asignaturas'
       end
@@ -52,14 +52,14 @@ class Area < ApplicationRecord
     end
     show do
       field :name
-      field :parent_area_id
+      field :parent_area
       field :subjects
       field :subareas
     end 
 
     edit do
       field :name
-      field :parent_area_id
+      field :parent_area
       field :subjects
       field :subareas
     end 
