@@ -159,7 +159,7 @@ class Subject < ApplicationRecord
       subject.ordinal = order
 
       # MODALITY
-      p "     #{row[4].strip.downcase.to_sym}      ".center(500, "!")
+      # p "     #{row[4].strip.downcase.to_sym}      ".center(500, "!")
       subject.modality = row[4] ? row[4].strip.downcase.to_sym : fields['modality']
       
       # QUALIFICATION TYPE
