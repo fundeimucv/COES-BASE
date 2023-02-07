@@ -6,13 +6,13 @@ class ImportXslx
 		errores_cabeceras = []
 
 		begin
-
-			file_name = fields[:datafile].original_filename.split(".").first
 			doc = SimpleXlsxReader.open(fields[:datafile].tempfile)
 			hoja = doc.sheets.first
-			rows = hoja.rows
+			rows = hoja.rows			
 			headers = rows.shift 
-			headers = rows.shift #if temp.eql? file_name # funciona si el nombre del archivo no tiene espacios
+			temp = headers.first
+			headers = rows.shift unless (temp.include? 'id') # funciona si el nombre del archivo no tiene espacios
+
 			# rows = hoja.data#.rows#.group_by{|row| row[0]}.values
 
 			headers.compact!
@@ -39,6 +39,8 @@ class ImportXslx
 			total_updated = 0
 			resumen = ""
 			begin
+				# rows.shift
+
 				rows.each do |row|
 					sum_newed, sum_updated, sum_errors = fields[:entity].singularize.camelize.constantize.import row, fields
 					errors << sum_errors unless sum_errors.blank?
