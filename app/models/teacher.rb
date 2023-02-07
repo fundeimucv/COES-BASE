@@ -80,9 +80,10 @@ class Teacher < ApplicationRecord
       if row[4]
         row[4].strip!
         row[4].delete! '^A-Za-z'
-        row[4] = :masculino if row[4].upcase.eql? 'M'
-        row[4] = :femenino if row[4].upcase.eql? 'F'
-        usuario.sex = row[4] 
+        row[4].downcase!
+        row[4] = :masculino if row[4].upcase.eql? 'm'
+        row[4] = :femenino if row[4].upcase.eql? 'f'
+        usuario.sex = row[4]
       end
       usuario.number_phone = row[5] if row[5]
       
