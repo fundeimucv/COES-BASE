@@ -11,7 +11,7 @@ class ImportXslx
 			rows = hoja.rows			
 			headers = rows.shift 
 			temp = headers.first
-			headers = rows.shift unless (temp.include? 'id') # funciona si el nombre del archivo no tiene espacios
+			headers = rows.shift unless (temp.include? 'id' or temp.include? 'ci') # funciona si el nombre del archivo no tiene espacios
 
 			# rows = hoja.data#.rows#.group_by{|row| row[0]}.values
 
