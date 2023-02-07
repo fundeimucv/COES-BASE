@@ -80,9 +80,22 @@ class User < ApplicationRecord
   end
 
   def set_clean_values
-    self.clean_names
+    self.clean_names if (first_name and last_name)
     self.ci.delete! '^0-9'
+    self.clean_phone if number_phone
+    self.clean_email if email
+  end
 
+  def clean_email
+    self.email.strip!
+    self.email.downcase!
+    self.email.gsub!("mailto:", "") 
+    self.email.delete! '^A-Za-z|0-9|@. '
+  end
+
+  def clean_phone
+    self.number_phone.strip!
+    self.number_phone.delete! '^0-9'
   end
 
   def clean_names

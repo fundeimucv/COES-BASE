@@ -3,6 +3,7 @@ Rails.application.routes.draw do
 
   # match "/admin/:model_name/import" => "custom_admin#import" , :as => "import", :via => [:get, :post]
   
+  match "/importer/entities" => "importer#entities" , :as => "importer_entities", :via => [:get, :post]
   match "/importer/students" => "importer#students" , :as => "importer_students", :via => [:get, :post]
   match "/importer/teachers" => "importer#teachers" , :as => "importer_teachers", :via => [:get, :post]
   match "/importer/subjects" => "importer#subjects" , :as => "importer_subjects", :via => [:get, :post]

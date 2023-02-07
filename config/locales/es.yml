@@ -295,8 +295,8 @@ es:
         one: 'Cuenta Bancaria'
         other: 'Cuentas Bancarias'
       course:
-        one: 'Curso'
-        other: 'Cursos'
+        one: 'Oferta Académica'
+        other: 'Ofertas Académicas'
       enroll_academic_process:
         one: 'Inscripción en Proceso Académico'
         other: 'Inscripciones en Proceso Académico'

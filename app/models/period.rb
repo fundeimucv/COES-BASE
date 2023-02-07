@@ -19,7 +19,7 @@ class Period < ApplicationRecord
 
 	# SCOPE:
 	scope :by_name, -> (year, code) {joins(:period_type).where(year: year, 'period_type.code': code)}
-	scope :find_by_name, -> (name) {joins(:period_type).where(year: name.split('-').first, 'period_type.code': name.split('-').last)}
+	scope :find_by_name, -> (name) {joins(:period_type).where(year: name.split('-').first, 'period_type.code': name.split('-').last).first}
 
 
 

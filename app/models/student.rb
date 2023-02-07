@@ -45,9 +45,9 @@ class Student < ApplicationRecord
   # How to validate if student is not created for assosiation
 
   # SCOPES:
-  scope :custom_search, -> (keyword) { joins(:user).where("users.ci LIKE '%#{keyword}%' OR users.email LIKE '%#{keyword}%' OR users.first_name LIKE '%#{keyword}%' OR users.last_name LIKE '%#{keyword}%' OR users.number_phone LIKE '%#{keyword}%'") }
+  scope :custom_search, -> (keyword) { joins(:user).where("users.ci ILIKE '%#{keyword}%' OR users.email ILIKE '%#{keyword}%' OR users.first_name ILIKE '%#{keyword}%' OR users.last_name ILIKE '%#{keyword}%' OR users.number_phone ILIKE '%#{keyword}%'") }
 
-  scope :by_ci, -> (ci) {joins(:user).where('users.ci': ci)}
+  scope :find_by_user_ci, -> (ci) {joins(:user).where('users.ci': ci).first}
 
   # CALLBACKS:
   after_destroy :check_user_for_destroy
@@ -171,6 +171,55 @@ class Student < ApplicationRecord
       # mapping_key_list ['ci', 'email', 'first_name','last_name']
     end
 
+  end
+
+
+  def self.import row, fields
+
+    total_newed = total_updated = 0
+    no_registred = ""
+
+    usuario = User.find_or_initialize_by(ci: row[0])
+    usuario.email = row[1] if row[1]
+    usuario.first_name = row[2] if row[2]
+    usuario.last_name = row[3] if row[3]
+
+    if row[4]
+      row[4].strip!
+      row[4].delete! '^A-Za-z'
+      row[4] = :masculino if row[4].upcase.eql? 'M'
+      row[4] = :femenino if row[4].upcase.eql? 'F'
+      usuario.sex = row[4] 
+    end
+
+    usuario.number_phone = row[5] if row[5]
+
+    if usuario.save
+      estudiante = Student.find_or_initialize_by(user_id: usuario.id)
+
+      if estudiante.save
+        grado = Grade.find_or_initialize_by(student_id: estudiante.id, study_plan_id: fields[:study_plan_id])
+        grado.admission_type_id = fields[:admission_type_id]
+        grado.registration_status = fields[:registration_status]
+        nuevo_grado = grado.new_record?
+
+        if grado.save
+          if nuevo_grado
+            total_newed = 1
+          else
+            total_updated = 1
+          end
+        else
+          no_registred = row
+        end
+      else
+        no_registred = row
+      end
+    else
+      no_registred = row
+    end
+
+    [total_newed, total_updated, no_registred]
   end
 
 

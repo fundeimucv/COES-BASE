@@ -7,15 +7,27 @@ class StudyPlan < ApplicationRecord
 
   # ASSOCIATIONS:
   belongs_to :school
-  has_many :grades
+  has_many :grades, dependent: :destroy
 
   # VALIDATIONS:
-  validates :code, presence: true, uniqueness: true
-  validates :name, presence: true, uniqueness: true
+  validates :code, presence: true, uniqueness: {case_sensitive: false}
+  validates :name, presence: true, uniqueness: {case_sensitive: false}
   validates :school, presence: true
 
   # CALLBACKS:
   after_initialize :set_unique_school
+  before_save :clean_values
+
+  # HOOKS:
+  def clean_values
+    self.name.delete! '^0-9|^A-Za-z|áÁÄäËëÉéÍÏïíÓóÖöÚúÜüñÑ '
+    self.name.strip!
+    self.code.delete! '^0-9|^A-Za-z|áÁÄäËëÉéÍÏïíÓóÖöÚúÜüñÑ'
+    self.code.strip!
+    self.name.upcase!
+    self.code.upcase!
+  end
+
   # FUNTIONS:
   def desc
     "(#{code}) #{name}"

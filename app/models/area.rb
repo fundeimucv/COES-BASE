@@ -28,7 +28,7 @@ class Area < ApplicationRecord
 
   # HOOKS:
   def clean_name
-    self.name.delete! '^A-Za-z|áÁÄäËëÉéÍÏïíÓóÖöÚúÜüñÑ '
+    self.name.delete! '^A-Za-z|áÁÄäËëÉéÍÏïíÓóÖöÚúÜüñÑ'
     self.name.strip!
     self.name.upcase!
   end

@@ -204,4 +204,112 @@ class AcademicRecord < ApplicationRecord
 
   end  
 
+  private
+
+  def self.import row, fields
+
+    total_newed = total_updated = 0
+    no_registred = ''
+
+    # BUSCAR PERIODO
+    row[3].strip!
+    row[3].upcase!
+    row[3] ||= fields[:nombre_periodo]
+
+    period = Period.find_by_name(row[3]) 
+    if period
+      # LIMPIAR CI
+      row[0].strip!
+      row[0].delete! '^0-9'
+
+      # LIMPIAR CODIGO
+      row[1].strip!
+      row[1].strip! if row[1]
+
+      subject = Subject.find_by(code: row[1])
+      subject ||= Subject.find_by(code: "0#{row[1]}")
+
+      if !subject.nil?
+        study_plan = StudyPlan.find fields[:study_plan_id]
+        if !study_plan.nil?
+
+          escuela = study_plan.school
+          # BUSCAR O CREAR PROCESO ACADEMICO:
+          proceso_academico = AcademicProcess.find_or_initialize_by(period_id: period.id, school_id: escuela.id)
+          proceso_academico.default_value_by_import if proceso_academico.new_record?
+
+          if proceso_academico.save
+            # BUSCAR O CREAR EL CURSOS (PROGRAMACIÓN):
+            if curso = Course.find_or_create_by(subject_id: subject.id, academic_process_id: proceso_academico.id)
+
+              # BUSCAR O CREAR SECCIÓN
+              s = Section.find_or_initialize_by(code: row[2], course_id: curso.id)
+              s.set_default_values_by_import if s.new_record?
+
+              if s.save
+                # BUSCAR ESTUDIANTE
+                
+                if estu = Student.find_by_user_ci(row[0])
+                  # BUSCAR O CREAR GRADO
+                  grado = Grade.find_by(study_plan_id: study_plan.id, student_id: estu.id)
+                  if !grado.nil?
+
+                    # BUSCAR O CREAR INSCRIPCIÓN PROCESO ACADEMICO:
+                    inscrip_proceso_academico = EnrollAcademicProcess.find_or_initialize_by(academic_process_id: proceso_academico.id, grade_id: grado.id)
+
+                    inscrip_proceso_academico.set_default_values_by_import if inscrip_proceso_academico.new_record?
+
+                    if inscrip_proceso_academico.save
+                      # BUSCAR O CREAR REGISTRO ACADEMICO
+                      inscrip = AcademicRecord.find_or_initialize_by(section_id: s.id, enroll_academic_process_id: inscrip_proceso_academico.id)
+                      nuevo = inscrip.new_record?
+
+                      if row[4] and !row[4].blank?
+                        row[4].strip!
+                        inscrip.calificar row[4]
+                        inscrip.type_q = :final
+                      elsif nuevo
+                        inscrip.status_q = :sin_calificar
+                        inscrip.type_q = :final
+                      end
+
+                      if inscrip.save!
+                        total_newed += 1
+                      else
+                        total_updated += 1
+                      end
+
+                    else
+                      no_registred = "No se pudo inscribir en el proceso #{inscrip_proceso_academico.name[10]}"
+                    end
+                  else
+                    no_registred = "El estudiante #{estu.user_ci} no tiente el plan '#{study_plan.code}' registrado. "
+                  end
+                else
+                  no_registred = "No se encontró el estudiante con ci '#{row[0]}'. Primero registre el estudiante."
+                end
+
+              else
+                no_registred = "No se pudo crear la sección. '#{row[2]}' incorrecto."
+              end
+
+            else
+              no_registred = curso.errors.full_messages.to_sentence
+            end
+          else
+            no_registred = proceso_academico.errors.full_messages.to_sentence
+          end
+        else
+          no_registred = "Plan de estudio no encontrado"
+        end
+      else
+        no_registred = "No se encontró la asignatura con código '#{row[1]}'"
+      end
+    else
+      no_registred = "No se encontró el período '#{row[3]}'"
+    end
+    
+    [total_newed, total_updated, no_registred]
+  end
+
 end

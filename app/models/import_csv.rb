@@ -202,8 +202,19 @@ class ImportCsv
 			errores_cabeceras << "Error al intentar abrir el archivo: #{e}"			
 		end
 
+		p "    HEADERS: #{csv}     ".center(300, '!')
+		p "    HEADERS: #{csv.headers}     ".center(300, '!')
+
 		errores_cabeceras << "Falta la cabecera 'id' en el archivo o está mal escrita" unless csv.headers.include? 'id'
 		errores_cabeceras << "Falta la cabecera 'nombre' en el archivo o está mal escrita" unless csv.headers.include? 'nombre'
+
+		if errores_cabeceras.any?
+			errores_cabeceras = []
+			errores_cabeceras << "Falta la cabecera 'id' en el archivo o está mal escrita" unless csv.headers.first.include? 'id'
+			errores_cabeceras << "Falta la cabecera 'nombre' en el archivo o está mal escrita" unless csv.headers.first.include? 'nombre'
+		end
+
+
 
 		if errores_cabeceras.count > 0
 			return [0, "Error en las cabaceras del archivo: #{errores_cabeceras.to_sentence}"]
@@ -215,8 +226,9 @@ class ImportCsv
 
 			csv.each do |row|
 				begin
-					row['id'].strip!
-					
+		
+					row['id'].strip! if row['id']
+
 					if area = Area.find(area_id)
 
 						subject = Subject.find_or_initialize_by(code: row['id'])
@@ -393,7 +405,7 @@ class ImportCsv
 
 									# BUSCAR O CREAR REGISTRO ACADEMICO
 
-									inscrip = AcademicRecord.find_or_initialize_by(seccion_id: s.id, enroll_academic_process_id: inscrip_proceso_academico.id)
+									inscrip = AcademicRecord.find_or_initialize_by(section_id: s.id, enroll_academic_process_id: inscrip_proceso_academico.id)
 
 
 									# CALIFICAR:

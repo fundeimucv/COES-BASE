@@ -1,7 +1,8 @@
 class ImporterController < ApplicationController
 
 	def students
-		resultado = ImportCsv.import_students params[:datafile].tempfile, params[:study_plan_id], params[:admission_type_id], params[:registration_status]
+		# resultado = ImportCsv.import_students params[:datafile].tempfile, params[:study_plan_id], params[:admission_type_id], params[:registration_status]
+		resultado = ImportXlsx.general_import  params, ['ci', 'email', 'nombres', 'apellidos'] 
 
 		flash[:info] = resultado[0]
 		errores = resultado[1]
@@ -34,15 +35,51 @@ class ImporterController < ApplicationController
 	end
 
 	def subjects
-		resultado = ImportCsv.import_subjects params[:datafile].tempfile, params[:area_id], params[:qualification_type], params[:modality]
-		if resultado[0].eql? 1
-			flash[:success] = resultado[1]
+		# resultado = ImportXslx.import_subjects params[:datafile].tempfile, params[:area_id], params[:qualification_type], params[:modality]
+
+		result = ImportXslx.general_import params, ['id', 'nombre']
+
+		if result[0].eql? 1 # Exito
+			flash[:success] = result[1]
 			redirect_to '/admin/subject'
 		else
-			flash[:danger] = resultado[1]
+			flash[:danger] = result[1]
 			redirect_back fallback_location: root_path	
 		end
 	end
+
+	def entities
+		case params[:entity]
+		when 'subjects'	
+			require_fields = ['id', 'nombre']
+		when 'students', 'teachers'
+			require_fields = ['ci', 'email', 'nombres', 'apellidos'] 
+		when 'academic_records'
+			require_fields = ['ci', 'codigo', 'numero'] 
+		end
+	
+		if require_fields
+			result = ImportXslx.general_import params, require_fields
+			if result[0].eql? 1 # Exito
+				flash[:success] = result[1]
+				if params[:entity]
+					redirect_to "/admin/#{params[:entity].singularize}"
+				else
+					redirect_back fallback_location: root_path	
+				end
+
+			else
+				flash[:danger] = result[1]
+				redirect_back fallback_location: root_path	
+			end
+		else
+			flash[:danger] = 'Tipo de entidad no encontrada. Por favor inténtelo nuevamente.'
+			redirect_back fallback_location: root_path
+		end
+
+
+	end
+
 
 	def academic_records
 		params[:period_id] = nil if params[:period_in_file]

@@ -63,4 +63,54 @@ class Teacher < ApplicationRecord
       fields :user_id, :area_id
     end
   end
+
+  private
+
+  def self.import row, fields
+
+    total_newed = total_updated = 0
+    no_registred = ""
+    if area = Area.find(fields['area_id'])
+
+      usuario = User.find_or_initialize_by(ci: row[0])
+      usuario.email = row[1] if row[1]
+      usuario.first_name = row[2] if row[2]
+      usuario.last_name = row[3] if row[3]
+      
+      if row[4]
+        row[4].strip!
+        row[4].delete! '^A-Za-z'
+        row[4] = :masculino if row[4].upcase.eql? 'M'
+        row[4] = :femenino if row[4].upcase.eql? 'F'
+        usuario.sex = row[4] 
+      end
+      usuario.number_phone = row[5] if row[5]
+      
+      nuevo = usuario.new_record?
+
+      if usuario.save 
+        profesor = Teacher.find_or_initialize_by(user_id: usuario.id)
+        profesor.area_id = area.id
+
+        nuevo = profesor.new_record?
+
+        if profesor.save
+          if nuevo
+            total_newed = 1
+          else
+            total_updated = 1
+          end
+        else
+          no_registred = row
+        end
+      else  
+        no_registred = row
+      end
+    else
+        no_registred = 'Área no encontrada'
+    end
+    [total_newed, total_updated, no_registred]    
+  end
+
+
 end

@@ -20,7 +20,7 @@ class School < ApplicationRecord
   accepts_nested_attributes_for :admission_types
 
   has_many :academic_processes
-  has_many :areas
+  has_many :areas, dependent: :destroy
   has_many :study_plans, dependent: :destroy
   accepts_nested_attributes_for :study_plans
 
@@ -35,16 +35,30 @@ class School < ApplicationRecord
 
   # VALIDATIONS
   validates :type_entity, presence: true
-  validates :code, presence: true, uniqueness: true
-  validates :name, presence: true, uniqueness: true
+  validates :code, presence: true, uniqueness: {case_sensitive: false}
+  validates :name, presence: true, uniqueness: {case_sensitive: false}
 
   # CALLBAKCS:
   after_initialize :set_unique_faculty
+  before_save :clean_name_and_code
+
 
   # HOOKS:
+  def clean_name_and_code
+    self.name.delete! '^A-Za-z|áÁÄäËëÉéÍÏïíÓóÖöÚúÜüñÑ '
+    self.name.strip!
+    self.name.upcase!
+
+    self.code.delete! '^A-Za-z|áÁÄäËëÉéÍÏïíÓóÖöÚúÜüñÑ'
+    self.code.strip!
+    self.code.upcase!
+  end
+
   def set_unique_faculty
     self.faculty_id = Faculty.first.id if Faculty.count.eql? 1
   end
+
+
   # FUNCTIONS:
   def description
     "#{self.code}: #{self.name}. (#{self.faculty.name}) #{self.type_entity.titleize}"
@@ -64,7 +78,18 @@ class School < ApplicationRecord
     end
 
     edit do
-      fields :faculty, :code, :name, :type_entity, :bank_accounts, :study_plans, :admission_types
+      field :faculty
+      field :code do
+        html_attributes do
+          {:length => 3, :size => 3, :onInput => "$(this).val($(this).val().toUpperCase().replace(/[^A-Za-z]/g,''))"}
+        end
+      end
+      field :name do
+        html_attributes do
+          {:onInput => "$(this).val($(this).val().toUpperCase())"}
+        end       
+      end
+      fields :type_entity, :bank_accounts, :study_plans, :admission_types
     end
 
     export do

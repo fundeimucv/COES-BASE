@@ -1,12 +1,13 @@
-= form_tag("/importer/#{entity}", multipart: true, class: 'form-horizontal') do
+= form_tag("/importer/entities", multipart: true, class: 'form-horizontal') do
   %fieldset
     = render partial: '/importer/importer_default_fields'
     = render partial: "/importer/#{entity}_fields"
 
+    = hidden_field_tag :entity, entity
     #file_field.control-group.row.mb-3
       %label.col-sm-2.col-form-label.text-md-end{for: "file_field"} Archivo
       .col-sm-10.controls
-        = file_field_tag :datafile, required: true, class: 'form-control', accept: ".csv"
+        = file_field_tag :datafile, required: true, class: 'form-control', accept: ".xls, .xlsx"
         .form-text
           %span.label.label-danger Requerido
 

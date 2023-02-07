@@ -30,9 +30,11 @@ class Subject < ApplicationRecord
   validates :area, presence: true
 
   # SCOPES: 
-  scope :custom_search, -> (keyword) {joins([:area]).where("subjects.name LIKE ? or subjects.code LIKE ? or areas.name LIKE ?", "%#{keyword}%", "%#{keyword}%", "%#{keyword}%")} 
+  scope :custom_search, -> (keyword) {joins([:area]).where("subjects.name ILIKE ? or subjects.code ILIKE ? or areas.name ILIKE ?", "%#{keyword}%", "%#{keyword}%", "%#{keyword}%")} 
 
+  # CALLBACKS:
   before_save :clean_values
+  
   # HOOKS:
   def clean_values
     self.name.delete! '^0-9|^A-Za-z|áÁÄäËëÉéÍÏïíÓóÖöÚúÜüñÑ '
@@ -62,7 +64,6 @@ class Subject < ApplicationRecord
     return data
 
   end
-
 
 
   def modality_initial_letter
@@ -136,5 +137,53 @@ class Subject < ApplicationRecord
 
     end
   end
+
+  private
+  
+  def self.import row, fields
+    total_newed = total_updated = 0
+    no_registred = ""
+    if area = Area.find(fields['area_id'])
+      subject = Subject.find_or_initialize_by(code: row[0])
+
+      nueva = subject.new_record?
+      subject.area_id = area.id
+      subject.name = row[1]
+
+      # UNITS CREIDTS
+      credit = row[2] ? row[2].to_i : fields['unit_credits']
+      subject.unit_credits = credit
+
+      # ORDER
+      order = row[3] ? row[3].to_i : fields['order']
+      subject.ordinal = order
+
+      # MODALITY
+      p "     #{row[4].strip.downcase.to_sym}      ".center(500, "!")
+      subject.modality = row[4] ? row[4].strip.downcase.to_sym : fields['modality']
+      
+      # QUALIFICATION TYPE
+      qualification_type = row[5] ? row[5].strip.downcase.to_sym : fields['qualification_type']
+      qualification_type = :numerica if qualification_type.eql? :numérica
+      
+      subject.qualification_type = qualification_type
+
+      if subject.save
+        if nueva
+          total_newed = 1
+        else
+          total_updated = 1
+        end
+      else
+        no_registred = subject.errors.full_messages.to_sentence.truncate(50)
+      end
+    else
+      no_registred = 'Área no encontrada'
+    end
+
+    [total_newed, total_updated, no_registred]
+    
+  end
+
 
 end

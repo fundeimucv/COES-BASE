@@ -15,10 +15,10 @@ class Grade < ApplicationRecord
   belongs_to :admission_type
   has_one :school, through: :study_plan
   
-  has_many :enroll_academic_processes
+  has_many :enroll_academic_processes, dependent: :destroy
   # has_many :academic_records, through: :enroll_academic_processes
 
-  has_many :payment_reports, as: :payable
+  has_many :payment_reports, as: :payable, dependent: :destroy
 
   # ENUMERIZE:
   enum registration_status: [:universidad, :facultad, :escuela]

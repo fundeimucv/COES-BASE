@@ -44,6 +44,10 @@ class Section < ApplicationRecord
 
 
   # FUNCTIONS:
+  def set_default_values_by_import
+    self.capacity = 50 
+    self.modality = :nota_final
+  end
 
   def conv_long
     "U#{self.period.period_type.code}"

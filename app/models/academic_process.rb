@@ -31,6 +31,11 @@ class AcademicProcess < ApplicationRecord
 
   validates_uniqueness_of :school, scope: [:period], message: 'Proceso academico ya creado', field_name: false
 
+  def default_value_by_import
+    max_credits = 24
+    max_subject = 5
+    modality = :semestral
+  end
 
   def name
     "#{self.school.code} | #{self.period.name}" if (self.school and self.period)
@@ -56,8 +61,13 @@ class AcademicProcess < ApplicationRecord
       field :period
       field :modality
       field :subjects
-      field :max_credits
-      field :max_subjects
+      field :max_credits do
+        label 'Máximo de créditos permitidos a inscribir'
+      end
+      field :max_subjects do
+        label 'Máximo de asignaturas permitidas a inscribir'
+
+      end
     end
 
     export do

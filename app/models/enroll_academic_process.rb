@@ -26,6 +26,12 @@ class EnrollAcademicProcess < ApplicationRecord
   # validates :permanence_status, presence: true
 
   # FUNCTIONS:
+
+  def set_default_values_by_import
+    self.enroll_status = :confirmado
+    self.permanence_status = :regular
+  end
+
   def total_academic_records
     self.academic_records.count
   end
