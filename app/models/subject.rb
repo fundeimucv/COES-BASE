@@ -37,6 +37,7 @@ class Subject < ApplicationRecord
   
   # HOOKS:
   def clean_values
+    self.name.delete! '^0-9|^A-Za-z|áÁÄäËëÉéÍÏïíÓóÖöÚúÜüñÑ.() '
     self.name.strip!
     self.code.delete! '^0-9|^A-Za-z|áÁÄäËëÉéÍÏïíÓóÖöÚúÜüñÑ'
     self.code.strip!
