@@ -1,9 +1,26 @@
 class ApplicationController < ActionController::Base
   before_action :authenticate_user!
 
+  helper_method :current_admin
+
   def models_list
     aux = ActiveRecord::Base.connection.tables-['schema_migrations', 'ar_internal_metadata'].map{|model| model.capitalize.singularize.camelize}
     return aux
+  end
+
+  def current_admin
+    current_user.admin
+  end
+
+  def current_schools
+    if current_admin
+      env = current_admin.env_authorizable
+      if env.is_a? Faculty
+        env.schools
+      elsif env.is_a? School
+        School.where(id: env.id)
+      end
+    end    
   end
 
   def after_sign_in_path_for(resource)
