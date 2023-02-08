@@ -23,6 +23,9 @@ class Admin < ApplicationRecord
 
   # validates :env_authorizable_type, presence: true
 
+  # SCOPES:
+  scope :find_by_user_ci, -> (ci) {joins(:user).where('users.ci': ci).first}
+
   def yo?
     self.user.email.eql? 'moros.daniel@gmail.com' and self.user_id.eql? 1
   end

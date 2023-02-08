@@ -127,4 +127,59 @@ class Section < ApplicationRecord
     end
   end
 
+  private
+
+  def self.import row, fields
+
+    total_newed = total_updated = 0
+    no_registred = ''
+
+    row[1].strip!
+    row[1].delete! '^A-Za-z|0-9'
+
+    row[0].strip!
+    row[0].delete! '^A-Za-z|0-9'
+
+    subject = Subject.find_by(code: row[1])
+    subject ||= Subject.find_by(code: "0#{row[1]}")
+
+    if subject
+      # school = School.find (fields[:escuela_id])
+      # period = Period.find (fields[:perido_id])
+      
+      academic_process = AcademicProcess.find fields[:academic_process_id]
+      if academic_process
+        if curso = Course.find_or_create_by(subject_id: subject.id, academic_process_id: academic_process.id)
+          s = Section.find_or_initialize_by(code: row[0], course_id: curso.id)
+          nueva = s.new_record?          
+          s.set_default_values_by_import if nueva
+
+          if row[3]
+            row[3].strip!
+            row[3].delete! '^0-9'
+            teacher = Teacher.find_by_user_ci(row[3])
+            s.teacher_id = teacher.id if teacher
+          end
+
+          if s.save
+            if nueva
+              total_newed = 1
+            else
+              total_updated = 1
+            end
+          else
+            no_registred = "No se pudo guardar la sección: #{s.errors.full_messages.to_sentence[50]}"
+          end
+        else
+          no_registred = "No se pudo crear el curso de la asignatura '#{subject.code}'"
+        end
+      else
+        no_registred = "Proceso académico #{fields[:academic_process_id]} no encontrado."
+      end
+    else
+      no_registred = "Asignatura #{row[1]} no encontrada."
+    end
+    [total_newed, total_updated, no_registred]
+  end
+
 end

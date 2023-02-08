@@ -12,6 +12,9 @@ class Teacher < ApplicationRecord
 
   has_many :sections
 
+  # SCOPES:
+  scope :find_by_user_ci, -> (ci) {joins(:user).where('users.ci': ci).first}
+
   # VALIDATIONS:
   validates :area, presence: true
   validates :user, presence: true, uniqueness: true

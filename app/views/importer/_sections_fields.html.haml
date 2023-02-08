@@ -1,0 +1,33 @@
+- if false
+  #school_field.control-group.row.mb-3.enum_type
+    %label.col-sm-2.col-form-label.text-md-end{for: "school_field"} Escuela
+    .col-sm-10.controls
+      - @selected_id = School.first.id if School.count.eql? 1
+      = select(nil, :school_id, School.all.collect{|o| [ o.description, o.id ] }, { include_blank: 'Seleccione escuela...', selected: @selected_id}, {class: "form-control ra-filtering-select-input ui-autocomplete-input", required: true})
+      .form-text
+        %span.label.label-danger Requerida
+
+  #period_field.control-group.row.mb-3.enum_type
+    %label.col-sm-2.col-form-label.text-md-end{for: "period_field"} Período
+    .col-sm-10.controls
+      = grouped_collection_select nil, :periodo_id, School.all, :periods, :name, :name, :name, {:prompt => "Seleccione periodo...", selected: @period_nombre}, { class: 'form-control', required: true}
+      .form-text
+        %span.label.label-danger Require
+- if true
+  #academic_process_field.control-group.row.mb-3.enum_type
+    %label.col-sm-2.col-form-label.text-md-end{for: "academic_process_field"} Proceso Académico
+    .col-sm-10.controls
+      = select(nil, :academic_process_id, AcademicProcess.all.collect{|o| [ o.name, o.id ] }, { include_blank: 'Seleccione Proceso ...'}, {class: "form-control ra-filtering-select-input ui-autocomplete-input", required: true})
+      .form-text
+        %span.label.label-danger Requerida
+
+
+#modality_field.control-group.row.mb-3
+  %label.col-sm-2.col-form-label.text-md-end{for: "modality_field"} Tipo de Calificación
+  .col-sm-10.controls
+    - Section.modalities.each_with_index.map do |value, i|
+      %label.btn.btn-secondary.btn-sm.tooltip-btn{'data_toggle': :tooltip, title: value[0].titleize}
+        = radio_button_tag 'modallity', value[0], i.eql?(0)
+        = "#{value[0].upcase}"
+    .form-text
+      %span.label.label-danger Requerido

@@ -49,7 +49,7 @@ RailsAdmin.config do |config|
     edit
     delete
     import do
-      only [User, Student, Teacher, Subject, AcademicRecord]
+      only [User, Student, Teacher, Subject, Section, AcademicRecord]
     end
     # show_in_app
 

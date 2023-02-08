@@ -1,11 +1,12 @@
 class ImporterController < ApplicationController
-
 	def entities
 		case params[:entity]
 		when 'subjects'	
 			require_fields = ['id', 'nombre']
 		when 'students', 'teachers'
 			require_fields = ['ci', 'email', 'nombres', 'apellidos'] 
+		when 'sections'
+			require_fields = ['numero', 'codigo', 'capacidad', 'profesor_ci'] 
 		when 'academic_records'
 			require_fields = ['ci', 'codigo', 'numero'] 
 		end

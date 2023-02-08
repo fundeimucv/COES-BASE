@@ -3,6 +3,8 @@
     - headers = 'ci, email, nombres, apellidos, sexo, telefono'
   - elsif entity.eql? 'subjects'
     - headers = 'id, nombre, creditos, modalidad, tipo_calificacion'
+  - elsif entity.eql? 'sections'
+    - headers = 'numero, codigo, capacidad, profesor_ci'
   - elsif entity.eql? 'academic_records'
     - headers = 'ci, codigo, numero, nombre_periodo, nota'
 
