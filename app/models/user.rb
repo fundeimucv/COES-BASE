@@ -70,8 +70,14 @@ class User < ApplicationRecord
   scope :my_search, -> (keyword) {where("ci ILIKE '%#{keyword}%' OR email ILIKE '%#{keyword}%' OR first_name ILIKE '%#{keyword}%' OR last_name ILIKE '%#{keyword}%' OR number_phone ILIKE '%#{keyword}%'") }
 
   # CALLBACKS:
+  # before_create :set_default_values#, if: :new_record?
+
+  before_validation(on: :create) do
+    self.password ||= self.ci #if self.password.blank?
+    self.email = "temp#{self.ci}@mailinator.com" if self.email.blank? and attribute_present?("ci")
+  end
+
   before_save :set_clean_values
-  before_save :set_default_password, if: :new_record?
 
   # HOOKS:
   def after_import_save(record)
@@ -108,9 +114,10 @@ class User < ApplicationRecord
     self.last_name.upcase!
   end
 
-  def set_default_password
-    self.password ||= self.ci #if self.password.blank?
-  end
+  # def set_default_values
+  #   self.password ||= self.ci #if self.password.blank?
+  #   self.email = "temp#{self.ci}@mailinator.com" if self.email.blank? and !self.ci.blank?
+  # end
 
   #FUNCTIONS:
 
