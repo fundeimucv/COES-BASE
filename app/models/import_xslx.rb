@@ -54,7 +54,7 @@ class ImportXslx
 				end
 
 			rescue Exception => e
-				return [0, "Error General : #{e} al rededor de la línea #{}: #{registro_actual}"]
+				return [0, "Error General : #{e} al rededor de la línea #{row_index}: #{row_record}"]
 			end
 
 			resumen += "Nuevos Registros: #{total_newed} | "
