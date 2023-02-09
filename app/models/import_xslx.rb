@@ -38,12 +38,15 @@ class ImportXslx
 			total_newed = 0
 			total_updated = 0
 			resumen = ""
-			registro_actual = ''
+			row_record = ''
+			row_index = 0
+
 			begin
 				# rows.shift
 
-				rows.each do |row|
-					registro_actual = row
+				rows.each_with_index do |row, i|
+					row_record = row
+					row_index = i
 					sum_newed, sum_updated, sum_errors = fields[:entity].singularize.camelize.constantize.import row, fields
 					errors << sum_errors unless sum_errors.blank?
 					total_newed += sum_newed
@@ -51,7 +54,7 @@ class ImportXslx
 				end
 
 			rescue Exception => e
-				return [0, "Error General : #{e} al rededor de la línea: #{registro_actual}"]
+				return [0, "Error General : #{e} al rededor de la línea #{}: #{registro_actual}"]
 			end
 
 			resumen += "Nuevos Registros: #{total_newed} | "
