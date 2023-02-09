@@ -74,7 +74,19 @@ class AcademicRecord < ApplicationRecord
     end
   end
 
+  def student_name_with_retiro
+    aux = "#{user.reverse_name}"
+    aux += " <div class='badge badge-info'>Retirada</div>" if retirado? 
+    return aux
+  end
 
+  def tr_class_by_status_q
+    valor = ''
+    valor = 'table-success' if self.aprobado?
+    valor = 'table-danger' if (self.aplazado? || self.retirado? || self.pi?)
+    valor += ' text-muted' if self.retirado?
+    return valor
+  end
 
 
   def name
@@ -129,6 +141,14 @@ class AcademicRecord < ApplicationRecord
     return valor
   end
 
+  def final_q_to_02i
+    self.final_q.nil? ? nil : sprintf("%02i", self.final_q.to_i)
+  end
+
+  def post_q_to_02i
+    self.post_q.nil? ? nil : sprintf("%02i", self.post_q.to_i)
+  end  
+
   def num_to_s num = final_q
     numeros = %W(CERO UNO DOS TRES CUATRO CINCO SEIS SIETE OCHO NUEVE DIEZ ONCE DOCE TRECE CATORCE QUINCE)
 
@@ -182,7 +202,7 @@ class AcademicRecord < ApplicationRecord
     navigation_icon 'fa-solid fa-signature'
 
     list do
-      fields :period, :subject, :student do
+      fields :period, :section, :student do
         searchable :name
         filterable :name
         sortable :name
@@ -212,9 +232,11 @@ class AcademicRecord < ApplicationRecord
     no_registred = ''
 
     # BUSCAR PERIODO
-    row[3].strip!
-    row[3].upcase!
-    row[3] ||= fields[:nombre_periodo]
+    if row[3]
+      row[3].strip!
+      row[3].upcase!
+    end
+    row[3] = fields[:nombre_periodo] if row[3].blank?
 
     period = Period.find_by_name(row[3]) 
     if period
