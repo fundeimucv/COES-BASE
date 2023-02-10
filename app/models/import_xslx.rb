@@ -11,7 +11,7 @@ class ImportXslx
 			rows = hoja.rows			
 			headers = rows.shift 
 			temp = headers.first
-			headers = rows.shift unless (temp.include? 'id' or temp.include? 'ci') # funciona si el nombre del archivo no tiene espacios
+			headers = rows.shift unless (temp.include? 'id' or temp.include? 'ci' or temp.include? 'numero') # funciona si el nombre del archivo no tiene espacios
 
 			# rows = hoja.data#.rows#.group_by{|row| row[0]}.values
 
@@ -29,9 +29,9 @@ class ImportXslx
 		end
 
 
-		if errores_cabeceras.count > 0
+		if errores_cabeceras.any?
 			errores_cabeceras << headers
-			return [0, "Error en las cabaceras del archivo: #{errores_cabeceras.to_sentence}"]
+			return [0,0, errores_cabeceras]
 		else		
 			errors = []
 			error_type = 1
@@ -47,26 +47,22 @@ class ImportXslx
 				rows.each_with_index do |row, i|
 					row_record = row
 					row_index = i
+					p "      STEP: #{i}, #{row}".center(1000, "=")
 					sum_newed, sum_updated, sum_errors = fields[:entity].singularize.camelize.constantize.import row, fields
-					errors << sum_errors unless sum_errors.blank?
+					errors << i+1 unless sum_errors.blank?
 					total_newed += sum_newed
 					total_updated += sum_updated
+
+					p "      ERROR: #{sum_errors}     ".center(900, "-")
+					
+					break if errors.count > 100
 				end
 
 			rescue Exception => e
-				return [0, "Error General : #{e} al rededor de la línea #{row_index}: #{row_record}"]
+				errors << "Fila #{row_index} #{e} "
 			end
 
-			resumen += "Nuevos Registros: #{total_newed} | "
-			resumen += "Actualizados: #{total_updated} | "
-
-			if errors.any? and (errors.include? '[nil, nil, nil, nil, nil, nil]')
-				resumen += "Total Errores: #{errors.count} | " 
-				resumen += "Tipo de Error: #{errors.uniq.to_sentence}"
-				error_type = 0 
-			end
-
-			return [error_type, "Proceso de importación completado. #{resumen}"]
+			return [total_newed, total_updated, errors.uniq]
 		end
 
 	end

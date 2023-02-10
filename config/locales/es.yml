@@ -371,6 +371,14 @@ es:
         period_type: 'Tipo de Período'
         user: 'Usuario'
         subject: 'Asignatura'
+
+      academic_record/status_q:
+        sin_calificar: 'Sin Calificar'
+        aprobado: 'Aprobados'
+        aplazado: 'Aplazados'
+        retirado: 'Retirados'
+        diferido: 'Diferidos'
+
       admin:
         user: 'Usuario'
         role: 'Rol'

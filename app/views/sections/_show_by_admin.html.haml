@@ -1,0 +1,48 @@
+- headers = ['Código', 'U. Créditos','Asignatura', 'Periodo', 'Capacidad', 'Profesor']
+- data = [[section.code, section.subject.desc, section.period.name, section.capacity, section.teacher_desc]]
+= render partial: "/sections/download_options", locals: {section: section}
+= render partial: '/layouts/on_table', locals: {headers: headers, rows: data}
+-# @academic_records ||= section.academic_records 
+%br
+=# render partial: 'academic_records/show', locals: {section: section}
+= render partial: 'academic_records/qualify', locals: {section: section}
+
+
+:javascript
+
+	function numero_a_letras(valor, ar_id){
+		let final, clase,
+		valores = ['CERO', 'UNO', 'DOS', 'TRES', 'CUATRO', 'CINCO', 'SEIS', 'SIETE', 'OCHO', 'NUEVE', 'DIEZ', 'ONCE', 'DOCE', 'TRECE', 'CATORCE', 'QUINCE'] 
+
+		valor = parseInt(valor)
+		if (valor == 0){
+			final = 'CERO CERO'
+			clase = 'table-danger'
+		}else if (!valor){
+			final = 'POR DEFINIR'
+			clase = ''
+		}else if (valor == -1){
+			final = 'PÉRDIDA POR INASISTENCIA'
+			clase = 'table-danger'
+		}else if (valor >= 0 && valor < 10){
+			console.log(valor)
+			final = `CERO ${valores[valor]}`
+			clase = 'table-danger'
+		}else if (valor > 9 && valor < 16) {
+			final = valores[valor]
+			clase = 'table-success'
+		}else if (valor > 15 && valor < 20){
+			valor = valor % 10
+			final = `DIEZ Y ${valores[valor]}`
+			clase = 'table-success'
+		}else if (valor == 20){
+			final = 'VEINTE'
+			clase = 'table-success'
+		}else{
+			final = 'POR DEFINIR'
+			clase = ''
+		}
+		$(`#acRe${ar_id}`).removeClass().addClass(clase);
+		$(`#_${ar_id}qualfication_to_s`).val(final);
+
+	}

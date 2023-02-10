@@ -1,0 +1,20 @@
+
+= form_tag("/academic_records/#{academic_record.id}", class: 'form-inline', remote: true) do
+  - if academic_record.subject.absoluta?
+    %td
+      = radio_button_tag "[academic_record][#{academic_record.id}]final_q", 1, academic_record.aprobado?, required: true, class: 'absoluta qualificable', id_obj: academic_record.id, tipo_calificacion_id: 'NF'
+      .badge.badge-success= APROBADO
+
+      = radio_button_tag "[academic_record][#{academic_record.id}]final_q", 2, academic_record.aplazado?, required: true, class: 'absoluta qualificable', id_obj: academic_record.id, tipo_calificacion_id: 'NF'
+      .badge.badge-success= APLAZADO
+  - elsif academic_record.subject.numerica?
+
+    %td= number_field_tag "[academic_record][#{academic_record.id}]final_q", {}, {value: academic_record.final_q_to_02i, placeholder: 'Final', class: 'form-control form-control-sm calificable', required: true, step: 1, in: 0...21, onchange: "numero_a_letras($(this).val(), #{academic_record.id});", id_obj: academic_record.id, type_q: :final}
+
+    %td= check_box_tag "[academic_record][#{academic_record.id}]pi", true, academic_record.pi?, {onclick: "desactivar_por_pi(this, #{academic_record.id});"}
+    
+    %td= check_box_tag "[academic_record][#{academic_record.id}]np", true, academic_record.diferido?, {onclick: "desactivar_por_nd(this, #{academic_record.id});"}
+
+    %td= check_box_tag "[academic_record][#{academic_record.id}]nr", true, academic_record.reparacion?, {onclick: "desactivar_por_nd(this, #{academic_record.id});"}    
+
+    %td= number_field_tag "[academic_record][#{academic_record.id}]post_q", {}, {value: academic_record.post_q_to_02i, placeholder: 'Post', class: 'form-control form-control-sm calificable', required: true, step: 1, in: 0...21, onchange: "numero_a_letras($(this).val(), #{academic_record.id});", id_obj: academic_record.id, type_q: [:reparacion, :diferido]}

@@ -35,18 +35,20 @@ class Section < ApplicationRecord
   #ENUMERIZE:
   enum modality: [:nota_final, :equivalencia_externa, :equivalencia_interna, :diferido, :reparacion, :suficiencia]
 
-
   # VALIDATIONS:
   validates :code, presence: true
   validates :capacity, presence: true
   validates :course, presence: true
   validates :modality, presence: true
 
-
   # FUNCTIONS:
   def set_default_values_by_import
     self.capacity = 50 
     self.modality = :nota_final
+  end
+
+  def teacher_desc
+    teacher ? teacher.description : 'No Asignado'
   end
 
   def conv_long
@@ -92,15 +94,15 @@ class Section < ApplicationRecord
     end
 
     show do
-      field :name do
-        label 'Descripción'
-      end
-      fields :teacher, :academic_records
+      # field :name do
+      #   label 'Descripción'
+      # end
+      # fields :teacher, :academic_records
 
-      field :section_list do
-        label 'Listado de seccion'
+      field :desc_show do
+        label 'Descripción'
         formatted_value do
-          bindings[:view].render(partial: "/sections/download_options", locals: {section: bindings[:object]})
+          bindings[:view].render(partial: "sections/show_by_admin", locals: {section: bindings[:object]})
         end
       end
     end
@@ -157,8 +159,10 @@ class Section < ApplicationRecord
           if row[3]
             row[3].strip!
             row[3].delete! '^0-9'
-            teacher = Teacher.find_by_user_ci(row[3])
-            s.teacher_id = teacher.id if teacher
+            user = User.find_by(ci: row[3])
+            
+            s.teacher_id = teacher.id if user and user.teacher?
+
           end
 
           if s.save
