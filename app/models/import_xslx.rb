@@ -49,7 +49,10 @@ class ImportXslx
 					row_index = i
 					p "      STEP: #{i}, #{row}".center(1000, "=")
 					sum_newed, sum_updated, sum_errors = fields[:entity].singularize.camelize.constantize.import row, fields
-					errors << i+1 unless sum_errors.blank?
+					unless sum_errors.blank?
+						sum_errors = "#{(65+sum_errors).chr}" if sum_errors.is_a? Integer and sum_errors >= 0 and sum_errors < 6
+						errors << "#{i+1}:#{sum_errors}"
+					end
 					total_newed += sum_newed
 					total_updated += sum_updated
 

@@ -134,13 +134,20 @@ class Section < ApplicationRecord
   def self.import row, fields
 
     total_newed = total_updated = 0
-    no_registred = ''
+    no_registred = nil
 
-    row[1].strip!
-    row[1].delete! '^A-Za-z|0-9'
+    if row[0]
+      row[0].strip!
+    else
+      return [0,0,0]
+    end
 
-    row[0].strip!
-    row[0].delete! '^A-Za-z|0-9'
+    if row[1]
+      row[1].strip!
+      row[1].delete! '^A-Za-z|0-9'
+    else
+      return [0,0,1]
+    end
 
     subject = Subject.find_by(code: row[1])
     subject ||= Subject.find_by(code: "0#{row[1]}")
@@ -153,16 +160,21 @@ class Section < ApplicationRecord
       if academic_process
         if curso = Course.find_or_create_by(subject_id: subject.id, academic_process_id: academic_process.id)
           s = Section.find_or_initialize_by(code: row[0], course_id: curso.id)
-          nueva = s.new_record?          
+          nueva = s.new_record?
+
           s.set_default_values_by_import if nueva
+
+          if row[2]
+            row[2].strip!
+            row[2].delete! '^0-9'
+            s.capacity = row[2]
+          end
 
           if row[3]
             row[3].strip!
             row[3].delete! '^0-9'
             user = User.find_by(ci: row[3])
-            
             s.teacher_id = teacher.id if user and user.teacher?
-
           end
 
           if s.save
@@ -172,16 +184,16 @@ class Section < ApplicationRecord
               total_updated = 1
             end
           else
-            no_registred = "No se pudo guardar la sección: #{s.errors.full_messages.to_sentence[50]}"
+            no_registred = 0
           end
         else
-          no_registred = "No se pudo crear el curso de la asignatura '#{subject.code}'"
+          no_registred = 1 
         end
       else
-        no_registred = "Proceso académico #{fields[:academic_process_id]} no encontrado."
+        no_registred = 1
       end
     else
-      no_registred = "Asignatura #{row[1]} no encontrada."
+      no_registred = 1
     end
     [total_newed, total_updated, no_registred]
   end

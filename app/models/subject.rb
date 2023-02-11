@@ -142,48 +142,64 @@ class Subject < ApplicationRecord
   
   def self.import row, fields
     total_newed = total_updated = 0
-    no_registred = ""
-    if area = Area.find(fields['area_id'])
-      subject = Subject.find_or_initialize_by(code: row[0])
+    no_registred = nil
+    area = Area.find(fields['area_id'])
 
-      nueva = subject.new_record?
-      subject.area_id = area.id
-      subject.name = row[1]
-
-      # UNITS CREIDTS
-      credit = row[2] ? row[2].to_i : fields['unit_credits']
-      subject.unit_credits = credit
-
-      # ORDER
-      order = row[3] ? row[3].to_i : fields['order']
-      subject.ordinal = order
-
-      # MODALITY
-      # p "     #{row[4].strip.downcase.to_sym}      ".center(500, "!")
-      subject.modality = row[4] ? row[4].strip.downcase.to_sym : fields['modality']
-      
-      # QUALIFICATION TYPE
-      qualification_type = row[5] ? row[5].strip.downcase.to_sym : fields['qualification_type']
-      qualification_type = :numerica if qualification_type.eql? :numérica
-      
-      subject.qualification_type = qualification_type
-
-      if subject.save
-        if nueva
-          total_newed = 1
-        else
-          total_updated = 1
-        end
-      else
-        no_registred = subject.errors.full_messages.to_sentence.truncate(50)
-      end
+    if row[0] #CODIGO
+      row[0].strip!
+      row[0].delete! '^A-Za-z|0-9'
     else
-      no_registred = 'Área no encontrada'
+      return [0,0,0]
     end
 
-    [total_newed, total_updated, no_registred]
-    
-  end
+    subject = Subject.find_or_initialize_by(code: row[0])
 
+    nueva = subject.new_record?
+    subject.area_id = area.id
+
+    if row[1] #Nombre
+      row[1].strip!
+    else
+      return [0,0,1]
+    end
+      
+    subject.name = row[1]
+
+    # UNITS CREIDTS
+    credit = row[2] ? row[2].to_i : fields['unit_credits']
+    subject.unit_credits = credit
+
+    # ORDER
+    order = row[3] ? row[3].to_i : fields['order']
+    subject.ordinal = order
+
+    # MODALITY
+    # p "     #{row[4].strip.downcase.to_sym}      ".center(500, "!")
+    modality = fields['modality']
+    if row[4]
+      aux = row[4].strip.downcase
+      modality = aux if Subject.modalities.values.include? aux
+    end
+    
+    subject.modality = modality
+      
+    # QUALIFICATION TYPE
+    qualification_type = row[5] ? row[5].strip.downcase.to_sym : fields['qualification_type']
+    qualification_type = :numerica if qualification_type.eql? :numérica
+      
+    subject.qualification_type = qualification_type
+
+    if subject.save
+      if nueva
+        total_newed = 1
+      else
+        total_updated = 1
+      end
+    else
+      no_registred = 1
+    end
+
+    return [total_newed, total_updated, no_registred]
+  end
 
 end

@@ -27,8 +27,11 @@ class ImporterController < ApplicationController
 					if result[2].count > 100
 						flash[:danger] += "Más de 100 registros tienen problemas, por lo que no se continuó el proceso de carga. ".html_safe
 					end
-					flash[:danger] += " A continuación las filas de datos que reportan algún error: #{result[2].to_sentence}."
-					flash[:danger] += " Correbore en el sistema que tanto el código de la asignatura como la cédula del estudiante que desea migrar existen. De no encontrarse la sección se creará siempre y cuando la asignatura exista. Revise los valores de los datos en el archivo de carga e inténtelo nuevamente. "
+					flash[:danger] += " A continuación la(s) fila(s):columna(s)  de datos que reportan algún error: #{result[2].to_sentence}."
+
+					if params[:entity].eql? 'academic_records'
+						flash[:danger] += " Correbore en el sistema que tanto el código de la asignatura como la cédula del estudiante que desea migrar existen. De no encontrarse la sección se creará siempre y cuando la asignatura exista. Revise los valores de los datos en el archivo de carga e inténtelo nuevamente. "
+					end
 
 					redirect_back fallback_location: root_path
 				else

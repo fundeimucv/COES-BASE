@@ -177,12 +177,38 @@ class Student < ApplicationRecord
   def self.import row, fields
 
     total_newed = total_updated = 0
-    no_registred = ""
+    no_registred = nil
 
+    if row[0]
+      row[0].strip!
+      row[0].delete! '^0-9'
+    else
+      return [0,0,0]
+    end
+    
     usuario = User.find_or_initialize_by(ci: row[0])
-    usuario.email = row[1] if row[1]
-    usuario.first_name = row[2] if row[2]
-    usuario.last_name = row[3] if row[3]
+    
+    if row[1]
+      row[1].strip!
+      usuario.email = row[1]
+    else
+      return [0,0,1]
+    end
+
+    if row[2]
+      row[2].strip!
+      usuario.first_name = row[2]
+    else
+      return [0,0,2]
+    end
+
+    if row[3]
+      row[3].strip!
+      usuario.last_name = row[3] if row[3]
+    else
+      return [0,0,3]
+    end
+
 
     if row[4]
       row[4].strip!

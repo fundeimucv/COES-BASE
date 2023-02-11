@@ -75,20 +75,35 @@ class Teacher < ApplicationRecord
     no_registred = ""
     if area = Area.find(fields['area_id'])
 
-      usuario = User.find_or_initialize_by(ci: row[0])
-      usuario.email = row[1] if row[1]
-      usuario.first_name = row[2] if row[2]
-      usuario.last_name = row[3] if row[3]
-      
-      if row[4]
-        row[4].strip!
-        row[4].delete! '^A-Za-z'
-        row[4].downcase!
-        row[4] = :masculino if row[4].upcase.eql? 'm'
-        row[4] = :femenino if row[4].upcase.eql? 'f'
-        usuario.sex = row[4]
+      if row[0]
+        row[0].strip!
+        row[0].delete! '^0-9'
+      else
+        return [0,0,0]
       end
-      usuario.number_phone = row[5] if row[5]
+      
+      usuario = User.find_or_initialize_by(ci: row[0])
+      
+      if row[1]
+        row[1].strip!
+        usuario.email = row[1]
+      else
+        return [0,0,1]
+      end
+
+      if row[2]
+        row[2].strip!
+        usuario.first_name = row[2]
+      else
+        return [0,0,2]
+      end
+
+      if row[3]
+        row[3].strip!
+        usuario.last_name = row[3] if row[3]
+      else
+        return [0,0,3]
+      end
       
       nuevo = usuario.new_record?
 

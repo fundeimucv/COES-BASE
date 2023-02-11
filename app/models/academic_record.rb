@@ -237,7 +237,7 @@ class AcademicRecord < ApplicationRecord
   def self.import row, fields
 
     total_newed = total_updated = 0
-    no_registred = ''
+    no_registred = nil
 
     # BUSCAR PERIODO
     if row[3]
@@ -256,14 +256,14 @@ class AcademicRecord < ApplicationRecord
         row[0].strip!
         row[0].delete! '^0-9'
       else
-        return [0,0, true]
+        return [0,0, 0]
       end
 
       # LIMPIAR CODIGO ASIGNATURA
       if row[1]
         row[1].strip!
       else
-        return [0,0, 'error']
+        return [0,0, 1]
       end
 
       subject = Subject.find_by(code: row[1])
@@ -290,7 +290,7 @@ class AcademicRecord < ApplicationRecord
               if row[2]
                 row[2].strip!
               else
-                return [0,0, 'error']
+                return [0,0, 2]
               end
 
               s = Section.find_or_initialize_by(code: row[2], course_id: curso.id)
@@ -357,22 +357,22 @@ class AcademicRecord < ApplicationRecord
                 end
 
               else
-                no_registred = 'error'
+                no_registred = 2
               end
             else
-              no_registred = 'error' 
+              no_registred = 1 
             end
           else
-            no_registred = 'error' # Proceso Academico
+            no_registred = 0 # Proceso Academico
           end
         else
-          no_registred = 'error' # Study Plan
+          no_registred = 1 # Study Plan
         end
       else
-        no_registred = 'error'
+        no_registred = 1
       end
     else
-      no_registred = 'error'
+      no_registred = 3
     end
     
     [total_newed, total_updated, no_registred]
