@@ -23,18 +23,23 @@
             %h1.fs-2 Inicio de Sesión
             / Form START
             = simple_form_for(resource, as: resource_name, url: session_path(resource_name), data: { turbo: :false }) do |f|
-              / Email
-              .mb-4
-                %label.form-label{:for => "exampleInputEmail1"} Correo electrónico *
-                .input-group.input-group-lg
-                  %span.input-group-text.bg-light.rounded-start.border-0.text-secondary.px-3
-                    %i.fas.fa-envelope
-                  =# f.input :email, required: true, autofocus: true, placeholder: 'example@xmail.com', input_html: { autocomplete: "email", id: 'exampleInputEmail1', class: 'form-control border-0 bg-light rounded-end ps-1', type: :email}
-                  %input#exampleInputEmail1.form-control.border-0.bg-light.rounded-end.ps-1{placeholder: "mail@example.com", type: :email, name: "user[email]"}
-                  - if false
-                    = '<input class="form-control border-0 bg-light rounded-end ps-1" id="exampleInputEmail1" placeholder="E-mail" type="email">'
+              - if false
+                / Email
+                .mb-4
+                  %label.form-label{:for => "InputEmail"} Correo electrónico *
+                  .input-group.input-group-lg
+                    %span.input-group-text.bg-light.rounded-start.border-0.text-secondary.px-3
+                      %i.fas.fa-envelope
+                    %input#InputEmail.form-control.border-0.bg-light.rounded-end.ps-1{placeholder: "mail@example.com", type: :email, name: "user[email]"}
 
-                    ='<input class="form-control border-0 bg-light rounded-end ps-1" autocomplete="email" id="exampleInputEmail1" type="email" autofocus="autofocus" required="required" aria-required="true" placeholder="example@xmail.com" value="" name="user[email]">'
+              - if true
+                / Email
+                .mb-4
+                  %label.form-label{:for => "inputCi"} Cédula de Identidad *
+                  .input-group.input-group-lg{required: true}
+                    %span.input-group-text.bg-light.rounded-start.border-0.text-secondary.px-3
+                      %i.fas.fa-id-card
+                    %input#inputCi.form-control.border-0.bg-light.rounded-end.ps-1{type: :text, name: "user[ci]"}
 
               / Password
               .mb-4
@@ -42,7 +47,7 @@
                 .input-group.input-group-lg
                   %span.input-group-text.bg-light.rounded-start.border-0.text-secondary.px-3
                     %i.fas.fa-lock
-                  %input#inputPassword5.form-control.border-0.bg-light.rounded-end.ps-1{placeholder: "Contraseña", type: :password, name: 'user[password]'}
+                  %input#inputPassword5.form-control.border-0.bg-light.rounded-end.ps-1{placeholder: "Contraseña", type: :password, name: 'user[password]', required: true}
                 - if false
                   #passwordHelpBlock.form-text
                     Your password must be 8 characters at least

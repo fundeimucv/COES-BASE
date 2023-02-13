@@ -8,7 +8,7 @@ class CreateAcademicRecords < ActiveRecord::Migration[7.0]
       t.float :third_q
       t.float :final_q
       t.float :post_q
-      t.integer :status_q
+      t.integer :status_q, default: 0
       t.integer :type_q
 
       t.timestamps

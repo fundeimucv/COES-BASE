@@ -34,7 +34,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_02_01_213800) do
     t.float "third_q"
     t.float "final_q"
     t.float "post_q"
-    t.integer "status_q"
+    t.integer "status_q", default: 0
     t.integer "type_q"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
