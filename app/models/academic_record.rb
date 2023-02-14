@@ -52,7 +52,9 @@ class AcademicRecord < ApplicationRecord
     self.final_q = nil if (self.perdida_por_inasistencia? or self.subject.absoluta?)
   end
 
-
+  # SCOPE:
+  scope :custom_search, -> (keyword) { joins(:user, :subject).where("users.ci ILIKE '%#{keyword}%' OR users.email ILIKE '%#{keyword}%' OR users.first_name ILIKE '%#{keyword}%' OR users.last_name ILIKE '%#{keyword}%' OR users.number_phone ILIKE '%#{keyword}%' OR subjects.name ILIKE '%#{keyword}%' OR subjects.code ILIKE '%#{keyword}%'") }
+  
   # FUNCTIONS:
   def set_status valor
 
@@ -216,6 +218,7 @@ class AcademicRecord < ApplicationRecord
     navigation_icon 'fa-solid fa-signature'
 
     list do
+      search_by :custom_search
       fields :period, :section, :student do
         searchable :name
         filterable :name
