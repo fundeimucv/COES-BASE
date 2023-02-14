@@ -8,21 +8,28 @@ class ImportXslx
 		begin
 			doc = SimpleXlsxReader.open(fields[:datafile].tempfile)
 			hoja = doc.sheets.first
-			rows = hoja.rows			
-			headers = rows.shift 
-			temp = headers.first
-			headers = rows.shift unless (temp.include? 'id' or temp.include? 'ci' or temp.include? 'numero') # funciona si el nombre del archivo no tiene espacios
+
+			hoja.rows.shift if hoja.headers.include? nil
+			headers = hoja.headers
+			rows = hoja.data
+
+			p "        HEADERS: #{headers}       ".center(300, "-")
+			p "        ROWS: #{rows}       ".center(300, "-")
+
+			# headers = rows.shift 
+			# temp = headers.first
+			# headers = rows.shift unless (temp.include? 'id' or temp.include? 'ci' or temp.include? 'numero')
 
 			# rows = hoja.data#.rows#.group_by{|row| row[0]}.values
 
 			headers.compact!
-			if headers = headers.map(&:downcase)		 
-				headers_layout.each do |head| 
-					errores_cabeceras << "Falta la cabecera '#{head}' en el archivo o está mal escrita" unless headers.include? head	
-				end
-			else
-				errores_cabeceras << "La cabecera del archivo no se encuentra. Por favor genere nuevamente el archivo." 
-			end
+			# if headers = headers.map(&:downcase)		 
+			# 	headers_layout.each do |head| 
+			# 		errores_cabeceras << "Falta la cabecera '#{head}' en el archivo o está mal escrita" unless headers.include? head	
+			# 	end
+			# else
+			# 	errores_cabeceras << "La cabecera del archivo no se encuentra. Por favor genere nuevamente el archivo." 
+			# end
 
 		rescue Exception => e
 			errores_cabeceras << "Error al intentar abrir el archivo: #{e}"
