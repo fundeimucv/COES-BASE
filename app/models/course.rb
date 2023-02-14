@@ -19,7 +19,7 @@ class Course < ApplicationRecord
   validates :academic_process, presence: true
 
   def name 
-    "#{self.period.name}-#{self.subject.name}" if self.period and self.school and self.subject
+    "#{self.period.name}-#{self.subject.desc}" if self.period and self.school and self.subject
   end
 
   def total_sections
