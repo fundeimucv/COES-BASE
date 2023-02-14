@@ -182,7 +182,7 @@ class Section < ApplicationRecord
             row[3].strip!
             row[3].delete! '^0-9'
             user = User.find_by(ci: row[3])
-            s.teacher_id = teacher.id if user and user.teacher?
+            s.teacher_id = user.id if user and user.teacher?
           end
 
           if s.save
