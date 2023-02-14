@@ -1,26 +1,33 @@
+
 %table.table.table-condensed.table-striped.table-hover
   %thead
+    %tr
+      %th
     %tr
       %th CI
       %th.col-4 Estudiante
       %th Cal. Final
       - if section.subject.numerica?
-        %th PI
-        %th CD
-        %th CR
+        - if false 
+          %th PI
+          %th CD
+          %th CR
         %th Cal. Repar
       %th Descripción
-      %th Estado
+      %th
+        Estado
+
 
   %tbody
     - section.academic_records.each do |acre|
       - user = acre.user
+      - disable = (acre.diferido? || acre.reparacion? || acre.retirado? || acre.pi? || (acre.enroll_academic_process and acre.enroll_academic_process.preinscrito?))
       %tr{id: "acRe#{acre.id}", class: acre.tr_class_by_status_q}
         %td= user.ci
         %td= user.reverse_name
 
         - @academic_record = acre
-        = render partial: '/academic_records/form_qualify', locals: {academic_record: acre}
+        = render partial: '/academic_records/form_qualify', locals: {academic_record: acre, disable: disable}
         = render partial: '/academic_records/qualification_to_s', locals: {academic_record: acre}
         %td
           .badge.bg-info= acre.status_q.titleize

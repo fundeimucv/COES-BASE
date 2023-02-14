@@ -244,6 +244,10 @@ es:
   activerecord:
     errors:
       models:
+        academic_record:
+          attributes:
+            final_q:
+              in: 'Debe estar entre 0 y 20'
         grade:
           attributes:
             admission_type:

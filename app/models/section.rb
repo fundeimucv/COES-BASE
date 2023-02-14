@@ -81,6 +81,10 @@ class Section < ApplicationRecord
     "#{self.code}-#{self.course.name}" if self.course
   end
 
+  def tota_academic_records
+    academic_records.count
+  end
+
   # RAILS_ADMIN:
   rails_admin do
     navigation_label 'Inscripciones'
@@ -91,6 +95,10 @@ class Section < ApplicationRecord
         label 'Id'
       end
       fields :course, :teacher, :qualified#, :enabled
+      
+      field :tota_academic_records do
+        label 'Total Insc'
+      end
     end
 
     show do

@@ -39,10 +39,12 @@ class AcademicRecordsController < ApplicationController
     respond_to do |format|
       if @academic_record.update(academic_record_params)
         format.html { redirect_to academic_record_url(@academic_record), notice: "Academic record was successfully updated." }
-        format.json { render :show, status: :ok, location: @academic_record }
+        # format.json { render :show, status: :ok, location: @academic_record }
+        format.json { render json: {data: '¡Datos Guardados con éxito!', type: 'success'}, status: :ok }
       else
         format.html { render :edit, status: :unprocessable_entity }
-        format.json { render json: @academic_record.errors, status: :unprocessable_entity }
+        format.json { render json: {data: "Error: #{@academic_record.errors.full_messages.to_sentence}", type: 'danger'}, status: :ok }
+        # format.json { render json: @academic_record.errors, status: :unprocessable_entity }
       end
     end
   end

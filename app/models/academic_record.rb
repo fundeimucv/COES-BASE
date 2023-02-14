@@ -44,8 +44,14 @@ class AcademicRecord < ApplicationRecord
   validates :enroll_academic_process, presence: true
   validates :type_q, presence: true
   validates :status_q, presence: true
+  validates :final_q, numericality: { in: 0..20 }, allow_blank: true
 
-  # before_save :set_status
+  before_save :set_final_q
+
+  def set_final_q
+    self.final_q = nil if (self.perdida_por_inasistencia? or self.subject.absoluta?)
+  end
+
 
   # FUNCTIONS:
   def set_status valor

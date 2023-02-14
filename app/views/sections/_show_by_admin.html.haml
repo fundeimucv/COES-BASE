@@ -1,14 +1,141 @@
+
 - headers = ['Código', 'U. Créditos','Asignatura', 'Periodo', 'Capacidad', 'Profesor']
 - data = [[section.code, section.subject.desc, section.period.name, section.capacity, section.teacher_desc]]
 = render partial: "/sections/download_options", locals: {section: section}
 = render partial: '/layouts/on_table', locals: {headers: headers, rows: data}
 -# @academic_records ||= section.academic_records 
 %br
+- colspan = section.subject.numerica? ? 9 : 5
+.fixed-top.alert.text-center.text-small#message{role: :alert, colspan: colspan}
 =# render partial: 'academic_records/show', locals: {section: section}
 = render partial: 'academic_records/qualify', locals: {section: section}
 
 
+
 :javascript
+
+	window.onload = function() {
+
+		$('.qualificable').change(function(){
+
+			console.log("THIS: " + this);
+			console.log($(this).attr('name'));
+			let id = $(this).attr('id_obj');
+			tipo = $(this).attr('type_q');
+			val = $(this).val();
+			values = `{"academic_record": {"final_q": ${val}, "type_q": "${tipo}"}}`;
+			sendData(id, values);
+
+		});
+
+		$('.post_q').change(function(){
+			let id = $(this).attr('id_obj');
+			tipo = $(this).attr('type_q');
+			val = $(this).val();
+			values = `{"academic_record": {"post_q": ${val}, "type_q": "${tipo}"}}`
+			sendData(id, values);
+
+		});
+
+	}
+
+
+	function sendData(id, values){
+		// toastr.options.timeOut = 1500;
+		$.ajax({
+			url: `/academic_records/${id}`,
+			type: 'PATCH',
+			data: JSON.parse(values),
+			dataType: 'json',
+			beforeSend: function(xhr) {
+				xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'));
+				// $('#cargando a').html(`Cargando... `);
+				// $('#cargando').modal({ keyboard: false, show: true, backdrop: 'static' });
+			},
+			done: function(json) {
+				console.log('Done json: ' + json)
+			},
+			success: function(json) {
+				// obj.prop('checked', !obj[0].checked)
+				let elem = $('#message')
+
+				console.log('Success json: ' + json.data);
+
+				messageSendData(json.type, json.data);
+
+				// toastr.success(json.data);
+			},
+			error: function(json) {
+				console.log('Error json: ' + json.data);
+				messageSendData(json.type, json.data);
+				// obj.prop('checked', !obj[0].checked)
+				// toastr.error(json.data);
+			},
+			unprocessable_entity: function(json) {
+				console.log('Error unprocessable_entity json: ' + json.data);
+				messageSendData(json.type, json.data);
+
+				// obj.prop('checked', !obj[0].checked)
+				// toastr.error(json.data);
+			}
+		});
+	}
+
+	function messageSendData(clase, msg) {
+		let elem = $('#message')
+
+		console.log('Message type: ' + clase);
+		console.log('Message data: ' + msg);
+
+		elem.removeClass('alert-danger alert-success')
+
+		elem.addClass(`alert-${clase}`)
+		elem.html(msg)
+		
+		elem.fadeIn(0);
+		elem.fadeOut(3000);
+
+		/*
+		setTimeout(function(){
+		elem.parentNode.removeChild(elem);
+		},5000);
+		document.body.appendChild(elem);
+		*/
+
+	}
+
+
+	function desactivar_por_nd(obj, ci){
+		var valor = $(obj).prop('checked')
+		$(`#_academic_record_${ci}pi`).prop('disabled', valor)
+	
+	}
+
+
+	function desactivar_por_pi(obj, ar_id){
+		var numeros, radios, inputs, valor, final
+
+		inputs = $(`#acRe${ar_id} input`);
+
+		valor = $(obj).prop('checked')
+		final = $(`#_academic_record_${ar_id}final_q`)
+
+		inputs.prop('disabled', valor)
+
+		$(obj).prop('disabled', false)
+		// $(obj) = .prop('required', false)
+
+		final.val = (null)
+		if (valor === true) {
+			numero_a_letras('-1', ar_id);
+		}else{
+			numero_a_letras(undefined, ar_id);
+		}
+		
+		$(`#_${ar_id}qualfication_to_s`).prop('disabled', true);
+		$(`#_${ar_id}qualfication_to_s`).prop('readonly', true);		
+	}
+
 
 	function numero_a_letras(valor, ar_id){
 		let final, clase,
@@ -19,13 +146,13 @@
 			final = 'CERO CERO'
 			clase = 'table-danger'
 		}else if (!valor){
-			final = 'POR DEFINIR'
+			final = 'POR CALIFICAR'
 			clase = ''
 		}else if (valor == -1){
 			final = 'PÉRDIDA POR INASISTENCIA'
 			clase = 'table-danger'
 		}else if (valor >= 0 && valor < 10){
-			console.log(valor)
+			// console.log(valor)
 			final = `CERO ${valores[valor]}`
 			clase = 'table-danger'
 		}else if (valor > 9 && valor < 16) {
@@ -39,7 +166,7 @@
 			final = 'VEINTE'
 			clase = 'table-success'
 		}else{
-			final = 'POR DEFINIR'
+			final = 'POR CALIFICAR'
 			clase = ''
 		}
 		$(`#acRe${ar_id}`).removeClass().addClass(clase);
