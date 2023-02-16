@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_02_01_213800) do
+ActiveRecord::Schema[7.0].define(version: 2023_02_14_182317) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -29,15 +29,9 @@ ActiveRecord::Schema[7.0].define(version: 2023_02_01_213800) do
   create_table "academic_records", force: :cascade do |t|
     t.bigint "section_id", null: false
     t.bigint "enroll_academic_process_id", null: false
-    t.float "first_q"
-    t.float "second_q"
-    t.float "third_q"
-    t.float "final_q"
-    t.float "post_q"
-    t.integer "status_q", default: 0
-    t.integer "type_q"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "status", default: 0
     t.index ["enroll_academic_process_id"], name: "index_academic_records_on_enroll_academic_process_id"
     t.index ["section_id"], name: "index_academic_records_on_section_id"
   end
@@ -213,6 +207,15 @@ ActiveRecord::Schema[7.0].define(version: 2023_02_01_213800) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "qualifications", force: :cascade do |t|
+    t.bigint "academic_record_id", null: false
+    t.integer "value", null: false
+    t.integer "type_q", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["academic_record_id"], name: "index_qualifications_on_academic_record_id"
+  end
+
   create_table "schools", force: :cascade do |t|
     t.string "code", null: false
     t.string "name", null: false
@@ -336,6 +339,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_02_01_213800) do
   add_foreign_key "grades", "study_plans"
   add_foreign_key "locations", "students", primary_key: "user_id", on_update: :cascade, on_delete: :cascade
   add_foreign_key "payment_reports", "banks", column: "origin_bank_id"
+  add_foreign_key "qualifications", "academic_records"
   add_foreign_key "schools", "periods", column: "period_active_id"
   add_foreign_key "schools", "periods", column: "period_enroll_id"
   add_foreign_key "sections", "courses"

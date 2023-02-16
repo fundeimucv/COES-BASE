@@ -63,7 +63,7 @@
 
   %tbody
     - @section.academic_records.each_with_index do |ar, i| 
-      - if ar.have_post_q?
+      - if ar.post_q?
         %tr
           %td= i+1
           - conv_descrip = ar.conv_descrip true

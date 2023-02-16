@@ -1,16 +1,23 @@
 es:
-  dashboard: 'Escritorio'
-  diferido: 'ND'
-  final: 'NF'
-  reparacion: 'NR'
-  perdida_por_inasistencia: 'PI'
-  parcial: 'PR'
-  retirado: 'RT'
-  aprobado: 'A'
-  aplazado: 'AP'
-  sin_calificar: 'SC'
-  trimestre1: 'SC'
-  trimestre2: 'SC'
+  dashboard: Escritorio
+  diferido: ND
+  final: NF
+  reparacion: NR
+  
+  perdida_por_inasistencia: PI
+  PI: perdida_por_inasistencia
+  
+  retirado: RT
+  RT: retirado
+  
+  aprobado: A
+  A: aprobado
+  
+  aplazado: AP
+  AP: aplazado
+
+  SC: sin_calificar
+  sin_calificar: SC
 
   admin:
     table_headers:

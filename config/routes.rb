@@ -10,6 +10,7 @@ Rails.application.routes.draw do
   match "/importer/academic_records" => "importer#academic_records" , :as => "importer_academic_records", :via => [:get, :post]
 
   resources :page, only: :show
+  resources :qualifications, only: :update
   resources :period_types
   resources :academic_processes, :enroll_academic_processes, :academic_records, :periods, :profiles, :sections, :courses
 
