@@ -136,6 +136,10 @@ class AcademicRecord < ApplicationRecord
     q_value_to_02i final_q
   end
 
+  def final_q_to_02i_to_from
+    q_value_to_02i_to_from final_q
+  end
+
   def final_type_q
     final_q ? final_q.type_q : nil
   end
@@ -169,6 +173,9 @@ class AcademicRecord < ApplicationRecord
     definitive_q ? definitive_q.type_q : :final
   end
 
+  def q_value_to_02i_to_from qualification=definitive_q
+    qualification ? qualification.value_to_02i : nil
+  end
   def q_value_to_02i qualification=definitive_q
     qualification ? qualification.value_to_02i : '--'
   end

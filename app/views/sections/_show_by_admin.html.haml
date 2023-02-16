@@ -12,7 +12,12 @@
 
 :javascript
 
-	window.onload = function() {
+	document.addEventListener("rails_admin.dom_ready", function() {
+
+		$('.onlyQualify').on('input',function(evt){ 
+			var node = $(this);
+			node.val(node.val().replace(/[^0-9]/g,'') );
+		});		
 
 		$('.checkPost').change(function(){
 
@@ -69,14 +74,16 @@
 			checkboxs.prop('checked', false);
 
 		});
-	}
+	})
 
 	function sendQualification(elem, val2) {
 		let id = elem.attr('id_obj');
 		let tipo = elem.attr('type_q');
 		let val = elem.val();
+		val = parseInt(val)
 		let url = `/qualifications/${id}`
-		values = `{"qualification": {"value": ${val}, "type_q": "${tipo}"}}`;
+		let values = `{"qualification": {"value": ${val}, "type_q": "${tipo}"}}`;
+		console.log("VAL despues de values: "+val);
 		sendData('qualifiable', val, id, url, values, val2);
 	}
 

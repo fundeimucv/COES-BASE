@@ -5,32 +5,37 @@
       %th
     %tr
       %th CI
-      %th.col-4 Estudiante
+      %th.col-6 Estudiante
       
       - if section.subject.numerica?
         %th PI
         %th Cal. Final
-        %th CD
-        %th CR
-        %th Cal. Repar
+        - if false
+          %th CD
+          %th CR
+          %th Cal. Repar
       - else
         %th Cal. Final
-      %th Descripción
-      %th Estado
+      %th.col-4 Descripción
+      %th.col-4 Estado
 
 
   %tbody
     - section.academic_records.joins(:user).order('users.last_name ASC, users.first_name ASC').each do |acre|
       - user = acre.user
       - id = acre.id
-      - disable_row = (acre.retirado? || acre.pi? || acre.preinscrito_in_process?)
+      - retirado = acre.retirado?
+      - preinscrito = acre.preinscrito_in_process?
+      - disable_row = (retirado || acre.pi? || preinscrito)
       - status = acre.status
       %tr{id: "acRe#{acre.id}", class: acre.tr_class_by_status_q}
         %td= user.ci
         %td= user.reverse_name
-
-        - @academic_record = acre
-        = render partial: '/academic_records/form_qualify', locals: {academic_record: acre, disable_row: disable_row, status: status, id: id}
+        - if retirado
+          %td{colspan: 2}
+        - else
+          - @academic_record = acre
+          = render partial: '/academic_records/form_qualify', locals: {academic_record: acre, disable_row: disable_row, status: status, id: id, preinscrito: preinscrito}
         = render partial: '/academic_records/qualification_to_s', locals: {academic_record: acre, id: id}
         %td
           .badge.bg-info{id: "labelStatus#{acre.id}"}= status.titleize
