@@ -36,19 +36,27 @@ Rails.application.routes.draw do
       end
     end
 
-
+    
   devise_scope :user do
     get '/users/sign_out' => 'devise/sessions#destroy'
   end
   devise_for :users, controllers: {
-    sessions: 'users/sessions'
+        sessions: 'users/sessions'
   }
 
   root to: "pages#home"
+
+
   get 'pages/multirols', to: 'pages#multirols'
 
   get 'teacher_session/dashboard', to: 'teacher_session#dashboard'
   get 'student_session/dashboard', to: 'student_session#dashboard'
+
+  
+  resources :passwords do
+    get 'password/new', to: 'password#new'
+  end
+
 
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 

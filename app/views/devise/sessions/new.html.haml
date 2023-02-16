@@ -53,15 +53,12 @@
                     Your password must be 8 characters at least
               / Check box
               .mb-4.d-flex.justify-content-between.mb-4
-                - if devise_mapping.rememberable?
+                - if true
                   .form-check
                     %input#exampleCheck1.form-check-input.boolean.optional{type: :checkbox, name: 'user[remember_me]'}
                     %label.form-check-label{for: "exampleCheck1"} Recuérdame
-                    
-                
-                .text-primary-hover
-                  - if devise_mapping.rememberable? && controller_name != 'passwords' && controller_name != 'registrations'
-                    = link_to "¿Olvidaste tu contraseña?", new_session_path(resource_name)
+                  .text-primary-hover
+                    = link_to "Recuperar contraseña", "users/password/new"
                     %br/
               / Button
               .align-items-center.mt-0
