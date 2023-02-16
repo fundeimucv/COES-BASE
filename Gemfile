@@ -108,3 +108,6 @@ group :test do
   gem "webdrivers"
 end
 gem "cssbundling-rails"
+
+# Gema del Gestor de Correos
+gem "mailersend-ruby"

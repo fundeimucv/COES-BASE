@@ -34,7 +34,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_02_01_213800) do
     t.float "third_q"
     t.float "final_q"
     t.float "post_q"
-    t.integer "status_q"
+    t.integer "status_q", default: 0
     t.integer "type_q"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -70,8 +70,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_02_01_213800) do
     t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
   end
 
-  create_table "admins", force: :cascade do |t|
-    t.bigint "user_id", null: false
+  create_table "admins", primary_key: "user_id", force: :cascade do |t|
     t.integer "role"
     t.string "env_authorizable_type", default: "Faculty"
     t.bigint "env_authorizable_id"
