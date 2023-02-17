@@ -1,7 +1,17 @@
 // Entry point for the build script in your package.json
+
+
+require("bootstrap");
+require("jquery");
+
 import "@hotwired/turbo-rails";
-// import "./controllers";
-// import "bootstrap";
+
+import jquery from 'jquery'
+window.jQuery = jquery
+window.$ = jquery
+
+import "bootstrap";
+
 // import "./eduport/eduport";
 // import "./eduport/functions";
 

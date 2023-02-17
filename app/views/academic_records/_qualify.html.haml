@@ -1,11 +1,9 @@
 
-%table.table.table-condensed.table-striped.table-hover
+%table.table.table-condensed.table-striped.table-hover.border.table-bordered.table-sm.table-responsive
   %thead
     %tr
-      %th
-    %tr
       %th CI
-      %th.col-6 Estudiante
+      %th Estudiante
       
       - if section.subject.numerica?
         %th PI
@@ -16,8 +14,8 @@
           %th Cal. Repar
       - else
         %th Cal. Final
-      %th.col-4 Descripción
-      %th.col-4 Estado
+      %th Descripción
+      %th Estado
 
 
   %tbody

@@ -4,6 +4,7 @@
 - diferido = academic_record.diferido?
 - reparacion = academic_record.reparacion?
 
+
 - if absoluta
   %td
     - options = {"aprobado"=>1, "aplazado"=>2}
@@ -16,7 +17,7 @@
   - disabled_final_q = (disable_row or !no_post_q)
 
   %td= check_box_tag "[academic_record]status", true, academic_record.pi?, {class: 'pi', id_obj: id, disabled: preinscrito}
-  %td= text_field_tag "[qualification]final", {}, {value: final_q_to_02i, placeholder: 'Final', class: 'form-control form-control-sm qualifiable final onlyQualify', disabled: disabled_final_q, step: 1, in: 0...21, id_obj: id, type_q: :final}
+  %td= text_field_tag "[qualification]final", {}, {value: final_q_to_02i, placeholder: 'Final', class: 'form-control form-control-sm qualifiable final onlyQualify', disabled: disabled_final_q, required:!disabled_final_q, step: 1, in: 0...21, id_obj: id, type_q: :final}
 
   - if false
     - checkbox_disabled = (disable_row or aprobado or final_q_to_02i.nil?)
@@ -25,3 +26,4 @@
     %td= check_box_tag "[academic_record][#{id}]nr", :reparacion, reparacion, {disabled: (checkbox_disabled or diferido), class: 'checkPost', id_obj: id}
 
     %td= number_field_tag "[qualification]post", {}, {value: academic_record.post_q_value, placeholder: 'Post', class: 'form-control form-control-sm qualifiable', disabled: no_post_q, step: 1, in: 0...21, id_obj: id, type_q: academic_record.post_type_q}
+

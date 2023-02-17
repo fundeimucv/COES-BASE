@@ -50,6 +50,10 @@ class Section < ApplicationRecord
     self.modality = :nota_final
   end
 
+  def qualified?
+    qualified.eql? true    
+  end
+
   def teacher_desc
     teacher ? teacher.description : 'No Asignado'
   end

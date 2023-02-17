@@ -1,24 +1,27 @@
 .navbar.navbar-expand-sm.bg-light.sticky-top
   .container-fluid
-    = link_to root_path do
-      = image_tag "logo.png", width: '50%'
+    - if false
+      = link_to root_path do
+        - logo = (controller_name.eql? 'sessions') ? "logo_fau_dark.png" : "logo.png"
+        = image_tag logo, width: '25%'
+
     %button.navbar-toggler{"aria-controls" => "navbarSupportedContent", "aria-expanded" => "false", "aria-label" => "Toggle navigation", "data-bs-target" => "#navbarSupportedContent", "data-bs-toggle" => "collapse", :type => "button"}
       %span.navbar-toggler-icon
     #navbarSupportedContent.collapse.navbar-collapse
       %ul.navbar-nav.me-auto.d-flex
-        - if user_signed_in?
+        - if false
           %li.nav-item
-            = link_to "Cerrar sesión", destroy_user_session_path, data: {turbo_method: :delete}, class: "dropdown-item"
-          - if false
-            %li.nav-item.dropdown
-              - if current_user and current_user.picture_profile and current_user.picture_profile.attached?
-                = image_tag current_user.picture_profile, class: "avatar dropdown-toggle", id: "navbarDropdown", data: { bs_toggle: "dropdown" }, 'aria-haspopup': true, 'aria-expanded': false, size: '50x50'
-                =# image_tag current_user.picture_profile_as_thumb, class: "avatar dropdown-toggle", id: "navbarDropdown", data: { bs_toggle: "dropdown" }, 'aria-haspopup': true, 'aria-expanded': false
-              - else
-                = image_tag 'foto_perfil_default_35.png'
-              .dropdown-menu.dropdown-menu-end{"aria-labelledby" => "navbarDropdown"}
-                = link_to "Editar Perfil", "#", class: "dropdown-item"
-                = link_to "Log out", destroy_user_session_path, data: {turbo_method: :delete}, class: "dropdown-item"
-        - else
-          %li.nav-item
-            = link_to "Iniciar Sesión", new_user_session_path, class: "nav-link"
+          %li.nav-item.dropdown
+            - if current_user and current_user.picture_profile and current_user.picture_profile.attached?
+              = image_tag current_user.picture_profile, class: "avatar dropdown-toggle", id: "navbarDropdown", data: { bs_toggle: "dropdown" }, 'aria-haspopup': true, 'aria-expanded': false, size: '50x50'
+              =# image_tag current_user.picture_profile_as_thumb, class: "avatar dropdown-toggle", id: "navbarDropdown", data: { bs_toggle: "dropdown" }, 'aria-haspopup': true, 'aria-expanded': false
+            - else
+              = image_tag 'foto_perfil_default_35.png'
+            .dropdown-menu.dropdown-menu-end{"aria-labelledby" => "navbarDropdown"}
+              = link_to "Editar Perfil", "#", class: "dropdown-item"
+              = link_to "Log out", destroy_user_session_path, data: {turbo_method: :delete}, class: "dropdown-item"
+
+    - if user_signed_in?
+      = link_to destroy_user_session_path, data: {turbo_method: :delete}, class: 'float-end mx-3 my-1 btn btn-sm btn-warning' do
+        %i.fa.fa-right-from-bracket
+        Cerrar sessión

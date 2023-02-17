@@ -1,6 +1,5 @@
 class TeacherSessionController < ApplicationController
-
+	before_action :authenticate_teacher!
 	def dashboard
-		@title = 'Bienvenido a su sesión de COESFAU'
 	end
 end
