@@ -4,6 +4,9 @@
 
 .vh-100.d-flex.justify-content-center.align-items-center.mt-5
 	.col-md-10
+		= link_to teacher_session_dashboard_path, class: 'btn btn-sm btn-primary mx-3' do
+			%i.fa.fa-chevron-left
+			Regresar
 		= render partial: "/sections/download_options", locals: {section: @section}
 		= render partial: '/layouts/on_table', locals: {headers: headers, rows: data}
 		-# @academic_records ||= @section.academic_records 

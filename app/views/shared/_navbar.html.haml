@@ -1,9 +1,14 @@
 .navbar.navbar-expand-sm.bg-light.sticky-top
   .container-fluid
-    - if false
-      = link_to root_path do
-        - logo = (controller_name.eql? 'sessions') ? "logo_fau_dark.png" : "logo.png"
-        = image_tag logo, width: '25%'
+    - unless controller_name.eql? 'sessions'
+      - home = current_teacher ? teacher_session_dashboard_path : student_session_dashboard_path
+
+      = link_to home, class: 'btn btn-sm btn-primary mx-3' do
+        %i.fa.fa-dashboard
+        Principal
+      - if false
+        = link_to home do
+          = image_tag "logo.png", width: '25%'
 
     %button.navbar-toggler{"aria-controls" => "navbarSupportedContent", "aria-expanded" => "false", "aria-label" => "Toggle navigation", "data-bs-target" => "#navbarSupportedContent", "data-bs-toggle" => "collapse", :type => "button"}
       %span.navbar-toggler-icon
