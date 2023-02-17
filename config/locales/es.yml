@@ -1,3 +1,4 @@
+
 es:
   dashboard: Escritorio
   diferido: ND
@@ -283,6 +284,10 @@ es:
           attributes:
             user:
               required: requerido
+        qualification:
+          attributes:
+            value:
+              in: 'Valores deben estar estre 0 y 20'
     models:
       academic_process:
         one: 'Proceso Académico'
