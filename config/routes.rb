@@ -53,7 +53,7 @@ Rails.application.routes.draw do
   get 'student_session/dashboard', to: 'student_session#dashboard'
 
   
-  resources :passwords do
+  resources :password do
     get 'password/new', to: 'password#new'
   end
 
