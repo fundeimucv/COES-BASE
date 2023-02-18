@@ -1,6 +1,6 @@
 
 - headers = ['Código', 'U. Créditos','Asignatura', 'Periodo', 'Capacidad', 'Profesor']
-- data = [[section.code, section.subject.desc, section.period.name, section.capacity, section.teacher_desc]]
+- data = [[section.code, section.subject.unit_credits_to_02i, section.subject.desc, section.period.name, section.capacity, section.teacher_desc]]
 = render partial: "/sections/download_options", locals: {section: section}
 = render partial: '/layouts/on_table', locals: {headers: headers, rows: data}
 -# @academic_records ||= section.academic_records 
