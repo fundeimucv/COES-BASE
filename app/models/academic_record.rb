@@ -2,30 +2,16 @@ class AcademicRecord < ApplicationRecord
   # SCHEMA:
   # t.bigint "section_id", null: false
   # t.bigint "enroll_academic_process_id", null: false
-  # t.float "first_q"
-  # t.float "second_q"
-  # t.float "third_q"
-  # t.float "final_q"
-  # t.float "post_q"
-  # t.integer "status_q"
-  # t.integer "type_q"
-
-  # CONSTANTENIZE:
-  Q_DIFERIDO = 'ND'
-  Q_FINAL = 'NF'
-  Q_REPARACION = 'NR'
-  Q_PI = 'PI'  
-  Q_PARCIAL = 'PR'
+  # t.integer "status"
 
   # ENUMERIZE:
-  enum status_q: [:sin_calificar, :aprobado, :aplazado, :retirado, :trimestre1, :trimestre2]
-  enum type_q: [:final, :diferido, :reparacion, :perdida_por_inasistencia, :parcial]
-  # enum status_q: [:sc, :a, :ap, :re, :t1, :t2]
-  # enum type_q: [:nd, :nf, :rep, :pi, :par]
+  enum status: [:sin_calificar, :aprobado, :aplazado, :retirado, :perdida_por_inasistencia]
 
   # ASSOCIATIONS:
   belongs_to :section
   belongs_to :enroll_academic_process
+
+  has_many :qualifications, dependent: :destroy
 
   has_one :academic_process, through: :enroll_academic_process
   has_one :grade, through: :enroll_academic_process
@@ -42,48 +28,35 @@ class AcademicRecord < ApplicationRecord
   # VALIDATIONS:
   validates :section, presence: true
   validates :enroll_academic_process, presence: true
-  validates :type_q, presence: true
-  validates :status_q, presence: true
-  validates :final_q, numericality: { in: 0..20 }, allow_blank: true
+  validates :status, presence: true
+  # validates :final_q, numericality: { in: 0..20 }, allow_blank: true
 
-  before_save :set_final_q
+  # CALLBACK
+  after_save :set_options_q
 
-  def set_final_q
-    self.final_q = nil if (self.perdida_por_inasistencia? or self.subject.absoluta?)
+  # TRIGGER FUNCTIONS:
+  def set_options_q
+    self.qualifications.destroy_all if self.pi? or self.retirado? or (self.subject and self.subject.absoluta?)
   end
 
   # SCOPE:
   scope :custom_search, -> (keyword) { joins(:user, :subject).where("users.ci ILIKE '%#{keyword}%' OR users.email ILIKE '%#{keyword}%' OR users.first_name ILIKE '%#{keyword}%' OR users.last_name ILIKE '%#{keyword}%' OR users.number_phone ILIKE '%#{keyword}%' OR subjects.name ILIKE '%#{keyword}%' OR subjects.code ILIKE '%#{keyword}%'") }
   
   # FUNCTIONS:
-  def set_status valor
 
-    if valor.eql? 'RT'
-      self.status_q = :retirado
-      self.type_q = :final
-      # self.final_q = self.post_q = nil
-    elsif self.subject and self.subject.absoluta?
-      # self.final_q = self.post_q = nil
-      if valor.eql? 'A'
-        self.status_q = :aprobado
-      else
-        self.status_q = :aplazado
-      end
-      self.type_q = :final
+  def set_status valor
+    valor.strip!
+    valor.upcase!
+
+    if (valor.eql? 'PI' or valor.eql? 'RT' or valor.eql? 'A' or valor.eql? 'AP')
+      self.status = I18n.t(valor)
+      return true
     else
-      self.final_q = valor
-      
-      if self.final_q >= 10
-        self.status_q = :aprobado
-      else
-        if self.final_q == 0
-          self.type_q = :perdida_por_inasistencia
-        else
-          self.type_q = :final 
-        end
-        self.status_q = :aplazado
-      end
+      qua = self.qualifications.find_or_initialize_by(type_q: :final)
+      qua.value = valor.to_i
+      return qua.save
     end
+    return false
   end
 
   def student_name_with_retiro
@@ -100,7 +73,6 @@ class AcademicRecord < ApplicationRecord
     return valor
   end
 
-
   def name
     "#{user.ci_fullname} en #{section.name}" if (user and section)
   end
@@ -109,62 +81,113 @@ class AcademicRecord < ApplicationRecord
     perdida_por_inasistencia?
   end
 
-  def set_definitive_q
-    have_post_q? ? set_post_q : set_final_q
+  def preinscrito_in_process?
+    self.enroll_academic_process and self.enroll_academic_process.preinscrito?
   end
 
-  def set_final_q
-    if retirado? 
-      return '--'
-    elsif self.final_q.nil?
-      return 'SN'
-    elsif subject.as_absolute?
-      valor = I18n.t(self.aprobado? ? 'aprobado' : 'aplazado')
-    else
-      return sprintf("%02i", self.final_q)
-    end   
+  def post_q?
+    !post_q.nil?
   end
 
-  def set_post_q
-    if self.post_q.nil?
-      return 'SN'
-    else
-      return sprintf("%02i", self.post_q)
-    end   
+  def diferido?
+    (post_q and post_q.diferido?) ? true : false
   end
 
+  def reparacion?
+    (post_q and post_q.reparacion?) ? true : false
+  end
 
-  def description_q force_final = false
+  def definitive_q
+    aux = post_q
+    aux ? aux : final_q
+  end
 
-    valor = ''
-    if retirado?
-      valor = 'RETIRADO'
-    elsif pi?
-      valor = 'PÉRDIDA POR INASISTENCIA'
-    elsif sin_calificar? || trimestre1? || trimestre2?
-      valor = 'POR DEFINIR'
-    elsif self.subject.as_absolute?
-      valor = self.status_q.upcase
-    elsif force_final or !have_post_q?
-      valor = num_to_s
+  def definitive_q_value
+    definitive_q ? definitive_q.value : nil
+  end  
+
+  def final_q
+    aux = qualification_by :final
+    aux ? aux : nil
+  end
+
+  def post_q
+    aux = qualification_by [:diferido, :reparacion]
+    aux ? aux : nil
+  end
+
+  def qualification_by type_q
+    self.qualifications.by_type_q(type_q).first
+  end
+
+  def definitive_label
+    definitive_q ? q_value_to_02i : I18n.t(self.status)
+  end
+
+  def type_q_label
+    if subject.absoluta?
+      'Absoluta'
     else
-      valor = num_to_s post_q
+      definitive_q ? definitive_q.type_q.titleize : 'Final' 
     end
-    return valor
   end
 
   def final_q_to_02i
-    self.final_q.nil? ? nil : sprintf("%02i", self.final_q.to_i)
+    q_value_to_02i final_q
+  end
+
+  def final_q_to_02i_to_from
+    q_value_to_02i_to_from final_q
+  end
+
+  def final_type_q
+    final_q ? final_q.type_q : nil
+  end
+
+  def final_q_value 
+    q_value final_q
+  end
+
+  def post_q_value 
+    q_value post_q
+  end
+
+
+  def q_value qualification=definitive_q
+    qualification ? qualification.value : nil
+  end
+
+  def post_type_q
+    post_q ? post_q.type_q : nil
   end
 
   def post_q_to_02i
-    self.post_q.nil? ? nil : sprintf("%02i", self.post_q.to_i)
-  end  
+    q_value_to_02i post_q
+  end
 
-  def num_to_s num = final_q
+  def post_type_q
+    post_q ? post_q.type_q : nil
+  end
 
-    if num.nil? or !(num.is_a? Integer or num.is_a? Float)
-      'POR CALIFICAR' 
+  def definitive_type_q
+    definitive_q ? definitive_q.type_q : :final
+  end
+
+  def q_value_to_02i_to_from qualification=definitive_q
+    qualification ? qualification.value_to_02i : nil
+  end
+  def q_value_to_02i qualification=definitive_q
+    qualification ? qualification.value_to_02i : '--'
+  end
+
+  def description_q force_final = false
+    qualification = force_final ? final_q : definitive_q
+    qualification ? (num_to_s qualification) : self.status.to_s.humanize.upcase 
+  end
+
+  def num_to_s num = definitive_q_value 
+    if pi? or retirado? or (subject and subject.absoluta?) or num.nil? or !(num.is_a? Integer or num.is_a? Float)
+      status.humanize.upcase
     else
       numeros = %W(CERO UNO DOS TRES CUATRO CINCO SEIS SIETE OCHO NUEVE DIEZ ONCE DOCE TRECE CATORCE QUINCE DIECISÉIS DIECISIETE DIECIOCHO DIE)
       # dieciséis, diecisiete, dieciocho y diecinueve
@@ -185,11 +208,6 @@ class AcademicRecord < ApplicationRecord
     end
   end
 
-
-  def have_post_q?
-    (self.reparacion? || self.diferido?) and !self.post_q.nil?
-  end
-
   def conv_descrip force_final = false # convocados
 
     data = [self.user.ci, self.user.reverse_name, self.study_plan.code]
@@ -197,20 +215,18 @@ class AcademicRecord < ApplicationRecord
     if force_final
       data << I18n.t('aplazado')
       data << I18n.t('final')
-      data << h.set_final_q unless self.subject.as_absolute?
-      data << self.description_q(force_final)
+      data << self.q_value_to_02i(final_q)
+      data << self.description_q(true)
     else
-      data << I18n.t(self.status_q)
-      data << I18n.t(type_q)
-      data << self.set_definitive_q unless self.subject.as_absolute?
+      data << I18n.t(self.status)
+      data << I18n.t(self.definitive_type_q)
+      data << self.q_value_to_02i #unless self.subject.as_absolute?
       data << self.description_q
     end
 
     return data
 
   end
-
-
 
   # RAILS_ADMIN
   rails_admin do
@@ -224,21 +240,24 @@ class AcademicRecord < ApplicationRecord
         filterable :name
         sortable :name
       end
-      field :final_q
-      field :status_q
-      field :type_q
+      field :definitive_label do
+        label 'Definitiva'
+      end
+      field :status do
+        label 'Estado'
+      end
+      field :type_q_label do
+        label 'Tipo'
+      end
     end
 
     edit do
-      fields :section, :enroll_academic_process, :first_q, :second_q, :third_q, :final_q, :post_q, :status_q, :type_q
+      fields :section, :enroll_academic_process, :status, :qualifications
     end
-
 
     export do
-      fields :final_q, :status_q, :type_q, :section, :enroll_academic_process, :period, :period_type, :student, :user, :location, :subject
+      fields :section, :enroll_academic_process, :status, :qualifications, :period, :period_type, :student, :user, :location, :subject
     end
-
-
   end  
 
   private
@@ -257,22 +276,20 @@ class AcademicRecord < ApplicationRecord
 
     period = Period.find_by_name(row[3]) 
 
-
-
     if period
       # LIMPIAR CI
       if row[0]
         row[0].strip!
         row[0].delete! '^0-9'
       else
-        return [0,0, 0]
+        return [0,0,0]
       end
 
       # LIMPIAR CODIGO ASIGNATURA
       if row[1]
         row[1].strip!
       else
-        return [0,0, 1]
+        return [0,0,1]
       end
 
       subject = Subject.find_by(code: row[1])
@@ -299,7 +316,7 @@ class AcademicRecord < ApplicationRecord
               if row[2]
                 row[2].strip!
               else
-                return [0,0, 2]
+                return [0,0,2]
               end
 
               s = Section.find_or_initialize_by(code: row[2], course_id: curso.id)
@@ -330,35 +347,36 @@ class AcademicRecord < ApplicationRecord
                         p "     ENROLL ACADEMIC PROCESS: #{enroll_academic_process.name}    ".center(300, "E")
                         # BUSCAR O CREAR REGISTRO ACADEMICO
                         academic_record = AcademicRecord.find_or_initialize_by(section_id: s.id, enroll_academic_process_id: enroll_academic_process.id)
+                        
                         nuevo = academic_record.new_record?
-
-                        if row[4]
-                          row[4].strip!
-                          academic_record.set_status row[4]
-                        elsif nuevo
-                          academic_record.status_q = :sin_calificar
-                          academic_record.type_q = :final 
-                        end
 
                         if academic_record.save!
                           p "     EXITO. GUARDADO EL REGISTRO ACADEMICO: #{academic_record.name}    ".center(500, "#")
-                          if nuevo
-                            total_newed = 1
-                          else
-                            total_updated = 1
+                          if row[4]
+                            row[4].strip! 
+                            calificacion_correcta = academic_record.set_status row[4]
+                            if calificacion_correcta.eql? true
+                              academic_record.reload!
+                              if nuevo
+                                total_newed = 1
+                              else
+                                total_updated = 1
+                              end
+                            else
+                              no_registred = 'valor nota'
+                            end
                           end
-
                         else
-                          no_registred = 'error'
+                          no_registred = 'registro academico'
                         end
                       else
-                        no_registred = 'error'
+                        no_registred = 'proceso academico'
                       end
                     else
-                      no_registred = 'error'
+                      no_registred = 'grado'
                     end
                   else
-                    no_registred = 'error'
+                    no_registred = 'estudiante'
                   end
 
                 else

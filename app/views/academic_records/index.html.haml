@@ -6,17 +6,16 @@
       %th Apellidos
       %th Nombres
       %th Cal. Final
-      %th Cal. Post
-      %th Status
+      %th Estado
 
   %tbody
     - @academic_records.each do |academic_record|
       - user = academic_record.user
-      %tr
+      %tr{class: academic_record.tr_class_by_status_q}
         %td= user.ci
         %td= user.email
         %td= user.last_name
         %td= user.first_name
-        %td= academic_record.final_q
-        %td= academic_record.post_q
-        %td= academic_record.status_q
+        %td= academic_record.definitive_label
+        %td
+          .badge.bg-info= academic_record.status.titleize

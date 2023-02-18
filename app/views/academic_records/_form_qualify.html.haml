@@ -1,25 +1,29 @@
-
-= form_tag("/academic_records/#{academic_record.id}", class: 'form-inline', remote: true) do
-  - if academic_record.subject.absoluta?
-    %td
-      = radio_button_tag "[academic_record][#{academic_record.id}]final_q", 1, academic_record.aprobado?, disabled: disable, required: !disable, class: 'absoluta qualificable', id_obj: academic_record.id, type_q: :final
-      .badge.badge-success= APROBADO
-
-      = radio_button_tag "[academic_record][#{academic_record.id}]final_q", 2, academic_record.aplazado?, disabled: disable, required: !disable, class: 'absoluta qualificable', id_obj: academic_record.id, type_q: :final
-      .badge.badge-success= APLAZADO
-  - elsif academic_record.subject.numerica?
-
-    %td= number_field_tag "[academic_record][#{academic_record.id}]final_q", {}, {value: academic_record.final_q_to_02i, placeholder: 'Final', class: 'form-control form-control-sm qualificable', disabled: disable, required: !disable, step: 1, in: 0...21, onchange: "numero_a_letras($(this).val(), #{academic_record.id});", id_obj: academic_record.id, type_q: :final}
-
-    -if false
-      %td
-        = check_box_tag "[academic_record][#{academic_record.id}]type_q", true, academic_record.pi?, {onclick: "desactivar_por_pi(this, #{academic_record.id});"}
-    
-      %td
-        = check_box_tag "[academic_record][#{academic_record.id}]np", true, academic_record.diferido?, {onclick: "desactivar_por_nd(this, #{academic_record.id});"}
-
-      %td
-        = check_box_tag "[academic_record][#{academic_record.id}]nr", true, academic_record.reparacion?, {onclick: "desactivar_por_nd(this, #{academic_record.id});"}
+- final_q_to_02i = academic_record.final_q_to_02i_to_from
+- aprobado = academic_record.aprobado?
+- absoluta = academic_record.subject.absoluta?
+- diferido = academic_record.diferido?
+- reparacion = academic_record.reparacion?
 
 
-    %td= number_field_tag "[academic_record][#{academic_record.id}]post_q", {}, {value: academic_record.post_q_to_02i, placeholder: 'Post', class: 'form-control form-control-sm post_q', step: 1, in: 0...21, onchange: "numero_a_letras($(this).val(), #{academic_record.id});", id_obj: academic_record.id, type_q: academic_record.type_q}
+- if absoluta
+  %td
+    - options = {"aprobado"=>1, "aplazado"=>2}
+    - options.map do |v,k|
+      = radio_button_tag "[academic_record]status", k, status.eql?(v), disabled: disable_row, required: !disable_row, class: 'absoluta', id_obj: id, type_q: :final
+      .badge.badge-success= v.upcase
+
+- else
+  - no_post_q = !(diferido or reparacion)
+  - disabled_final_q = (disable_row or !no_post_q)
+
+  %td= check_box_tag "[academic_record]status", true, academic_record.pi?, {class: 'pi', id_obj: id, disabled: preinscrito}
+  %td= text_field_tag "[qualification]final", {}, {value: final_q_to_02i, placeholder: 'Final', class: 'form-control form-control-sm qualifiable final onlyQualify', disabled: disabled_final_q, required:!disabled_final_q, step: 1, in: 0...21, id_obj: id, type_q: :final}
+
+  - if false
+    - checkbox_disabled = (disable_row or aprobado or final_q_to_02i.nil?)
+    %td= check_box_tag "[academic_record][#{id}]nd", :diferido, diferido, {disabled: (checkbox_disabled or reparacion), class: 'checkPost', id_obj: id}
+
+    %td= check_box_tag "[academic_record][#{id}]nr", :reparacion, reparacion, {disabled: (checkbox_disabled or diferido), class: 'checkPost', id_obj: id}
+
+    %td= number_field_tag "[qualification]post", {}, {value: academic_record.post_q_value, placeholder: 'Post', class: 'form-control form-control-sm qualifiable', disabled: no_post_q, step: 1, in: 0...21, id_obj: id, type_q: academic_record.post_type_q}
+

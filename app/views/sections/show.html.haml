@@ -1,7 +1,227 @@
-- headers = ['Código', 'Asignatura', 'Periodo', 'Capacidad', 'Profesor']
 
-- data = [[@section.code, @section.subject.desc, @section.period.name, @section.capacity, @section.teacher_desc]]
+- headers = ['Sección', 'U. Créditos','Asignatura', 'Periodo', 'Capacidad']
+- data = [[@section.code, @section.subject.desc, @section.period.name, @section.capacity]]
 
-= render partial: '/layouts/on_table', locals: {headers: headers, rows: data}
+.vh-100.d-flex.justify-content-center.align-items-center.mt-5
+	.col-md-10
+		= link_to teacher_session_dashboard_path, class: 'btn btn-sm btn-primary mx-3' do
+			%i.fa.fa-chevron-left
+			Regresar
+		= render partial: "/sections/download_options", locals: {section: @section}
+		= render partial: '/layouts/on_table', locals: {headers: headers, rows: data}
+		-# @academic_records ||= @section.academic_records 
+		%br
+		.fixed-top.alert.text-center.text-small#message{role: :alert}
+		=# render partial: 'academic_records/show', locals: {section: section}
+		- if @section.qualified?
+			- @academic_record = @section.academic_records
+			= render template: 'academic_records/index'
+		- else
+			= form_for(@section) do |f|
+				= render partial: 'academic_records/qualify', locals: {section: @section}
+				= f.hidden_field :qualified, {value: true}
+				= f.button :submit, class: 'float-end btn btn-success'
 
-= render template: 'academic_records/index' 
+
+
+:javascript
+	// document.addEventListener("turbolinks:load", function() { console.log('TURBOLINKS LOADED!')});
+
+	window.onload = function() {
+		$( document ).on('turbolinks:load', function() {
+			console.log('Windows onloaded!');
+			$('.onlyQualify').on('input',function(evt){ 
+				var node = $(this);
+				node.val(node.val().replace(/[^0-9]/g,'') );
+			});
+		});
+		$('.onlyQualify').on('input',function(evt){ 
+			var node = $(this);
+			node.val(node.val().replace(/[^0-9]/g,'') );
+		});		
+
+		$('.checkPost').change(function(){
+
+			let elem = $(this);
+			let post_elem, final_elem;
+			let id = elem.attr('id_obj');
+			let val = elem.val();
+			let valor_checked = elem.prop('checked');
+			let checkboxs = $(`#acRe${id} .checkPost`);
+
+			checkboxs.prop('disabled', valor_checked);
+			checkboxs.prop('checked', false);
+
+			elem.prop('disabled', false);
+			elem.prop('checked', valor_checked);
+
+			final_elem = $(`#acRe${id} #_qualificationfinal`);
+			final_elem.prop('disabled', valor_checked);
+
+			post_elem = $(`#acRe${id} #_qualificationpost`);
+			let post_elem_val = post_elem.val();
+			let final_elem_val = final_elem.val();
+			post_elem.attr('type_q', val);
+			if (valor_checked == false && (post_elem_val != '')) {
+				post_elem.val(-2);
+				sendQualification(post_elem, final_elem_val);
+			}
+			post_elem.val('');
+			post_elem.prop('disabled', !valor_checked);
+
+		});
+
+		$('.pi').change(function(){
+			let id = $(this).attr('id_obj');
+			let status;
+			status = 'sin_calificar';
+			if (this.checked) {status = 'perdida_por_inasistencia'}
+			let values = `{"academic_record": {"status": "${status}"}}`;
+			let url = `/academic_records/${id}`
+			sendData('pi', this, id, url, values);
+		});
+
+		$('.qualifiable').change(function(){
+			sendQualification($(this));
+		});
+
+		$('.final').change(function(){
+			let id = $(this).attr('id_obj');
+			let checkboxs = $(`#acRe${id} .checkPost`);
+
+			let no_post = ($(this).val() == '' || $(this).val() > 9 )
+
+			checkboxs.prop('disabled', no_post);
+			checkboxs.prop('checked', false);
+
+		});
+	}
+
+	function sendQualification(elem, val2) {
+		let id = elem.attr('id_obj');
+		let tipo = elem.attr('type_q');
+		let val = elem.val();
+		val = parseInt(val)
+		let url = `/qualifications/${id}`
+		let values = `{"qualification": {"value": ${val}, "type_q": "${tipo}"}}`;
+		console.log("VAL despues de values: "+val);
+		sendData('qualifiable', val, id, url, values, val2);
+	}
+
+	function sendData(tipo, ele, id, url, values, val2){
+		var result = false;
+		$.ajax({
+			url: url,
+			type: 'PATCH',
+			data: JSON.parse(values),
+			dataType: 'json',
+			beforeSend: function(xhr) {
+				xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'));
+			},
+			done: function(json) {
+				if (tipo == 'pi') {desactivar_por_pi(ele, id)}
+				if (tipo == 'qualifiable') {numero_a_letras(ele, id)}
+				messageSendData(json.type, json.data);
+			},
+			success: function(json) {
+				if (tipo == 'pi') {desactivar_por_pi(ele, id)}
+				if (tipo == 'qualifiable') {numero_a_letras(ele, id)}
+				if (val2 != undefined) {numero_a_letras(val2, id)}
+				messageSendData(json.type, json.data);
+			},
+			error: function(json) {
+				messageSendData(json.type, json.data);
+			},
+			unprocessable_entity: function(json) {
+				messageSendData(json.type, json.data);
+			}
+		});
+	}
+
+	function messageSendData(clase, msg) {
+		let elem = $('#message')
+
+		elem.removeClass('alert-danger alert-success')
+
+		elem.addClass(`alert-${clase}`)
+		elem.html(msg)
+		
+		elem.fadeIn(0);
+		elem.fadeOut(4000);
+
+		/*
+		setTimeout(function(){
+		elem.parentNode.removeChild(elem);
+		},5000);
+		document.body.appendChild(elem);
+		*/
+	}
+
+	function desactivar_por_pi(obj, ar_id){
+		var inputs, valor_checked;
+
+		inputs = $(`#acRe${ar_id} input`);
+		valor_checked = $(obj).prop('checked');
+		inputs.val(null);
+
+		let checkboxs = $(`#acRe${ar_id} .checkPost`);
+
+		checkboxs.prop('disabled', valor_checked);
+		checkboxs.prop('checked', false)
+
+		inputs.prop('disabled', valor_checked)
+		$(obj).prop('disabled', false)
+		
+		// final.val = (null)
+		if (valor_checked === true) {
+			numero_a_letras('-1', ar_id);
+		}else{
+			numero_a_letras(undefined, ar_id);
+		}
+		
+		$(`#_${ar_id}qualfication_to_s`).prop('disabled', true);
+		$(`#_${ar_id}qualfication_to_s`).prop('readonly', true);		
+	}
+
+	function numero_a_letras(valor, ar_id){
+		let final, clase,
+		valores = ['CERO', 'UNO', 'DOS', 'TRES', 'CUATRO', 'CINCO', 'SEIS', 'SIETE', 'OCHO', 'NUEVE', 'DIEZ', 'ONCE', 'DOCE', 'TRECE', 'CATORCE', 'QUINCE'] 
+		let label = 'Sin Calificar'
+
+		valor = parseInt(valor)
+		if (valor == 0){
+			final = 'CERO CERO'
+			clase = 'table-danger'
+		}else if (!valor){
+			final = 'SIN CALIFICAR'
+			clase = ''
+		}else if (valor == -1){
+			final = 'PERDIDA POR INASISTENCIA'
+			clase = 'table-danger'
+			label = 'Perdida Por Inasistencia'
+		}else if (valor >= 0 && valor < 10){
+			final = `CERO ${valores[valor]}`
+			clase = 'table-danger'
+			label = 'Aplazado'
+		}else if (valor > 9 && valor < 16) {
+			final = valores[valor]
+			clase = 'table-success'
+			label = 'Aprobado'
+		}else if (valor > 15 && valor < 20){
+			valor = valor % 10
+			final = `DIEZ Y ${valores[valor]}`
+			clase = 'table-success'
+			label = 'Aprobado'
+		}else if (valor == 20){
+			final = 'VEINTE'
+			clase = 'table-success'
+			label = 'Aprobado'
+		}else{
+			final = 'SIN CALIFICAR'
+			clase = ''
+		}
+		$(`#acRe${ar_id}`).removeClass().addClass(clase);
+		$(`#_${ar_id}qualfication_to_s`).val(final);
+		$(`#labelStatus${ar_id}`)[0].innerHTML = label;
+
+	}

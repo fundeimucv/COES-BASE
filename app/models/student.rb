@@ -22,7 +22,7 @@ class Student < ApplicationRecord
   # ASSOCIATIONS:
   #belons_to
   belongs_to :user
-  accepts_nested_attributes_for :user
+  # accepts_nested_attributes_for :user
   # has_one
   has_one :location
   # has_many

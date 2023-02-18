@@ -1,0 +1,53 @@
+class Qualification < ApplicationRecord
+  # t.integer "value"
+  # t.integer "type_q"
+  
+  belongs_to :academic_record
+
+
+  scope :by_type_q, -> (type_q) {where(type_q: type_q)}
+  scope :post, -> {where(type_q: [:diferido, :reparacion])}
+
+  enum type_q: [:final, :diferido, :reparacion]
+
+  validates :academic_record, presence: true
+  validates :value, presence: true, numericality: { only_integer: true, in: 0..20 }
+  validates :type_q, presence: true
+  validates_uniqueness_of :academic_record, scope: [:type_q], message: 'Calificación ya existente', field_name: false
+
+  after_save :update_academic_record_status
+
+  after_destroy :update_academic_record_status
+  def update_academic_record_status
+    definitive_q_value = self.academic_record.definitive_q_value
+    if definitive_q_value and 
+      status = (definitive_q_value >= 10) ? :aprobado : :aplazado
+      self.academic_record.update(status: status)
+    end
+  end
+
+  def approved?
+    if is_valid_numeric_value?
+      value >= 10
+    else
+      false
+    end
+  end
+
+  def repproved?
+    if is_valid_numeric_value?
+      value < 10
+    else
+      false
+    end
+  end
+
+  def is_valid_numeric_value?
+    !value.blank? and (value.is_a? Integer or value.is_a? Float)
+  end
+
+  def value_to_02i
+    is_valid_numeric_value? ? sprintf("%02i", value) : nil
+  end
+
+end
