@@ -37,7 +37,6 @@ Rails.application.routes.draw do
       end
     end
 
-  devise_for :users
     
   devise_scope :user do
     get '/users/sign_out' => 'devise/sessions#destroy'
@@ -55,14 +54,9 @@ Rails.application.routes.draw do
   get 'teacher_session/dashboard', to: 'teacher_session#dashboard'
   get 'student_session/dashboard', to: 'student_session#dashboard'
 
-  
-  resources :password do
-    get 'password/new', to: 'password#new'
-  end
 
 
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
   # Defines the root path route ("/")
-  root to: "pages#home"
 end
