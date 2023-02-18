@@ -172,7 +172,7 @@ class User < ApplicationRecord
   end
 
   def name
-    description
+    "#{self.ci} : #{self.first_name} #{self.last_name}"
   end
 
   def full_name
