@@ -9,74 +9,67 @@
 =# render partial: 'academic_records/show', locals: {section: section}
 = render partial: 'academic_records/qualify', locals: {section: section}
 
-
 :javascript
 
-	document.addEventListener("rails_admin.dom_ready", function() {
+	function checkPost(ele) {
+		let elem = $(ele);
+		let post_elem, final_elem;
+		let id = elem.attr('id_obj');
+		let val = elem.val();
+		let valor_checked = elem.prop('checked');
+		let checkboxs = $(`#acRe${id} .checkPost`);
 
-		$('.onlyQualify').on('input',function(evt){ 
-			var node = $(this);
-			node.val(node.val().replace(/[^0-9]/g,'') );
-		});		
+		checkboxs.prop('disabled', valor_checked);
+		checkboxs.prop('checked', false);
 
-		$('.checkPost').change(function(){
+		elem.prop('disabled', false);
+		elem.prop('checked', valor_checked);
 
-			let elem = $(this);
-			let post_elem, final_elem;
-			let id = elem.attr('id_obj');
-			let val = elem.val();
-			let valor_checked = elem.prop('checked');
-			let checkboxs = $(`#acRe${id} .checkPost`);
+		final_elem = $(`#acRe${id} #_qualificationfinal`);
+		final_elem.prop('disabled', valor_checked);
 
-			checkboxs.prop('disabled', valor_checked);
-			checkboxs.prop('checked', false);
+		post_elem = $(`#acRe${id} #_qualificationpost`);
+		let post_elem_val = post_elem.val();
+		let final_elem_val = final_elem.val();
+		post_elem.attr('type_q', val);
+		if (valor_checked == false && (post_elem_val != '')) {
+			post_elem.val(-2);
+			sendQualification(post_elem, final_elem_val);
+		}
+		post_elem.val('');
+		post_elem.prop('disabled', !valor_checked);		
+	}
 
-			elem.prop('disabled', false);
-			elem.prop('checked', valor_checked);
 
-			final_elem = $(`#acRe${id} #_qualificationfinal`);
-			final_elem.prop('disabled', valor_checked);
+	function onlyValidQ(ele){
+		var node = $(ele);
+		node.val(node.val().replace(/[^0-9]/g,'') );
+	}
 
-			post_elem = $(`#acRe${id} #_qualificationpost`);
-			let post_elem_val = post_elem.val();
-			let final_elem_val = final_elem.val();
-			post_elem.attr('type_q', val);
-			if (valor_checked == false && (post_elem_val != '')) {
-				post_elem.val(-2);
-				sendQualification(post_elem, final_elem_val);
-			}
-			post_elem.val('');
-			post_elem.prop('disabled', !valor_checked);
+	function final(ele) {
+		elem = $(ele);
+		let id = elem.attr('id_obj');
+		let checkboxs = $(`#acRe${id} .checkPost`);
 
-		});
+		let no_post = (elem.val() == '' || elem.val() > 9 )
 
-		$('.pi').change(function(){
-			let id = $(this).attr('id_obj');
-			let status;
-			status = 'sin_calificar';
-			if (this.checked) {status = 'perdida_por_inasistencia'}
-			let values = `{"academic_record": {"status": "${status}"}}`;
-			let url = `/academic_records/${id}`
-			sendData('pi', this, id, url, values);
-		});
+		checkboxs.prop('disabled', no_post);
+		checkboxs.prop('checked', false);
 
-		$('.qualifiable').change(function(){
-			sendQualification($(this));
-		});
+	}
 
-		$('.final').change(function(){
-			let id = $(this).attr('id_obj');
-			let checkboxs = $(`#acRe${id} .checkPost`);
+	function pi(ele) {
+		let id = $(ele).attr('id_obj');
+		let status;
+		status = 'sin_calificar';
+		if (ele.checked) {status = 'perdida_por_inasistencia'}
+		let values = `{"academic_record": {"status": "${status}"}}`;
+		let url = `/academic_records/${id}`
+		sendData('pi', ele, id, url, values);
+	}
 
-			let no_post = ($(this).val() == '' || $(this).val() > 9 )
-
-			checkboxs.prop('disabled', no_post);
-			checkboxs.prop('checked', false);
-
-		});
-	})
-
-	function sendQualification(elem, val2) {
+	function sendQualification(ele, val2) {
+		let elem = $(ele);
 		let id = elem.attr('id_obj');
 		let tipo = elem.attr('type_q');
 		let val = elem.val();
@@ -128,12 +121,6 @@
 		elem.fadeIn(0);
 		elem.fadeOut(4000);
 
-		/*
-		setTimeout(function(){
-		elem.parentNode.removeChild(elem);
-		},5000);
-		document.body.appendChild(elem);
-		*/
 	}
 
 	function desactivar_por_pi(obj, ar_id){
@@ -151,7 +138,6 @@
 		inputs.prop('disabled', valor_checked)
 		$(obj).prop('disabled', false)
 		
-
 		// final.val = (null)
 		if (valor_checked === true) {
 			numero_a_letras('-1', ar_id);
@@ -162,7 +148,6 @@
 		$(`#_${ar_id}qualfication_to_s`).prop('disabled', true);
 		$(`#_${ar_id}qualfication_to_s`).prop('readonly', true);		
 	}
-
 
 	function numero_a_letras(valor, ar_id){
 		let final, clase,

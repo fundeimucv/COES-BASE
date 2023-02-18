@@ -27,6 +27,11 @@ class ApplicationController < ActionController::Base
     end    
   end
 
+  def set_session_id_if_multirols
+    session[:rol] = params[:rol] if (current_user and session[:rol].nil?)
+  end 
+
+
   def after_sign_in_path_for(resource)
     # dashboard_index_path
     rols = []
@@ -35,16 +40,16 @@ class ApplicationController < ActionController::Base
     rols << :teacher if current_user.teacher
 
     if rols.count > 1
-      pages_multirols_path(id: rols)
+      pages_multirols_path(roles: rols)
     elsif current_user.admin?
-      session[:admin_id] = current_user.id
+      session[:rol] = 'admin'
       rails_admin_path
     elsif current_user.student?
-      session[:student_id] = current_user.id
+      session[:rol] = 'student'
       student_session_dashboard_path
     elsif current_user.teacher?
       # flash[:success] = current_teacher.user ? "¡Bienvenid#{current_teacher.user.genero} #{current_teacher.user.nick_name}!" : "¡Bienvenid@!"
-      session[:teacher_id] = current_user.id
+      session[:rol] = 'teacher'
       teacher_session_dashboard_path
     else
       flash[:warning] = "No posee un rol asignado. Por favor diríjase a la Administración para cambiar dicha situación"
@@ -64,7 +69,7 @@ class ApplicationController < ActionController::Base
 
 
   def authenticate_teacher!
-    unless current_user.teacher? #and session[:teacher_id].nil?
+    unless (current_user.teacher? and session[:rol].eql? 'teacher')
       reset_session
       flash[:danger] = "Debe iniciar sesión como Profesor"  
       redirect_to root_path
@@ -72,9 +77,9 @@ class ApplicationController < ActionController::Base
   end
 
   def authenticate_student!
-    unless current_user.student? #and session[:student_id].nil?
+    unless (current_user.student? and session[:rol].eql? 'teacher')
       reset_session
-      flash[:danger] = "Debe iniciar sesión como Profesor"  
+      flash[:danger] = "Debe iniciar sesión como Estudiante"  
       redirect_to root_path
     end
   end
