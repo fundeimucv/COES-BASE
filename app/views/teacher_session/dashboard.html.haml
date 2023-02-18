@@ -1,5 +1,22 @@
-= render "shared/navbar"
-.text-center
-  %h1.text-primary.mt-5= @title
-  = image_tag image_url('build_website.png'), width: '40%'
-  %h6.mt-5.alert.alert-info AQUI SE CONSTRUYE COESFAU
+
+.vh-100.d-flex.justify-content-center.align-items-center
+  - headers = ['#','Sección', 'Asignatura', 'Periodo', 'Inscritos', 'Opciones']
+  .col-md-10
+    %h4.text-center.text-primary.mb-3 Secciones Asignadas 
+    %table.table.table-striped.table-hover.border.table-bordered.table-sm.table-responsive
+      %thead.table-light
+        %tr
+          - headers.each do |head|
+            %th= head.titleize
+      %tbody.table-group-divider
+        - current_teacher.sections.each_with_index do |sec,i|
+          %tr
+            %td= i+1
+            %td= sec.code
+            %td= sec.subject.name
+            %td= sec.period.name
+            %td= sec.academic_records.count
+            %td
+              = link_to section_path(sec), class: 'btn btn-sm btn-primary' do
+                .fa.fa-search
+                Ir al detalle

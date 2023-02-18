@@ -58,6 +58,7 @@ class User < ApplicationRecord
   validates :email, presence: true, uniqueness: {case_sensitive: false}
   validates :first_name, presence: true#, unless: :new_record?
   validates :last_name, presence: true#, unless: :new_record?
+  validates_format_of :email, with: URI::MailTo::EMAIL_REGEXP
 
   # validates :number_phone, presence: true, unless: :new_record?
   # validates :sex, presence: true, unless: :new_record?
@@ -120,6 +121,31 @@ class User < ApplicationRecord
   # end
 
   #FUNCTIONS:
+
+  # SEXO
+  def sexo_to_s
+    aux = 'Mujer' if femenino?
+    aux = 'Hombre' if masculino?
+    return aux.blank? ? 'Indefinido' : aux
+  end
+
+
+  def la_el
+    femenino? ? 'la' : 'el'
+  end
+
+  def genero
+    gen = "@"
+    gen = "a" if self.femenino?
+    gen = "o" if self.masculino?
+    return gen
+  end
+
+  def nick_name
+    first_name.split(" ").first
+  end
+
+
 
   def admin?
     self.admin.nil? ? false : true

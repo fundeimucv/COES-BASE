@@ -1,33 +1,39 @@
 
-%table.table.table-condensed.table-striped.table-hover
+%table.table.table-condensed.table-striped.table-hover.border.table-bordered.table-sm.table-responsive
   %thead
     %tr
-      %th
-    %tr
       %th CI
-      %th.col-4 Estudiante
-      %th Cal. Final
+      %th Estudiante
+      
       - if section.subject.numerica?
-        - if false 
-          %th PI
+        %th PI
+        %th Cal. Final
+        - if false
           %th CD
           %th CR
-        %th Cal. Repar
+          %th Cal. Repar
+      - else
+        %th Cal. Final
       %th Descripción
-      %th
-        Estado
+      %th Estado
 
 
   %tbody
-    - section.academic_records.each do |acre|
+    - section.academic_records.joins(:user).order('users.last_name ASC, users.first_name ASC').each do |acre|
       - user = acre.user
-      - disable = (acre.diferido? || acre.reparacion? || acre.retirado? || acre.pi? || (acre.enroll_academic_process and acre.enroll_academic_process.preinscrito?))
+      - id = acre.id
+      - retirado = acre.retirado?
+      - preinscrito = acre.preinscrito_in_process?
+      - disable_row = (retirado || acre.pi? || preinscrito)
+      - status = acre.status
       %tr{id: "acRe#{acre.id}", class: acre.tr_class_by_status_q}
         %td= user.ci
         %td= user.reverse_name
-
-        - @academic_record = acre
-        = render partial: '/academic_records/form_qualify', locals: {academic_record: acre, disable: disable}
-        = render partial: '/academic_records/qualification_to_s', locals: {academic_record: acre}
+        - if retirado
+          %td{colspan: 2}
+        - else
+          - @academic_record = acre
+          = render partial: '/academic_records/form_qualify', locals: {academic_record: acre, disable_row: disable_row, status: status, id: id, preinscrito: preinscrito}
+        = render partial: '/academic_records/qualification_to_s', locals: {academic_record: acre, id: id}
         %td
-          .badge.bg-info= acre.status_q.titleize
+          .badge.bg-info{id: "labelStatus#{acre.id}"}= status.titleize

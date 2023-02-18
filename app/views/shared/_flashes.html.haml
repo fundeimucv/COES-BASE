@@ -1,8 +1,10 @@
-- if notice
-  .alert.alert-info.alert-dismissible.fade.show.m-1{:role => "alert"}
-    = notice
-    %button.btn-close{"aria-label" => "Close", "data-bs-dismiss" => "alert", :type => "button"}
-- if alert
-  .alert.alert-warning.alert-dismissible.fade.show.m-1{:role => "alert"}
-    = alert
-    %button.btn-close{"aria-label" => "Close", "data-bs-dismiss" => "alert", :type => "button"}
+- if flash and flash.count > 1
+  %br
+- flash.each do |name, msg|
+  - if msg.is_a?(String)
+    - name = 'info' if name.to_s == 'notice'
+    - name = 'danger' if name.to_s == 'error'
+    - name = 'danger' if name.to_s == 'alert'
+    .alert{class: "alert-#{name.to_s} alert-dismissible fase show mt-3", role: "alert", style: 'text-align: center;'}
+      = content_tag :div, raw(msg), :id => "flash_#{name.to_s}"
+      %button.btn-close{"aria-label": "Close", "data-bs-dismiss": :alert, type: :button}    

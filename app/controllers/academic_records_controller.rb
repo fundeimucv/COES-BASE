@@ -36,10 +36,8 @@ class AcademicRecordsController < ApplicationController
 
   # PATCH/PUT /academic_records/1 or /academic_records/1.json
   def update
-    respond_to do |format|
+    respond_to do |format|      
       if @academic_record.update(academic_record_params)
-        format.html { redirect_to academic_record_url(@academic_record), notice: "Academic record was successfully updated." }
-        # format.json { render :show, status: :ok, location: @academic_record }
         format.json { render json: {data: '¡Datos Guardados con éxito!', type: 'success'}, status: :ok }
       else
         format.html { render :edit, status: :unprocessable_entity }
@@ -67,6 +65,6 @@ class AcademicRecordsController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def academic_record_params
-      params.require(:academic_record).permit(:section_id, :enroll_academic_process_id, :first_q, :second_q, :third_q, :final_q, :post_q, :status_q, :type_q)
+      params.require(:academic_record).permit(:section_id, :enroll_academic_process_id, :status, :pi)
     end
 end

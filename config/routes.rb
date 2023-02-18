@@ -10,6 +10,7 @@ Rails.application.routes.draw do
   match "/importer/academic_records" => "importer#academic_records" , :as => "importer_academic_records", :via => [:get, :post]
 
   resources :page, only: :show
+  resources :qualifications, only: :update
   resources :period_types
   resources :academic_processes, :enroll_academic_processes, :academic_records, :periods, :profiles, :sections, :courses
 
@@ -37,7 +38,6 @@ Rails.application.routes.draw do
     end
 
   devise_for :users
-  root to: "pages#home"
   get 'pages/multirols', to: 'pages#multirols'
 
   get 'teacher_session/dashboard', to: 'teacher_session#dashboard'
@@ -46,5 +46,5 @@ Rails.application.routes.draw do
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
   # Defines the root path route ("/")
-  # root "articles#index"
+  root to: "pages#home"
 end
