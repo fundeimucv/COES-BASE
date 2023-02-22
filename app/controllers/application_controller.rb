@@ -9,11 +9,11 @@ class ApplicationController < ActionController::Base
   end
 
   def current_admin
-    current_user.admin
+    current_user and current_user.admin
   end
 
   def current_teacher
-    current_user.teacher
+    current_user and current_user.teacher
   end
 
   def current_schools
@@ -69,7 +69,7 @@ class ApplicationController < ActionController::Base
 
 
   def authenticate_teacher!
-    unless (current_user.teacher? and session[:rol].eql? 'teacher')
+    unless current_user.teacher? #and session[:rol].eql? 'teacher'
       reset_session
       flash[:danger] = "Debe iniciar sesión como Profesor"  
       redirect_to root_path
