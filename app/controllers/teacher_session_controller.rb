@@ -1,6 +1,8 @@
 class TeacherSessionController < ApplicationController
 	before_action :authenticate_teacher!
+	before_action :set_session_id_if_multirols, only: [:dashboard]
+
 	def dashboard
-		# session[:teacher_id] ||= current_user.id
 	end
+
 end

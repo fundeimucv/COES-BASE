@@ -1,9 +1,15 @@
+- unless @section.qualified?
+	.alert.alert-warning
+		%b
+			%i.fa.fa-alert
+			Atención
+		Debe completar las calificaciones para tener acceso al acta de la sección
 
 - headers = ['Sección', 'U. Créditos','Asignatura', 'Periodo', 'Capacidad']
 - data = [[@section.code, @section.subject.desc, @section.period.name, @section.capacity]]
 
-.vh-100.d-flex.justify-content-center.align-items-center.mt-5
-	.col-md-10
+.vh-100.d-flex.justify-content-center.mt-5
+	.col-md-11
 		= link_to teacher_session_dashboard_path, class: 'btn btn-sm btn-primary mx-3' do
 			%i.fa.fa-chevron-left
 			Regresar
@@ -20,84 +26,71 @@
 			= form_for(@section) do |f|
 				= render partial: 'academic_records/qualify', locals: {section: @section}
 				= f.hidden_field :qualified, {value: true}
-				= f.button :submit, class: 'float-end btn btn-success'
-
-
+				= f.button :submit, class: 'float-end btn btn-success' do
+					%i.fa.fa-check
+					= 'Completar Calificación'
 
 :javascript
-	// document.addEventListener("turbolinks:load", function() { console.log('TURBOLINKS LOADED!')});
 
-	window.onload = function() {
-		$( document ).on('turbolinks:load', function() {
-			console.log('Windows onloaded!');
-			$('.onlyQualify').on('input',function(evt){ 
-				var node = $(this);
-				node.val(node.val().replace(/[^0-9]/g,'') );
-			});
-		});
-		$('.onlyQualify').on('input',function(evt){ 
-			var node = $(this);
-			node.val(node.val().replace(/[^0-9]/g,'') );
-		});		
+	function checkPost(ele) {
+		let elem = $(ele);
+		let post_elem, final_elem;
+		let id = elem.attr('id_obj');
+		let val = elem.val();
+		let valor_checked = elem.prop('checked');
+		let checkboxs = $(`#acRe${id} .checkPost`);
 
-		$('.checkPost').change(function(){
+		checkboxs.prop('disabled', valor_checked);
+		checkboxs.prop('checked', false);
 
-			let elem = $(this);
-			let post_elem, final_elem;
-			let id = elem.attr('id_obj');
-			let val = elem.val();
-			let valor_checked = elem.prop('checked');
-			let checkboxs = $(`#acRe${id} .checkPost`);
+		elem.prop('disabled', false);
+		elem.prop('checked', valor_checked);
 
-			checkboxs.prop('disabled', valor_checked);
-			checkboxs.prop('checked', false);
+		final_elem = $(`#acRe${id} #_qualificationfinal`);
+		final_elem.prop('disabled', valor_checked);
 
-			elem.prop('disabled', false);
-			elem.prop('checked', valor_checked);
-
-			final_elem = $(`#acRe${id} #_qualificationfinal`);
-			final_elem.prop('disabled', valor_checked);
-
-			post_elem = $(`#acRe${id} #_qualificationpost`);
-			let post_elem_val = post_elem.val();
-			let final_elem_val = final_elem.val();
-			post_elem.attr('type_q', val);
-			if (valor_checked == false && (post_elem_val != '')) {
-				post_elem.val(-2);
-				sendQualification(post_elem, final_elem_val);
-			}
-			post_elem.val('');
-			post_elem.prop('disabled', !valor_checked);
-
-		});
-
-		$('.pi').change(function(){
-			let id = $(this).attr('id_obj');
-			let status;
-			status = 'sin_calificar';
-			if (this.checked) {status = 'perdida_por_inasistencia'}
-			let values = `{"academic_record": {"status": "${status}"}}`;
-			let url = `/academic_records/${id}`
-			sendData('pi', this, id, url, values);
-		});
-
-		$('.qualifiable').change(function(){
-			sendQualification($(this));
-		});
-
-		$('.final').change(function(){
-			let id = $(this).attr('id_obj');
-			let checkboxs = $(`#acRe${id} .checkPost`);
-
-			let no_post = ($(this).val() == '' || $(this).val() > 9 )
-
-			checkboxs.prop('disabled', no_post);
-			checkboxs.prop('checked', false);
-
-		});
+		post_elem = $(`#acRe${id} #_qualificationpost`);
+		let post_elem_val = post_elem.val();
+		let final_elem_val = final_elem.val();
+		post_elem.attr('type_q', val);
+		if (valor_checked == false && (post_elem_val != '')) {
+			post_elem.val(-2);
+			sendQualification(post_elem, final_elem_val);
+		}
+		post_elem.val('');
+		post_elem.prop('disabled', !valor_checked);		
 	}
 
-	function sendQualification(elem, val2) {
+
+	function onlyValidQ(ele){
+		var node = $(ele);
+		node.val(node.val().replace(/[^0-9]/g,'') );
+	}
+
+	function final(ele) {
+		elem = $(ele);
+		let id = elem.attr('id_obj');
+		let checkboxs = $(`#acRe${id} .checkPost`);
+
+		let no_post = (elem.val() == '' || elem.val() > 9 )
+
+		checkboxs.prop('disabled', no_post);
+		checkboxs.prop('checked', false);
+
+	}
+
+	function pi(ele) {
+		let id = $(ele).attr('id_obj');
+		let status;
+		status = 'sin_calificar';
+		if (ele.checked) {status = 'perdida_por_inasistencia'}
+		let values = `{"academic_record": {"status": "${status}"}}`;
+		let url = `/academic_records/${id}`
+		sendData('pi', ele, id, url, values);
+	}
+
+	function sendQualification(ele, val2) {
+		let elem = $(ele);
 		let id = elem.attr('id_obj');
 		let tipo = elem.attr('type_q');
 		let val = elem.val();
@@ -149,12 +142,6 @@
 		elem.fadeIn(0);
 		elem.fadeOut(4000);
 
-		/*
-		setTimeout(function(){
-		elem.parentNode.removeChild(elem);
-		},5000);
-		document.body.appendChild(elem);
-		*/
 	}
 
 	function desactivar_por_pi(obj, ar_id){

@@ -2,7 +2,7 @@ class PagesController < ApplicationController
   skip_before_action :authenticate_user!, only: [ :home ]
 
   def multirols
-    @roles = params[:id]
+    @roles = params[:roles]
     @models = models_list
   end
 

@@ -50,6 +50,10 @@ class Section < ApplicationRecord
     self.modality = :nota_final
   end
 
+  def totaly_qualified?
+    !academic_records.sin_calificar.any?
+  end
+
   def qualified?
     qualified.eql? true    
   end
