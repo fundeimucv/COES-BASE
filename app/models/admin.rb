@@ -26,6 +26,9 @@ class Admin < ApplicationRecord
   # SCOPES:
   scope :find_by_user_ci, -> (ci) {joins(:user).where('users.ci': ci).first}
 
+  scope :custom_search, -> (keyword) { joins(:user).where("users.ci ILIKE '%#{keyword}%' OR users.email ILIKE '%#{keyword}%' OR users.first_name ILIKE '%#{keyword}%' OR users.last_name ILIKE '%#{keyword}%'") }
+
+
   def yo?
     self.user.email.eql? 'moros.daniel@gmail.com' and self.user_id.eql? 1
   end
@@ -51,6 +54,7 @@ class Admin < ApplicationRecord
     end
 
     list do
+      search_by :custom_search
       field :user
       field :role
       field :env_authorizable

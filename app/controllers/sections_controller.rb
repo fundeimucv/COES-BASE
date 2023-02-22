@@ -51,14 +51,10 @@ class SectionsController < ApplicationController
 
   # PATCH/PUT /sections/1 or /sections/1.json
   def update
-    respond_to do |format|
-      if @section.update(section_params)
-        format.html { redirect_to section_url(@section), notice: "Section was successfully updated." }
-        format.json { render :show, status: :ok, location: @section }
-      else
-        format.html { render :edit, status: :unprocessable_entity }
-        format.json { render json: @section.errors, status: :unprocessable_entity }
-      end
+    if @section.totaly_qualified?
+      msg, type = @section.update(section_params) ? ["¡Sección calificada con éxito!", 'success'] : [@section.errors.full_messages.to_sentence, 'danger']
+    else
+      msg, type = ['Atención: No se pudo cerrar la calificación, faltan calificaciones por completar. Por favor refresque la pantalla e inténte calificar los registros restantes.', 'danger']
     end
     flash[type] = msg
     redirect_back fallback_location: section_url(@section)

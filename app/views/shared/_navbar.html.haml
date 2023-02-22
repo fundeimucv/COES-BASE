@@ -1,7 +1,10 @@
 .navbar.navbar-expand-sm.bg-light.sticky-top
   .container-fluid
     - unless controller_name.eql? 'sessions'
-      - home = current_teacher ? teacher_session_dashboard_path : student_session_dashboard_path
+      - home = root_path
+      - if current_user
+        - home = teacher_session_dashboard_path if logged_as_teacher?
+        - home = student_session_dashboard_path if logged_as_student?
 
       = link_to home, class: 'btn btn-sm btn-primary mx-3' do
         %i.fa.fa-dashboard
