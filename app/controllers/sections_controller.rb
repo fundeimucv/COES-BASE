@@ -52,7 +52,7 @@ class SectionsController < ApplicationController
   # PATCH/PUT /sections/1 or /sections/1.json
   def update
     if @section.totaly_qualified?
-      msg, type = @section.update(section_params) ? ["Sección calificada con éxito.", 'success'] : [@section.errors.full_messages.to_sentence, 'danger']
+      msg, type = @section.update(section_params) ? ["¡Sección calificada con éxito!", 'success'] : [@section.errors.full_messages.to_sentence, 'danger']
     else
       msg, type = ['Atención: No se pudo cerrar la calificación, faltan calificaciones por completar. Por favor refresque la pantalla e inténte calificar los registros restantes.', 'danger']
     end

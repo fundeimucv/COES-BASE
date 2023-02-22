@@ -1,19 +1,37 @@
 class ApplicationController < ActionController::Base
   before_action :authenticate_user!
 
-  helper_method :current_admin, :current_teacher
+  helper_method :logged_as_teacher?, :logged_as_student?, :logged_as_admin?, :current_admin, :current_teacher, :current_student
 
   def models_list
     aux = ActiveRecord::Base.connection.tables-['schema_migrations', 'ar_internal_metadata'].map{|model| model.capitalize.singularize.camelize}
     return aux
   end
 
+  # CURRENT USERS BY TYPE
   def current_admin
-    current_user and current_user.admin
+    current_user.admin if logged_as_admin?
+  end
+
+  def current_student
+    current_user.student if logged_as_student?
   end
 
   def current_teacher
-    current_user and current_user.teacher
+    current_user.teacher if logged_as_teacher?
+  end
+
+  # IS LOGGED BY
+  def logged_as_teacher?
+    !current_user.nil? and !current_user.teacher.nil? and session[:rol].eql? 'teacher'
+  end
+
+  def logged_as_student?
+    !current_user.nil? and !current_user.student.nil? and session[:rol].eql? 'student'
+  end
+
+  def logged_as_admin?
+    !current_user.nil? and !current_user.admin.nil? and session[:rol].eql? 'admin'
   end
 
   def current_schools
@@ -57,19 +75,8 @@ class ApplicationController < ActionController::Base
     end
   end
 
-
-  # def filtro_admin_alto_o_profe
-  #   if !session[:administrador_id] or (current_admin and !current_admin.alto?) or !session[:profesor_id] 
-  #     reset_session
-  #     flash[:danger] = "Debe iniciar sesión como Profesor o Administrador superior"  
-  #     redirect_to root_path
-  #     return false
-  #   end
-  # end
-
-
   def authenticate_teacher!
-    unless current_user.teacher? #and session[:rol].eql? 'teacher'
+    if !logged_as_teacher?
       reset_session
       flash[:danger] = "Debe iniciar sesión como Profesor"  
       redirect_to root_path
@@ -77,31 +84,11 @@ class ApplicationController < ActionController::Base
   end
 
   def authenticate_student!
-    unless (current_user.student? and session[:rol].eql? 'teacher')
+    if !logged_as_student?
       reset_session
       flash[:danger] = "Debe iniciar sesión como Estudiante"  
       redirect_to root_path
     end
   end
-
-  # def filtro_profesor
-  #   unless session[:profesor_id]
-  #     reset_session
-  #     flash[:danger] = "Debe iniciar sesión como Profesor"  
-  #     redirect_to root_path
-  #     return false
-  #   end
-  # end
-
-  # def filtro_estudiante
-  #   unless session[:estudiante_id]
-  #     reset_session
-  #     flash[:danger] = "Debe iniciar sesión como Estudiante"  
-  #     redirect_to root_path
-  #     return false
-  #   end
-  # end
-
-
 
 end
