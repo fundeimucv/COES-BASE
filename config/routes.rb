@@ -38,13 +38,16 @@ Rails.application.routes.draw do
     end
 
   devise_for :users
+  root to: "pages#home"
   get 'pages/multirols', to: 'pages#multirols'
 
   get 'teacher_session/dashboard', to: 'teacher_session#dashboard'
   get 'student_session/dashboard', to: 'student_session#dashboard'
 
+
+
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
   # Defines the root path route ("/")
-  root to: "pages#home"
+  # root "articles#index"
 end

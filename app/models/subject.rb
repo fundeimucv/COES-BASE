@@ -65,10 +65,6 @@ class Subject < ApplicationRecord
 
   end
 
-  def unit_credits_to_02i
-    sprintf("%02i", unit_credits) if unit_credits
-  end
-
 
   def modality_initial_letter
     case modality

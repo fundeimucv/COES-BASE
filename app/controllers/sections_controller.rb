@@ -51,10 +51,14 @@ class SectionsController < ApplicationController
 
   # PATCH/PUT /sections/1 or /sections/1.json
   def update
-    if @section.totaly_qualified?
-      msg, type = @section.update(section_params) ? ["Sección calificada con éxito.", 'success'] : [@section.errors.full_messages.to_sentence, 'danger']
-    else
-      msg, type = ['Atención: No se pudo cerrar la calificación, faltan calificaciones por completar. Por favor refresque la pantalla e inténte calificar los registros restantes.', 'danger']
+    respond_to do |format|
+      if @section.update(section_params)
+        format.html { redirect_to section_url(@section), notice: "Section was successfully updated." }
+        format.json { render :show, status: :ok, location: @section }
+      else
+        format.html { render :edit, status: :unprocessable_entity }
+        format.json { render json: @section.errors, status: :unprocessable_entity }
+      end
     end
     flash[type] = msg
     redirect_back fallback_location: section_url(@section)
@@ -79,8 +83,6 @@ class SectionsController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def section_params
-      # params.permit(:academic_record).permit(:status)
-      # params.permit(:qualification).permit(:final)
-      params.require(:section).permit(:qualified)
+      params.require(:section).permit(:code, :capacity, :course_id, :teacher_id, :qualified, :modality, :enabled)
     end
 end

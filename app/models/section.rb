@@ -42,7 +42,7 @@ class Section < ApplicationRecord
   validates :modality, presence: true
 
   # SCOPE:
-  scope :custom_search, -> (keyword) { joins(:subject).where("subjects.code ILIKE '%#{keyword}%' OR subjects.name ILIKE '%#{keyword}%'") }
+  scope :custom_search, -> (keyword) { joins(:user, :subject).where("users.ci ILIKE '%#{keyword}%' OR users.email ILIKE '%#{keyword}%' OR users.first_name ILIKE '%#{keyword}%' OR users.last_name ILIKE '%#{keyword}%' OR users.number_phone ILIKE '%#{keyword}%' OR subjects.name ILIKE '%#{keyword}%' OR subjects.code ILIKE '%#{keyword}%'") }
 
   # FUNCTIONS:
   def set_default_values_by_import
@@ -92,7 +92,7 @@ class Section < ApplicationRecord
     "#{self.code}-#{self.course.name}" if self.course
   end
 
-  def total_academic_records
+  def tota_academic_records
     academic_records.count
   end
 
@@ -108,8 +108,7 @@ class Section < ApplicationRecord
       end
       fields :course, :teacher, :qualified#, :enabled
       
-      field :total_academic_records do
-        # sortable :total_academic_records
+      field :tota_academic_records do
         label 'Total Insc'
       end
     end
@@ -146,10 +145,7 @@ class Section < ApplicationRecord
     end
 
     export do
-      fields :code, :subject, :user, :capacity, :qualified, :modality
-      field :total_academic_records do
-        label 'Total Inscr.'
-      end
+      fields :code, :subject, :user, :qualified, :modality
     end
   end
 
@@ -221,24 +217,5 @@ class Section < ApplicationRecord
     end
     [total_newed, total_updated, no_registred]
   end
-
-  private
-
-  def self.sections_general
-    sin_acres = []
-    Section.all.each do |s|
-      sin_acres << s if !(s.academic_records.any? and s.teacher_id.eql? nil)
-    end
-    p "Total: #{sin_acres.count}"
-    return sin_acres
-  end
-
-  def self.sections_whitout_acres
-    Section.all.reject{|s| s.academic_records.any?}
-  end
-
-  def self.sections_whitout_acres_teachers
-    Section.all.reject{|s| s.academic_records.any? and !s.teacher_id.nil?}
-  end  
 
 end

@@ -1,6 +1,10 @@
 class User < ApplicationRecord
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
+  devise :database_authenticatable,
+         :recoverable, :rememberable, :validatable
+
+
   # SCHEMA:
   # t.string "email", default: "", null: false
   # t.string "ci", null: false
@@ -172,7 +176,7 @@ class User < ApplicationRecord
   end
 
   def name
-    "#{self.ci} : #{self.first_name} #{self.last_name}"
+    description
   end
 
   def full_name

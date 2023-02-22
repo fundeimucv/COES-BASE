@@ -6,5 +6,6 @@
   %tbody.table-group-divider
     %tr.bank_row
       - rows.each_with_index do |row,i|
+        %td= i+1
         - row.each do |v|
           %td.string_type= v
