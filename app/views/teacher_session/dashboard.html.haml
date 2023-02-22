@@ -1,7 +1,8 @@
 
-.vh-100.d-flex.justify-content-center.align-items-center
+.vh-100.d-flex.justify-content-center
   - headers = ['#','Sección', 'Asignatura', 'Periodo', 'Inscritos', 'Opciones']
-  .col-md-10
+  .col-md-11
+    = render 'layouts/main_banner'
     %h4.text-center.text-primary.mb-3 Secciones Asignadas 
     %table.table.table-striped.table-hover.border.table-bordered.table-sm.table-responsive
       %thead.table-light

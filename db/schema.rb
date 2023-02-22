@@ -29,13 +29,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_02_14_182317) do
   create_table "academic_records", force: :cascade do |t|
     t.bigint "section_id", null: false
     t.bigint "enroll_academic_process_id", null: false
-    t.float "first_q"
-    t.float "second_q"
-    t.float "third_q"
-    t.float "final_q"
-    t.float "post_q"
-    t.integer "status_q", default: 0
-    t.integer "type_q"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "status", default: 0

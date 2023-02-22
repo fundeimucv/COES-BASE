@@ -1,0 +1,9 @@
+- width ||= 'auto'
+- bg_color ||= ' bg-primary bg-opacity-10'
+#imageMain.text-center{style: "background-size: #{width} auto", class: bg_color}
+  .my-2.p-1{style: 'letter-spacing: 1px;'}
+    %p.mb-0.h6 UNIVERSIDAD CENTRAL DE VENEZUELA
+    %p.mb-0.h6.fw-light= Faculty.first.name.titleize if Faculty.any?
+    %p.mb-0.h6.fw-light= School.first.name.titleize if School.any?
+    .fw-light.pt-2 Sistema de Control de Estudios COES-FAU
+
