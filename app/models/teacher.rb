@@ -15,6 +15,8 @@ class Teacher < ApplicationRecord
   # SCOPES:
   scope :find_by_user_ci, -> (ci) {joins(:user).where('users.ci': ci).first}
 
+  scope :custom_search, -> (keyword) { joins(:user).where("users.ci ILIKE '%#{keyword}%' OR users.email ILIKE '%#{keyword}%' OR users.first_name ILIKE '%#{keyword}%' OR users.last_name ILIKE '%#{keyword}%' OR users.number_phone ILIKE '%#{keyword}%'") }
+
   # VALIDATIONS:
   validates :area, presence: true
   validates :user, presence: true, uniqueness: true
@@ -32,6 +34,22 @@ class Teacher < ApplicationRecord
     user_aux.delete if user_aux.without_rol?
   end  
 
+  def user_email
+    user.email if user
+  end
+
+  def user_last_name
+    user.last_name if user
+  end
+
+  def user_first_name
+    user.first_name if user
+  end
+
+  def user_ci
+    user.ci if user
+  end
+
   def description
     if user
       aux = user.description
@@ -47,6 +65,26 @@ class Teacher < ApplicationRecord
     navigation_icon 'fa-regular fa-chalkboard-user'
 
     list do
+      search_by :custom_search
+      field :user_ci do
+        label 'CI'
+      end
+      field :user_first_name do
+        label 'Nombres'
+      end
+
+      field :user_last_name do
+        label 'Apellidos'
+      end
+
+      field :user_email do
+        label 'Email'
+      end
+
+      field :sections do
+        label 'Secciones'
+      end
+
       exclude_fields :updated_at
     end
 

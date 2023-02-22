@@ -1,4 +1,4 @@
-%h2 Recuperar contraseña
+%h2 ¿Olvidó su clave de usuario?
 = simple_form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :post }) do |f|
   = f.error_notification
   .form-inputs
@@ -8,4 +8,4 @@
       input_html: { autocomplete: "email" } |
   .form-actions
     = f.button :submit, "Enviar instrucciones de reseteo de clave"
-= link_to "Volver", new_session_path(resource_name)
+= render "devise/shared/links"

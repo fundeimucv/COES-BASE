@@ -1,6 +1,6 @@
 
 - headers = ['Código', 'U. Créditos','Asignatura', 'Periodo', 'Capacidad', 'Profesor']
-- data = [[section.code, section.subject.desc, section.period.name, section.capacity, section.teacher_desc]]
+- data = [[section.code, section.subject.unit_credits_to_02i, section.subject.desc, section.period.name, section.capacity, section.teacher_desc]]
 = render partial: "/sections/download_options", locals: {section: section}
 = render partial: '/layouts/on_table', locals: {headers: headers, rows: data}
 -# @academic_records ||= section.academic_records 
@@ -9,34 +9,67 @@
 =# render partial: 'academic_records/show', locals: {section: section}
 = render partial: 'academic_records/qualify', locals: {section: section}
 
-
-
 :javascript
 
-	window.onload = function() {
+	function checkPost(ele) {
+		let elem = $(ele);
+		let post_elem, final_elem;
+		let id = elem.attr('id_obj');
+		let val = elem.val();
+		let valor_checked = elem.prop('checked');
+		let checkboxs = $(`#acRe${id} .checkPost`);
 
-		$('.qualificable').change(function(){
+		checkboxs.prop('disabled', valor_checked);
+		checkboxs.prop('checked', false);
 
-			console.log("THIS: " + this);
-			console.log($(this).attr('name'));
-			let id = $(this).attr('id_obj');
-			tipo = $(this).attr('type_q');
-			val = $(this).val();
-			values = `{"academic_record": {"final_q": ${val}, "type_q": "${tipo}"}}`;
-			sendData(id, values);
+		elem.prop('disabled', false);
+		elem.prop('checked', valor_checked);
 
-		});
+		final_elem = $(`#acRe${id} #_qualificationfinal`);
+		final_elem.prop('disabled', valor_checked);
 
-		$('.post_q').change(function(){
-			let id = $(this).attr('id_obj');
-			tipo = $(this).attr('type_q');
-			val = $(this).val();
-			values = `{"academic_record": {"post_q": ${val}, "type_q": "${tipo}"}}`
-			sendData(id, values);
+		post_elem = $(`#acRe${id} #_qualificationpost`);
+		let post_elem_val = post_elem.val();
+		let final_elem_val = final_elem.val();
+		post_elem.attr('type_q', val);
+		if (valor_checked == false && (post_elem_val != '')) {
+			post_elem.val(-2);
+			sendQualification(post_elem, final_elem_val);
+		}
+		post_elem.val('');
+		post_elem.prop('disabled', !valor_checked);		
+	}
 
-		});
 
-	function sendQualification(elem, val2) {
+	function onlyValidQ(ele){
+		var node = $(ele);
+		node.val(node.val().replace(/[^0-9]/g,'') );
+	}
+
+	function final(ele) {
+		elem = $(ele);
+		let id = elem.attr('id_obj');
+		let checkboxs = $(`#acRe${id} .checkPost`);
+
+		let no_post = (elem.val() == '' || elem.val() > 9 )
+
+		checkboxs.prop('disabled', no_post);
+		checkboxs.prop('checked', false);
+
+	}
+
+	function pi(ele) {
+		let id = $(ele).attr('id_obj');
+		let status;
+		status = 'sin_calificar';
+		if (ele.checked) {status = 'perdida_por_inasistencia'}
+		let values = `{"academic_record": {"status": "${status}"}}`;
+		let url = `/academic_records/${id}`
+		sendData('pi', ele, id, url, values);
+	}
+
+	function sendQualification(ele, val2) {
+		let elem = $(ele);
 		let id = elem.attr('id_obj');
 		let tipo = elem.attr('type_q');
 		let val = elem.val();
@@ -47,9 +80,8 @@
 		sendData('qualifiable', val, id, url, values, val2);
 	}
 
-
-	function sendData(id, values){
-		// toastr.options.timeOut = 1500;
+	function sendData(tipo, ele, id, url, values, val2){
+		var result = false;
 		$.ajax({
 			url: url,
 			type: 'PATCH',
@@ -87,22 +119,8 @@
 		elem.html(msg)
 		
 		elem.fadeIn(0);
-		elem.fadeOut(3000);
+		elem.fadeOut(4000);
 
-		/*
-		setTimeout(function(){
-		elem.parentNode.removeChild(elem);
-		},5000);
-		document.body.appendChild(elem);
-		*/
-
-	}
-
-
-	function desactivar_por_nd(obj, ci){
-		var valor = $(obj).prop('checked')
-		$(`#_academic_record_${ci}pi`).prop('disabled', valor)
-	
 	}
 
 	function desactivar_por_pi(obj, ar_id){
@@ -119,10 +137,9 @@
 
 		inputs.prop('disabled', valor_checked)
 		$(obj).prop('disabled', false)
-		// $(obj) = .prop('required', false)
-
-		final.val = (null)
-		if (valor === true) {
+		
+		// final.val = (null)
+		if (valor_checked === true) {
 			numero_a_letras('-1', ar_id);
 		}else{
 			numero_a_letras(undefined, ar_id);
