@@ -23,9 +23,6 @@ class User < ApplicationRecord
   # ENUMERIZE:
   enum sex: [:femenino, :masculino]
 
-  # DEVISE MODULES:
-  devise :database_authenticatable, :registerable, :rememberable
-
   # ASSOCIATIONS:
   has_one :admin, inverse_of: :user, foreign_key: :user_id, dependent: :destroy
   accepts_nested_attributes_for :admin

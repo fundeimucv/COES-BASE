@@ -5,13 +5,14 @@
   = f.full_error :reset_password_token
   .form-inputs
     = f.input :password,                                                                    |
-      label: "Nueva Clave",                                                                |
+      label: "Nueva Clave",                                                                 |
       required: true,                                                                       |
       autofocus: true,                                                                      |
       hint: ("#{@minimum_password_length} characters minimum" if @minimum_password_length), |
-      input_html: { autocomplete: "new-password" }                                          |
+      input_html: { autocomplete: "new-password" }   
+
     = f.input :password_confirmation,              |
-      label: "Confirme su nueva clave",          |
+      label: "Confirme su nueva clave",            |
       required: true,                              |
       input_html: { autocomplete: "new-password" } |
   .form-actions
