@@ -11,16 +11,16 @@ Rails.application.configure do
   # sudo apt install libvips
 
 
-  # config.action_mailer.delivery_method = :smtp
-  # config.action_mailer.smtp_settings = {
-  #   address: ENV['EMAIL_PROVIDER_ADDRESS'],
-  #   port: 587,
-  #   domain: ENV['EMAIL_PROVIDER_DOMAIN_NAME'],
-  #   authentication: "plain",
-  #   enable_starttls_auto: true,
-  #   user_name: ENV['EMAIL_PROVEDER_USER_NAME'],
-  #   password: ENV['EMAIL_PROVIDER_PASSWORD']
-  # }
+  config.action_mailer.delivery_method = :smtp
+  config.action_mailer.smtp_settings = {
+    address:                'smtp.mailersend.net',
+    port:                   587,
+    domain:                 ENV['PROVIDER_DOMAIN_ADRESS'],
+    user_name:              ENV['USERNAME'],
+    password:               ENV['PASSWORD'],
+    authentication:         'plain',
+    enable_starttls_auto:   true
+  }
 
   config.cache_classes = true
 
