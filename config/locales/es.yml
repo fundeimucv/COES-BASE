@@ -480,6 +480,7 @@ es:
         name: 'Nombre'
       school:
         description: Descripción        
+        contact_email: Correo de contacto
         code: 'Código'
         name: 'Nombre'
         type_entity: 'Tipo de Entidad'

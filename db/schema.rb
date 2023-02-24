@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_02_23_144626) do
+ActiveRecord::Schema[7.0].define(version: 2023_02_24_131756) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -228,6 +228,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_02_23_144626) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "faculty_id"
+    t.string "contact_email", default: "coes.fau@gmail.com", null: false
     t.index ["faculty_id"], name: "index_schools_on_faculty_id"
     t.index ["period_active_id"], name: "index_schools_on_period_active_id"
     t.index ["period_enroll_id"], name: "index_schools_on_period_enroll_id"

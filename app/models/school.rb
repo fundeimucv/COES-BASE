@@ -37,6 +37,7 @@ class School < ApplicationRecord
   validates :type_entity, presence: true
   validates :code, presence: true, uniqueness: {case_sensitive: false}
   validates :name, presence: true, uniqueness: {case_sensitive: false}
+  validates :contact_email, presence: true
 
   # CALLBAKCS:
   after_initialize :set_unique_faculty
@@ -74,7 +75,8 @@ class School < ApplicationRecord
 
     show do
       field :description
-      fields :study_plans, :period_enroll, :period_active, :periods, :areas, :bank_accounts
+
+      fields :study_plans, :period_enroll, :period_active, :periods, :areas, :bank_accounts, :contact_email
     end
 
     edit do
@@ -89,7 +91,7 @@ class School < ApplicationRecord
           {:onInput => "$(this).val($(this).val().toUpperCase())"}
         end       
       end
-      fields :type_entity, :bank_accounts, :study_plans, :admission_types
+      fields :type_entity, :bank_accounts, :study_plans, :admission_types, :contact_email
     end
 
     export do
