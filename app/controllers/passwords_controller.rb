@@ -15,8 +15,10 @@ class PasswordsController < Devise::PasswordsController
     if successfully_sent?(resource)
       respond_with({}, location: after_sending_reset_password_instructions_path_for(resource_name))
     else
-      # respond_with(resource)
+      
       flash[:danger] = resource.errors.full_messages.to_sentence unless resource.errors.empty?
+
+      flash[:warning] = "Si no se encuentra su correo y no recuerda su contraseña, por favor contacte a la administración para que le brinde el apoyo respectivo."
       redirect_back fallback_location: root_path
     end
   end
