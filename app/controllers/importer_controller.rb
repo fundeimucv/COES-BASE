@@ -20,12 +20,15 @@ class ImporterController < ApplicationController
 				flash[:success] += "#{result[0]}"+ " Nuevo".pluralize(result[0]) + " | "
 				flash[:success] += "#{result[1]}"+ " Actualizado".pluralize(result[1])
 
-
 				if result[2].any? 
-					flash[:success] += "| #{result[2].count}"+ " con errores."
+					flash[:success] += " | #{result[2].count}"+ " con errores."
 					flash[:danger] = ""
-					if result[2].count > 100
-						flash[:danger] += "Más de 100 registros tienen problemas, por lo que no se continuó el proceso de carga. ".html_safe
+					if result[2].include? 'limit_records'
+						result[2].delete 'limit_records'
+						flash[:warning] = "¡El archivo contiene más de 400 registros! Se procesaron estos primeros 400 y quedaron pendientes el resto. Por favor, divida el archivo y realice una nueva carga. ".html_safe
+					end
+					if result[2].count > 50
+						flash[:danger] += "Más de 50 registros tienen problemas, por lo que no se continuó el proceso de carga. ".html_safe
 					end
 					flash[:danger] += " A continuación la(s) fila(s):columna(s)  de datos que reportan algún error: #{result[2].to_sentence}."
 
