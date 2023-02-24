@@ -355,16 +355,13 @@ class AcademicRecord < ApplicationRecord
                           if row[4]
                             row[4].strip! 
                             calificacion_correcta = academic_record.set_status row[4]
-                            if calificacion_correcta.eql? true
-                              academic_record.reload!
-                              if nuevo
-                                total_newed = 1
-                              else
-                                total_updated = 1
-                              end
+                            if (calificacion_correcta.eql? true and academic_record.save!)
+                              nuevo ? total_newed = 1 : total_updated = 1
                             else
                               no_registred = 'valor nota'
                             end
+                          else
+                            nuevo ? total_newed = 1 : total_updated = 1
                           end
                         else
                           no_registred = 'registro academico'
