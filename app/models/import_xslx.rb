@@ -45,7 +45,7 @@ class ImportXslx
 					total_updated += sum_updated
 					
 					break if errors.count > 50
-					if i > 397
+					if i > 398
 						errors << 'limit_records'
 						break
 					end
