@@ -1,0 +1,99 @@
+-# frozen_string_literal: true
+= render partial: 'layouts/progress_wizard', locals: {active: 3}
+
+.vh-100.d-flex.justify-content-center
+  .col-md-10
+    .border.p-3
+      = simple_form_for @student, html: {novalidate: false } do |f|
+        %h5.text-center.bg-dark.text-info.p-1 REGISTRO DE DATOS
+        %h5.text-center.bg-info.p-1 Origen, Civiles, Discapacidad y Grados:
+        - # Origins
+        = render partial: 'form_origins', locals: {f: f}
+
+        - # Birth Date
+        = f.input :birth_date
+
+        - # Nacionality:
+        .mb-3.string.required.student_nacionality
+          = f.label :nacionality, 'Nacionalidad:', class: 'form-label string required'
+          %br
+          - Student.nacionalities.map do |k,v|
+            %label.btn.btn-secondary.btn-sm
+              = radio_button_tag '[student]nacionality', k, (@student.nacionality.eql? k), required: true, class: 'required'
+              = k.titleize
+
+        - # Maritals:
+        .mb-3.string.required.student_marital_status
+          = f.label :marital_status, 'Estdo Civil:', class: 'form-label string required'
+          %br
+          - Student.marital_statuses.map do |k,v|
+            %label.btn.btn-secondary.btn-sm
+              = radio_button_tag '[student]marital_status', k, (@student.marital_status.eql? k), required: true, class: 'required'
+              = k.titleize
+
+        - # Disability:
+        .mb-3.string.required.student_disability
+          = f.label :disability, 'Discapacidad:', class: 'form-label string required'
+          %br
+          - Student.disabilities.map do |k,v|
+            %label.btn.btn-secondary.btn-sm
+              = radio_button_tag '[student]disability', k, (@student.disability.eql? k), class: 'required'
+              = k.titleize
+        .mb-3.string.required.student_disability
+          = label_tag nil, '¿Es egresado universitario?:', class: 'form-label string'
+
+          %label.btn.btn-secondary.btn-sm
+            = radio_button_tag 'grade', nil, true, onclick: "$('#upgrade').toggleClass('d-none')"
+            No
+          %label.btn.btn-secondary.btn-sm
+            = radio_button_tag 'grade', nil, false, onclick: "$('#upgrade').toggleClass('d-none')"
+            Sí
+        #upgrade.d-none
+          = f.input :grade_title 
+          = f.input :grade_university 
+          = f.input :graduate_year, input_html: {value: Time.now.year, min: Time.now.year - 50, step: 1, max: Time.now.year} 
+        %hr
+        = link_to 'Atrás', edit_user_path(current_student), class: 'btn btn-secondary'
+        = f.submit 'Siguiente', class: 'btn btn-primary float-end', disable_with: 'Cargando...'
+        %br
+        %br
+
+:javascript
+
+  function sendData(url, children, data){
+    $.ajax({
+      url: url,
+      dataType: 'json', 
+      type: 'GET',
+      data: data,
+      beforeSend: function(xhr) {
+        xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'))
+        $('#cargando a').html(`Cargando... `);
+        $('#cargando').show();
+      },
+      success: function (data) {
+        let selectorAux = $('#'+children);
+        selectorAux.empty();
+        selectorAux.append($("<option></option>").attr("value",'').text('--- Seleccione ---'));
+
+        for (let e of data){
+          $('#'+children)
+            .append($("<option></option>")
+              .attr("value",e)
+              .text(e));
+        }
+      },
+      complete: function(){
+        $('#cargando').hide();
+      }
+    });
+  };
+
+  function sendCountry(elem){
+    let children = elem.attr('children');
+    let url = elem.attr('url');
+
+    sendData(url, children, {term: elem.val()});
+  }
+
+

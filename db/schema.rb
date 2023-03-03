@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_02_24_131756) do
+ActiveRecord::Schema[7.0].define(version: 2023_03_02_233358) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -62,6 +62,20 @@ ActiveRecord::Schema[7.0].define(version: 2023_02_24_131756) do
     t.bigint "blob_id", null: false
     t.string "variation_digest", null: false
     t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
+  end
+
+  create_table "addresses", force: :cascade do |t|
+    t.bigint "student_id", null: false
+    t.string "state"
+    t.string "municipality"
+    t.string "city"
+    t.string "sector"
+    t.string "street"
+    t.integer "house_type"
+    t.string "house_name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["student_id"], name: "index_addresses_on_student_id"
   end
 
   create_table "admins", primary_key: "user_id", force: :cascade do |t|
@@ -158,20 +172,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_02_24_131756) do
     t.index ["study_plan_id"], name: "index_grades_on_study_plan_id"
   end
 
-  create_table "locations", force: :cascade do |t|
-    t.bigint "student_id", null: false
-    t.string "state"
-    t.string "municipality"
-    t.string "city"
-    t.string "sector"
-    t.string "street"
-    t.integer "house_type"
-    t.string "house_name"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["student_id"], name: "index_locations_on_student_id"
-  end
-
   create_table "payment_reports", force: :cascade do |t|
     t.float "amount"
     t.string "transaction_id"
@@ -264,6 +264,9 @@ ActiveRecord::Schema[7.0].define(version: 2023_02_24_131756) do
     t.date "birth_date"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "grade_title"
+    t.string "grade_university"
+    t.integer "graduate_year"
     t.index ["user_id"], name: "index_students_on_user_id"
   end
 
@@ -328,6 +331,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_02_24_131756) do
   add_foreign_key "academic_records", "sections"
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "addresses", "students", primary_key: "user_id", on_update: :cascade, on_delete: :cascade
   add_foreign_key "admins", "users"
   add_foreign_key "admission_types", "schools"
   add_foreign_key "areas", "areas", column: "parent_area_id"
@@ -341,7 +345,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_02_24_131756) do
   add_foreign_key "grades", "admission_types"
   add_foreign_key "grades", "students", primary_key: "user_id", on_update: :cascade, on_delete: :cascade
   add_foreign_key "grades", "study_plans"
-  add_foreign_key "locations", "students", primary_key: "user_id", on_update: :cascade, on_delete: :cascade
   add_foreign_key "payment_reports", "banks", column: "origin_bank_id"
   add_foreign_key "qualifications", "academic_records"
   add_foreign_key "schools", "periods", column: "period_active_id"

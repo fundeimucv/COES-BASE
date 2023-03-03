@@ -17,7 +17,7 @@ class AcademicRecord < ApplicationRecord
   has_one :grade, through: :enroll_academic_process
   has_one :study_plan, through: :grade
   has_one :student, through: :grade
-  has_one :location, through: :student
+  has_one :address, through: :student
   has_one :user, through: :student
   has_one :period, through: :academic_process
   has_one :period_type, through: :period
@@ -256,7 +256,7 @@ class AcademicRecord < ApplicationRecord
     end
 
     export do
-      fields :section, :enroll_academic_process, :status, :qualifications, :period, :period_type, :student, :user, :location, :subject
+      fields :section, :enroll_academic_process, :status, :qualifications, :period, :period_type, :student, :user, :address, :subject
     end
   end  
 

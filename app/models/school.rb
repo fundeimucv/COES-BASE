@@ -8,6 +8,10 @@ class School < ApplicationRecord
   # t.boolean "enable_dependents"
   # t.bigint "period_active_id"
   # t.bigint "period_enroll_id"
+  # t.datetime "created_at", null: false
+  # t.datetime "updated_at", null: false
+  # t.bigint "faculty_id"
+  # t.string "contact_email", default: "coes.fau@gmail.com", null: false
   
   # ASSOCIATIONS
   belongs_to :period_active, foreign_key: 'period_active_id', class_name: 'Period', optional: true

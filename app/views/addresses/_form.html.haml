@@ -1,0 +1,79 @@
+-# frozen_string_literal: true
+.vh-100.d-flex.justify-content-center
+  .col-md-10
+    .border.p-3
+      = render partial: 'layouts/progress_wizard', locals: {active: 4}
+      = simple_form_for [@student, @address], html: {novalidate: false } do |f|
+        %h5.text-center.bg-info.p-1 Datos de Ubicación:
+
+        .form-inputs
+          = f.hidden_field :student_id, value: @student.id
+
+          = render partial: 'form_location'
+          = f.input :sector, required: true
+          = f.input :street, required: true
+
+          .mb-3.string.required.student_disability
+            = f.label :house_type, 'Tipo de Vivienda:', class: 'form-label string required'
+            %br
+            - Address.house_types.map do |k,v|
+              %label.btn.btn-secondary.btn-sm
+                = radio_button_tag '[address]house_type', k, (@address.house_type.eql? k), required: true, class: 'required'
+                = k.titleize
+
+          = f.input :house_name
+
+        .form-actions
+          %hr
+          = link_to 'Atrás', edit_student_path(current_student), class: 'btn btn-secondary'
+          = f.submit 'Completar', class: 'btn btn-primary float-end', disable_with: 'Cargando...'
+          %br
+          %br
+
+:javascript
+
+  function sendData(url, children, data){
+    $.ajax({
+      url: url,
+      dataType: 'json', 
+      type: 'GET',
+      data: data,
+      beforeSend: function(xhr) {
+        xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'))
+        $('#cargando a').html(`Cargando... `);
+        $('#cargando').show();
+      },
+      success: function (data) {
+        let selectorAux = $('#'+children);
+        selectorAux.empty();
+        selectorAux.append($("<option></option>").attr("value",'').text('--- Seleccione ---'));
+        for (let e of data){
+          selectorAux
+            .append($("<option></option>")
+              .attr("value",e)
+              .text(e));
+        }
+      },
+      complete: function(){
+        $('#cargando').hide();
+      }
+    });
+  };
+
+  function sendMunicipalities(elem){
+
+    let children = elem.attr('children');
+    let url = elem.attr('url');
+
+    sendData(url, children, {term: elem.val()});
+  }
+
+  function sendCities(elem){
+    let children = elem.attr('children');
+    let url = elem.attr('url');
+    let state = $('#selectState').val();
+    sendData(url, children, {term: elem.val(), state: state})
+  }
+
+
+

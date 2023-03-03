@@ -1,0 +1,14 @@
+- if @student and @student.origin_country
+  - data_hash = Student.countries
+  - @cities = data_hash[@student.origin_country].sort{|a,b| a <=> b}
+- @cities ||= []
+
+.mb-3.string.required.student_origin_country
+  = f.label :origin_country, 'País de Nacimiento:', class: 'form-label string required'
+
+  = f.select(:origin_country, Student.countries.keys.sort, { include_blank: 'Selecciona País de Nacimiento...'}, {class: "form-control required", requerido: true, id: 'selectCountry', children: 'selectCity', url: countries_students_path, onchange: 'sendCountry($(this));'})
+
+.mb-3.string.required.student_origin_country
+  = f.label :origin_city, 'Ciudad de Nacimiento:', class: 'form-label string required'
+
+  = f.select(:origin_city, @cities, { include_blank: 'Selecciona Ciudad de Nacimiento...'}, {class: "form-control required", requerido: true, id: 'selectCity'})

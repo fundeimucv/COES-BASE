@@ -8,6 +8,9 @@ class Student < ApplicationRecord
   # t.string "origin_country"
   # t.string "origin_city"
   # t.date "birth_date"  
+  # t.string "grade_title"
+  # t.string "grade_university"
+  # t.integer "graduate_year"
 
   # GLOBALS VARIABLES:
   ESTADOS_CIVILES = ['Soltero/a', 'Casado/a', 'Concubinato', 'Divorciado/a', 'Viudo/a']
@@ -24,7 +27,8 @@ class Student < ApplicationRecord
   belongs_to :user
   # accepts_nested_attributes_for :user
   # has_one
-  has_one :location
+  has_one :address
+  accepts_nested_attributes_for :address
   # has_many
   has_many :grades
   accepts_nested_attributes_for :grades
@@ -35,12 +39,13 @@ class Student < ApplicationRecord
 
   # VALIDATIONS:
   validates :user, presence: true, uniqueness: true
-  # validates :nacionality, presence: true, unless: :new_record?
-  # validates :marital_status, presence: true, unless: :new_record?
-  # validates :origin_country, presence: true, unless: :new_record?
-  # validates :origin_city, presence: true, unless: :new_record?
-  # validates :birth_date, presence: true, unless: :new_record?
-  # validates :location, presence: true, unless: :new_record?
+  validates :nacionality, presence: true, unless: :new_record?
+  validates :marital_status, presence: true, unless: :new_record?
+  validates :origin_country, presence: true, unless: :new_record?
+  validates :origin_city, presence: true, unless: :new_record?
+  validates :birth_date, presence: true, unless: :new_record?
+
+
   # validates :grades, presence: true
   # How to validate if student is not created for assosiation
 
@@ -60,6 +65,21 @@ class Student < ApplicationRecord
 
 
   # FUNCTIONS:
+  def complete_info?
+    !(empty_info? or (user and user.empty_info?) or (address and address.empty_info?))
+  end
+
+  def empty_info?
+    nacionality.blank? or marital_status.blank? or origin_country.blank? or origin_city.blank? or birth_date.blank?
+  end
+
+  def self.countries
+    require 'json'
+
+    file = File.read("#{Rails.root}/public/countriesToCities.json")
+
+    JSON.parse(file)
+  end
 
   def name
     user.description if user
@@ -141,13 +161,22 @@ class Student < ApplicationRecord
         end
       end
 
-      fields :nacionality, :origin_country, :origin_city, :birth_date, :marital_status, :location
+      fields :nacionality, :origin_country, :origin_city, :birth_date, :marital_status, :grade_title, :grade_university, :graduate_year
+
+
+      # field :address do
+      #   # inline_add false
+      #   associated_collection_scope do
+      #     student = bindings[:object]
+
+      #     proc { |scope| scope.where(student_id: student.id) }
+      #   end
+      # end
 
     end
 
     show do
-
-      fields :user, :grades, :nacionality, :origin_country, :origin_city, :birth_date, :marital_status, :location, :created_at
+      fields :user, :grades, :nacionality, :origin_country, :origin_city, :birth_date, :marital_status, :address, :grade_title, :grade_university, :graduate_year, :created_at
     end
 
     list do
@@ -156,7 +185,7 @@ class Student < ApplicationRecord
     end
 
     export do
-      fields :user, :nacionality, :origin_country, :origin_city, :birth_date, :marital_status, :location, :created_at
+      fields :user, :nacionality, :origin_country, :origin_city, :birth_date, :marital_status, :address, :created_at
     end
 
     import do

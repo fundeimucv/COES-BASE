@@ -33,26 +33,30 @@ class User < ApplicationRecord
   has_one :teacher, inverse_of: :user, dependent: :destroy
   accepts_nested_attributes_for :teacher
 
-  has_one_attached :picture_profile do |attachable|
+  has_one_attached :profile_picture do |attachable|
     attachable.variant :icon, resize_to_limit: [35, 35]
     attachable.variant :thumb, resize_to_limit: [100, 100]
   end
 
-  def picture_profile_as_thumb
-    picture_profile.variant(resize_to_limit: [100, 100]).processed
+  def profile_picture_as_thumb
+    profile_picture.variant(resize_to_limit: [100, 100]).processed
   end
 
-  attr_accessor :remove_picture_profile
-  after_save { picture_profile.purge if remove_picture_profile.eql? '1' } 
+  def ci_image_as_thumb
+    ci_image.variant(resize_to_limit: [100, 100]).processed
+  end  
 
-  has_one_attached :image_ci do |attachable|
+  attr_accessor :remove_profile_picture
+  after_save { profile_picture.purge if remove_profile_picture.eql? '1' } 
+
+  has_one_attached :ci_image do |attachable|
     attachable.variant :thumb, resize_to_limit: [100,100]
   end
 
-  attr_accessor :remove_image_ci
-  after_save { image_ci.purge if remove_image_ci.eql? '1' } 
+  attr_accessor :remove_ci_image
+  after_save { ci_image.purge if remove_ci_image.eql? '1' } 
 
-  attr_accessor :allow_blank_password
+  # attr_accessor :allow_blank_password
 
   # VALIDATIONS:
   validates :ci, presence: true, uniqueness: true
@@ -61,11 +65,18 @@ class User < ApplicationRecord
   validates :last_name, presence: true#, unless: :new_record?
   validates_format_of :email, with: URI::MailTo::EMAIL_REGEXP
 
-  # validates :number_phone, presence: true, unless: :new_record?
-  # validates :sex, presence: true, unless: :new_record?
+
+  # validates :profile_picture , presence: true, on: :update, if: lambda{ |object| (object.profile_picture.present? or object.ci_image.present?)}
   
-  # validates :password, presence: true, confirmation: true
-  # validates :password_confirmation, presence: true
+  # validates :ci_image , presence: true, on: :update, if: lambda{ |object| (object.profile_picture.present? or object.ci_image.present?)}
+
+  # validates :number_phone, presence: true, on: :update, unless: lambda{ |object| (object.profile_picture.present? and object.ci_image.present?)}
+
+  # validates :sex, presence: true, on: :update, unless: lambda{ |object| (object.profile_picture.present? and object.ci_image.present?)}
+  
+  # validates :password_confirmation, presence: true, on: :update, if: lambda{ |object| (object.password.present?)}
+  # validates :password, presence: true, confirmation: true, on: :update, if: lambda{ |object| !(object.profile_picture.present? or object.ci_image.present?)}
+  
   # attr_accessor :password_confirmation
 
   # SCOPES:
@@ -123,13 +134,33 @@ class User < ApplicationRecord
 
   #FUNCTIONS:
 
+  # PERSONAL AND CONTACT DETAILS
+  def empty_info?
+    empty_any_image? or empty_personal_info?
+  end
+
+  def empty_personal_info?
+    (self.email.blank? or self.first_name.blank? or last_name.blank? or self.number_phone.blank? or self.sex.blank?)
+  end
+
+  def empty_any_image?
+     empty_profile_picture? or empty_ci_image?
+  end
+
+  def empty_profile_picture?
+    (self.profile_picture.nil? or (self.profile_picture and !self.profile_picture.attached?))
+  end
+
+  def empty_ci_image?
+    (self.ci_image.nil? or (self.ci_image and !self.ci_image.attached?))
+  end
+
   # SEXO
   def sexo_to_s
     aux = 'Mujer' if femenino?
     aux = 'Hombre' if masculino?
     return aux.blank? ? 'Indefinido' : aux
   end
-
 
   def la_el
     femenino? ? 'la' : 'el'
@@ -203,6 +234,7 @@ class User < ApplicationRecord
 
   regexp_español3 = "/[^a-zA-Z\u00C1\u00C9\u00CD\u00D3\u00DA\u00DC\u00E1\u00E9\u00ED\u00F3\u00FA\u00FC| ]/g" #√
 
+
   # RAILS_ADMIN:
   rails_admin do
     navigation_icon 'fa-regular fa-user'
@@ -253,28 +285,28 @@ class User < ApplicationRecord
       #   end        
       # end
 
-      field :picture_profile, :active_storage do
+      field :profile_picture, :active_storage do
         label 'Imagen de Perfil'
-        delete_method :remove_picture_profile
+        delete_method :remove_profile_picture
       end
-      field :image_ci, :active_storage do
+      field :ci_image, :active_storage do
         label 'Imagen CI'
-        delete_method :remove_image_ci
+        delete_method :remove_ci_image
       end 
     end
 
     show do
-      # field :picture_profile, :active_storage  do
+      # field :profile_picture, :active_storage  do
 
         # formatted_value do
-        #   bindings[:view].tag(:img, { :src => bindings[:object].picture_profile }) << value
+        #   bindings[:view].tag(:img, { :src => bindings[:object].profile_picture }) << value
         # end
         # formatted_value do
         #   bindings[:view].render(partial: "rails_admin/main/image", locals: {object: bindings[:object]})
         # end
       # end
-      field :picture_profile, :active_storage 
-      field :image_ci, :active_storage 
+      field :profile_picture, :active_storage 
+      field :ci_image, :active_storage 
       field :ci
       field :email
       field :first_name
@@ -294,7 +326,7 @@ class User < ApplicationRecord
       field :last_name
       field :number_phone
       field :sex
-      field :picture_profile
+      field :profile_picture
     end
 
     export do

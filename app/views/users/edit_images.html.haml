@@ -1,0 +1,94 @@
+= render partial: 'layouts/progress_wizard', locals: {active: 1}
+
+.vh-100.d-flex.justify-content-center
+  .col-md-10
+    .border.p-3
+      = simple_form_for @user, html: { class: 'form-horizontal', novalidate: false } do |f|
+        
+        %h5.text-center.bg-dark.text-info.p-1 REGISTRO DE DATOS
+        %h5.text-center.bg-info.p-1 Imágenes de Respaldo:
+
+        - correo_ayuda = (@user.student and @user.student.grades.first) ? @user.student.grades.first.school.contact_email : 'coes.fau@gmail.com'
+
+        .alert.alert-warning
+          %b IMPORTANTE: 
+          = "Debido a los inconvenientes de conectividad en el país, recomendamos encarecidamente subir archivos de baja resolución y peso (menores a 3 MegaBytes), de ser posible capturas de pantalla. Si al intentar subir el archivo adjunto el sistema genera un error o tarda más de 3 minutos en responder, puede intentar nuevamente el proceso con un archivo más liviano o enviarlo al correo electrónico #{link_to correo_ayuda} para brindarle el apoyo respectivo.".html_safe
+
+        = image_tag main_app.url_for(@user.profile_picture_as_thumb) unless @user.empty_profile_picture?
+
+        = f.input :profile_picture, required: @user.empty_profile_picture?, input_html: {class: 'file-upload', direct_upload: true, accept: '.png,.jpeg,.jpg'}
+
+        = image_tag main_app.url_for(@user.ci_image_as_thumb) unless @user.empty_ci_image?
+
+        = f.input :ci_image, required: @user.empty_ci_image?, input_html: {class: 'file-upload', direct_upload: true, accept: '.png,.jpeg,.jpg'}
+        .form-actions
+          %hr
+          = f.submit 'Cargar Imágenes', class: 'btn btn-primary float-end', disable_with: 'Cargando...'
+          %br
+          %br
+
+
+:javascript
+  const selectElement = document.querySelector('.file-upload');
+
+  selectElement.addEventListener("change", e => {
+    let file = e.currentTarget.files[0];
+    console.log("FILE UPLOAD");
+    if( typeof file.name != "undefined"){
+      let file_size = ((file.size/1024)/1024).toFixed(0);
+      if (file_size > 50) {
+        alert("Atención: Archivo demasiado grande. Por favor disminuya el tamaño del mismo.");
+         e.currentTarget.value = '';
+      }
+    }
+  });
+
+  addEventListener("direct-upload:initialize", event => {
+    const { target, detail } = event
+    const { id, file } = detail
+    target.insertAdjacentHTML("beforebegin", `
+      <div id="direct-upload-${id}" class="direct-upload direct-upload--pending">
+        <div id="direct-upload-progress-${id}" class="direct-upload__progress" style="width: 0%"></div>
+        <div id="progress-text-target-${id}"></div>
+        <span class="direct-upload__filename"></span>
+      </div>
+    `);
+    target.previousElementSibling.querySelector(`.direct-upload__filename`).textContent = file.name
+  })
+
+  addEventListener("direct-upload:start", event => {
+    const { id } = event.detail;
+    const element = document.getElementById(`direct-upload-${id}`);
+    const cancel = document.getElementById(`cancelBtn`);
+    cancel.classList.add('disabled');
+    cancel.disabled();
+    element.classList.remove("direct-upload--pending");
+  })
+
+  addEventListener("direct-upload:progress", event => {
+    const { id, progress } = event.detail;
+    const progressElement = document.getElementById(`direct-upload-progress-${id}`);
+    const elementText = document.getElementById(`progress-text-target-${id}`);
+    progressElement.style.width = `${progress}%`;
+    elementText.innerHTML = `${Math.round(progress)}% completado`;
+
+
+  })
+
+  addEventListener("direct-upload:error", event => {
+    event.preventDefault()
+    const { id, error } = event.detail
+    const element = document.getElementById(`direct-upload-${id}`);
+    const elementText = document.getElementById(`progress-text-target-${id}`);
+    element.classList.add("direct-upload--error tooltip-btn alert alert-danger text-danger");
+    element.classList.remove("text-success");
+    element.setAttribute("title", error);
+    element.setAttribute("data-toggle", 'tooltip');
+    elementText.innerHTML = `Error guardando: ${error}%`;
+  })
+
+  addEventListener("direct-upload:end", event => {
+    const { id } = event.detail;
+    const element = document.getElementById(`direct-upload-${id}`);
+    element.classList.add("direct-upload--complete");
+  })

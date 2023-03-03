@@ -1,0 +1,26 @@
+
+%ul#progressbar.text-center
+  - clazz = ''
+  - if active.eql? 1
+    - clazz = 'active'
+  - if active > 1
+    - clazz = 'checked' 
+  %li.text-success#images{class: clazz}
+  - clazz = ''
+  - if active.eql? 2
+    - clazz = 'active'
+  - if active > 2
+    - clazz = 'checked' 
+  %li#personal{class: clazz}
+  - clazz = ''
+  - if active.eql? 3
+    - clazz = 'active'
+  - if active > 3
+    - clazz = 'checked'   
+  %li#origins{class: clazz}
+  - clazz = ''
+  - if active.eql? 4
+    - clazz = 'active'
+  - if active > 4
+    - clazz = 'checked'   
+  %li#address{class: clazz}

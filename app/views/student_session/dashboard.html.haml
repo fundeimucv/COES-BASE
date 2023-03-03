@@ -1,4 +1,7 @@
-= render "shared/navbar"
+- if current_user.sign_in_count.eql? 1
+  = render template: 'devise/passwords/edit', locals: {resource: current_user, resource_name: 'User'}
+
+%h1= session[:rol]
 .text-center
   %h1.text-primary.mt-5= @title
   = image_tag image_url('build_website.png'), width: '40%'

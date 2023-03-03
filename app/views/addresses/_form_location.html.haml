@@ -1,0 +1,10 @@
+.form-group.row.mb-2
+  %label.col-form-label Ubicación:
+  .col-md-4
+    = select_tag '[address]state', options_for_select(Address.states, @address.state), class: "form-control required", required: true, include_blank: '--- Seleccione Estado ---', id: 'selectState', children: 'selectMunicipality', url: getMunicipalities_student_addresses_path, onchange: 'sendMunicipalities($(this));'
+  .col-md-4
+    - @municipalities ||= []  
+    = select_tag '[address]municipality', options_for_select(@municipalities, @address.municipality), class: "form-control reuired", required: true, include_blank: '--- Seleccione Municipio ---', id: 'selectMunicipality', children: 'selectCity', url: getCities_student_addresses_path, onchange: 'sendCities($(this));'
+  .col-md-4
+    - @cities ||= []  
+    = select_tag '[address]city', options_for_select(@cities, @address.city), class: "form-control required", required: true, include_blank: '--- Seleccione Parroquia ---', id: 'selectCity'

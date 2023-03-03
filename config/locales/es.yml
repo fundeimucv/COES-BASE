@@ -322,7 +322,7 @@ es:
       grade:
         one: 'Grado'
         other: 'Grados'
-      location:
+      address:
         one: 'Dirección'
         other: 'Direcciones'
       payment_report:
@@ -452,7 +452,7 @@ es:
         efficiency: 'Eficiencia'
         weighted_average: 'Promedio Ponderado'
         simple_average: 'Promedio Simple'
-      location:
+      address:
         state: 'Estado'
         municipality: 'Municipio'
         city: 'Ciudad'
@@ -522,12 +522,15 @@ es:
         origin_country: 'País de origen'
         origin_city: 'Ciudad de origen'
         birth_date: 'Fecha de nacimiento'
-        location: 'Dirección'
+        address: 'Dirección'
         created_at: 'Fecha de Registro'
         user: 'Usuario'
         grades: Grados
         study_plans: Planes de Estudio
         admission_types: Tipos de Admisión
+        grade_title: Título Optenido
+        grade_university: Universidad
+        graduate_year: Año de Graduado
       study_plan:
         code: 'Código'
         name: 'Nombre'
@@ -558,8 +561,8 @@ es:
         last_name: 'Apellidos'
         number_phone: 'Número telefónico'
         sex: 'Sexo'
-        picture_profile: 'Foto de Perfil'
-        image_ci: 'Imagen de CI'
+        profile_picture: 'Foto de Perfil'
+        ci_image: 'Imagen de CI'
     scopes:
       academic_record:
         sin_calificar: 'Sin Calificar'

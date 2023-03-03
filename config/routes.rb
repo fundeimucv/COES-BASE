@@ -14,8 +14,23 @@ Rails.application.routes.draw do
   resources :period_types
   resources :academic_processes, :enroll_academic_processes, :academic_records, :periods, :profiles, :sections, :courses
 
+  resources :users, only: [:edit, :update] do
+    member do
+      get 'edit_images'
+    end
+
+  end
   resources :students do
-    resources :locations
+    collection do
+      get :countries
+    end
+
+    resources :addresses do
+      collection do
+        get :getMunicipalities
+        get :getCities
+      end
+    end
   end
 
   resources :banks do

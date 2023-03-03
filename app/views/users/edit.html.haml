@@ -1,0 +1,105 @@
+-# frozen_string_literal: true
+= render partial: 'layouts/progress_wizard', locals: {active: 2}
+
+.vh-100.d-flex.justify-content-center
+  .col-md-10
+    .border.p-3
+      = simple_form_for @user, html: { class: 'form-horizontal', novalidate: false } do |f|
+        %h5.text-center.bg-dark.text-info.p-1 REGISTRO DE DATOS
+        %h5.text-center.bg-info.p-1 Datos Personales y de Contacto:
+        
+        / - # Password:
+        / %div{'data-bs-toggle': :tooltip, title: 'Cambie su contraseña a un valor distinto a la cédula de identidad'}
+        /   = f.input :password, required: true, minlength: 6, passwordrules: "required: upper; required: lower; required: digit; minlength: 8; allowed: [-().&@?'#,/&quot;+]; max-consecutive: 2"
+        /   = f.input :password_confirmation, required: true, input_html: {minlength: 6}
+        %hr
+        - # Cedula de Identidad:
+        = f.input :ci, readonly: true, disabled: true 
+
+        - # Sex:
+        .mb-3.string.required.user_sex
+          = f.label :sex, 'Sexo:', class: 'form-label string required'
+          - User.sexes.map do |k,v|
+            %label.btn.btn-secondary.btn-sm
+              = radio_button_tag '[user]sex', k, (@user.sex.eql? k), required: true, class: 'required'
+              = k.titleize
+
+        - # Names:
+        = f.input :first_name, required: true, input_html: {oninput: '$(this).val($(this).val().toUpperCase());'}
+        = f.input :last_name, required: true, input_html: {oninput: '$(this).val($(this).val().toUpperCase());'}
+        
+        - # Emails:
+        %div{'data-bs-toggle': :tooltip, title: 'Atención: Recuerde que el correo electrónico es el medio principal de comunicación para COESFHE, complételo de manera correcta.'}
+          = f.input :email, required: true
+        - # Phone
+        = f.input :number_phone, required: true, input_html: {class: 'upcase', oninput: "$(this).val($(this).val().replace(/[^0-9]/g,''));"}
+
+        %hr
+        = link_to 'Atrás', edit_images_user_path(current_student), class: 'btn btn-secondary'
+        = f.submit 'Siguiente', class: 'btn btn-primary float-end', disable_with: 'Cargando...'
+        %br
+        %br
+
+- if false
+  :javascript
+
+    $('.upcase').on('input',function(evt){ 
+      var node = $(this);
+      node.val(node.val().toUpperCase());
+    });
+
+
+    $('.ci').on('input',function(evt){ 
+      var node = $(this);
+      node.val(node.val().replace(/[^0-9]/g,'') );
+      });
+
+
+    function sendData(url, children, data){
+      $.ajax({
+        url: url,
+        dataType: 'json', 
+        type: 'GET',
+        data: data,
+        beforeSend: function(xhr) {
+          xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'))
+          $('#cargando a').html(`Cargando... `);
+          $('#cargando').show();
+        },
+        success: function (data) {
+          let selectorAux = $('#'+children);
+          selectorAux.empty();
+          selectorAux.append($("<option></option>").attr("value",'').text('--- Seleccione ---'));
+
+          for (let e of data){
+            $('#'+children)
+              .append($("<option></option>")
+                .attr("value",e)
+                .text(e));
+          }
+        },
+        complete: function(){
+          $('#cargando').hide();
+        }
+      });
+    };
+
+    $(document).ready(function() {
+
+      $('.dynamic').on('change', function(e){
+        let children = $(this).attr('children');
+        let url = $(this).attr('url');
+
+        sendData(url, children, {term: $(this).val()})
+
+      });
+
+      $('#selectMunicipio').on('change', function(e){
+        let estado = $('#selectEstado').val();
+        sendData(`#{getParroquias_usuarios_path}`, 'selectParroquia', {term: $(this).val(), estado: estado})
+
+      })
+      
+    });
+
+

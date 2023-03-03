@@ -1,6 +1,7 @@
 # frozen_string_literal: true
-
 class PasswordsController < Devise::PasswordsController
+  skip_before_action :authenticate_user!, only: [ :edit, :update ]
+
   layout 'visitor'
   # GET /resource/password/new
   def new
