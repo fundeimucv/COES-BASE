@@ -177,8 +177,6 @@ class User < ApplicationRecord
     first_name.split(" ").first
   end
 
-
-
   def admin?
     self.admin.nil? ? false : true
   end

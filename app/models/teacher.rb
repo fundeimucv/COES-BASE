@@ -4,7 +4,7 @@ class Teacher < ApplicationRecord
 
   # ASSOCIATIONS:
   belongs_to :user
-  accepts_nested_attributes_for :user
+  # accepts_nested_attributes_for :user
 
   belongs_to :area
   # accepts_nested_attributes_for :area
@@ -14,10 +14,16 @@ class Teacher < ApplicationRecord
 
   # SCOPES:
   scope :find_by_user_ci, -> (ci) {joins(:user).where('users.ci': ci).first}
+  # SCOPES:
+  scope :custom_search, -> (keyword) { joins(:user).where("users.ci ILIKE '%#{keyword}%' OR users.email ILIKE '%#{keyword}%' OR users.first_name ILIKE '%#{keyword}%' OR users.last_name ILIKE '%#{keyword}%'") }  
 
   # VALIDATIONS:
   validates :area, presence: true
   validates :user, presence: true, uniqueness: true
+
+  def desc
+    "(#{user.ci}) #{user.reverse_name}" if user
+  end
 
   def name
     self.user.name if self.user
@@ -42,12 +48,34 @@ class Teacher < ApplicationRecord
     return aux
   end
 
+
+
   rails_admin do
     navigation_label 'Gestión de Usuarios'
     navigation_icon 'fa-regular fa-chalkboard-user'
 
     list do
-      exclude_fields :updated_at
+      search_by :custom_search
+      field :user_ci do
+        label 'Cédula'
+        # sortable 'joins(:user).users.ci'
+        # queryable "course_periods_periods.name"
+      end
+
+      field :user_last_name do
+        label 'Apellidos'
+      end
+      field :user_first_name do
+        label 'Nombres'
+      end
+      field :user_phone do
+        label 'Número Telefónico'
+      end
+      field :user_email do
+        label 'Email'
+      end 
+
+      field :area
     end
 
     show do
@@ -65,6 +93,23 @@ class Teacher < ApplicationRecord
     import do
       fields :user_id, :area_id
     end
+  end
+
+  def user_ci
+    user.ci if user
+  end
+
+  def user_last_name
+    user.last_name if user
+  end
+  def user_first_name
+    user.first_name if user
+  end 
+  def user_phone
+    user.number_phone if user
+  end 
+  def user_email
+    user.email if user
   end
 
   private

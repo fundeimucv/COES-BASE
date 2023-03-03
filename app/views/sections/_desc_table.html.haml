@@ -1,0 +1,20 @@
+- headers = ['Código', 'U. Créditos','Asignatura', 'Periodo', 'Capacidad', 'Profesor']
+- data = [[section.code, section.subject.unit_credits, section.subject.desc, section.period.name, section.capacity, section.teacher_desc]]
+
+%table.table.table-sm
+  %thead
+    %tr
+      %td Sección
+      %td.col-5 Asignatura
+      %td.col-1 Período
+      %td.col-6 Profesor
+      %td Créd
+      %td Capac
+  %tbody
+    %tr
+      %td= section.code
+      %td= section.subject.desc
+      %td= section.period.name if section.period
+      %td= section.teacher.desc if section.teacher
+      %td.text-center= section.subject.unit_credits
+      %td.text-center= section.capacity

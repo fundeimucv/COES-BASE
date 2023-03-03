@@ -5,16 +5,13 @@
 			Atención
 		Debe completar las calificaciones para tener acceso al acta de la sección
 
-- headers = ['Sección', 'U. Créditos','Asignatura', 'Periodo', 'Capacidad']
-- data = [[@section.code, @section.subject.desc, @section.period.name, @section.capacity]]
-
 .vh-100.d-flex.justify-content-center.mt-5
 	.col-md-11
 		= link_to teacher_session_dashboard_path, class: 'btn btn-sm btn-primary mx-3' do
 			%i.fa.fa-chevron-left
 			Regresar
 		= render partial: "/sections/download_options", locals: {section: @section}
-		= render partial: '/layouts/on_table', locals: {headers: headers, rows: data}
+		= render partial: '/sections/desc_table', locals: {section: section}
 		-# @academic_records ||= @section.academic_records 
 		%br
 		.fixed-top.alert.text-center.text-small#message{role: :alert}

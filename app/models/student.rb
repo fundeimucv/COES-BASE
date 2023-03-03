@@ -181,7 +181,34 @@ class Student < ApplicationRecord
 
     list do
       search_by :custom_search
-      fields :user, :study_plans, :origin_city, :birth_date, :marital_status, :created_at
+      field :user_ci do
+        label 'Cédula'
+        # sortable 'joins(:user).users.ci'
+        # queryable "course_periods_periods.name"
+      end
+
+      field :user_last_name do
+        label 'Apellidos'
+      end
+      field :user_first_name do
+        label 'Nombres'
+      end
+      field :address_state do
+        label 'Ciudad'
+      end
+
+      field :grade_admission_type do
+        label 'Ingreso'
+      end
+
+      field :user_phone do
+        label 'Número Telefónico'
+      end
+      field :user_email do
+        label 'Email'
+      end      
+
+      :created_at
     end
 
     export do
@@ -202,6 +229,28 @@ class Student < ApplicationRecord
 
   end
 
+  def user_ci
+    user.ci if user
+  end
+
+  def user_last_name
+    user.last_name if user
+  end
+  def user_first_name
+    user.first_name if user
+  end 
+  def user_phone
+    user.number_phone if user
+  end 
+  def user_email
+    user.email if user
+  end
+  def address_state
+    address.state.titleize if address and address.state
+  end
+  def grade_admission_type
+    grades.map{|g| g.admission_type.name if g.admission_type}.to_sentence
+  end
 
   def self.import row, fields
 
