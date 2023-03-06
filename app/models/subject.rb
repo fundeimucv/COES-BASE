@@ -91,13 +91,19 @@ class Subject < ApplicationRecord
       end
 
       field :name do
+        column_width 300
         searchable true
       end
 
       field :area do
+        column_width 300
         searchable :name
       end
 
+      field :unit_credits do 
+        label 'Crédi'
+        column_width 10
+      end
       fields :unit_credits, :ordinal, :qualification_type, :modality, :created_at, :updated_at
     end
 

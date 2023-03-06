@@ -26,7 +26,7 @@ es:
       ago: "antes"
       log_out: "Cerrar sesión"
       reset_filters: "Resetear filtros"
-      refresh: "Refrescar"
+      refresh: "Buscar"
     form:
       bulk_delete: 'Confirmación de Eliminación'
       new_model: 'Nuevo'
@@ -61,7 +61,7 @@ es:
       update: "actualizar"
       updated: "actualizado"
       deleted: "borrado"
-      export: "exportar"
+      export: "generar reporte"
       exported: "exportado"       
       delete: "borrar"
       delete:
@@ -97,11 +97,11 @@ es:
         menu: "Eliminar"
         breadcrumb: "Eliminar %{model_label}"
       export:
-        title: "Exportar %{model_label}"
-        bulk_link: "Exportar %{model_label} seleccionados"
-        link: "Exportar filtrados"
-        menu: "Exportar"
-        breadcrumb: "Exportar %{model_label}"
+        title: "Generar Reporte %{model_label}"
+        bulk_link: "Generar Reporte %{model_label} seleccionados"
+        link: "Generar Reporte filtrados"
+        menu: "Generar Reporte"
+        breadcrumb: "Generar Reporte %{model_label}"
       dashboard:
         menu: "Dashboard"
         title: "Dashboard"
