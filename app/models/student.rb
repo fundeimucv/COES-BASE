@@ -176,7 +176,13 @@ class Student < ApplicationRecord
     end
 
     show do
-      fields :user, :grades, :nacionality, :origin_country, :origin_city, :birth_date, :marital_status, :address, :grade_title, :grade_university, :graduate_year, :created_at
+      field :description do
+        label 'Descripción'
+        formatted_value do
+          bindings[:view].render(partial: 'students/show', locals: {student: bindings[:object]})
+        end
+      end
+      # fields :user, :grades, :nacionality, :origin_country, :origin_city, :birth_date, :marital_status, :address, :grade_title, :grade_university, :graduate_year, :created_at
     end
 
     list do

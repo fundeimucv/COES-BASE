@@ -29,10 +29,10 @@ class AcademicRecord < ApplicationRecord
   validates :section, presence: true
   validates :enroll_academic_process, presence: true
   validates :status, presence: true
-  # validates :final_q, numericality: { in: 0..20 }, allow_blank: true
 
   # CALLBACK
   after_save :set_options_q
+  after_save :update_grade_numbers#, if: :will_save_change_to_status?
 
   # TRIGGER FUNCTIONS:
   def set_options_q
@@ -41,7 +41,65 @@ class AcademicRecord < ApplicationRecord
 
   # SCOPE:
   scope :custom_search, -> (keyword) { joins(:user, :subject).where("users.ci ILIKE '%#{keyword}%' OR users.email ILIKE '%#{keyword}%' OR users.first_name ILIKE '%#{keyword}%' OR users.last_name ILIKE '%#{keyword}%' OR users.number_phone ILIKE '%#{keyword}%' OR subjects.name ILIKE '%#{keyword}%' OR subjects.code ILIKE '%#{keyword}%'") }
+
+  scope :prenroll, -> {joins(:enroll_academic_process).where('enroll_academic_processes.enroll_status = ?', :preinscrito)}
+
+  scope :confirmed, -> {joins(:enroll_academic_process).where('enroll_academic_processes.enroll_status = ?', :confirmado)}
+
+  scope :with_totals, ->(school_id, period_id) {joins(:school).where("schools.id = ?", school_id).of_period(period_id).joins(:user).joins(:subject).joins(grade: :study_plan).group(:grade_id).select('study_plans.id plan_id, study_plans.total_credits plan_creditos, grados.*, SUM(subjects.unit_credits) total_creditos, COUNT(*) subjects, SUM(IF (academic_records.status = 1, subjects.creditos, 0)) aprobados')}
+
+  scope :of_period, lambda { |period_id| joins(:academic_proccess).where "academic_process.period_id = ?", period_id}
+  scope :of_periods, lambda { |periods_ids| joins(:academic_proccess).where "academic_process.period_id IN (?)", periods_ids}
+
+  scope :on_reparacion, -> {joins(:qualifications).where('qualificactions.type_q': :reparacion)}
+
+  scope :of_school, lambda {|school_id| includes(:school).where("schools.id = ?", school_id).references(:schools)}
+  scope :of_schools, lambda {|schools_ids| includes(:school).where("schools.id IN (?)", schools_ids).references(:schools)}
+
+  scope :of_student, lambda {|student_id| where("student_id = ?", student_id)}
+
+  scope :no_retirados, -> {where "academic_records.status != 3"}
+
+  scope :coursed, -> {where "academic_records.status = 1 or academic_records.status = 2"}
+
+  scope :coursing, -> {where "academic_records.status != 1 and academic_records.status != 2 and academic_records.status != 3"} # Excluye retiradas también
   
+  scope :total_credits_coursed_on_periods, lambda{|periods_ids| coursed.joins(:academic_proccess).where('academic_proccesses.period_id IN (?)', periods_ids).joins(:subject).sum('subjects.unit_credits')}
+
+  scope :total_credits_approved_on_periods, lambda{|periods_ids| aprobado.joins(:academic_proccess).where('academic_proccesses.period_id IN (?)', periods_ids).joins(:subject).sum('subjects.unit_credits')}
+
+  scope :total_credits, -> {joins(:subject).sum('subjects.unit_credits')}
+
+  scope :total_credits_coursed, -> {coursed.total_credits}
+  scope :total_credits_approved, -> {aprobado.total_credits}
+  
+  scope :weighted_average, -> {joins(:subject).joins(:qualifications).coursed.sum('subjects.unit_credits * qualifications.value')}
+
+  scope :promedio, -> {joins(:qualifications).coursed.average('qualifications.value')}
+  scope :promedio_approved, -> {aprobado.promedio}
+  scope :weighted_average_approved, -> {aprobado.weighted_average}
+
+  scope :sin_equivalencias, -> {joins(:section).where "sections.modality != 1 and sections.modality != 2"} 
+
+  scope :by_equivalencia, -> {joins(:section).where "sections.modality = 1 or sections.modality = 2"}
+
+  scope :by_equivalencia_interna, -> {joins(:section).where "sections.modality = 1"}
+  scope :by_equivalencia_externa, -> {joins(:section).where "sections.modality = 2"}
+
+  scope :student_enrolled_by_period, lambda { |period_id| joins(:academic_proccess).where("academic_proccesses.period_id": period_id).group(:student).count } 
+
+  scope :total_by_qualification_modality?, -> {joins(:subject).group("subjects.modality").count}
+
+  scope :students_enrolled, -> { group(:student_id).count } 
+
+  scope :student_enrolled_by_credits, -> { joins(:subject).group(:student_id).sum('subject.unit_credits')} 
+
+  # Esta función retorna la misma cuenta agrupadas por creditos de asignaturas
+  scope :student_enrolled_by_credits2, -> { joins(:subject).group('academic_records.student_id', 'subjects.unit_credits').count} 
+
+  # scope :perdidos, -> {perdida_por_inasistencia}
+
+
   # FUNCTIONS:
 
   def set_status valor
@@ -400,6 +458,13 @@ class AcademicRecord < ApplicationRecord
     end
     
     [total_newed, total_updated, no_registred]
+  end
+
+  private
+
+  def update_grade_numbers
+
+    self.grade.update(efficiency: self.grade.calculate_efficiency, simple_average: self.grade.calculate_average, weighted_average: self.grade.calculate_weighted_average)
   end
 
 end

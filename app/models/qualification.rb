@@ -3,6 +3,8 @@ class Qualification < ApplicationRecord
   # t.integer "type_q"
   
   belongs_to :academic_record
+  has_one :enroll_academic_process, through: :academic_record
+  has_one :grade, through: :enroll_academic_process
 
 
   scope :by_type_q, -> (type_q) {where(type_q: type_q)}
@@ -48,6 +50,12 @@ class Qualification < ApplicationRecord
 
   def value_to_02i
     is_valid_numeric_value? ? sprintf("%02i", value) : nil
+  end
+
+  def update_status
+    status = approved? ? :aprobado : :repproved
+    academic_record.update(status: status)
+    self.grade.update(efficiency: self.grade.calculate_efficiency, simple_average: self.grade.calculate_average, weighted_average: self.grade.calculate_weighted_average)
   end
 
 end

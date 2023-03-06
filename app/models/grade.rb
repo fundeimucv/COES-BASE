@@ -16,7 +16,7 @@ class Grade < ApplicationRecord
   has_one :school, through: :study_plan
   
   has_many :enroll_academic_processes, dependent: :destroy
-  # has_many :academic_records, through: :enroll_academic_processes
+  has_many :academic_records, through: :enroll_academic_processes
 
   has_many :payment_reports, as: :payable, dependent: :destroy
 
@@ -71,9 +71,95 @@ class Grade < ApplicationRecord
     end
   end
 
+
+  # NUMBERSTINY:
+
+  def total_credits_coursed periods_ids = nil
+    if periods_ids
+      academic_records.total_credits_coursed_on_periods periods_ids
+    else
+      academic_records.total_credits_coursed
+    end
+  end
+
+  def total_credits_approved periods_ids = nil
+    if periods_ids
+      academic_records.total_credits_approved_on_periods periods_ids
+    else
+      academic_records.total_credits_approved
+    end
+  end
+
+  def total_credits
+    self.academic_records.total_credits
+  end
+
+  def update_all_efficiency
+
+    Grados.each do |gr| 
+      academic_records = gr.academic_records
+      cursados = academic_records.total_credits_coursed
+      aprobados = academic_records.total_credits_approved
+
+      eficiencia = (cursados and cursados > 0) ? (aprobados.to_f/cursados.to_f).round(4) : 0.0
+
+      aux = academic_records.coursed
+
+      promedio_simple = aux ? aux.round(4) : 0.0
+
+      aux = academic_records.weighted_average
+      ponderado = (cursados > 0) ? (aux.to_f/cursados.to_f).round(4) : 0.0
+    end
+
+  end
+
+  def calculate_efficiency periods_ids = nil 
+        cursados = self.total_credits_coursed periods_ids
+        aprobados = self.total_credits_approved periods_ids
+    (cursados and cursados > 0) ? (aprobados.to_f/cursados.to_f).round(4) : 0.0
+  end
+
+  def calculate_average periods_ids = nil
+    if periods_ids
+      aux = academic_records.of_periods(periods_ids).promedio
+    else
+      aux = academic_records.promedio
+    end
+
+    (aux and !aux.nil? and aux.to_i > 0) ? aux.to_f.round(4) : 0.0
+
+  end
+
+  def calculate_weighted_average periods_ids = nil
+    if periods_ids
+      aux = academic_records.of_periods(periods_ids).weighted_average
+    else
+      aux = academic_records.weighted_average
+    end
+    cursados = self.total_credits_coursed periods_ids
+
+    (cursados > 0) ? (aux.to_f/cursados.to_f).round(4) : 0.0
+  end
+
+  def calculate_weighted_average_approved
+
+    aprobados = self.academic_records.total_credits_approved
+    aux = self.academic_records.weighted_average_approved
+    (aprobados > 0) ? (aux.to_f/aprobados.to_f).round(4) : 0.0
+    
+  end
+
+  def calculate_average_approved
+    aux = self.academic_records.promedio_approved
+    aux ? aux.round(4) : 0.0
+  end
+
+
+
+
   after_initialize do
     if new_record?
-      self.study_plan_id ||= StudyPlan.first.id
+      self.study_plan_id ||= StudyPlan.first.id if StudyPlan.first
     end
   end  
 
