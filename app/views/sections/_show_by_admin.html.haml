@@ -5,7 +5,8 @@
 -# @academic_records ||= section.academic_records 
 %br
 .fixed-top.alert.text-center.text-small#message{role: :alert}
-=# = render partial: 'academic_records/qualify', locals: {section: section}
+
+= render partial: 'academic_records/qualify', locals: {section: section}
 
 
 
@@ -60,7 +61,8 @@
 
 	function pi(ele) {
 		let id = $(ele).attr('id_obj');
-		let status = 'sin_calificar';
+		
+		#tatus = 'sin_calificar';
 		if (ele.checked) {status = 'perdida_por_inasistencia'}
 		let values = `{"academic_record": {"status": "${status}"}}`;
 		let url = `/academic_records/${id}`
