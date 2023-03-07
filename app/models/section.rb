@@ -125,14 +125,14 @@ class Section < ApplicationRecord
       end
       field :subject_desc do
         label 'Asignatura'
-        column_width 400
+        column_width 320
       end
       field :teacher_desc do
         label 'Profesor'
-        column_width 400
+        column_width 320
       end
 
-      fields :qualified
+      field :qualified
       
       field :total_academic_records do
         label 'Total Insc'
