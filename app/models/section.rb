@@ -92,8 +92,20 @@ class Section < ApplicationRecord
     "#{self.code}-#{self.course.name}" if self.course
   end
 
-  def tota_academic_records
+  def total_academic_records
     academic_records.count
+  end
+
+  def subject_desc
+    subject.desc if subject
+  end
+
+  def period_name
+    period.name if period
+  end
+
+  def teacher_desc 
+    teacher.user.ci_fullname if (teacher and teacher.user)
   end
 
   # RAILS_ADMIN:
@@ -105,10 +117,24 @@ class Section < ApplicationRecord
       search_by :custom_search
       field :code do
         label 'Id'
+        column_width 10
       end
-      fields :course, :teacher, :qualified#, :enabled
+      field :period_name do
+        label 'Período'
+        column_width 100
+      end
+      field :subject_desc do
+        label 'Asignatura'
+        column_width 400
+      end
+      field :teacher_desc do
+        label 'Profesor'
+        column_width 400
+      end
+
+      fields :qualified
       
-      field :tota_academic_records do
+      field :total_academic_records do
         label 'Total Insc'
       end
     end

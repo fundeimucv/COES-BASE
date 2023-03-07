@@ -1,20 +1,34 @@
-- headers = ['Código', 'U. Créditos','Asignatura', 'Periodo', 'Capacidad', 'Profesor']
-- data = [[section.code, section.subject.unit_credits, section.subject.desc, section.period.name, section.capacity, section.teacher_desc]]
 
 %table.table.table-sm
   %thead
     %tr
-      %td Sección
-      %td.col-5 Asignatura
-      %td.col-1 Período
-      %td.col-6 Profesor
+      %td Sec
+      %td Asignatura
+      %td Período
+      %td Profesor
       %td Créd
-      %td Capac
+      %td.text-center Capac
   %tbody
     %tr
       %td= section.code
-      %td= section.subject.desc
+      %td
+        - if section.subject
+          - if current_user.admin? and session[:rol].eql? 'admin'
+            %a{href: "/admin/subject/#{section.subject_id}"}= section.subject.desc 
+          - else
+            = section.subject.desc
+
       %td= section.period.name if section.period
-      %td= section.teacher.desc if section.teacher
+      %td
+        - if section.teacher 
+          - if current_user.admin? and session[:rol].eql? 'admin'
+            %a{href: "/admin/teacher/#{section.teacher_id}"}= section.teacher.desc 
+          - else
+            = section.teacher.desc
+
       %td.text-center= section.subject.unit_credits
-      %td.text-center= section.capacity
+      %td.text-center
+        .badge.bg-secondary= section.total_academic_records
+        de
+        .badge.bg-info= section.capacity
+

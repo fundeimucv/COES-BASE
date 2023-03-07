@@ -276,10 +276,10 @@ class User < ApplicationRecord
         end
       end
 
-      field :sex
+      field :sex #
       # field :sex do
       #   html_attributes do
-      #     {:type => :radio }
+      #     {:as => :radio }
       #   end        
       # end
 
