@@ -116,7 +116,7 @@ class Grade < ApplicationRecord
   def calculate_efficiency periods_ids = nil 
         cursados = self.total_credits_coursed periods_ids
         aprobados = self.total_credits_approved periods_ids
-    (cursados and cursados > 0) ? (aprobados.to_f/cursados.to_f).round(4) : 0.0
+    (cursados > 0 and aprobados != cursados) ? (aprobados.to_f/cursados.to_f).round(4) : 1.0
   end
 
   def calculate_average periods_ids = nil
@@ -126,7 +126,7 @@ class Grade < ApplicationRecord
       aux = academic_records.promedio
     end
 
-    (aux and !aux.nil? and aux.to_i > 0) ? aux.to_f.round(4) : 0.0
+    (aux and aux.is_a? BigDecimal) ? aux.to_f.round(4) : 0.0
 
   end
 
@@ -138,20 +138,20 @@ class Grade < ApplicationRecord
     end
     cursados = self.total_credits_coursed periods_ids
 
-    (cursados > 0) ? (aux.to_f/cursados.to_f).round(4) : 0.0
+    (cursados > 0 and aux and aux.is_a? BigDecimal) ? (aux.to_f/cursados.to_f).round(4) : 0.0
   end
 
   def calculate_weighted_average_approved
 
     aprobados = self.academic_records.total_credits_approved
     aux = self.academic_records.weighted_average_approved
-    (aprobados > 0) ? (aux.to_f/aprobados.to_f).round(4) : 0.0
+    (aprobados > 0 and aux and aux.is_a? BigDecimal) ? (aux.to_f/aprobados.to_f).round(4) : 0.0
     
   end
 
   def calculate_average_approved
     aux = self.academic_records.promedio_approved
-    aux ? aux.round(4) : 0.0
+    (aux and aux.is_a? BigDecimal) ? aux.round(4) : 0.0
   end
 
 

@@ -11,7 +11,7 @@
 			%i.fa.fa-chevron-left
 			Regresar
 		= render partial: "/sections/download_options", locals: {section: @section}
-		= render partial: '/sections/desc_table', locals: {section: section}
+		= render partial: '/sections/desc_table', locals: {section: @section}
 		-# @academic_records ||= @section.academic_records 
 		%br
 		.fixed-top.alert.text-center.text-small#message{role: :alert}

@@ -60,7 +60,7 @@ class AcademicRecord < ApplicationRecord
 
   scope :no_retirados, -> {where "academic_records.status != 3"}
 
-  scope :coursed, -> {where "academic_records.status = 1 or academic_records.status = 2"}
+  scope :coursed, -> {where "academic_records.status = 1 or academic_records.status = 2 or academic_records.status = 4"}
 
   scope :coursing, -> {where "academic_records.status != 1 and academic_records.status != 2 and academic_records.status != 3"} # Excluye retiradas también
   
