@@ -8,6 +8,7 @@
       %td Profesor
       %td Créd
       %td.text-center Capac
+      %td.col-1.text-center Calif
   %tbody
     %tr
       %td= section.code
@@ -31,4 +32,9 @@
         .badge.bg-secondary= section.total_academic_records
         de
         .badge.bg-info= section.capacity
+      %td.text-center
+        - if section.qualified?
+          .fa.fa-check
+        - else
+          .fa.fa-remove
 
