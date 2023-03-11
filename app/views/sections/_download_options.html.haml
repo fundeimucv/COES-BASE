@@ -1,4 +1,4 @@
-- if section.qualified? or (current_user.admin? and session[:rol].eql? 'admin')
+- if section.qualified? || (current_user.admin? && session[:rol].eql? 'admin')
   = link_to "/sections/#{section.id}.pdf", class: 'btn btn-success btn-sm float-right' do
     .fa.fa-download.fa-list
     Acta PDF  

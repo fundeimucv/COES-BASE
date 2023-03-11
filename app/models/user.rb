@@ -277,7 +277,7 @@ class User < ApplicationRecord
       end
 
       field :sex #
-      # field :sex do
+      # field :sex, :enum do
       #   html_attributes do
       #     {:as => :radio }
       #   end        
@@ -323,7 +323,16 @@ class User < ApplicationRecord
       field :first_name
       field :last_name
       field :number_phone
-      field :sex
+      field :sex do
+        formatted_value do # used in form views
+          value.titleize
+        end
+
+        pretty_value do # used in list view columns and show views, defaults to formatted_value for non-association fields
+          value.titleize
+        end
+
+      end
       field :profile_picture
     end
 

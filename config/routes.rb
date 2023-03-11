@@ -14,6 +14,8 @@ Rails.application.routes.draw do
   resources :period_types
   resources :academic_processes, :enroll_academic_processes, :academic_records, :periods, :profiles, :sections, :courses
 
+  resources :enrollment_days, only: [:create, :destroy]
+
   resources :users, only: [:edit, :update] do
     member do
       get 'edit_images'

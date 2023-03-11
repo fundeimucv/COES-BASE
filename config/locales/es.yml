@@ -295,6 +295,9 @@ es:
       academic_record:
         one: 'Registro Académico'
         other: 'Registros Académicos'
+      address:
+        one: 'Dirección'
+        other: 'Direcciones'
       admin:
         one: 'Administrador'
         other: 'Administradores'
@@ -316,15 +319,15 @@ es:
       enroll_academic_process:
         one: 'Inscripción en Proceso Académico'
         other: 'Inscripciones en Proceso Académico'
+      enrollment_days:
+        one: 'Jornada de Inscripción por Cita Horaria'
+        other: 'Jornadas de Inscripción por Cita Horaria'
       faculty:
         one: 'Facultad'
         other: 'Facultades'
       grade:
         one: 'Grado'
         other: 'Grados'
-      address:
-        one: 'Dirección'
-        other: 'Direcciones'
       payment_report:
         one: 'Reporte de Pago'
         other: 'Reportes de Pago'
@@ -337,6 +340,9 @@ es:
       profile:
         one: 'Perfil'
         other: 'Perfiles'
+      qualification:
+        one: Calificación
+        other: Calificaciones
       school:
         one: 'Escuela'
         other: 'Escuelas'
@@ -369,6 +375,8 @@ es:
         grades: 'Grados'
         students: 'Estudiantes'
         modality: 'Modalidad'
+        process_before: Proceso Anterior
+        enrollment_days: Jornadas de Inscripción por Cita Horaria
       academic_record:
         section: 'Sección'
         enroll_academic_process: 'Inscripción en Proceso Académico'
@@ -387,14 +395,12 @@ es:
         period_type: 'Tipo de Período'
         user: 'Usuario'
         subject: 'Asignatura'
-
       academic_record/status_q:
         sin_calificar: 'Sin Calificar'
         aprobado: 'Aprobados'
         aplazado: 'Aplazados'
         retirado: 'Retirados'
         diferido: 'Diferidos'
-
       admin:
         user: 'Usuario'
         role: 'Rol'
@@ -436,6 +442,11 @@ es:
         permanence_status: 'Estado de Permanencia'
         student: 'Estudiante'
         period: 'Período'
+      enrollment_day:
+        start: Inicio
+        total_duration_hours: Total Duración de la Jornada
+        max_grades: Total Inscritos Perimitidos
+        slot_duration_minutes: Duración franja horaria (en minutos)
       faculty:
         code: 'Código'
         name: 'Nombre'
@@ -452,6 +463,8 @@ es:
         efficiency: 'Eficiencia'
         weighted_average: 'Promedio Ponderado'
         simple_average: 'Promedio Simple'
+        appointment_time: Cita Horaria
+        duration_slot_time: Duración Franja Horaria
       address:
         state: 'Estado'
         municipality: 'Municipio'
@@ -478,6 +491,9 @@ es:
         name: 'Nombre'        
       profile:
         name: 'Nombre'
+      qualification:
+        value: valor
+        type_q: Tipo de Calificación
       school:
         description: Descripción        
         contact_email: Correo de contacto

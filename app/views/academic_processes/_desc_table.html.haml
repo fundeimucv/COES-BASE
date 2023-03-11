@@ -1,0 +1,27 @@
+
+%table.table.table-sm
+  %thead
+    %tr
+      %td Escuela
+      %td Periodo
+      %td Modalidad
+      %td Max. Créd 
+      %td Max. Asig 
+      %td.col-1.text-center Inscritos
+      %td.col-1.text-center Secciones
+
+  %tbody
+    %tr
+      %td= academic_process.school.code
+      %td= academic_process.period.name
+      %td
+        .label.bg-info= academic_process.modality.titleize
+      %td.text-center= academic_process.max_credits
+      %td.text-center= academic_process.max_subjects
+      %td.text-center
+        - academic_process.label_total_enrolls_by_status.map do |e|
+          = e.html_safe
+
+      %td.text-center
+        - academic_process.label_total_sections.map do |e|
+          = e.html_safe

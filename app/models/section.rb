@@ -43,7 +43,10 @@ class Section < ApplicationRecord
 
   # SCOPE:
   scope :custom_search, -> (keyword) { joins(:user, :subject).where("users.ci ILIKE '%#{keyword}%' OR users.email ILIKE '%#{keyword}%' OR users.first_name ILIKE '%#{keyword}%' OR users.last_name ILIKE '%#{keyword}%' OR users.number_phone ILIKE '%#{keyword}%' OR subjects.name ILIKE '%#{keyword}%' OR subjects.code ILIKE '%#{keyword}%'") }
+  scope :qualified, -> () {where(qualified: true)}
 
+  scope :without_teacher_assigned, -> () {where(teacher_id: nil)}
+  scope :with_teacher_assigned, -> () {where('teacher_id IN NOT NULL')}
   # FUNCTIONS:
   def set_default_values_by_import
     self.capacity = 50 

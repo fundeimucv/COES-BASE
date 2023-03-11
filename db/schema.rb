@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_03_06_114716) do
+ActiveRecord::Schema[7.0].define(version: 2023_03_09_022815) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -22,7 +22,9 @@ ActiveRecord::Schema[7.0].define(version: 2023_03_06_114716) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "modality", default: 0, null: false
+    t.bigint "process_before_id"
     t.index ["period_id"], name: "index_academic_processes_on_period_id"
+    t.index ["process_before_id"], name: "index_academic_processes_on_process_before_id"
     t.index ["school_id"], name: "index_academic_processes_on_school_id"
   end
 
@@ -148,6 +150,17 @@ ActiveRecord::Schema[7.0].define(version: 2023_03_06_114716) do
     t.index ["grade_id"], name: "index_enroll_academic_processes_on_grade_id"
   end
 
+  create_table "enrollment_days", force: :cascade do |t|
+    t.bigint "academic_process_id", null: false
+    t.datetime "start"
+    t.integer "total_duration_hours", limit: 2
+    t.integer "max_grades", limit: 2
+    t.integer "slot_duration_minutes", limit: 2
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["academic_process_id"], name: "index_enrollment_days_on_academic_process_id"
+  end
+
   create_table "faculties", force: :cascade do |t|
     t.string "code"
     t.string "name"
@@ -166,6 +179,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_03_06_114716) do
     t.float "simple_average"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.datetime "appointment_time"
+    t.integer "duration_slot_time"
     t.index ["admission_type_id"], name: "index_grades_on_admission_type_id"
     t.index ["student_id", "study_plan_id"], name: "index_grades_on_student_id_and_study_plan_id", unique: true
     t.index ["student_id"], name: "index_grades_on_student_id"
@@ -326,6 +341,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_03_06_114716) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
+  add_foreign_key "academic_processes", "academic_processes", column: "process_before_id"
   add_foreign_key "academic_processes", "periods"
   add_foreign_key "academic_processes", "schools"
   add_foreign_key "academic_records", "enroll_academic_processes"
@@ -343,6 +359,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_03_06_114716) do
   add_foreign_key "courses", "subjects"
   add_foreign_key "enroll_academic_processes", "academic_processes"
   add_foreign_key "enroll_academic_processes", "grades"
+  add_foreign_key "enrollment_days", "academic_processes"
   add_foreign_key "grades", "admission_types"
   add_foreign_key "grades", "students", primary_key: "user_id", on_update: :cascade, on_delete: :cascade
   add_foreign_key "grades", "study_plans"

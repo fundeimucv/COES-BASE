@@ -10,6 +10,7 @@ class EnrollAcademicProcess < ApplicationRecord
   has_one :student, through: :grade
   has_one :user, through: :student
   has_one :school, through: :grade
+  
   belongs_to :academic_process
   has_one :period, through: :academic_process
   has_many :payment_reports, as: :payable
@@ -26,6 +27,15 @@ class EnrollAcademicProcess < ApplicationRecord
   # validates :permanence_status, presence: true
 
   # SCOPE:
+  scope :of_academic_process, -> (academic_process_id) {where(academic_process_id: academic_process_id)}
+
+  scope :without_academic_records, -> {joins(:academic_records).group(:"enroll_academic_processes.id").having('COUNT(*) = 0').count}
+
+  scope :with_any_academic_records, -> {joins(:academic_records).group(:"enroll_academic_processes.id").having('COUNT(*) > 0').count}
+
+  scope :with_i_academic_records, -> (i){joins(:academic_records).group(:"enroll_academic_processes.id").having('COUNT(*) = ?', i).count}
+  
+  scope :total_with_i_academic_records, -> (i){(joins(:academic_records).group(:"enroll_academic_processes.id").having('COUNT(*) = ?', i).count).count}
 
   # FUNCTIONS:
   def set_default_values_by_import
@@ -40,6 +50,23 @@ class EnrollAcademicProcess < ApplicationRecord
   def name
     "(#{self.school.code}) #{self.period.name}:#{self.student.name}" if ( self.period and self.school and self.student)
   end
+
+
+  def label_status
+    # ["CO", "INS", "NUEVO", "PRE", "REINC", "RES", "RET", "VAL"] 
+    case self.enroll_status
+    when 'confirmado'
+      label_color = 'success'
+    when 'preinscrito'
+      label_color = 'info'
+    when 'retirado'
+      label_color = 'danger'
+    else
+      label_color = 'secondary'
+    end
+    return ApplicationController.helpers.label_status("bg-#{label_color}", self.enroll_status.titleize)
+
+  end  
 
   rails_admin do
     navigation_label 'Inscripciones'

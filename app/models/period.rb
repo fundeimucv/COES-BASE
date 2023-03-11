@@ -31,11 +31,26 @@ class Period < ApplicationRecord
 		"#{year}-#{period_type.code.upcase}" if period_type
 	end
 
+	def period_type_name
+		period_type.name if period_type
+	end
+
   rails_admin do
     navigation_label 'Inscripciones'
     navigation_icon 'fa-solid fa-clock'
 
+    list do 
+    	field :year
+    	field :period_type_name do
+    		label 'Tipo de Período'
+    	end
+    end
+
     edit do
+    	fields :year, :period_type
+    end
+
+    show do
     	fields :year, :period_type
     end
 

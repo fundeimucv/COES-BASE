@@ -1,0 +1,38 @@
+- if (current_user.admin? and session[:rol].eql? 'admin')
+  = link_to "javascript:void(0)", class: 'btn btn-primary float-end', onclick: "$('#miModal').show();$('#newDay').toggleClass('d-none')" do
+    .fa.fa-star
+    Nueva Jornada por Cita Horaria
+
+#newDay.d-none.my-5.bg-light.bg-gradient
+  = render partial: '/enrollment_days/form', locals: {enrollment_day: EnrollmentDay.new(academic_process_id: academic_process.id), total_grades_without_appointment: grades_without_appointment.count}
+
+%ul#myTab.nav.nav-tabs{role: "tablist"}
+  %li.nav-item{role: "presentation"}
+    %button#withoutAppointment-tab.nav-link.active{"aria-controls": "withoutAppointment", "aria-selected": true, "data-bs-target": "#withoutAppointment", "data-bs-toggle": :tab, role: :tab, type: "button"}= "#{grades_without_appointment.count} Estudiante(s) válido(s) para aplicar en Nueva Jornada"
+
+  - enrollment_days.each do |day|
+    %li.nav-item{role: "presentation"}
+      %button.nav-link{"aria-controls": "day#{day.id}", "aria-selected": false, "data-bs-target": "#day#{day.id}", "data-bs-toggle": :tab, role: :tab, type: :button, id: "#day#{day.id}Tab"}
+        = I18n.l(day.start, format: "%d/%m/%Y")
+        .badge.bg-dark= day.own_grades_orders.count
+
+#myTabContent.tab-content
+  #withoutAppointment.tab-pane.fade.show.active{"aria-labelledby": "withoutAppointment-tab", role: "tabpanel"}
+
+    - if grades_without_appointment and grades_without_appointment.any?
+      %h6.text-center.alert.alert-warning
+        %b Atención:
+        = "A Continuación, lista de estudiantes sin cita horaria e inscritos en periodo anterior: <b>#{academic_process.process_before.period.name}</b> de <b>#{academic_process.school.name}</b>".html_safe
+      = render partial: '/enrollment_days/grades', locals: {grades: grades_without_appointment, academic_process: academic_process}
+    - else
+      %h5.alert.alert-info Sin estudiantes pendientes por asignar Cita Horaria  
+
+  - enrollment_days.each do |day|
+    .tab-pane.fade{"aria-labelledby": "#day#{day.id}Tab", role: "tabpanel", id: "day#{day.id}"}
+
+    = link_to "/enrollment_days/#{day.id}", class: 'btn btn-danger float-end mt-3', method: :delete, 'data-confirm': 'Esta acción es irreversible ¿Está completamente seguro? Se limpiarán las citas horarias respectivas' do
+      .fa.fa-trash
+      Eliminar Jornada del
+      = I18n.l(day.start, format: "%d/%m/%Y")
+
+    = render partial: '/enrollment_days/show', locals: {grades: day.own_grades_orders, academic_process: academic_process }

@@ -89,6 +89,15 @@ class Student < ApplicationRecord
     self.user.ci if self.user
   end
 
+  def user_profile
+    if user.profile_picture and user.profile_picture.attached? and user.profile_picture.representable?
+      # "<img href='#{Object.new.extend(ActionView::Helpers::AssetUrlHelper).image_url(user.profile_picture_as_thumb) }' />"
+      # image_tag user.profile_picture_as_thumb
+      ActionController::Base.helpers.image_tag(Object.new.extend(ActionView::Helpers::AssetUrlHelper).image_url(user.profile_picture_as_thumb))
+      
+    end
+  end
+
   # CALLBACKS:
   # HOOKS:
 
@@ -187,6 +196,14 @@ class Student < ApplicationRecord
 
     list do
       search_by :custom_search
+
+      field :user_profile do
+        label 'Perfile'
+        formatted_value do # used in form views
+          value.html_safe if value
+        end        
+      end
+
       field :user_ci do
         label 'Cédula'
         # sortable 'joins(:user).users.ci'

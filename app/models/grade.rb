@@ -8,6 +8,8 @@ class Grade < ApplicationRecord
   # t.float "efficiency"
   # t.float "weighted_average"
   # t.float "simple_average"
+  # t.datetime "appointment_time"
+  # t.integer "duration_slot_time"
 
   # ASSOCIATIONS:
   belongs_to :student, primary_key: :user_id
@@ -16,6 +18,7 @@ class Grade < ApplicationRecord
   has_one :school, through: :study_plan
   
   has_many :enroll_academic_processes, dependent: :destroy
+  has_many :academic_processes, through: :enroll_academic_processes
   has_many :academic_records, through: :enroll_academic_processes
 
   has_many :payment_reports, as: :payable, dependent: :destroy
@@ -23,6 +26,25 @@ class Grade < ApplicationRecord
   # ENUMERIZE:
   enum registration_status: [:universidad, :facultad, :escuela]
   enum graduate_status: [:no_graduable, :tesista, :posible_graduando, :graduando, :graduado]
+
+  #SCOPES:
+  scope :with_day_enroll_eql_to, -> (day){ where(appointment_time: day.all_day)}
+  scope :with_appointment_time, -> { where("appointment_time IS NOT NULL")}
+  scope :with_appointment_time_eql_to, -> (dia){ where("date(appointment_time) = '#{dia}'")}
+  scope :without_appointment_time, -> { where(appointment_time: nil)}
+
+  # scope :with_enrollments_in_period, -> (period_id) { joins(academic_records: {section: {course: :academic_process}}).where('(SELECT COUNT(*) FROM academic_records WHERE academic_records.estudiante_id = grades.student_id) > 0 and secciones.periodo_id = ?', periodo_id) }
+
+  # scope :with_enrollments_in_period, -> (period_id) { joins(academic_records: {section: {course: :academic_process}}).where('(SELECT COUNT(*) FROM academic_records WHERE academic_records.enroll_academic_process_id = enroll_academic_processes.id) > 0 and academic_processes.period_id = ?', period_id) }
+
+  # ATENCIÓN: EL UNIQ DEBO HACERLO EN EL LLAMADO DEL SCOPE ANTERIOR YA QUE DE LO CONTRARIO DEVUELVE LA CANTIDAD DE REGISTROS VINCULADOS A LAS enroll_academic_processes
+  scope :with_enrollments_in_period, -> (period_id) { joins(:enroll_academic_processes, :academic_processes).where('academic_processes.period_id = ?', period_id) }
+
+  scope :sort_by_numbers, -> () {order([efficiency: :desc, simple_average: :desc, weighted_average: :desc])}
+  
+  scope :total_with_enrollments_in_period, -> (period_id) { with_enrollments_in_period(period_id).uniq.count }
+  # scope :with_enrollments_in_period, -> (period_id) { joins(academic_records: {section: {course: :academic_process}}).where('academic_processes.period_id = ?', period_id).group(:'enroll_academic_processes.id').having('COUNT(*) > 0').count}
+
 
   # VALIDATIONS:
   # validates :student, presence: true
@@ -32,6 +54,28 @@ class Grade < ApplicationRecord
   validates_uniqueness_of :study_plan, scope: [:student], message: 'El estudiante ya tiene el grado asociado', field_name: false
 
   # FUNCTIONS:
+
+  def label_status_enroll_academic_process(academic_process_id)
+    if iep = self.enroll_academic_processes.of_academic_process(academic_process_id).first
+      iep.label_status
+    else
+      ApplicationController.helpers.label_status('bg-secondary', 'Sin Inscripción')
+    end
+  end
+
+
+  def appointment_time_desc
+    if (appointment_time and duration_slot_time)
+      aux = ""
+      aux += "#{I18n.l(appointment_time)}" if appointment_time
+      aux += " | duración: #{duration_slot_time} minutos" if duration_slot_time
+      return aux
+    end
+  end
+
+  def user
+    student.user if student
+  end
 
   def name
     "#{study_plan.name}: #{student.name} (#{admission_type.name})" if study_plan and student and admission_type

@@ -26,6 +26,7 @@ class School < ApplicationRecord
   has_many :academic_processes
   has_many :areas, dependent: :destroy
   has_many :study_plans, dependent: :destroy
+  has_many :grades, through: :study_plans
   accepts_nested_attributes_for :study_plans
 
   has_many :subjects, through: :areas
