@@ -83,7 +83,7 @@ class AcademicProcess < ApplicationRecord
   end
 
   def readys_to_enrollment_day
-    self.school.grades.without_appointment_time.with_enrollments_in_period(self.process_before.id).sort_by_numbers.uniq if process_before
+    self.school.grades.without_appointment_time.enrolled_in_academic_process(self.process_before.id).sort_by_numbers.uniq if process_before
   end
 
   rails_admin do

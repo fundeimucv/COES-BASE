@@ -30,9 +30,9 @@
   - enrollment_days.each do |day|
     .tab-pane.fade{"aria-labelledby": "#day#{day.id}Tab", role: "tabpanel", id: "day#{day.id}"}
 
-    = link_to "/enrollment_days/#{day.id}", class: 'btn btn-danger float-end mt-3', method: :delete, 'data-confirm': 'Esta acción es irreversible ¿Está completamente seguro? Se limpiarán las citas horarias respectivas' do
-      .fa.fa-trash
-      Eliminar Jornada del
-      = I18n.l(day.start, format: "%d/%m/%Y")
+      = link_to "/enrollment_days/#{day.id}", class: 'btn btn-danger float-end mt-3', method: :delete, 'data-confirm': 'Esta acción es irreversible ¿Está completamente seguro? Se limpiarán las citas horarias respectivas' do
+        .fa.fa-trash
+        Eliminar Jornada del
+        = I18n.l(day.start, format: "%d/%m/%Y")
 
-    = render partial: '/enrollment_days/show', locals: {grades: day.own_grades_orders, academic_process: academic_process }
+      = render partial: '/enrollment_days/show', locals: {grades: day.own_grades_orders, academic_process: academic_process }
