@@ -260,6 +260,10 @@ es:
           attributes:
             period:
               required: requerido
+        dependency:
+          attributes:
+            subject_dependent:
+              required: requerido
         grade:
           attributes:
             admission_type:
@@ -565,6 +569,8 @@ es:
         qualification_type: 'Tipo de calificación'
         modality: 'Modalidad'
         area: 'Área'
+        subject_parents: Asignaturas de Prelaciones
+        subject_dependents: Asignaturas de Dependencias
         created_at: 'Fecha de Registro'
         updated_at: 'Fecha de Actualización'
       teacher:

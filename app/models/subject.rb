@@ -16,6 +16,16 @@ class Subject < ApplicationRecord
 
   has_many :courses, dependent: :destroy
 
+
+  has_many :parents, foreign_key: :subject_dependent_id, class_name: 'Dependency'
+  has_many :subject_parents, through: :parents
+  # accepts_nested_attributes_for :subject_parents
+
+  has_many :dependencies, foreign_key: :subject_parent_id, class_name: 'Dependency', dependent: :delete_all
+  has_many :subject_dependents, through: :dependencies
+
+
+
   # ENUMS:
   enum qualification_type: [:numerica, :absoluta]
   enum modality: [:obligatoria, :electiva, :optativa] 
@@ -45,8 +55,40 @@ class Subject < ApplicationRecord
     self.code.upcase!
   end
 
+  # DEPENDENCIES FUNCTIONS:
 
-  # FUNCTIONS: 
+  # def subject_dependents #asignaturas
+  #   depen_ids = asi.dependencias.map{|dep| dep.asignatura_dependiente_id}
+  #   Asignatura.where('id IN (?)', depen_ids)
+  # end
+
+  def full_dependency_tree_ids
+    aux = []
+    aux << prelation_tree_ids
+    aux << dependency_tree_ids
+    p "      AUX FLATTEN: #{aux.flatten.uniq}      ".center(500, "#")
+    return aux.flatten.uniq
+  end
+
+  def prelation_tree_ids
+    if parents.any?
+      parents.map{|dep| [self.id, dep.subject_parent.prelation_tree_ids]}
+    else
+      self.id
+    end
+  end
+
+  def dependency_tree_ids
+    if dependencies.any?
+      dependencies.map{|dep| [self.id, dep.subject_dependent.dependency_tree_ids]}
+    else
+      self.id
+    end
+  end
+
+
+
+  # GENERALS FUNCTIONS: 
   def as_absolute?
     self.absoluta? or self.force_absolute?
   end
@@ -56,7 +98,6 @@ class Subject < ApplicationRecord
   end
 
   def conv_header
-
     data = ["N°", "CÉDULA DE IDENTIDAD", "APELLIDOS Y NOMBRES", "COD. PLAN", "CALIF. DESCR.", "TIPO", "CALIF. EN LETRAS"]
 
     data.insert(6, "CALIF. NUM.") unless self.as_absolute?
@@ -108,7 +149,7 @@ class Subject < ApplicationRecord
     end
 
     show do
-      fields :area, :code, :name, :unit_credits, :ordinal, :qualification_type, :modality, :created_at, :updated_at
+      fields :area, :code, :name, :unit_credits, :ordinal, :qualification_type, :modality, :created_at, :updated_at, :subject_parents, :subject_dependents
     end
 
     edit do
@@ -133,9 +174,19 @@ class Subject < ApplicationRecord
       end
 
       field :qualification_type do
-        help 'Parcial3 equivale a asignatura con 3 calificaciones parciales'
+        # help 'Parcial3 equivale a asignatura con 3 calificaciones parciales'
       end
 
+      field :subject_parents do
+        inline_add false
+        inline_edit false
+        help 'Asignatura(s) que prela directamente esta Asignatura. El estudiante debe aprobar la(s) asignatura(s) seleccionada(s) a continuación para que esta asignatura sea ofertada.'
+      end
+      field :subject_dependents do
+        inline_add false
+        inline_edit false
+        help 'Asignatura(s) que dependen directamente de esta asignatura. Si el estudiante aprueba esta asignatura, la(s) asignatura(s) seleccionada(s) a continuación podrán ser ofertadas.'
+      end
     end
 
     export do

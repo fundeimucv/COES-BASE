@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_03_09_022815) do
+ActiveRecord::Schema[7.0].define(version: 2023_03_14_103741) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -137,6 +137,15 @@ ActiveRecord::Schema[7.0].define(version: 2023_03_09_022815) do
     t.datetime "updated_at", null: false
     t.index ["academic_process_id"], name: "index_courses_on_academic_process_id"
     t.index ["subject_id"], name: "index_courses_on_subject_id"
+  end
+
+  create_table "dependencies", force: :cascade do |t|
+    t.bigint "subject_parent_id", null: false
+    t.bigint "subject_dependent_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["subject_dependent_id"], name: "index_dependencies_on_subject_dependent_id"
+    t.index ["subject_parent_id"], name: "index_dependencies_on_subject_parent_id"
   end
 
   create_table "enroll_academic_processes", force: :cascade do |t|
@@ -357,6 +366,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_03_09_022815) do
   add_foreign_key "bank_accounts", "schools"
   add_foreign_key "courses", "academic_processes"
   add_foreign_key "courses", "subjects"
+  add_foreign_key "dependencies", "subjects", column: "subject_dependent_id"
+  add_foreign_key "dependencies", "subjects", column: "subject_parent_id"
   add_foreign_key "enroll_academic_processes", "academic_processes"
   add_foreign_key "enroll_academic_processes", "grades"
   add_foreign_key "enrollment_days", "academic_processes"
