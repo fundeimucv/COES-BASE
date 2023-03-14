@@ -1,14 +1,9 @@
-.modal.fade{"aria-modal": true, role: :dialog, id: id}
-  .modal-dialog.modal-xl.modal-dialog-centered
+.modal.fade{"aria-hidden": true, "aria-labelledby": "#{id}ModalLabel", tabindex: "-1", id: id}
+  .modal-dialog.modal-lg
     .modal-content
       .modal-header
-        %h3.text-center= title
-        %button.close{"aria-label" => "Close", "data-dismiss" => "modal", type: "button"}
-          %span{"aria-hidden" => "true"} ×
+        %h5.modal-title.text-center{id: "#{id}ModalLabel"}= title
+        %button.btn-close{"aria-label": "Close", "data-bs-dismiss": :modal, type: :button}
       .modal-body
         = content.html_safe
-      - unless footer
-        .modal-footer
-          %a.btn.cancel-action{href: "#"}
-            %i.fas.fa-times
-            Cancelar
+

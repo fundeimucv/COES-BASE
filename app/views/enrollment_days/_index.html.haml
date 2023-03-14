@@ -1,10 +1,12 @@
 - if (current_user.admin? and session[:rol].eql? 'admin')
-  = link_to "javascript:void(0)", class: 'btn btn-primary float-end', onclick: "$('#miModal').show();$('#newDay').toggleClass('d-none')" do
+  - id = 'newEnrollmentDayModal'
+  %button.btn.btn-primary.float-end{"data-bs-target": "##{id}", "data-bs-toggle": :modal, type: :button}
     .fa.fa-star
     Nueva Jornada por Cita Horaria
 
-#newDay.d-none.my-5.bg-light.bg-gradient
-  = render partial: '/enrollment_days/form', locals: {enrollment_day: EnrollmentDay.new(academic_process_id: academic_process.id), total_grades_without_appointment: grades_without_appointment.count}
+  - title = 'Nueva Jornada por Cita Horaria'
+  - content = render partial: '/enrollment_days/form', locals: {enrollment_day: EnrollmentDay.new(academic_process_id: academic_process.id), total_grades_without_appointment: grades_without_appointment.count}
+  = render partial: '/layouts/scaffold-modal', locals: {content: content, title: title, id: id}
 
 %ul#myTab.nav.nav-tabs{role: "tablist"}
   %li.nav-item{role: "presentation"}

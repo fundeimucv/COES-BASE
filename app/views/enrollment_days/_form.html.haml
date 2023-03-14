@@ -1,35 +1,32 @@
 -# frozen_string_literal: true
-.border.p-4
-  = simple_form_for(enrollment_day, url: '/enrollment_days', html: { method: :post, novalidate: false }) do |f|
-    %h3 Creación Nueva Jornada de Inscripción por Cita Horaria
-    = f.error_notification
-    = f.error_notification message: f.object.errors[:base].to_sentence if f.object.errors[:base].present?
 
-    .form-inputs
-      = f.hidden_field :academic_process_id
-      = f.input :academic_process_id, as: :hidden
-      %br
-      = f.input :start
-      =# f.input :total_duration_hours, class: 'vertical_range'
+= simple_form_for(enrollment_day, url: '/enrollment_days', html: { method: :post, novalidate: false }) do |f|
+  .form-inputs
+    = f.hidden_field :academic_process_id
+    = f.input :academic_process_id, as: :hidden
+    %br
+    = f.input :start
+    =# f.input :total_duration_hours, class: 'vertical_range'
 
-      = f.input :total_duration_hours, collection: [["2 Horas", 2],["4 Horas",4],["5 Horas",5],["8 Horas",8],["10 Horas",10], ["12 Horas",12], ["24 Horas",24]], as: :radio_buttons, required: true
-      =# f.collection_radio_buttons :options, [[2,2],[4,4],[5,5],[8,8],[10,10], [12,12], [24,24]], :first, :last
-      - if false
-        %div{'data-toggle': :buttons}
-          .btn-group
-            - for a in [2,4,5,8,10, 12, 24] do
-              %label.btn.btn-secondary
-                =# f.radio_button :duracion_total_horas, required: true, class: 'sr-only', value: a
-                %input.sr-only{type: :radio, value: a, name: 'enrollment_day[total_duration_hours_b]', id: 'enrollment_day_total_duration_hours_b', required: true}
-                = "#{a} Horas"
+    = f.input :total_duration_hours, collection: [["2 Horas", 2],["4 Horas",4],["5 Horas",5],["8 Horas",8],["10 Horas",10], ["12 Horas",12], ["24 Horas",24]], as: :radio_buttons, required: true
+    =# f.collection_radio_buttons :options, [[2,2],[4,4],[5,5],[8,8],[10,10], [12,12], [24,24]], :first, :last
+    - if false
+      %div{'data-toggle': :buttons}
+        .btn-group
+          - for a in [2,4,5,8,10, 12, 24] do
+            %label.btn.btn-secondary
+              =# f.radio_button :duracion_total_horas, required: true, class: 'sr-only', value: a
+              %input.sr-only{type: :radio, value: a, name: 'enrollment_day[total_duration_hours_b]', id: 'enrollment_day_total_duration_hours_b', required: true}
+              = "#{a} Horas"
 
-      = f.input :max_grades, required: true, input_html: { min: 10, max: total_grades_without_appointment+1, step: 1, value: total_grades_without_appointment+1}
-      =# f.number_field :max_grados, class: 'form-control', value: @total_grados_sin_cita, min: 10, max: @total_grados_sin_cita+1, step: 1, required: true
+    = f.input :max_grades, required: true, input_html: { min: 10, max: total_grades_without_appointment+1, step: 1, value: total_grades_without_appointment+1}
+    =# f.number_field :max_grados, class: 'form-control', value: @total_grados_sin_cita, min: 10, max: @total_grados_sin_cita+1, step: 1, required: true
 
-      = f.input :slot_duration_minutes, collection: [["30 Minutos", 30],["60 Minutos", 60],["120 Minutos", 120]], as: :radio_buttons, required: true      
+    = f.input :slot_duration_minutes, collection: [["30 Minutos", 30],["60 Minutos", 60],["120 Minutos", 120]], as: :radio_buttons, required: true      
 
-    .form-actions
-      = f.button :submit, value: 'Crear Jorada de inscripción por cita horaria', class: 'btn btn-success'
+  .modal-footer
+    %button.btn.btn-secondary{"data-bs-dismiss": :modal, type: :button} Cancelar
+    = f.button :submit, value: 'Crear Jorada de inscripción por cita horaria', class: 'btn btn-success'
 
 
 
