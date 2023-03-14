@@ -5,7 +5,7 @@ class AcademicRecord < ApplicationRecord
   # t.integer "status"
 
   # ENUMERIZE:
-  enum status: [:sin_calificar, :aprobado, :aplazado, :retirado, :perdida_por_inasistencia]
+  enum status: [:sin_calificar, :aprobado, :aplazado, :retirado, :perdida_por_inasistencia, :equivalencia_interna, :equivalencia_externa]
 
   # ASSOCIATIONS:
   belongs_to :section
@@ -106,7 +106,7 @@ class AcademicRecord < ApplicationRecord
     valor.strip!
     valor.upcase!
 
-    if (valor.eql? 'PI' or valor.eql? 'RT' or valor.eql? 'A' or valor.eql? 'AP')
+    if (valor.eql? 'PI' or valor.eql? 'RT' or valor.eql? 'A' or valor.eql? 'AP' or valor.eql? 'EQ')
       self.status = I18n.t(valor)
       return true
     else
