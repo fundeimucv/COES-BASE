@@ -7,6 +7,9 @@ es:
   
   perdida_por_inasistencia: PI
   PI: perdida_por_inasistencia
+
+  equivalencia_interna: EQ
+  EQ: equivalencia_interna
   
   retirado: RT
   RT: retirado
