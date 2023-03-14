@@ -1,5 +1,5 @@
 class AcademicProcessesController < ApplicationController
-  before_action :set_academic_process, only: %i[ show edit update destroy ]
+  before_action :set_academic_process, only: %i[ show edit update destroy clone_sections clean_courses ]
 
   # GET /academic_processes or /academic_processes.json
   def index
@@ -18,6 +18,59 @@ class AcademicProcessesController < ApplicationController
   # GET /academic_processes/1/edit
   def edit
   end
+
+  def clean_courses
+    total = @academic_process.courses.count
+    if @academic_process.courses.destroy_all
+      flash[:info] = "Eliminados #{total} cursos con sus respectivas secciones."
+    else
+      flash[:danger] = "No se pudieron eliminar los cursos."
+    end
+
+    redirect_back fallback_location: root_path
+  end
+
+  def clone_sections
+    if @academic_process.enroll_academic_processes.any?
+      flash[:denger] = 'No se puede clonar un processo con registro académicos. Primero limpie el proceso académico y luego procesa a clonarlo.'
+    else
+      cloneble_academic_process = AcademicProcess.find params[:cloneble_academic_process_id]
+      errors = 0
+      completed = 0
+
+      @academic_process.courses.destroy_all
+      begin
+        cloneble_academic_process.courses.each do |course|
+          nuevo_curso = course.dup
+          nuevo_curso.academic_process_id = @academic_process.id
+          if nuevo_curso.save
+            course.sections.each do |section|
+              nueva_seccion = section.dup
+              nueva_seccion.course_id = nuevo_curso.id
+              nueva_seccion.profesor_id = nil unless params[:teachers]
+              if nueva_seccion.save
+                completed +=1
+              else
+                errors += 1
+              end
+            end
+          else
+            errors += 1
+          end
+        end
+      rescue Exception => e
+        flash[:danger] = e
+      end  
+      flash[:danger] = "#{errros} Cargas con errores. Vuelva a intentarlo." if errors > 0
+      flash[:success] = "Clonación de #{completed} secciones." if completed > 0
+
+    end
+
+    redirect_back fallback_location: root_path
+
+  end
+
+
 
   # POST /academic_processes or /academic_processes.json
   def create

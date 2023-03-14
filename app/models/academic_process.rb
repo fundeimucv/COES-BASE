@@ -110,12 +110,20 @@ class AcademicProcess < ApplicationRecord
         end
       end
 
+      field :total_sections do
+        column_width 100
+        label 'Total Sec.'
+        pretty_value do
+          %{<span class='badge bg-info'>#{value}</span>}.html_safe
+        end
+      end
+
       field :total_enroll_academic_processes do
         column_width 200
         label 'Total Inscritos'
         pretty_value do
           %{<span class='badge bg-info'>#{value}</span>}.html_safe
-        end        
+        end
       end
     end
 
@@ -145,6 +153,14 @@ class AcademicProcess < ApplicationRecord
           bindings[:view].render(partial: "/academic_processes/desc_table", locals: {academic_process: bindings[:object]})
         end
       end
+
+      field :courses do
+        label 'Opciones de Clonación'
+        pretty_value do
+          bindings[:view].render(partial: "/academic_processes/clonation_options", locals: {academic_process: bindings[:object]})
+        end
+      end
+
       field :enrollment_days do
         pretty_value do
 

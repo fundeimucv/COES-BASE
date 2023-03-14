@@ -12,9 +12,18 @@ Rails.application.routes.draw do
   resources :page, only: :show
   resources :qualifications, only: :update
   resources :period_types
-  resources :academic_processes, :enroll_academic_processes, :academic_records, :periods, :profiles, :sections, :courses
+  resources :enroll_academic_processes, :academic_records, :periods, :profiles, :sections, :courses
 
   resources :enrollment_days, only: [:create, :destroy]
+
+  resources :academic_processes do
+    member do
+      get 'clean_courses'
+    end
+    collection do
+      post 'clone_sections'
+    end
+  end
 
   resources :users, only: [:edit, :update] do
     member do

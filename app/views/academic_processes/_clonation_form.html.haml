@@ -1,0 +1,26 @@
+
+= form_tag("/academic_processes/clone_sections", class: 'form-horizontal') do
+  = hidden_field_tag :id, academic_process.id
+  .modal-body
+    .control-group
+      %span.control-label
+        Proceso Académico Actual:
+      .controls
+        = text_field_tag :actual, academic_process.name, readonly: true, disabled: true, class: 'form-control'
+    %br
+    .control-group
+      %span.control-label Proceso Académico a Clonar:
+      .controls
+
+        = collection_select(nil, :cloneble_academic_process_id, academic_process.school.academic_processes.joins(period: :period_type).order('periods.year DESC, period_types.code DESC').reject{|pa| pa.id.eql? academic_process.id}, :id, :name, {prompt: "-- Seleccione Proceso --"}, {class: 'text-field form-control', required: true})
+    .control-group.mt-3.mb-3
+      %span.control-label
+        %label.btn.btn-info.btn-sm
+          ¿Clonar Profesores?:
+          = check_box_tag :teachers
+
+    .modal-footer
+      %button.btn.btn-secondary{"data-bs-dismiss": :modal, type: :button} Cancelar
+
+      = submit_tag 'Guardar', class: 'btn btn-primary', 'data-confirm': "¿Seguro que desea clonar la planificación del periodo indicado?. Se eliminarán las secciones existentes." 
+
