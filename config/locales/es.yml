@@ -256,6 +256,10 @@ es:
           attributes:
             final_q:
               in: 'Debe estar entre 0 y 20'
+        academic_process:
+          attributes:
+            period:
+              required: requerido
         grade:
           attributes:
             admission_type:
