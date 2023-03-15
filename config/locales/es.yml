@@ -530,7 +530,7 @@ es:
       section:
         code: 'Número'
         capacity: 'Capacidad'
-        course: 'Curso'
+        course: 'Proceso/Asignatura'
         teacher: 'Profesor'
         qualified: '¿Calificada?'
         modality: 'Modalidad'

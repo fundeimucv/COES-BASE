@@ -27,6 +27,7 @@ class Course < ApplicationRecord
   end
 
   rails_admin do
+    visible false
     navigation_label 'Inscripciones'
     navigation_icon 'fa-solid fa-shapes'
 
@@ -40,7 +41,7 @@ class Course < ApplicationRecord
     end
 
     edit do
-      fields :academic_process, :subject, :sections
+      fields :academic_process, :subject#, :sections
     end
 
     export do
