@@ -103,13 +103,13 @@ es:
         menu: "Generar Reporte"
         breadcrumb: "Generar Reporte %{model_label}"
       dashboard:
-        menu: "Dashboard"
-        title: "Dashboard"
-        breadcrumb: "Dashboard"    
-    dashboard:
-      menu: "Dashboard"
-      title: "Dashboard"
-      breadcrumb: "Dashboard"      
+        menu: "Escritorio"
+        title: "Escritorio"
+        breadcrumb: "Escritorio"    
+    Escritorio:
+      menu: "Escritorio"
+      title: "Escritorio"
+      breadcrumb: "Escritorio"      
       pagename: "Administración del sitio"
       name: "Panel"
       model_name: "Nombre del modelo"
@@ -190,4 +190,4 @@ es:
       new: "nuevo"
       model_history: "historial"
       list: "lista"
-      dashboard: "Dashboard"
+      dashboard: "Escritorio"

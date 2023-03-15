@@ -35,6 +35,7 @@ class Faculty < ApplicationRecord
 	rails_admin do
 		navigation_label 'Gestión Académica'
 		navigation_icon 'fa-regular fa-building-columns'
+		visible false
 
 		list do
 			exclude_fields :created_at, :updated_at

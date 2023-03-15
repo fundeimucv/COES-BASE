@@ -1,5 +1,10 @@
-
 es:
+  new: Nuevo
+  index: Listado
+  show: Detalle
+  import: Importar
+  export: Generar Reporte
+
   dashboard: Escritorio
   diferido: ND
   final: NF

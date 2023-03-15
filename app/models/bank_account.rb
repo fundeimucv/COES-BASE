@@ -20,6 +20,7 @@ class BankAccount < ApplicationRecord
   end
 
   rails_admin do
+    visible false
     navigation_label 'Finanzas'
     navigation_icon 'fa-solid fa-piggy-bank'
 

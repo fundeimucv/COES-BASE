@@ -46,6 +46,7 @@ class Area < ApplicationRecord
   end
 
   rails_admin do
+    visible false
     navigation_label 'Gestión Académica'
     navigation_icon 'fa-regular fa-brain'
 

@@ -2,6 +2,7 @@ RailsAdmin.config do |config|
   config.asset_source = :webpack
 
   ### Popular gems integration
+  config.main_app_name = Proc.new { |controller| [ "Coes", "FAU - #{I18n.t(controller.params[:action]).try(:titleize)}" ] }
 
   ## == Devise ==
   config.authenticate_with do
@@ -23,6 +24,12 @@ RailsAdmin.config do |config|
   ## == Gravatar integration ==
   ## To disable Gravatar integration in Navigation Bar set to false
   config.show_gravatar = false
+
+  # config.show_gravatar do |config|
+  #   config.gravatar_url do
+  #     current_user.profile_picture
+  #   end
+  # end
 
   # IMPORTER:
 

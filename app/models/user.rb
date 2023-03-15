@@ -235,6 +235,7 @@ class User < ApplicationRecord
 
   # RAILS_ADMIN:
   rails_admin do
+    visible false
     navigation_icon 'fa-regular fa-user'
     # def self.full_name
     #   "#{name} #{last_name}"
@@ -325,11 +326,11 @@ class User < ApplicationRecord
       field :number_phone
       field :sex do
         formatted_value do # used in form views
-          value.titleize
+          value.titleize if value
         end
 
         pretty_value do # used in list view columns and show views, defaults to formatted_value for non-association fields
-          value.titleize
+          value.titleize if value
         end
 
       end

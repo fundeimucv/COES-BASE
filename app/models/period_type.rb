@@ -6,11 +6,14 @@ class PeriodType < ApplicationRecord
 	# ASSOCIATIONS:
 	has_many :periods
 
+	default_scope { order(name: :desc) }
+
 	# VALIDATIONS:
 	validates :code, presence: true
 	validates :name, presence: true
 
 	rails_admin do
+		visible false
 		navigation_icon 'fa-regular fa-clock'
 
 		list do

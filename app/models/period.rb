@@ -38,6 +38,7 @@ class Period < ApplicationRecord
   rails_admin do
     navigation_label 'Inscripciones'
     navigation_icon 'fa-solid fa-clock'
+    visible false
 
     list do 
     	field :year

@@ -92,6 +92,7 @@ class Grade < ApplicationRecord
   end
   # RAILS_ADMIN:
   rails_admin do
+    visible false
     navigation_label 'Inscripciones'
     navigation_icon 'fa-solid fa-graduation-cap'
 
