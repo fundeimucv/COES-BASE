@@ -4,9 +4,9 @@
   - elsif entity.eql? 'subjects'
     - headers = 'id, nombre, creditos, modalidad, tipo_calificacion'
   - elsif entity.eql? 'sections'
-    - headers = 'numero, codigo, capacidad, profesor_ci'
+    - headers = 'numero_seccion, codigo, capacidad, profesor_ci'
   - elsif entity.eql? 'academic_records'
-    - headers = 'ci, codigo, numero, nombre_periodo, nota'
+    - headers = 'ci, codigo, numero_seccion, nombre_periodo, nota'
 
   = render partial: '/importer/importer_help', locals: {headers: headers, image_name: "example_csv_import_#{entity}.png", entity: entity}
   = render partial: "/importer/form_layout", locals: {entity: entity, headers: headers}
