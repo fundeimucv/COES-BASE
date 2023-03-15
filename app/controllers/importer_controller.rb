@@ -24,7 +24,7 @@ class ImporterController < ApplicationController
 					result[2].delete 'limit_records'
 					flash[:success] += " | 1 advertencia"
 
-					flash[:warning] = "¡El archivo contiene más de 400 registros! Se procesaron estos primeros 400 y quedaron pendientes el resto. Por favor, divida el archivo y realice una nueva carga. ".html_safe
+					flash[:warning] = "¡El archivo contiene más de 700 registros! Se procesaron estos primeros 700 y quedaron pendientes el resto. Por favor, divida el archivo y realice una nueva carga. ".html_safe
 				end
 				
 				if result[2].any? 
