@@ -363,8 +363,8 @@ es:
         one: 'Escuela'
         other: 'Escuelas'
       section:
-        one: 'Sección'
-        other: 'Secciones'
+        one: Oferta Docente
+        other: Oferta Docente
       student:
         one: 'Estudiante'
         other: 'Estudiantes'
@@ -446,8 +446,7 @@ es:
       course:
         period: Período
         school: Escuela
-        sections: Secciones
-        section: Sección
+        sections: Oferta Docente
         academic_process: 'Proceso Académico'
         subject: 'Asignatura'
         offer_as_pci: 'Ofertar cómo PCI'
