@@ -121,15 +121,15 @@ class Section < ApplicationRecord
       search_by :custom_search
       field :code do
         label 'Id'
-        column_width 10
-      end
-      field :period_name do
-        label 'Período'
-        column_width 100
+        column_width 20
       end
       field :subject_desc do
         label 'Asignatura'
         column_width 320
+      end
+      field :period_name do
+        label 'Período'
+        column_width 100
       end
       field :teacher_desc do
         label 'Profesor'
@@ -159,7 +159,6 @@ class Section < ApplicationRecord
 
     edit do
       field :code do
-        label 'Identificación'
         html_attributes do
           {:length => 8, :size => 8, :onInput => "$(this).val($(this).val().toUpperCase().replace(/[^A-Za-z0-9]/g,''))"}
         end

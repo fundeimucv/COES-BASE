@@ -527,7 +527,7 @@ es:
         study_plans: Planes de Estudio
         admission_types: Tipos de Admisión
       section:
-        code: 'Número'
+        code: 'Sección'
         capacity: 'Capacidad'
         course: 'Proceso/Asignatura'
         teacher: 'Profesor'

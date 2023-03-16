@@ -27,7 +27,7 @@ class Course < ApplicationRecord
   end
 
   rails_admin do
-    visible false
+    # visible false
     navigation_label 'Inscripciones'
     navigation_icon 'fa-solid fa-shapes'
 
