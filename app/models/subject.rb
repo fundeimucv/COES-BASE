@@ -191,7 +191,6 @@ class Subject < ApplicationRecord
 
     export do
       fields :code, :name, :area, :unit_credits, :ordinal, :qualification_type, :modality
-
     end
   end
 

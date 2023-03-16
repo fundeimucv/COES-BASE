@@ -1,0 +1,12 @@
+%table.table.table-condensed.table-hover.table-bordered
+  %thead
+    %tr
+      %th Día
+      %th Entrada
+      %th Salida
+  %tbody.table-group-divider
+    - schedules.each do |sh|
+      %tr
+        %td.string_type= sh.day
+        %td.string_type= sh.starttime.strftime("%I:%M %P")
+        %td.string_type= sh.endtime.strftime("%I:%M %P")
