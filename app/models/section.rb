@@ -22,6 +22,9 @@ class Section < ApplicationRecord
   has_one :faculty, through: :school
 
   # has_many
+  has_many :schedules
+  accepts_nested_attributes_for :schedules
+
   has_many :academic_records, dependent: :destroy
   # accepts_nested_attributes_for :academic_records
 
@@ -112,6 +115,9 @@ class Section < ApplicationRecord
     teacher.user.ci_fullname if (teacher and teacher.user)
   end
 
+  def schedule_table
+    schedules.each{|s| s.name}.to_sentence
+  end
   # RAILS_ADMIN:
   rails_admin do
     navigation_label 'Inscripciones'
@@ -148,6 +154,19 @@ class Section < ApplicationRecord
       #   label 'Descripción'
       # end
       # fields :teacher, :academic_records
+      field :schedules do
+        label 'Horario'
+        formatted_value do
+          value.name
+        end
+      end
+
+      # field :schedule_table do
+      #   label 'Horario'
+      #   formatted_value do
+      #     bindings[:view].render(partial: "schedules/on_table", locals: {schedules: bindings[:object].schedules})
+      #   end
+      # end
 
       field :desc_show do
         label 'Descripción'
@@ -170,6 +189,8 @@ class Section < ApplicationRecord
           {:min => 1}
         end
       end
+
+      fields :schedules
 
     end
 

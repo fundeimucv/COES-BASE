@@ -359,6 +359,9 @@ es:
       qualification:
         one: Calificación
         other: Calificaciones
+      schedule:
+        one: Horario
+        other: Horarios
       school:
         one: 'Escuela'
         other: 'Escuelas'
@@ -526,6 +529,10 @@ es:
         bank_accounts: Cuentas Bancarias
         study_plans: Planes de Estudio
         admission_types: Tipos de Admisión
+      schedule:
+        day: día
+        starttime: Hora Inicio
+        endtime: Hora Fin
       section:
         code: 'Sección'
         capacity: 'Capacidad'
@@ -545,6 +552,7 @@ es:
         enroll_academic_process: Inscripción en Registro Académico
         grades: Grados
         students: Estudiantes
+        schedules: Horarios
       student:
         active: 'Activo'
         disability: 'Discapacidad'
