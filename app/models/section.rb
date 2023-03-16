@@ -36,7 +36,7 @@ class Section < ApplicationRecord
   # has_and_belongs_to_many :secondary_teachers, class_name: 'SectionTeacher'
 
   #ENUMERIZE:
-  enum modality: [:nota_final, :equivalencia_externa, :equivalencia_interna, :diferido, :reparacion, :suficiencia]
+  enum modality: [:nota_final, :equivalencia_interna]
 
   # VALIDATIONS:
   validates :code, presence: true
@@ -80,11 +80,9 @@ class Section < ApplicationRecord
   def conv_initial_type
     case modality
     when 'nota_final'
-      'F'
-    when 'equivalencia_externa'
-      'EE'
+      'NF'
     when 'equivalencia_interna'
-      'EI'
+      'EQ'
     else
       modality.first.upcase if modality
     end

@@ -79,12 +79,12 @@ class AcademicRecord < ApplicationRecord
   scope :promedio_approved, -> {aprobado.promedio}
   scope :weighted_average_approved, -> {aprobado.weighted_average}
 
-  scope :sin_equivalencias, -> {joins(:section).where "sections.modality != 1 and sections.modality != 2"} 
+  scope :sin_equivalencias, -> {joins(:section).not_equivalencia_interna} 
 
-  scope :by_equivalencia, -> {joins(:section).where "sections.modality = 1 or sections.modality = 2"}
+  scope :by_equivalencia, -> {joins(:section).equivalencia_interna}
 
-  scope :by_equivalencia_interna, -> {joins(:section).where "sections.modality = 1"}
-  scope :by_equivalencia_externa, -> {joins(:section).where "sections.modality = 2"}
+  # scope :by_equivalencia_interna, -> {joins(:section).where "sections.modality = 1"}
+  # scope :by_equivalencia_externa, -> {joins(:section).where "sections.modality = 2"}
 
   scope :student_enrolled_by_period, lambda { |period_id| joins(:academic_proccess).where("academic_proccesses.period_id": period_id).group(:student).count } 
 
