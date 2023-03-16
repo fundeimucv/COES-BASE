@@ -94,7 +94,7 @@ class Subject < ApplicationRecord
   end
 
   def desc
-    "#{code}: #{name}"
+    "#{self.code}: #{self.name}"
   end
 
   def conv_header
@@ -123,6 +123,11 @@ class Subject < ApplicationRecord
   rails_admin do
     navigation_label 'Gestión Académica'
     navigation_icon 'fa-regular fa-book'
+    weight -1
+
+    object_label_method do
+      :desc
+    end
 
     list do
       search_by :custom_search

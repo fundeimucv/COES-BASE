@@ -122,12 +122,14 @@ class Section < ApplicationRecord
   rails_admin do
     navigation_label 'Inscripciones'
     navigation_icon 'fa-solid fa-list'
+    weight -1
 
     list do
       search_by :custom_search
+      filters [:period_name]
       field :code do
         label 'Id'
-        column_width 20
+        column_width 30
       end
       field :subject_desc do
         label 'Asignatura'
@@ -136,6 +138,7 @@ class Section < ApplicationRecord
       field :period_name do
         label 'Período'
         column_width 100
+        filterable [{:periods => :year}, {:period_types => :code}]
       end
       field :teacher_desc do
         label 'Profesor'
@@ -182,7 +185,7 @@ class Section < ApplicationRecord
           {:length => 8, :size => 8, :onInput => "$(this).val($(this).val().toUpperCase().replace(/[^A-Za-z0-9]/g,''))"}
         end
       end
-      fields :course, :teacher, :modality
+      fields :course, :teacher, :modality, :classroom
 
       field :capacity do
         html_attributes do

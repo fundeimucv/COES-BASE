@@ -12,6 +12,7 @@ class Schedule < ApplicationRecord
   end
 
   rails_admin do
+    visible false
     show do
       field :name
     end

@@ -149,6 +149,7 @@ class Student < ApplicationRecord
   rails_admin do
     navigation_label 'Gestión de Usuarios'
     navigation_icon 'fa-regular fa-user-graduate'
+    weight 4
 
     edit do
       # field :user do
@@ -206,12 +207,14 @@ class Student < ApplicationRecord
 
       field :user_ci do
         label 'Cédula'
-        # sortable 'joins(:user).users.ci'
-        # queryable "course_periods_periods.name"
+        # sortable "users.ci"
+        # queryable "users.ci"
+        # searchable ['users.ci']
       end
 
       field :user_last_name do
         label 'Apellidos'
+        # searchable [{:users => :last_name}]
       end
       field :user_first_name do
         label 'Nombres'

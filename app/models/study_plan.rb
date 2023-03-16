@@ -36,6 +36,10 @@ class StudyPlan < ApplicationRecord
   rails_admin do
     navigation_label 'Gestión Académica'
     navigation_icon 'fa-solid fa-award'
+    weight -2
+    list do
+      fields :code, :name
+    end
 
     export do
       fields :code, :name

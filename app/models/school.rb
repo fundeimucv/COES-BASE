@@ -73,6 +73,8 @@ class School < ApplicationRecord
   rails_admin do
     navigation_label 'Gestión Académica'
     navigation_icon 'fa-regular fa-school'
+    weight -3
+    visible false
 
     list do
       fields :code, :name, :faculty, :type_entity

@@ -530,9 +530,9 @@ es:
         study_plans: Planes de Estudio
         admission_types: Tipos de Admisión
       schedule:
-        day: día
+        day: Día
         starttime: Hora Inicio
-        endtime: Hora Fin
+        endtime: Hora Final
       section:
         code: 'Sección'
         capacity: 'Capacidad'
@@ -553,6 +553,7 @@ es:
         grades: Grados
         students: Estudiantes
         schedules: Horarios
+        classroom: 'Áula'
       student:
         active: 'Activo'
         disability: 'Discapacidad'

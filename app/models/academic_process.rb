@@ -89,6 +89,7 @@ class AcademicProcess < ApplicationRecord
   rails_admin do
     navigation_label 'Inscripciones'
     navigation_icon 'fa-solid fa-calendar'
+    weight -2
     list do
       fields :period do
         column_width 100
