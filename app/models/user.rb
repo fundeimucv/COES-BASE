@@ -21,7 +21,7 @@ class User < ApplicationRecord
   # t.string "last_sign_in_ip"  
 
   # ENUMERIZE:
-  enum sex: [:femenino, :masculino]
+  enum sex: [:Femenino, :Masculino]
 
   # ASSOCIATIONS:
   has_one :admin, inverse_of: :user, foreign_key: :user_id, dependent: :destroy
