@@ -90,12 +90,7 @@ class Student < ApplicationRecord
   end
 
   def user_profile
-    if user.profile_picture and user.profile_picture.attached? and user.profile_picture.representable?
-      # "<img href='#{Object.new.extend(ActionView::Helpers::AssetUrlHelper).image_url(user.profile_picture_as_thumb) }' />"
-      # image_tag user.profile_picture_as_thumb
-      ActionController::Base.helpers.image_tag(Object.new.extend(ActionView::Helpers::AssetUrlHelper).image_url(user.profile_picture_as_thumb))
-      
-    end
+    user.profile_set if user
   end
 
   # CALLBACKS:
@@ -317,8 +312,8 @@ class Student < ApplicationRecord
     if row[4]
       row[4].strip!
       row[4].delete! '^A-Za-z'
-      row[4] = :masculino if row[4].upcase.eql? 'M'
-      row[4] = :femenino if row[4].upcase.eql? 'F'
+      row[4] = :Masculino if row[4].upcase.eql? 'M'
+      row[4] = :Femenino if row[4].upcase.eql? 'F'
       usuario.sex = row[4] 
     end
 

@@ -157,19 +157,19 @@ class User < ApplicationRecord
 
   # SEXO
   def sexo_to_s
-    aux = 'Mujer' if femenino?
-    aux = 'Hombre' if masculino?
+    aux = 'Mujer' if self.Femenino?
+    aux = 'Hombre' if self.Masculino?
     return aux.blank? ? 'Indefinido' : aux
   end
 
   def la_el
-    femenino? ? 'la' : 'el'
+    self.Femenino? ? 'la' : 'el'
   end
 
   def genero
     gen = "@"
-    gen = "a" if self.femenino?
-    gen = "o" if self.masculino?
+    gen = "a" if self.Femenino?
+    gen = "o" if self.Masculino?
     return gen
   end
 
@@ -219,6 +219,15 @@ class User < ApplicationRecord
     aux += 1 if student?
     aux += 1 if teacher?    
     return aux
+  end
+
+  def profile_set
+    if self.profile_picture and self.profile_picture.attached? and self.profile_picture.representable?
+      # "<img href='#{Object.new.extend(ActionView::Helpers::AssetUrlHelper).image_url(self.profile_picture_as_thumb) }' />"
+      # image_tag self.profile_picture_as_thumb
+      ActionController::Base.helpers.image_tag(Object.new.extend(ActionView::Helpers::AssetUrlHelper).image_url(self.profile_picture_as_thumb, class: "img-thumbnail"))
+      
+    end
   end
 
 
