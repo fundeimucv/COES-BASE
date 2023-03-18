@@ -27,7 +27,7 @@
         = "Reportar Pago Ingreso a #{school.descripcion}"
 
     - @academic_process = school.enroll_process
-    - @academic_process_before = @academic_process.process_before
+    - @academic_process_before = @academic_process.process_before if @academic_process
     - @enroll_in_process = grade.enroll_academic_processes.where(academic_process_id: @academic_process.id).first if @academic_process
 
     - if grade.appointment_time and grade.duration_slot_time and @enroll_in_process.nil?
