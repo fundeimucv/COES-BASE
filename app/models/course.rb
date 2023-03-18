@@ -18,6 +18,8 @@ class Course < ApplicationRecord
   validates :subject, presence: true
   validates :academic_process, presence: true
 
+  scope :pcis, -> {where(offer_as_pci: true)}
+
   def name 
     "#{self.period.name}-#{self.subject.desc}" if self.period and self.school and self.subject
   end

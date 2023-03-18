@@ -24,14 +24,15 @@ class EnrollmentDay < ApplicationRecord
   after_destroy :clean_grades_with_appointment_time
 
   #SCOPE
-  scope :actual, -> (academic_process_id) { where("academic_process_id = '#{academic_process_id}' and start LIKE '%#{Date.today}%'")}
+  scope :current_process, -> (academic_process_id) { of_today.where(academic_process_id: academic_process_id)}
 
-  scope :del_dia, -> {where(start: Time.zone.now.all_day)}
+  scope :of_today, -> {where(start: Time.zone.now.all_day)}
   
-  #MÉTODOS
-  def can_enroll? appointment_time #puede_inscribir?
-    Time.zone.now > appointment_time and Time.zone.now < appointment_time+self.slot_duration_minutes.minutes 
+  def active_now?
+    Time.zone.now > self.start and Time.zone.now < self.start+total_duration_hours.hours
   end
+
+  #MÉTODOS
 
   def total_timeslots #total_franjas
     (slot_duration_minutes.eql? 0) ? 0 : (self.total_duration_hours/self.slot_duration_minutes.to_f*60).to_i
@@ -45,12 +46,25 @@ class EnrollmentDay < ApplicationRecord
     end
   end
 
-  def own_grades_orders
-    self.school.grades.with_day_enroll_eql_to(self.start).order([efficiency: :desc, simple_average: :desc, weighted_average: :desc])
+
+  def own_grades
+    self.school.grades.with_day_enroll_eql_to(self.start)
+  end
+
+  def own_grades_count
+    self.own_grades.count
+  end
+
+  def own_grades_sort_by_appointment
+    self.own_grades.order([appointment_time: :asc, duration_slot_time: :asc])
+  end
+
+  def own_grades_sort_by_numbers
+    self.own_grades.order([efficiency: :desc, simple_average: :desc, weighted_average: :desc])
   end
 
   def clean_grades_with_appointment_time
-    self.own_grades_orders.update_all(appointment_time: nil, duration_slot_time: nil)
+    self.own_grades.update_all(appointment_time: nil, duration_slot_time: nil)
   end
 
 end

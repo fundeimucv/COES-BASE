@@ -15,6 +15,8 @@ class Grade < ApplicationRecord
   belongs_to :student, primary_key: :user_id
   belongs_to :study_plan
   belongs_to :admission_type
+  belongs_to :enabled_enroll_process, foreign_key: 'enabled_enroll_process_id', class_name: 'AcademicProcess', optional: true
+
   has_one :school, through: :study_plan
   
   has_many :enroll_academic_processes, dependent: :destroy
@@ -25,6 +27,7 @@ class Grade < ApplicationRecord
 
   # ENUMERIZE:
   enum registration_status: [:universidad, :facultad, :escuela]
+  enum enrollment_status: [:preinscrito, :asignado, :confirmado, :reincorporado]
   enum graduate_status: [:no_graduable, :tesista, :posible_graduando, :graduando, :graduado]
 
   #SCOPES:
@@ -40,6 +43,7 @@ class Grade < ApplicationRecord
   # scope :with_enrollments_in_period, -> (period_id) { joins(academic_records: {section: {course: :academic_process}}).where('academic_processes.period_id = ?', period_id).group(:'enroll_academic_processes.id').having('COUNT(*) > 0').count}
 
   # ATENCIÓN: EL UNIQ DEBO HACERLO EN EL LLAMADO DEL SCOPE ANTERIOR YA QUE DE LO CONTRARIO DEVUELVE LA CANTIDAD DE REGISTROS VINCULADOS A LAS enroll_academic_processes
+
   scope :enrolled_in_academic_process, -> (academic_process_id) { joins(:enroll_academic_processes, :academic_processes).where('academic_processes.id': academic_process_id) }
 
   scope :sort_by_numbers, -> () {order([efficiency: :desc, simple_average: :desc, weighted_average: :desc])}
@@ -64,6 +68,54 @@ class Grade < ApplicationRecord
     end
   end
 
+  def subjects_approved
+    self.academic_records.aprobado.joins(:subject).select('subjects.id')
+  end
+
+  def subjects_offer_by_dependent
+    # Buscamos los ids de las asignaturas aprobadas
+    aprobadas_ids = subjects_approved.ids
+
+    # Buscamos por ids de las asignaturas que dependen de las aprobadas
+    subjects_dependients_ids = Dependency.where('subject_parent_id IN (?)', aprobadas_ids).map{|dep| dep.subject_dependent_id}
+
+    ids_subjects_positives = []
+
+    # Ahora por cada asignatura habilitada miramos sus respectivas dependencias a ver si todas están aprobadas
+
+    subjects_dependients_ids.each do |subj_id|
+      ids_aux = Dependency.where(subject_dependent_id: subj_id).map{|dep| dep.subject_parent_id}
+      ids_aux.reject!{|id| aprobadas_ids.include? id}
+      ids_subjects_positives << subj_id if (ids_aux.eql? []) #Si aprobó todas las dependencias
+    end
+
+    # Buscamos las asignaturas sin prelación
+    ids_subjects_independients = self.escuela.subjects.independents.ids
+
+    # Sumamos todas las ids ()
+    asignaturas_disponibles_ids = ids_subjects_positives + ids_subjects_independients
+
+    Subject.where(id: asignaturas_disponibles_ids)
+  end
+
+
+
+  # APPOINTMENT_TIME:
+  def appointment_slot_time
+    (self.appointment_time and self.duration_slot_time) ? self.appointment_time+self.duration_slot_time.minutes : nil    
+  end
+
+  def is_new?
+    !enroll_academic_processes.any?
+  end
+
+  def academic_records_any?
+    self.academic_records.any?
+  end
+
+  def can_enroll_by_apponintment? #puede_inscribir?
+    (self.appointment_time and self.duration_slot_time) and (Time.zone.now > self.appointment_time) and (Time.zone.now < self.appointment_time+self.duration_slot_time.minutes) 
+  end
 
   def appointment_time_desc
     if (appointment_time and duration_slot_time)
@@ -101,15 +153,11 @@ class Grade < ApplicationRecord
     end
 
     show do
-      field :student
-      field :numbers
-      field :description
-      field :enroll_academic_processes
-      # field :academic_records 
+      fields :student, :numbers, :description, :enroll_academic_processes, :enabled_enroll_process
     end
 
     edit do
-      fields :study_plan, :admission_type, :registration_status
+      fields :study_plan, :admission_type, :registration_status, :enabled_enroll_process
     end
 
     export do

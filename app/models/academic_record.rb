@@ -210,7 +210,6 @@ class AcademicRecord < ApplicationRecord
     q_value post_q
   end
 
-
   def q_value qualification=definitive_q
     qualification ? qualification.value : nil
   end

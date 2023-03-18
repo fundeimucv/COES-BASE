@@ -6,16 +6,17 @@ class School < ApplicationRecord
   # t.boolean "enable_subject_retreat"
   # t.boolean "enable_change_course"
   # t.boolean "enable_dependents"
-  # t.bigint "period_active_id"
-  # t.bigint "period_enroll_id"
+  # t.bigint "active_process_id"
+  # t.bigint "enroll_process_id"
   # t.datetime "created_at", null: false
   # t.datetime "updated_at", null: false
   # t.bigint "faculty_id"
   # t.string "contact_email", default: "coes.fau@gmail.com", null: false
   
   # ASSOCIATIONS
-  belongs_to :period_active, foreign_key: 'period_active_id', class_name: 'Period', optional: true
-  belongs_to :period_enroll, foreign_key: 'period_enroll_id', class_name: 'Period', optional: true
+  belongs_to :active_process, foreign_key: 'active_process_id', class_name: 'AcademicProcess', optional: true
+  belongs_to :enroll_process, foreign_key: 'enroll_process_id', class_name: 'AcademicProcess', optional: true
+
   belongs_to :faculty
 
   has_many :bank_accounts, dependent: :destroy
@@ -70,35 +71,51 @@ class School < ApplicationRecord
     "#{self.code}: #{self.name}. (#{self.faculty.name}) #{self.type_entity.titleize}"
   end
 
+  def enable_dependents?
+    (enable_dependents.eql? true) ? true : false
+  end
+
   rails_admin do
     navigation_label 'Gestión Académica'
     navigation_icon 'fa-regular fa-school'
     weight -3
-    visible false
+    # visible false
 
     list do
-      fields :code, :name, :faculty, :type_entity
+      checkboxes false
+      fields :code, :name, :type_entity
     end
 
     show do
       field :description
 
-      fields :study_plans, :period_enroll, :period_active, :periods, :areas, :bank_accounts, :contact_email
+      fields :study_plans, :enroll_process, :active_process, :periods, :areas, :bank_accounts, :contact_email
     end
 
     edit do
-      field :faculty
+      # field :faculty do
+      #   read_only true
+      # end
+
       field :code do
+        read_only true
         html_attributes do
           {:length => 3, :size => 3, :onInput => "$(this).val($(this).val().toUpperCase().replace(/[^A-Za-z]/g,''))"}
         end
       end
       field :name do
+        read_only true
         html_attributes do
           {:onInput => "$(this).val($(this).val().toUpperCase())"}
         end       
       end
-      fields :type_entity, :bank_accounts, :study_plans, :admission_types, :contact_email
+      field :enable_dependents
+      fields :active_process, :enroll_process do
+        inline_add false
+        inline_edit false
+      end
+
+      fields :bank_accounts, :contact_email
     end
 
     export do

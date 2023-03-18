@@ -1,0 +1,9 @@
+.p-md-1
+  %h6.alert.alert-warning.text-justify
+    %b Atención:
+    = "Estimad#{grade.student.user.genero} #{grade.student.user.nick_name.titleize}, le informamos que su Cita Horaria es el"
+    %b
+      =(I18n.localize(grade.appointment_time, format: "%A, %d de %B de %Y de %I:%M%p"))
+      a
+      =(I18n.localize(grade.appointment_slot_time, format: " %I:%M%p,"))
+    = "usted podrá inscribirse <b>ÚNICAMENTE</b> durante este lapso de tiempo. </br></br> Recuerde que para completar su inscripción usted debe; seleccionar la(s) asignatura(s) que desea cursar, realizar el pago del aransel correspondiente y reportar su pago aquí.".html_safe

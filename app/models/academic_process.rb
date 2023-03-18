@@ -156,7 +156,7 @@ class AcademicProcess < ApplicationRecord
       end
 
       field :courses do
-        label 'Opciones de Clonación'
+        label 'Opciones de Oferta Docente'
         pretty_value do
           bindings[:view].render(partial: "/academic_processes/clonation_options", locals: {academic_process: bindings[:object]})
         end

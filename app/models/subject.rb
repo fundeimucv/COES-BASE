@@ -16,15 +16,12 @@ class Subject < ApplicationRecord
 
   has_many :courses, dependent: :destroy
 
-
   has_many :parents, foreign_key: :subject_dependent_id, class_name: 'Dependency'
   has_many :subject_parents, through: :parents
   # accepts_nested_attributes_for :subject_parents
 
   has_many :dependencies, foreign_key: :subject_parent_id, class_name: 'Dependency', dependent: :delete_all
   has_many :subject_dependents, through: :dependencies
-
-
 
   # ENUMS:
   enum qualification_type: [:numerica, :absoluta]
@@ -42,6 +39,8 @@ class Subject < ApplicationRecord
   # SCOPES: 
   scope :custom_search, -> (keyword) {joins([:area]).where("subjects.name ILIKE ? or subjects.code ILIKE ? or areas.name ILIKE ?", "%#{keyword}%", "%#{keyword}%", "%#{keyword}%")} 
 
+  scope :independents, -> {joins('LEFT JOIN dependencies ON dependencies.subject_dependent_id = subjects.id').where('dependencies.subject_dependent_id IS NULL')}
+
   # CALLBACKS:
   before_save :clean_values
   
@@ -55,18 +54,13 @@ class Subject < ApplicationRecord
     self.code.upcase!
   end
 
+  # GENERALS FUNCTIONS: 
   # DEPENDENCIES FUNCTIONS:
-
-  # def subject_dependents #asignaturas
-  #   depen_ids = asi.dependencias.map{|dep| dep.asignatura_dependiente_id}
-  #   Asignatura.where('id IN (?)', depen_ids)
-  # end
 
   def full_dependency_tree_ids
     aux = []
     aux << prelation_tree_ids
     aux << dependency_tree_ids
-    p "      AUX FLATTEN: #{aux.flatten.uniq}      ".center(500, "#")
     return aux.flatten.uniq
   end
 
@@ -86,15 +80,34 @@ class Subject < ApplicationRecord
     end
   end
 
-
-
-  # GENERALS FUNCTIONS: 
-  def as_absolute?
-    self.absoluta? or self.force_absolute?
-  end
+  # DESCRIPTIONS TYPES:
 
   def desc
     "#{self.code}: #{self.name}"
+  end
+
+  def desc_confirm_enroll
+    "- #{self.name} - #{self.unit_credits}"
+  end
+
+  def description_code
+    desc
+  end
+
+  def description_id_with_credits
+    "#{description_code} (#{unit_credits} Unidades de Créditos)"
+  end
+
+  def description_code_with_school
+    "#{description_code} <span class='badge badge-success'>#{self.school.code}</span>".html_safe
+  end
+
+  def description_complete
+    "#{description_code} - #{self.area.name}"
+  end
+
+  def as_absolute?
+    self.absoluta? or self.force_absolute?
   end
 
   def conv_header
@@ -105,7 +118,6 @@ class Subject < ApplicationRecord
     return data
 
   end
-
 
   def modality_initial_letter
     case modality

@@ -15,6 +15,8 @@ class EnrollAcademicProcess < ApplicationRecord
   has_one :period, through: :academic_process
   has_many :payment_reports, as: :payable
   has_many :academic_records
+  has_many :sections, through: :academic_records
+  has_many :subjects, through: :sections
 
   # ENUMERIZE:
   enum enroll_status: [:preinscrito, :reservado, :confirmado, :retirado]
@@ -46,6 +48,15 @@ class EnrollAcademicProcess < ApplicationRecord
   def total_academic_records
     self.academic_records.count
   end
+
+  def total_subjects
+    subject.count
+  end
+
+  def total_credits
+    subject.sum(:unit_credits)
+  end
+
 
   def name
     "(#{self.school.code}) #{self.period.name}:#{self.student.name}" if ( self.period and self.school and self.student)

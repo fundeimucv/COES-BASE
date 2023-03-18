@@ -521,8 +521,8 @@ es:
         enable_subject_retreat: 'Activar retiro de Asignturas'
         enable_change_course: 'Activar cambio de Sección'
         enable_dependents: 'Activar Dependencias'
-        period_active_id: 'Identificador de Período Activo '
-        period_enroll_id: 'Identidicador de Período Inscripción'
+        active_process: Proceso Académico Activo
+        enroll_process: Abrir Inscripción en Proceso Académico 
         faculty: 'Facultad'
         periods: 'Períodos'
         areas: 'Áreas'

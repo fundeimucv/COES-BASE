@@ -1,13 +1,152 @@
--# frozen_string_literal: true
-= simple_form_for(@enroll_academic_process) do |f|
-  = f.error_notification
-  = f.error_notification message: f.object.errors[:base].to_sentence if f.object.errors[:base].present?
 
-  .form-inputs
-    = f.association :grade
-    = f.association :academic_process
-    = f.input :enroll_status
-    = f.input :permanence_status
+.alert.alert-info
+  .text-center{id: "#{id}Title"}
+    %h4= title
+    %h5= grade.school.name
+.alert.alert-warning.text-center
+  = msgDanger.html_safe
+  %button.close{"aria-hidden": true, "data-dismiss": :alert, type: :button} &times;
+= form_tag('/enroll_academic_processes/enroll', id: "#{id}Form", class: 'form-horizontal', multipart: true) do
+  .modal-body.border.p-2{style: 'overflow-y:scroll;max-height:280px'}
+    = hidden_field_tag 'student_id', grade.student_id
+    = hidden_field_tag 'academic_process_id', academic_process.id
 
-  .form-actions
-    = f.button :submit
+    = render partial: 'subjects_offer', locals: {subjects: subject_offer, pcis: false, grade: grade, academic_process: academic_process}
+
+    - pcis = academic_process.course.pcis.joins(:subject).select('subjects.id AS id').ids
+    - if pcis.any?
+
+      - subjects = Subject.where(id: pcis)
+      %hr
+      %h4 Asignaturas PCI 
+      = render partial: 'subjects_offer', locals: {subjects: subjects, pcis: true, grade: grade, academic_process: academic_process}
+
+  = render partial: '/enroll_academic_processes/total_creditos'
+  .modal-footer
+    / %a.btn.btn-sm.btn-outline-light{data: {dismiss: 'modal'}} Cancelar
+    - enableSubmit = (@totalCreditsReserved > 0 and @totalCreditsReserved <= @limitCredits and @totalSubjectsReserved > 0 and @totalSubjectsReserved <= @limitSubjects)
+
+    - disabledClass = enableSubmit ? '' : 'disabled'
+    = submit_tag 'Preinscribirse', class: "#{disabledClass} btn btn-success btn-sm", id: 'submitBtn', 'data-disable-with': 'Enviando', disabled: !enableSubmit
+
+:javascript
+
+  function reservar(url, ev, el) {
+    // toastr.options.timeOut = 3500;
+    let opcion = el.children("option:selected");
+    $.ajax({
+    url: url,
+    type: 'POST',
+    dataType: 'json',
+    beforeSend: function() {
+      $('#cargando').modal({keyboard: false, show: true, backdrop: 'static'})
+    },
+    complete: function(json){
+      if (json["responseJSON"].status == 'success'){
+        // toastr.success(json["responseJSON"].data);
+
+        totalizar();
+        let trParent = el.closest('tr');
+        if (opcion.val() == '')
+          trParent.removeClass('table-info');
+        else{
+          let cantidad = opcion.text()
+          trParent.addClass('table-info');
+        }
+
+
+      }else{
+        // toastr.error(json["responseJSON"].data);
+        ev.preventDefault();
+      }
+      console.log('responseJSON: '+json["responseJSON"]);
+      opcion.text(json["responseJSON"].cupo);
+      $('#cargando').modal('hide');
+    }
+    });
+  }
+
+
+
+  function totalizar() {
+
+    // let selecteds = $(".selectInscripcion :selected");
+    let selecteds = $(".selectInscripcion option:selected");
+
+    let totalCredSel = 0;
+    let totalAsigSel = 0
+    let totalCred = $('#totalCreditosNumero');
+    let totalAsig = $('#totalAsignaturasNumero');
+    selecteds.each(function(){
+      if ($(this).val() != ''){
+        totalAsigSel += 1;
+        totalCredSel += Number($(this).parent().attr('creditos'));
+      }
+    });
+
+    totalCred.text(totalCredSel);
+    totalAsig.text(totalAsigSel);
+
+    $('#total_creditos').val(totalCred.text());
+    $('#total_asignaturas').val(totalAsig.text());
+    let limiteCreditos = Number(#{@limiteCreditos})
+    let limiteAsignaturas = Number(#{@limiteAsignaturas})
+    let submitBtn = $('#submitBtn');
+
+    let activo = ((totalAsigSel > 0) & (totalAsigSel <= limiteAsignaturas) & (totalCredSel <= limiteCreditos)),
+    tr = totalCred.closest('tr');
+    tr2 = totalAsig.closest('tr');
+
+    submitBtn.toggleClass('disabled', !activo);
+    submitBtn.prop('disabled', !activo);
+
+    tr.toggleClass('table-success', activo);
+    tr.toggleClass('table-danger', !activo);
+    tr2.toggleClass('table-success', activo);
+    tr2.toggleClass('table-danger', !activo);
+  }
+  
+  $('.selectInscripcion').on('change', function(event){
+    let ele = $(this);
+    let asignaturaId = ele.attr('asigId');
+    let estudianteId = ele.attr('estudianteId');
+    let grado = ele.attr('gradoId');
+    let pci = ele.attr('pci');
+
+    reservar(`#{reservar_cupo_inscripcionsecciones_path()}?asignatura_id=${asignaturaId}&seccion_id=${this.value}&estudiante_id=${estudianteId}&grado_id=${grado}&pci=${pci}`, event, ele);
+
+  })
+
+  $('#submitBtn').on('click', function(event){
+    let selected = '\n';
+    let selecteds = $(".selectInscripcion option:selected");
+    // let selecteds = $('.selectInscripcion option')
+    //let selecteds = $(".selectInscripcion option[value!='']:selected")
+    let msg;
+    let total = 0;
+    
+    selecteds.each(function(){
+      if ($(this).val() != ''){
+        total += 1;
+        selected += '\n';
+        selected += $(this).parent().attr('titulo');
+      }
+    });
+
+    if (total == 0){
+      event.preventDefault();
+      alert('ATENCIÓN: DEBE SELECCIONAR AL MENOS UNA ASIGNATURA A INSCRIBIR');
+
+    }else{
+      msg = `${total} Asignaturas a preinscribir en el período académico #{academic_process.period.name} de #{grade.school.name}:`;
+      msg += selected;
+      msg += '\n';
+      msg += '\n';
+      msg += "RECUERDE QUE SU ELECCIÓN ES DEFINITIVA Y NO PODRÁ SER CAMBIADA. ¿Está seguro?" 
+      if (window.confirm(msg) == false) {
+        event.preventDefault();
+      }
+    }
+    
+  })
+

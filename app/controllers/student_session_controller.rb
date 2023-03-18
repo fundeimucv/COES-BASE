@@ -15,5 +15,7 @@ class StudentSessionController < ApplicationController
 			redirect_to edit_address_path(current_student)
 		end
 
+		@student = current_student
+
 	end
 end

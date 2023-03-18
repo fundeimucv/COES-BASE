@@ -1,7 +1,7 @@
 - if (current_user.admin? and session[:rol].eql? 'admin')
   - id = 'newEnrollmentDayModal'
-  %button.btn.btn-primary.float-end{"data-bs-target": "##{id}", "data-bs-toggle": :modal, type: :button}
-    .fa.fa-star
+  %button.btn.btn-success.float-end{"data-bs-target": "##{id}", "data-bs-toggle": :modal, type: :button}
+    .fa.fa-plus
     Nueva Jornada por Cita Horaria
 
   - title = 'Nueva Jornada por Cita Horaria'
@@ -16,7 +16,7 @@
     %li.nav-item{role: "presentation"}
       %button.nav-link{"aria-controls": "day#{day.id}", "aria-selected": false, "data-bs-target": "#day#{day.id}", "data-bs-toggle": :tab, role: :tab, type: :button, id: "#day#{day.id}Tab"}
         = I18n.l(day.start, format: "%d/%m/%Y")
-        .badge.bg-dark= day.own_grades_orders.count
+        .badge.bg-dark= day.own_grades_count
 
 #myTabContent.tab-content
   #withoutAppointment.tab-pane.fade.show.active{"aria-labelledby": "withoutAppointment-tab", role: "tabpanel"}
@@ -37,4 +37,4 @@
         Eliminar Jornada del
         = I18n.l(day.start, format: "%d/%m/%Y")
 
-      = render partial: '/enrollment_days/show', locals: {grades: day.own_grades_orders, academic_process: academic_process }
+      = render partial: '/enrollment_days/show', locals: {grades: day.own_grades_sort_by_appointment, academic_process: academic_process }

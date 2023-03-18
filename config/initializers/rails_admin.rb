@@ -49,12 +49,19 @@ RailsAdmin.config do |config|
       # except [Address, SectionTeacher, Profile, User, StudyPlan, Period, Course, Faculty]
 
     end
-    new
-    export
+    new do
+      except [School, Faculty]
+    end
+    export do
+      except [School]
+
+    end
     bulk_delete
     show
     edit
-    delete
+    delete do
+      except [School, StudyPlan, Faculty, Subject]
+    end
     import do
       only [User, Student, Teacher, Subject, Section, AcademicRecord]
     end

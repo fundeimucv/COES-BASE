@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_03_16_201902) do
+ActiveRecord::Schema[7.0].define(version: 2023_03_17_140812) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -190,7 +190,10 @@ ActiveRecord::Schema[7.0].define(version: 2023_03_16_201902) do
     t.datetime "updated_at", null: false
     t.datetime "appointment_time"
     t.integer "duration_slot_time"
+    t.integer "enrollment_status", default: 0, null: false
+    t.bigint "enabled_enroll_process_id"
     t.index ["admission_type_id"], name: "index_grades_on_admission_type_id"
+    t.index ["enabled_enroll_process_id"], name: "index_grades_on_enabled_enroll_process_id"
     t.index ["student_id", "study_plan_id"], name: "index_grades_on_student_id_and_study_plan_id", unique: true
     t.index ["student_id"], name: "index_grades_on_student_id"
     t.index ["study_plan_id"], name: "index_grades_on_study_plan_id"
@@ -257,15 +260,15 @@ ActiveRecord::Schema[7.0].define(version: 2023_03_16_201902) do
     t.boolean "enable_subject_retreat"
     t.boolean "enable_change_course"
     t.boolean "enable_dependents"
-    t.bigint "period_active_id"
-    t.bigint "period_enroll_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "faculty_id"
     t.string "contact_email", default: "coes.fau@gmail.com", null: false
+    t.bigint "active_process_id"
+    t.bigint "enroll_process_id"
+    t.index ["active_process_id"], name: "index_schools_on_active_process_id"
+    t.index ["enroll_process_id"], name: "index_schools_on_enroll_process_id"
     t.index ["faculty_id"], name: "index_schools_on_faculty_id"
-    t.index ["period_active_id"], name: "index_schools_on_period_active_id"
-    t.index ["period_enroll_id"], name: "index_schools_on_period_enroll_id"
   end
 
   create_table "sections", force: :cascade do |t|
@@ -382,14 +385,15 @@ ActiveRecord::Schema[7.0].define(version: 2023_03_16_201902) do
   add_foreign_key "enroll_academic_processes", "academic_processes"
   add_foreign_key "enroll_academic_processes", "grades"
   add_foreign_key "enrollment_days", "academic_processes"
+  add_foreign_key "grades", "academic_processes", column: "enabled_enroll_process_id"
   add_foreign_key "grades", "admission_types"
   add_foreign_key "grades", "students", primary_key: "user_id", on_update: :cascade, on_delete: :cascade
   add_foreign_key "grades", "study_plans"
   add_foreign_key "payment_reports", "banks", column: "origin_bank_id"
   add_foreign_key "qualifications", "academic_records"
   add_foreign_key "schedules", "sections"
-  add_foreign_key "schools", "periods", column: "period_active_id"
-  add_foreign_key "schools", "periods", column: "period_enroll_id"
+  add_foreign_key "schools", "academic_processes", column: "active_process_id"
+  add_foreign_key "schools", "academic_processes", column: "enroll_process_id"
   add_foreign_key "sections", "courses"
   add_foreign_key "sections", "teachers", primary_key: "user_id", on_update: :cascade, on_delete: :cascade
   add_foreign_key "sections_teachers", "sections"
