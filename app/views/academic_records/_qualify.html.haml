@@ -146,12 +146,12 @@
   }
 
   function messageSendData(clase, msg) {
-    let elem = $('#message')
+    let elem = $('#message');
 
-    elem.removeClass('alert-danger alert-success')
+    elem.removeClass('alert-danger alert-success');
 
-    elem.addClass(`alert-${clase}`)
-    elem.html(msg)
+    elem.addClass(`alert-${clase}`);
+    elem.html(msg);
     
     elem.fadeIn(0);
     elem.fadeOut(4000);

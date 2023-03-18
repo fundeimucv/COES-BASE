@@ -264,6 +264,8 @@ es:
           attributes:
             final_q:
               in: 'Debe estar entre 0 y 20'
+            enroll_academic_process:
+              required: requerido
         academic_process:
           attributes:
             period:

@@ -13,6 +13,7 @@ class Course < ApplicationRecord
   
   # has_many
   has_many :sections, dependent: :destroy
+  has_many :academic_records, through: :sections
 
   #VALIDATIONS:
   validates :subject, presence: true
@@ -26,6 +27,14 @@ class Course < ApplicationRecord
 
   def total_sections
     sections.count
+  end
+
+  def subject_desc_with_pci
+    if offer_as_pci
+      self.subject.description_code_with_school
+    else
+      self.subject.description_code
+    end
   end
 
   rails_admin do

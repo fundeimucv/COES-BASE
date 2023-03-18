@@ -135,7 +135,7 @@ class Grade < ApplicationRecord
   end
 
   def description
-    "Plan de Estudio: #{study_plan.name}, Admitido vía: #{admission_type.name}, Estado de Inscripción: #{registration_status.titleize}" if study_plan and admission_type and registration_status
+    "Plan de Estudio: #{study_plan.name}, Admitido vía: #{admission_type.name}, Estado de Inscripción: #{registration_status.titleize}" if (study_plan and admission_type and registration_status)
   end
 
   def numbers
@@ -153,7 +153,9 @@ class Grade < ApplicationRecord
     end
 
     show do
-      fields :student, :numbers, :description, :enroll_academic_processes, :enabled_enroll_process
+      fields :student, :enroll_academic_processes, :enabled_enroll_process
+      field :numbers
+      field :description
     end
 
     edit do
@@ -168,17 +170,17 @@ class Grade < ApplicationRecord
 
   # NUMBERSTINY:
 
-  def total_credits_coursed periods_ids = nil
-    if periods_ids
-      academic_records.total_credits_coursed_on_periods periods_ids
+  def total_credits_coursed process_ids = nil
+    if process_ids
+      academic_records.total_credits_coursed_on_process process_ids
     else
       academic_records.total_credits_coursed
     end
   end
 
-  def total_credits_approved periods_ids = nil
-    if periods_ids
-      academic_records.total_credits_approved_on_periods periods_ids
+  def total_credits_approved process_ids = nil
+    if process_ids
+      academic_records.total_credits_approved_on_process process_ids
     else
       academic_records.total_credits_approved
     end
@@ -247,9 +249,6 @@ class Grade < ApplicationRecord
     aux = self.academic_records.promedio_approved
     (aux and aux.is_a? BigDecimal) ? aux.round(4) : 0.0
   end
-
-
-
 
   after_initialize do
     if new_record?

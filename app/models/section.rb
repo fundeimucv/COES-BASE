@@ -50,7 +50,34 @@ class Section < ApplicationRecord
 
   scope :without_teacher_assigned, -> () {where(teacher_id: nil)}
   scope :with_teacher_assigned, -> () {where('teacher_id IN NOT NULL')}
+
+  scope :has_capacity, -> {joins(:academic_records).group('sections.id').having('count(academic_records.id) < sections.capacity').order('count(academic_records.id)')}
+
+  scope :has_academic_record, -> (academic_record_id) {joins(:academic_records).where('academic_records.id': academic_record_id)}
+
   # FUNCTIONS:
+  def total_students
+    self.academic_records.count
+  end
+
+  def capacity_vs_enrolls
+    # "#{self.capacity} / #{self.total_students}"
+    "#{self.total_students} de #{self.capacity}"
+  end
+
+  def description_with_quotes
+    "#{code} - (#{capacity_vs_enrolls})"
+  end
+
+  def has_academic_record? academic_record_id
+    self.academic_records.where(id: academic_record_id).any?
+  end
+
+  def has_capacity?
+    self.capacity and (self.capacity > 0) and (self.total_students < self.capacity)
+  end
+
+
   def set_default_values_by_import
     self.capacity = 50 
     self.modality =  (self.code.eql? 'U') ? :equivalencia_interna : :nota_final

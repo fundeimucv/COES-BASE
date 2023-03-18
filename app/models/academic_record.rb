@@ -34,6 +34,8 @@ class AcademicRecord < ApplicationRecord
   after_save :set_options_q
   after_save :update_grade_numbers#, if: :will_save_change_to_status?
 
+  after_destroy :destroy_enroll_academic_process
+
   # TRIGGER FUNCTIONS:
   def set_options_q
     self.qualifications.destroy_all if self.pi? or self.retirado? or (self.subject and self.subject.absoluta?)
@@ -58,12 +60,15 @@ class AcademicRecord < ApplicationRecord
 
   scope :of_student, lambda {|student_id| where("student_id = ?", student_id)}
 
-  scope :no_retirados, -> {where "academic_records.status != 3"}
+  scope :no_retirados, -> {not_retirado}
 
   scope :coursed, -> {where "academic_records.status = 1 or academic_records.status = 2 or academic_records.status = 4"}
 
   scope :coursing, -> {where "academic_records.status != 1 and academic_records.status != 2 and academic_records.status != 3"} # Excluye retiradas también
-  
+
+  scope :total_credits_coursed_on_process, -> (periods_ids) {coursed.joins(:academic_proccess).where('academic_proccesses.id': periods_ids).joins(:subject).sum('subjects.unit_credits')}
+  scope :total_credits_approved_on_process, -> (periods_ids) {aprobado.joins(:academic_proccess).where('academic_proccesses.id': periods_ids).joins(:subject).sum('subjects.unit_credits')}
+
   scope :total_credits_coursed_on_periods, lambda{|periods_ids| coursed.joins(:academic_proccess).where('academic_proccesses.period_id IN (?)', periods_ids).joins(:subject).sum('subjects.unit_credits')}
 
   scope :total_credits_approved_on_periods, lambda{|periods_ids| aprobado.joins(:academic_proccess).where('academic_proccesses.period_id IN (?)', periods_ids).joins(:subject).sum('subjects.unit_credits')}
@@ -121,6 +126,10 @@ class AcademicRecord < ApplicationRecord
     aux = "#{user.reverse_name}"
     aux += " <div class='badge bg-danger'>Retirada</div>" if retirado? 
     return aux
+  end
+
+  def badge_approved
+    "<span class= 'badge bg-success'>Aprobado (#{self.q_value_to_02i_to_from})</span>" if self.aprobado?
   end
 
   def tr_class_by_status_q
@@ -460,6 +469,10 @@ class AcademicRecord < ApplicationRecord
   end
 
   private
+
+  def destroy_enroll_academic_process
+    self.enroll_academic_process.destroy unless self.enroll_academic_process.academic_records.any?
+  end
 
   def update_grade_numbers
 

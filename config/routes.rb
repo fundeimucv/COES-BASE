@@ -12,7 +12,17 @@ Rails.application.routes.draw do
   resources :page, only: :show
   resources :qualifications, only: :update
   resources :period_types
-  resources :enroll_academic_processes, :academic_records, :periods, :profiles, :sections, :courses
+  resources :academic_records, :periods, :profiles, :sections, :courses
+
+
+  resources :enroll_academic_processes do
+    collection do
+      post :reserve_space
+      post :enroll
+    end
+  end
+
+
 
   resources :enrollment_days, only: [:create, :destroy]
 

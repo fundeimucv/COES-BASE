@@ -50,11 +50,11 @@ class EnrollAcademicProcess < ApplicationRecord
   end
 
   def total_subjects
-    subject.count
+    subjects.count
   end
 
   def total_credits
-    subject.sum(:unit_credits)
+    subjects.sum(:unit_credits)
   end
 
 

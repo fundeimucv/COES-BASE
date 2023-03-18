@@ -223,9 +223,9 @@ class User < ApplicationRecord
 
   def profile_set
     if self.profile_picture and self.profile_picture.attached? and self.profile_picture.representable?
-      # "<img href='#{Object.new.extend(ActionView::Helpers::AssetUrlHelper).image_url(self.profile_picture_as_thumb) }' />"
-      # image_tag self.profile_picture_as_thumb
-      ActionController::Base.helpers.image_tag(Object.new.extend(ActionView::Helpers::AssetUrlHelper).image_url(self.profile_picture_as_thumb, class: "img-thumbnail"))
+      # ActionController::Base.helpers.image_tag(Object.new.extend(ActionView::Helpers::AssetUrlHelper).image_url(self.profile_picture_as_thumb, class: "img-thumbnail"))
+
+      "<img href='#{Object.new.extend(ActionView::Helpers::AssetUrlHelper).image_url(self.profile_picture_as_thumb)}' class='img-thumbnail' />"
       
     end
   end

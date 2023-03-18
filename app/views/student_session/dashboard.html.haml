@@ -1,6 +1,5 @@
 - if false #current_user.sign_in_count.eql? 1
   =# render template: 'devise/passwords/edit', locals: {resource: current_user, resource_name: 'User'}
-
 = render partial: '/users/personal_data', locals: {user: @student.user}
 
 %nav
@@ -56,7 +55,7 @@
         
         - enabled_enroll_by_appointment = active_enrollment_day and grade.can_enroll_by_apponintment?
         
-        - enrolled_in_before_progress = @grade.enroll_academic_processes.of_academic_process(@academic_process_before.id).any?
+        - enrolled_in_before_progress = grade.enroll_academic_processes.of_academic_process(@academic_process_before.id).any?
 
         - special_enabled_to_enroll = (grade.enabled_enroll_process.eql? @academic_process.id)
 
@@ -66,29 +65,30 @@
         - #permitida = !(@grado.articulo_7? or @grado.articulo_6? or @grado.iniciado_periodo_id.eql? @periodo_inscripcion.id)
         - #NOTA INTERNA: La siguiente línea no funciona con or. por lo que fue cambiada a || 
         - #Tiene que ver con que el or pareciera un or exclusivo, es decir que tienen que ser todos true
-        - enabled_enroll_by_general = valid_to_regular_enroll or enrolling
+        - enabled_enroll_by_general = enrolling or valid_to_regular_enroll 
 
         - if (enabled_enroll_by_appointment or enabled_enroll_by_general)
+          - courses_offer = @academic_process.courses
 
-          - subject_offer_by_process = @academic_process.subjects.order(ordinal: :asc)
-          
           - if school.enable_dependents?
             - subjects_offer_by_dependency = grade.subjects_offer_by_dependent
-            - subject_offer_by_process = subject_offer_by_process.merge(subjects_offer_by_dependency)
+            - courses_offer = courses_offer.where(subject_id: subjects_offer_by_dependency)
+
+          - courses_offer = courses_offer.joins(:subject).order('subjects.ordinal': :asc)
 
           - @aprobadas = grade.subjects_approved.ids.uniq.flatten
 
-          - #-----------------------------
-          - if false
-            %button.btn.btn-success.float-end{"data-bs-target": "##{id_modal}", "data-bs-toggle": :modal, type: :button}
-              .fa.fa-education
-              = "#{title_btn} en #{school.name} el periodo #{@periodo_inscripcion.id}"
-
-            - title = 'Nueva Jornada por Cita Horaria'
-            - content = render partial: '/enrollment_days/form', locals: {enrollment_day: EnrollmentDay.new(academic_process_id: academic_process.id), total_grades_without_appointment: grades_without_appointment.count}
-            = render partial: '/layouts/scaffold-modal', locals: {content: content, title: title, id: id}
-
-          - title = "Proceso de Preinscripción #{@academic_process.period.name}"
+          %button.btn.btn-lg.btn-success.position-absolute.top-50.start-50.translate-middle{"data-bs-target": "#Enrollment", "data-bs-toggle": :modal, type: :button}
+            .fa.fa-education
+            = "Preinscribirse en Proceso Académico #{@academic_process.period.name} de la #{school.name}"
           - msgDanger = "Seleccione las asignaturas que desea preinscribir. Recuerde mover el scroll para ver todas las asignaturas ofertadas."
 
-          = render partial: 'admin/enroll_academic_processes/form', locals: {subjects_offer: subject_offer_by_process, title: title, msgDanger: msgDanger, grade: grade, academic_process: @academic_process}
+          - title1 = "Preinscripción en Proceso Académico #{@academic_process.period.name}"
+          - title2 = "#{school.name}"
+          - content = render partial: '/enroll_academic_processes/form', locals: {courses_offer: courses_offer, msgDanger: msgDanger, grade: grade, academic_process: @academic_process}
+
+          = render partial: '/layouts/scaffold-modal-static', locals: {content: content, title1: title1, title2: title2, id: 'Enrollment'}
+
+          
+
+=# render 'layouts/loading'

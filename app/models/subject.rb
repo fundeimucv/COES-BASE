@@ -98,6 +98,10 @@ class Subject < ApplicationRecord
     "#{description_code} (#{unit_credits} Unidades de Créditos)"
   end
 
+  def desc_to_select
+    "- #{self.description_code} - #{self.unit_credits}"
+  end
+
   def description_code_with_school
     "#{description_code} <span class='badge badge-success'>#{self.school.code}</span>".html_safe
   end
