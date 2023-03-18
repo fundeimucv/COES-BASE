@@ -90,7 +90,7 @@ class Grade < ApplicationRecord
     end
 
     # Buscamos las asignaturas sin prelación
-    ids_subjects_independients = self.escuela.subjects.independents.ids
+    ids_subjects_independients = self.school.subjects.independents.ids
 
     # Sumamos todas las ids ()
     asignaturas_disponibles_ids = ids_subjects_positives + ids_subjects_independients
@@ -114,7 +114,7 @@ class Grade < ApplicationRecord
   end
 
   def can_enroll_by_apponintment? #puede_inscribir?
-    (self.appointment_time and self.duration_slot_time) and (Time.zone.now > self.appointment_time) and (Time.zone.now < self.appointment_time+self.duration_slot_time.minutes) 
+    ((self.appointment_time and self.duration_slot_time) and (Time.zone.now > self.appointment_time) and (Time.zone.now < self.appointment_time+self.duration_slot_time.minutes) ) ? true : false
   end
 
   def appointment_time_desc

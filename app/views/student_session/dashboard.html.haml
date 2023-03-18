@@ -42,7 +42,7 @@
       - @limitCredits = @academic_process.max_credits
       - @limitSubjects = @academic_process.max_subjects
 
-      - enrolling = (@enroll_in_process and @enroll_in_process.reservado?)
+      - enrolling = (!@enroll_in_process.nil? and @enroll_in_process.reservado?)
       - if @enroll_in_process.nil? or enrolling
         - # NO INSCRITO O RESERVADO:
         - @totalCreditsReserved = @enroll_in_process ? @enroll_in_process.total_credits : 0
@@ -53,7 +53,7 @@
         - if active_enrollment_day
           %h4.text-center.alert.alert-success= "Jornada por Cita Horaria Activa"
         
-        - enabled_enroll_by_appointment = active_enrollment_day and grade.can_enroll_by_apponintment?
+        - enabled_enroll_by_appointment = (!active_enrollment_day.nil? and grade.can_enroll_by_apponintment?)
         
         - enrolled_in_before_progress = grade.enroll_academic_processes.of_academic_process(@academic_process_before.id).any?
 
@@ -65,9 +65,9 @@
         - #permitida = !(@grado.articulo_7? or @grado.articulo_6? or @grado.iniciado_periodo_id.eql? @periodo_inscripcion.id)
         - #NOTA INTERNA: La siguiente línea no funciona con or. por lo que fue cambiada a || 
         - #Tiene que ver con que el or pareciera un or exclusivo, es decir que tienen que ser todos true
-        - enabled_enroll_by_general = enrolling or valid_to_regular_enroll 
+        - enabled_enroll_by_general = enrolling || valid_to_regular_enroll 
 
-        - if (enabled_enroll_by_appointment or enabled_enroll_by_general)
+        - if (enabled_enroll_by_appointment || enabled_enroll_by_general)
           - courses_offer = @academic_process.courses
 
           - if school.enable_dependents?
