@@ -17,7 +17,7 @@ RailsAdmin.config do |config|
   # config.authorize_with :pundit
 
   ## == PaperTrail ==
-  # config.audit_with :paper_trail, 'User', 'PaperTrail::Version' # PaperTrail >= 3.0.0
+  config.audit_with :paper_trail, 'User', 'PaperTrail::Version' # PaperTrail >= 3.0.0
 
   ### More at https://github.com/railsadminteam/rails_admin/wiki/Base-configuration
 
@@ -68,8 +68,13 @@ RailsAdmin.config do |config|
     # show_in_app
 
     ## With an audit adapter, you can add:
-    # history_index
-    # history_show
+    history_index do
+      only [User, Admin, Student, Teacher]
+    end
+
+    # history_show do
+    #   only [User, Admin, Student, Teacher]
+    # end
   end
 
 

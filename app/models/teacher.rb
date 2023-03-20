@@ -2,6 +2,9 @@ class Teacher < ApplicationRecord
   # SCHEMA:
   # t.bigint "area_id", null: false
 
+  # HISTORY:
+  has_paper_trail on: [:create, :destroy, :touch, :update]
+
   # ASSOCIATIONS:
   belongs_to :user
   # accepts_nested_attributes_for :user

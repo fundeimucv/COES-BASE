@@ -22,6 +22,9 @@ class Student < ApplicationRecord
   enum disability: DISCAPACIDADES
   enum marital_status: ESTADOS_CIVILES
 
+  # HISTORY:
+  has_paper_trail on: [:create, :destroy, :touch, :update]
+
   # ASSOCIATIONS:
   #belons_to
   belongs_to :user
