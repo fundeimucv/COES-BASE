@@ -47,7 +47,7 @@ class ApplicationController < ActionController::Base
   end
 
   def set_session_id_if_multirols
-    session[:rol] = params[:rol] if (params[:rol] and current_user and session[:rol].nil?)
+    session[:rol] = params[:rol] if (params[:rol] and current_user)
   end 
 
 

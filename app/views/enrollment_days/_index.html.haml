@@ -1,4 +1,4 @@
-- if (current_user.admin? and session[:rol].eql? 'admin')
+- if (current_user and current_user.admin? and session[:rol].eql? 'admin')
   - id = 'newEnrollmentDayModal'
   %button.btn.btn-success.float-end{"data-bs-target": "##{id}", "data-bs-toggle": :modal, type: :button}
     .fa.fa-plus
