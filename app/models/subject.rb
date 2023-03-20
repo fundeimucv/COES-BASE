@@ -136,6 +136,10 @@ class Subject < ApplicationRecord
     end      
   end
 
+  def total_dependencies
+    self.dependencies.count
+  end
+
   rails_admin do
     navigation_label 'Gestión Académica'
     navigation_icon 'fa-regular fa-book'
@@ -157,6 +161,10 @@ class Subject < ApplicationRecord
         searchable true
       end
 
+      field :total_dependencies do
+        label 'T. Dependencias'
+        column_width 200
+      end
       field :area do
         column_width 300
         searchable :name
