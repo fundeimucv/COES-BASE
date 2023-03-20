@@ -50,6 +50,13 @@ class Grade < ApplicationRecord
   
   scope :total_with_enrollments_in_period, -> (period_id) { with_enrollments_in_period(period_id).uniq.count }
 
+  scope :with_academic_records, -> { where('(SELECT COUNT(*) FROM  "grades" INNER JOIN "enroll_academic_processes" ON "enroll_academic_processes"."grade_id" = "grades"."id" INNER JOIN "academic_records" ON "academic_records"."enroll_academic_process_id" = "enroll_academic_processes"."id") > 0') }
+
+  scope :with_academic_records, -> {joins(:academic_records)}
+  
+  scope :without_academic_records, -> { where('(SELECT COUNT(*) FROM  "grades" INNER JOIN "enroll_academic_processes" ON "enroll_academic_processes"."grade_id" = "grades"."id" INNER JOIN "academic_records" ON "academic_records"."enroll_academic_process_id" = "enroll_academic_processes"."id") IS NULL') }
+
+
 
   # VALIDATIONS:
   # validates :student, presence: true
@@ -244,7 +251,7 @@ class Grade < ApplicationRecord
     end
     cursados = self.total_credits_coursed periods_ids
 
-    (cursados > 0 and aux and aux.is_a? BigDecimal) ? (aux.to_f/cursados.to_f).round(4) : 0.0
+    (cursados > 0 and aux) ? (aux.to_f/cursados.to_f).round(4) : 0.0
   end
 
   def calculate_weighted_average_approved
