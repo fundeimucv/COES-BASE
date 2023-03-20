@@ -234,7 +234,7 @@ class Section < ApplicationRecord
     end
 
     export do
-      fields :code, :subject, :user, :qualified, :modality
+      fields :code, :subject, :user, :qualified, :modality, :schedules
     end
   end
 
