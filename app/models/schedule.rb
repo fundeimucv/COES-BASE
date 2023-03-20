@@ -19,5 +19,11 @@ class Schedule < ApplicationRecord
     edit do
       fields :day, :starttime, :endtime
     end
+    export do
+      field :name do
+        label 'Horario'
+      end
+
+    end
   end
 end
