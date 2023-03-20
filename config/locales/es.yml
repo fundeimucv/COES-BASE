@@ -415,6 +415,7 @@ es:
         academic_process: 'Proceso Académico'
         period_type: 'Tipo de Período'
         user: 'Usuario'
+        status: Estado
         subject: 'Asignatura'
       academic_record/status_q:
         sin_calificar: 'Sin Calificar'
@@ -556,6 +557,8 @@ es:
         students: Estudiantes
         schedules: Horarios
         classroom: 'Áula'
+        created_at: Fecha Creación
+        updated_at: Fecha Última Actualización
       student:
         active: 'Activo'
         disability: 'Discapacidad'
