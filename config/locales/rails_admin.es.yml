@@ -44,11 +44,11 @@ es:
       cancel: "Cancelar"
     actions:
       history_show:
-        title: "Bitácora" 
+        title: "Listado de Bitácora %{model_label}"
         menu: "Bitácora"
         breadcrumb: "Bitácora"
       history_index:
-        title: "Bitácora" 
+        title: "Listado de Bitácora %{model_label}"
         menu: "Bitácora"
         breadcrumb: "Bitácora"
       import:
@@ -105,7 +105,7 @@ es:
       dashboard:
         menu: "Escritorio"
         title: "Escritorio"
-        breadcrumb: "Escritorio"    
+        breadcrumb: "Escritorio"
     Escritorio:
       menu: "Escritorio"
       title: "Escritorio"

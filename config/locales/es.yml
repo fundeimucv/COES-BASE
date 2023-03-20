@@ -4,6 +4,8 @@ es:
   show: Detalle
   import: Importar
   export: Generar Reporte
+  history_index: Bitácora
+  history_show: Bitácora
 
   dashboard: Escritorio
   diferido: ND
@@ -182,7 +184,7 @@ es:
     links:
       back: "Atrás"
       cancel: "Cancelar"
-      confirm: "Esta acción es irreversible, ¿Estas Seguro?"
+      confirm: "Esta acción es irreversible, ¿Estás Seguro?"
       destroy: "Eliminar"
       new: "Nuevo"
       edit: "Editar"
