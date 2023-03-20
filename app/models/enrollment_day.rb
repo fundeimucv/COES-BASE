@@ -34,16 +34,36 @@ class EnrollmentDay < ApplicationRecord
 
   #MÉTODOS
 
+  #CSV:
+  def name_to_file
+    "#{academic_process.school.code}_#{academic_process.period.name}_#{start.strftime('%Y%m%d')}_#{self.id}"
+  end
+
+  def own_grades_to_csv
+
+    CSV.generate do |csv|
+      csv << ['Cédula', 'Apellido y Nombre', 'desde', 'hasta', 'Efficiencia', 'Promedio', 'Ponderado']
+      own_grades_sort_by_appointment.each do |grade|
+        user = grade.user
+        csv << [user.ci, user.reverse_name, grade.appointment_from, grade.appointment_to, grade.efficiency, grade.simple_average, grade.weighted_average]
+      end
+    end
+  end
+
   def total_timeslots #total_franjas
     (slot_duration_minutes.eql? 0) ? 0 : (self.total_duration_hours/self.slot_duration_minutes.to_f*60).to_i
   end
 
   def grades_by_timeslot #grado_x_franja 
-    if total_timeslots > max_grades 
-      return 1
+    if self.total_timeslots > max_grades 
+      return max_grades 
     else
       (self.total_timeslots > 0) ? (max_grades/total_timeslots) : 0
     end
+  end
+
+  def mod_to_grades
+    (total_timeslots.eql? 0) ? 0 : max_grades%total_timeslots
   end
 
 
@@ -56,7 +76,7 @@ class EnrollmentDay < ApplicationRecord
   end
 
   def own_grades_sort_by_appointment
-    self.own_grades.order([appointment_time: :asc, duration_slot_time: :asc])
+    self.own_grades.order([appointment_time: :asc, duration_slot_time: :asc, efficiency: :desc, simple_average: :desc, weighted_average: :desc])
   end
 
   def own_grades_sort_by_numbers

@@ -82,7 +82,8 @@ class EnrollAcademicProcess < ApplicationRecord
   rails_admin do
     navigation_label 'Inscripciones'
     navigation_icon 'fa-solid fa-calendar-check'
-
+    visible false
+    
     list do
       # filters [:student, :period, :enroll_status, :permanence_status, :created_at]
       fields :enroll_status#, :permanence_status

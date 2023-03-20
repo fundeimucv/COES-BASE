@@ -1,5 +1,5 @@
 class EnrollmentDaysController < ApplicationController
-  before_action :set_enrollment_day, only: %i[ destroy ]
+  before_action :set_enrollment_day, only: %i[ destroy export ]
 
   # GET /enrollment_days or /enrollment_days.json
   def index
@@ -17,6 +17,12 @@ class EnrollmentDaysController < ApplicationController
 
   def send_email_enrollment_day
     
+  end
+
+  def export
+    respond_to do |format|
+      format.xls {send_data @enrollment_day.own_grades_to_csv, filename: "#{@enrollment_day.name_to_file}.xls"}
+    end
   end
 
   # GET /enrollment_days/1/edit
@@ -43,6 +49,11 @@ class EnrollmentDaysController < ApplicationController
 
         limitado[0..grades_by_timeslot-1].each{|gr| total_updted += 1 if gr.update(appointment_time: @enrollment_day.start+(a*@enrollment_day.slot_duration_minutes).minutes, duration_slot_time: @enrollment_day.slot_duration_minutes)}
 
+      end
+      resto = @enrollment_day.mod_to_grades
+      if resto > 0
+        limitado = academic_proccess.readys_to_enrollment_day
+        limitado[0..resto-1].each{|gr| total_updted += 1 if gr.update(appointment_time: @enrollment_day.start+(total_timeslots-1*@enrollment_day.slot_duration_minutes).minutes, duration_slot_time: @enrollment_day.slot_duration_minutes)}
       end
 
     else

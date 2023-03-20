@@ -60,6 +60,16 @@ class Grade < ApplicationRecord
 
   # FUNCTIONS:
 
+  # TO CSV:
+
+  def appointment_from
+    I18n.l(self.appointment_time, format: "%I:%M %p") if self.appointment_time
+  end
+
+  def appointment_to
+    I18n.l(self.appointment_time+self.duration_slot_time.minutes, format: "%I:%M %p") if (self.appointment_time and self.duration_slot_time.minutes)
+  end
+
   def label_status_enroll_academic_process(academic_process_id)
     if iep = self.enroll_academic_processes.of_academic_process(academic_process_id).first
       iep.label_status
