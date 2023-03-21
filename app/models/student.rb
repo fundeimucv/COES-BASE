@@ -27,10 +27,10 @@ class Student < ApplicationRecord
   belongs_to :user
   # accepts_nested_attributes_for :user
   # has_one
-  has_one :address
+  has_one :address, dependent: :destroy
   accepts_nested_attributes_for :address
   # has_many
-  has_many :grades
+  has_many :grades, dependent: :destroy
   accepts_nested_attributes_for :grades
 
   has_many :study_plans, through: :grades
@@ -156,6 +156,7 @@ class Student < ApplicationRecord
       #     value.to_s.upcase
       #   end
       # end
+      field :address
 
       field :grades do
         # inline_add false

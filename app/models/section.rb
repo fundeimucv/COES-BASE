@@ -23,7 +23,7 @@ class Section < ApplicationRecord
 
   # has_many
   has_many :schedules, dependent: :destroy
-  accepts_nested_attributes_for :schedules
+  accepts_nested_attributes_for :schedules, allow_destroy: true
 
   has_many :academic_records, dependent: :destroy
   # accepts_nested_attributes_for :academic_records
