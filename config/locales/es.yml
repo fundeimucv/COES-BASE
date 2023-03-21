@@ -37,12 +37,9 @@ es:
       records: 'Registros'
       created_at: 'Fecha de Acción'
       username: 'Usuario'
-      item: 'Generó'
-      message: 'Mensaje'
-      create: 'Creó'
-      changes: 'Cambios Realizados'
-      rollback: 'Acciones'
-      view_changes: 'Ver Cambios'
+      item: '¿Qué hizo?'
+      message: 'Acción Realizada'
+      changes: 'Acción Realizada'    
 
     actions:
       index:

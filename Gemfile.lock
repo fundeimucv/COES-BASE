@@ -269,10 +269,6 @@ GEM
       nested_form (~> 0.3)
       rails (>= 6.0, < 8)
       turbo-rails (~> 1.0)
-    rails_admin_history_rollback (1.0.3)
-      paper_trail (>= 3.0.6)
-      rails (>= 4.2.0)
-      rails_admin (>= 0.6.6)
     rails_admin_import (3.0.3)
       charlock_holmes (~> 0.7)
       rails (>= 3.2)
@@ -389,7 +385,6 @@ DEPENDENCIES
   puma (~> 5.0)
   rails (~> 7.0.4)
   rails_admin (~> 3.0)
-  rails_admin_history_rollback
   rails_admin_import (~> 3.0)
   redis (~> 4.0)
   sassc-rails
