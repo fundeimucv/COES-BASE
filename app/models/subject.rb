@@ -214,11 +214,11 @@ class Subject < ApplicationRecord
         inline_edit false
         help 'Asignatura(s) que prela directamente esta Asignatura. El estudiante debe aprobar la(s) asignatura(s) seleccionada(s) a continuación para que esta asignatura sea ofertada.'
       end
-      field :subject_dependents do
-        inline_add false
-        inline_edit false
-        help 'Asignatura(s) que dependen directamente de esta asignatura. Si el estudiante aprueba esta asignatura, la(s) asignatura(s) seleccionada(s) a continuación podrán ser ofertadas.'
-      end
+      # field :subject_dependents do
+      #   inline_add false
+      #   inline_edit false
+      #   help 'Asignatura(s) que dependen directamente de esta asignatura. Si el estudiante aprueba esta asignatura, la(s) asignatura(s) seleccionada(s) a continuación podrán ser ofertadas.'
+      # end
     end
 
     export do

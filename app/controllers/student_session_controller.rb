@@ -1,8 +1,9 @@
 class StudentSessionController < ApplicationController
-	before_action :set_session_id_if_multirols, only: [:dashboard]
 	before_action :authenticate_student!
+	before_action :set_session_id_if_multirols, only: [:dashboard]
 
-	def dashboard		
+	def dashboard
+		# OCULATAMIENTO TEMPORAL DE DATOS PERSONALES:
 		if current_user.empty_any_image?
 			redirect_to edit_images_user_path(current_user)
 		elsif current_user.empty_personal_info?

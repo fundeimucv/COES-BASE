@@ -56,7 +56,9 @@ class Period < ApplicationRecord
     end
 
     export do
-    	fields :year, :period_type
+    	field :name do
+    		label 'Periodo'
+    	end
     end
   end
 

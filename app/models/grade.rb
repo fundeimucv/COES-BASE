@@ -50,6 +50,13 @@ class Grade < ApplicationRecord
   
   scope :total_with_enrollments_in_period, -> (period_id) { with_enrollments_in_period(period_id).uniq.count }
 
+  scope :with_academic_records, -> { where('(SELECT COUNT(*) FROM  "grades" INNER JOIN "enroll_academic_processes" ON "enroll_academic_processes"."grade_id" = "grades"."id" INNER JOIN "academic_records" ON "academic_records"."enroll_academic_process_id" = "enroll_academic_processes"."id") > 0') }
+
+  scope :with_academic_records, -> {joins(:academic_records)}
+  
+  scope :without_academic_records, -> { where('(SELECT COUNT(*) FROM  "grades" INNER JOIN "enroll_academic_processes" ON "enroll_academic_processes"."grade_id" = "grades"."id" INNER JOIN "academic_records" ON "academic_records"."enroll_academic_process_id" = "enroll_academic_processes"."id") IS NULL') }
+
+
 
   # VALIDATIONS:
   # validates :student, presence: true
@@ -59,6 +66,16 @@ class Grade < ApplicationRecord
   validates_uniqueness_of :study_plan, scope: [:student], message: 'El estudiante ya tiene el grado asociado', field_name: false
 
   # FUNCTIONS:
+
+  # TO CSV:
+
+  def appointment_from
+    I18n.l(self.appointment_time, format: "%I:%M %p") if self.appointment_time
+  end
+
+  def appointment_to
+    I18n.l(self.appointment_time+self.duration_slot_time.minutes, format: "%I:%M %p") if (self.appointment_time and self.duration_slot_time.minutes)
+  end
 
   def label_status_enroll_academic_process(academic_process_id)
     if iep = self.enroll_academic_processes.of_academic_process(academic_process_id).first
@@ -158,8 +175,12 @@ class Grade < ApplicationRecord
       field :description
     end
 
-    edit do
+    update do
       fields :study_plan, :admission_type, :registration_status, :enabled_enroll_process
+    end
+
+    edit do
+      fields :study_plan, :admission_type, :registration_status
     end
 
     export do
@@ -178,12 +199,28 @@ class Grade < ApplicationRecord
     end
   end
 
+  def total_subjects_coursed
+    academic_records.total_subjects_coursed
+  end
+
+  def total_subjects_approved
+    academic_records.total_subjects_approved
+  end  
+
   def total_credits_approved process_ids = nil
     if process_ids
       academic_records.total_credits_approved_on_process process_ids
     else
       academic_records.total_credits_approved
     end
+  end
+
+  def total_credits_approved_without_equivalence
+    academic_records.without_equivalence.total_credits_approved
+  end
+
+  def total_credits_approved_by_equivalence
+    self.academic_records.by_equivalence.total_credits
   end
 
   def total_credits
@@ -234,7 +271,7 @@ class Grade < ApplicationRecord
     end
     cursados = self.total_credits_coursed periods_ids
 
-    (cursados > 0 and aux and aux.is_a? BigDecimal) ? (aux.to_f/cursados.to_f).round(4) : 0.0
+    (cursados > 0 and aux) ? (aux.to_f/cursados.to_f).round(4) : 0.0
   end
 
   def calculate_weighted_average_approved

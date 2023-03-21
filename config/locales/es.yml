@@ -423,6 +423,7 @@ es:
         academic_process: 'Proceso Académico'
         period_type: 'Tipo de Período'
         user: 'Usuario'
+        status: Estado
         subject: 'Asignatura'
       academic_record/status_q:
         sin_calificar: 'Sin Calificar'
@@ -493,6 +494,7 @@ es:
         simple_average: 'Promedio Simple'
         appointment_time: Cita Horaria
         duration_slot_time: Duración Franja Horaria
+        enabled_enroll_process: 'Permiso especial para inscribir en'
       address:
         state: 'Estado'
         municipality: 'Municipio'
@@ -564,6 +566,8 @@ es:
         students: Estudiantes
         schedules: Horarios
         classroom: 'Áula'
+        created_at: Fecha Creación
+        updated_at: Fecha Última Actualización
       student:
         active: 'Activo'
         disability: 'Discapacidad'

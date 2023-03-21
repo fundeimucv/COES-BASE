@@ -1,0 +1,21 @@
+%table.table.table-condensed.table-striped.table-hover
+  %thead
+    %tr
+      %th Código
+      %th Asignatura
+      %th Créd
+      %th Tipo
+      %th Sec
+      %th Opc
+
+  %tbody
+    - academic_records.by_subjects.each do |academic_record|
+      - subject = academic_record.subject
+      %tr{class: academic_record.tr_class_by_status_q}
+        %td= subject.code
+        %td= subject.name
+        %td= subject.unit_credits
+        %td= subject.modality_initial_letter
+        %td= academic_record.section.code
+        %td
+          .badge.bg-info= academic_record.status.titleize

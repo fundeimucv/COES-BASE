@@ -77,6 +77,10 @@ class AcademicRecord < ApplicationRecord
   scope :total_credits_approved_on_periods, lambda{|periods_ids| aprobado.joins(:academic_proccess).where('academic_proccesses.period_id IN (?)', periods_ids).joins(:subject).sum('subjects.unit_credits')}
 
   scope :total_credits, -> {joins(:subject).sum('subjects.unit_credits')}
+  scope :total_subjects, -> {(joins(:subject).group('subjects.id').count).count}
+
+  scope :total_subjects_coursed, -> {coursed.total_subjects}
+  scope :total_subjects_approved, -> {aprobado.total_subjects}
 
   scope :total_credits_coursed, -> {coursed.total_credits}
   scope :total_credits_approved, -> {aprobado.total_credits}
@@ -87,9 +91,9 @@ class AcademicRecord < ApplicationRecord
   scope :promedio_approved, -> {aprobado.promedio}
   scope :weighted_average_approved, -> {aprobado.weighted_average}
 
-  scope :sin_equivalencias, -> {joins(:section).not_equivalencia_interna} 
+  scope :without_equivalence, -> {joins(:section).not_equivalencia_interna} 
 
-  scope :by_equivalencia, -> {joins(:section).equivalencia_interna}
+  scope :by_equivalence, -> {joins(:section).equivalencia_interna}
 
   # scope :by_equivalencia_interna, -> {joins(:section).where "sections.modality = 1"}
   # scope :by_equivalencia_externa, -> {joins(:section).where "sections.modality = 2"}
@@ -105,6 +109,7 @@ class AcademicRecord < ApplicationRecord
   # Esta función retorna la misma cuenta agrupadas por creditos de asignaturas
   scope :student_enrolled_by_credits2, -> { joins(:subject).group('academic_records.student_id', 'subjects.unit_credits').count} 
 
+  scope :by_subjects, -> {joins(:subject).order('subjects.code': :asc)}
   # scope :perdidos, -> {perdida_por_inasistencia}
 
 
@@ -301,6 +306,7 @@ class AcademicRecord < ApplicationRecord
   rails_admin do
     navigation_label 'Inscripciones'
     navigation_icon 'fa-solid fa-signature'
+    visible false
 
     list do
       search_by :custom_search
@@ -321,7 +327,7 @@ class AcademicRecord < ApplicationRecord
     end
 
     edit do
-      fields :section, :enroll_academic_process, :status, :qualifications
+      fields :section, :enroll_academic_process#, :status#, :qualifications
     end
 
     export do

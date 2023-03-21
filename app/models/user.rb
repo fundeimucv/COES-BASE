@@ -176,6 +176,9 @@ class User < ApplicationRecord
     return gen
   end
 
+  def short_name
+    "#{first_name} #{last_name.first}."
+  end
   def nick_name
     first_name.split(" ").first
   end

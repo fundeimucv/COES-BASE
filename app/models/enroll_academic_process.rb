@@ -17,7 +17,7 @@ class EnrollAcademicProcess < ApplicationRecord
   belongs_to :academic_process
   has_one :period, through: :academic_process
   has_many :payment_reports, as: :payable
-  has_many :academic_records
+  has_many :academic_records, dependent: :destroy
   has_many :sections, through: :academic_records
   has_many :subjects, through: :sections
 
@@ -33,6 +33,8 @@ class EnrollAcademicProcess < ApplicationRecord
 
   # SCOPE:
   scope :of_academic_process, -> (academic_process_id) {where(academic_process_id: academic_process_id)}
+
+  scope :sort_by_period, -> {joins(period: :period_type).order('periods.year': :desc, 'period_types.name': :asc)}
 
   scope :without_academic_records, -> {joins(:academic_records).group(:"enroll_academic_processes.id").having('COUNT(*) = 0').count}
 
@@ -85,7 +87,8 @@ class EnrollAcademicProcess < ApplicationRecord
   rails_admin do
     navigation_label 'Inscripciones'
     navigation_icon 'fa-solid fa-calendar-check'
-
+    visible false
+    
     list do
       # filters [:student, :period, :enroll_status, :permanence_status, :created_at]
       fields :enroll_status#, :permanence_status

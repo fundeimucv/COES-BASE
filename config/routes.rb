@@ -24,7 +24,11 @@ Rails.application.routes.draw do
 
 
 
-  resources :enrollment_days, only: [:create, :destroy]
+  resources :enrollment_days, only: [:create, :destroy] do
+    member do
+      get 'export'
+    end 
+  end
 
   resources :academic_processes do
     member do

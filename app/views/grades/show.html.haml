@@ -1,30 +1,5 @@
-%p#notice= notice
+.m-3.p-3= render partial: 'enroll_academic_processes/new', locals: {grade: grade}
 
-%p
-  %b Student:
-  = @grade.student
-%p
-  %b Study plan:
-  = @grade.study_plan
-%p
-  %b Graduate status:
-  = @grade.graduate_status
-%p
-  %b Admission type:
-  = @grade.admission_type
-%p
-  %b Registration status:
-  = @grade.registration_status
-%p
-  %b Efficiency:
-  = @grade.efficiency
-%p
-  %b Weighted average:
-  = @grade.weighted_average
-%p
-  %b Simple average:
-  = @grade.simple_average
+= render partial: 'grades/academic_resume', locals: {grade: grade}
+= render template: 'enroll_academic_processes/index', locals: {enroll_academic_processes: grade.enroll_academic_processes}
 
-= link_to 'Edit', edit_grade_path(@grade)
-\|
-= link_to 'Back', grades_path

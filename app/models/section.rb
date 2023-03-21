@@ -25,14 +25,14 @@ class Section < ApplicationRecord
   has_one :faculty, through: :school
 
   # has_many
-  has_many :schedules
-  accepts_nested_attributes_for :schedules
+  has_many :schedules, dependent: :destroy
+  accepts_nested_attributes_for :schedules, allow_destroy: true
 
   has_many :academic_records, dependent: :destroy
   # accepts_nested_attributes_for :academic_records
 
-  has_many :enroll_academic_process, through: :academic_records
-  has_many :grades, through: :enroll_academic_process
+  has_many :enroll_academic_processes, through: :academic_records
+  has_many :grades, through: :enroll_academic_processes
   has_many :students, through: :grades
 
   # has_and_belongs_to_namy
@@ -69,7 +69,9 @@ class Section < ApplicationRecord
   end
 
   def description_with_quotes
-    "#{code} - (#{capacity_vs_enrolls})"
+    aux = "[#{self.teacher.user.short_name}]" if self.teacher
+    schedule = "#{self.schedule_short_name}" if self.schedules
+    "#{code} #{aux} - #{schedule} (#{capacity_vs_enrolls})"
   end
 
   def has_academic_record? academic_record_id
@@ -80,11 +82,9 @@ class Section < ApplicationRecord
     self.capacity and (self.capacity > 0) and (self.total_students < self.capacity)
   end
 
-
   def set_default_values_by_import
     self.capacity = 50 
     self.modality =  (self.code.eql? 'U') ? :equivalencia_interna : :nota_final
-
   end
 
   def totaly_qualified?
@@ -139,6 +139,14 @@ class Section < ApplicationRecord
     period.name if period
   end
 
+  def schedule_name
+    schedules.map{|s| s.name}.to_sentence
+  end
+
+  def schedule_short_name
+    schedules.map{|s| s.short_name}.to_sentence    
+  end
+
   def teacher_desc 
     teacher.user.ci_fullname if (teacher and teacher.user)
   end
@@ -173,6 +181,9 @@ class Section < ApplicationRecord
         column_width 320
       end
 
+      field :schedule_name do
+        label 'Horarios'
+      end
       field :qualified
       
       field :total_academic_records do
@@ -213,7 +224,14 @@ class Section < ApplicationRecord
           {:length => 8, :size => 8, :onInput => "$(this).val($(this).val().toUpperCase().replace(/[^A-Za-z0-9]/g,''))"}
         end
       end
-      fields :course, :teacher, :modality, :classroom
+
+      fields :course, :teacher, :modality
+
+      field :classroom do
+        html_attributes do
+          {:onInput => "$(this).val($(this).val().toUpperCase().replace(/[^A-Za-z0-9]/g,''))"}
+        end
+      end
 
       field :capacity do
         html_attributes do
@@ -221,12 +239,12 @@ class Section < ApplicationRecord
         end
       end
 
-      fields :schedules
+      field :schedules
 
     end
 
     export do
-      fields :code, :subject, :user, :qualified, :modality
+      fields :period, :code, :subject, :user, :qualified, :modality, :schedules
     end
   end
 
