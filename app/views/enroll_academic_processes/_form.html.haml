@@ -1,3 +1,15 @@
+- school = grade.school
+- academic_process = school.enroll_process
+- courses_offer = academic_process.courses
+
+- if school.enable_dependents?
+  - subjects_offer_by_dependency = grade.subjects_offer_by_dependent
+  - courses_offer = courses_offer.where(subject_id: subjects_offer_by_dependency)
+
+- courses_offer = courses_offer.order_by_subject_ordinal
+
+- limitCredits = academic_process.max_credits
+- limitSubjects = academic_process.max_subjects
 
 .alert.alert-warning.text-center.alert-dismissible.fase.show{role: :alert}
   = msgDanger.html_safe
@@ -7,19 +19,19 @@
     = hidden_field_tag 'grade_id', grade.id
     = hidden_field_tag 'academic_process_id', academic_process.id
 
+
     = render partial: 'enroll_academic_processes/courses_offer', locals: {courses: courses_offer, pcis: false, grade: grade}
 
-    - pcis = academic_process.courses.pcis
+    - pcis = academic_process.courses.pcis.order_by_subject_ordinal
     - if pcis.any?
-
       %hr
       %h4 Asignaturas PCI 
       = render partial: 'enroll_academic_processes/courses_offer', locals: {courses: pcis, pcis: true, grade: grade}
 
-  = render partial: 'enroll_academic_processes/total_credits'
+  = render partial: 'enroll_academic_processes/total_credits', locals: {limitCredits: limitCredits, limitSubjects: limitSubjects, totalCreditsReserved: totalCreditsReserved, totalSubjectsReserved: totalSubjectsReserved }
   .modal-footer
     / %a.btn.btn-sm.btn-outline-light{data: {dismiss: 'modal'}} Cancelar
-    - enableSubmit = (@totalCreditsReserved > 0 and @totalCreditsReserved <= @limitCredits and @totalSubjectsReserved > 0 and @totalSubjectsReserved <= @limitSubjects)
+    - enableSubmit = (totalCreditsReserved > 0 and totalCreditsReserved <= limitCredits and totalSubjectsReserved > 0 and totalSubjectsReserved <= limitSubjects)
 
     - disabledClass = enableSubmit ? '' : 'disabled'
     = submit_tag 'Preinscribirse', class: "#{disabledClass} btn btn-success btn-sm", id: 'submitBtn', 'data-disable-with': 'Enviando', disabled: !enableSubmit, onclick: 'completeEnroll(this);'
@@ -88,8 +100,8 @@
 
     $('#total_credits').val(totalCred.text());
     $('#total_subjects').val(totalSubj.text());
-    let limiteCreditos = Number(#{@limitCredits})
-    let limiteAsignaturas = Number(#{@limitSubjects})
+    let limiteCreditos = Number(#{limitCredits})
+    let limiteAsignaturas = Number(#{limitSubjects})
     let submitBtn = $('#submitBtn');
 
     let activo = ((totalSubjSel > 0) & (totalSubjSel <= limiteAsignaturas) & (totalCredSel <= limiteCreditos)),
@@ -112,7 +124,7 @@
     let pci = elem.attr('pci');
     let courseId = elem.attr('courseId');
 
-    reserve(`#{reserve_space_enroll_academic_processes_path()}?section_id=${ele.value}&course_id=${courseId}&grade_id=${gradeId}&pci=${pci}`, event, elem);    
+    reserve(`/enroll_academic_processes/reserve_space?section_id=${ele.value}&course_id=${courseId}&grade_id=${gradeId}&pci=${pci}`, event, elem);    
   }
 
   function completeEnroll(ele){

@@ -66,7 +66,9 @@ class Section < ApplicationRecord
   end
 
   def description_with_quotes
-    "#{code} - (#{capacity_vs_enrolls})"
+    aux = "[#{self.teacher.user.short_name}]" if self.teacher
+    schedule = "#{self.schedule_short_name}" if self.schedules
+    "#{code} #{aux} - #{schedule} (#{capacity_vs_enrolls})"
   end
 
   def has_academic_record? academic_record_id
@@ -137,6 +139,11 @@ class Section < ApplicationRecord
   def schedule_name
     schedules.map{|s| s.name}.to_sentence
   end
+
+  def schedule_short_name
+    schedules.map{|s| s.short_name}.to_sentence    
+  end
+
   def teacher_desc 
     teacher.user.ci_fullname if (teacher and teacher.user)
   end

@@ -7,6 +7,11 @@ class Schedule < ApplicationRecord
   validates :starttime, presence: true
   validates :endtime, presence: true
 
+  def short_name
+    "#{day[0..1]} #{starttime.strftime("%I%P") } #{endtime.strftime("a %I%P") }"
+    
+  end
+
   def name
     "#{day} #{starttime.strftime("de %I:%M%P") } #{endtime.strftime("a %I:%M%P") }"
   end

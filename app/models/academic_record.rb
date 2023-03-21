@@ -298,6 +298,7 @@ class AcademicRecord < ApplicationRecord
   rails_admin do
     navigation_label 'Inscripciones'
     navigation_icon 'fa-solid fa-signature'
+    visible false
 
     list do
       search_by :custom_search
@@ -318,7 +319,7 @@ class AcademicRecord < ApplicationRecord
     end
 
     edit do
-      fields :section, :enroll_academic_process, :status, :qualifications
+      fields :section, :enroll_academic_process#, :status#, :qualifications
     end
 
     export do

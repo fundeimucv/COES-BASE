@@ -5,7 +5,7 @@
       %th{style: 'width: 56%'}
         Asignaturas
         %span.badge.bg-dark= courses.count
-      %th{style: 'width: 5%'} Año
+      %th{style: 'width: 5%'} Sem
       %th{style: 'width: 5%'} Créd
       %th{style: 'width: 30%'} Sección
   %tbody
@@ -43,4 +43,4 @@
               - disable_promt = 'Sin Secciones'
             - unless disable_promt.blank?
               %b.pl-3.text-muted
-                = collection_select(nil, nil, nil, nil, nil, { prompt: disable_promt}, {class: "form-control", style: 'width: 90%', disabled: true, readonly: true})
+                = collection_select(nil, nil, sections, nil, nil, { prompt: disable_promt}, {class: "form-control", style: 'width: 90%', disabled: true, readonly: true})

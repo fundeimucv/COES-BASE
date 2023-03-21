@@ -8,6 +8,9 @@
 	- student.grades.each_with_index do |g,i|
 		- active = (i.eql? 0) ? 'active' : ''
 		.tab-pane.fade.show{class: active, id: "grade#{g.id}", role: :tabpanel, 'aria-labelledby': "grade-#{g.id}-tab"}
+
+			= render partial: 'enroll_academic_processes/new', locals: {grade: g}
+
 			.text-center.p-3
 				%h5 Resumen Académico
 

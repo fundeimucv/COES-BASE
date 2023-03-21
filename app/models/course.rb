@@ -20,6 +20,7 @@ class Course < ApplicationRecord
   validates :academic_process, presence: true
 
   scope :pcis, -> {where(offer_as_pci: true)}
+  scope :order_by_subject_ordinal, -> {joins(:subject).order('subjects.ordinal': :asc)}
 
   def name 
     "#{self.period.name}-#{self.subject.desc}" if self.period and self.school and self.subject
