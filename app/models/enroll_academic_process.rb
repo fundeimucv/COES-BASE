@@ -31,6 +31,8 @@ class EnrollAcademicProcess < ApplicationRecord
   # SCOPE:
   scope :of_academic_process, -> (academic_process_id) {where(academic_process_id: academic_process_id)}
 
+  scope :sort_by_period, -> {joins(period: :period_type).order('periods.year': :desc, 'period_types.name': :asc)}
+
   scope :without_academic_records, -> {joins(:academic_records).group(:"enroll_academic_processes.id").having('COUNT(*) = 0').count}
 
   scope :with_any_academic_records, -> {joins(:academic_records).group(:"enroll_academic_processes.id").having('COUNT(*) > 0').count}

@@ -199,12 +199,28 @@ class Grade < ApplicationRecord
     end
   end
 
+  def total_subjects_coursed
+    academic_records.total_subjects_coursed
+  end
+
+  def total_subjects_approved
+    academic_records.total_subjects_approved
+  end  
+
   def total_credits_approved process_ids = nil
     if process_ids
       academic_records.total_credits_approved_on_process process_ids
     else
       academic_records.total_credits_approved
     end
+  end
+
+  def total_credits_approved_without_equivalence
+    academic_records.without_equivalence.total_credits_approved
+  end
+
+  def total_credits_approved_by_equivalence
+    self.academic_records.by_equivalence.total_credits
   end
 
   def total_credits
