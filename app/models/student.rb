@@ -31,7 +31,8 @@ class Student < ApplicationRecord
   accepts_nested_attributes_for :address
   # has_many
   has_many :grades, dependent: :destroy
-  accepts_nested_attributes_for :grades
+  accepts_nested_attributes_for :grades, reject_if: proc { |attributes| attributes['study_plan_id'].blank? }
+# creates avatar_attributes=
 
   has_many :study_plans, through: :grades
   has_many :admission_types, through: :grades
@@ -39,6 +40,7 @@ class Student < ApplicationRecord
 
   # VALIDATIONS:
   validates :user, presence: true, uniqueness: true
+  validates :grades, presence: true
   # validates :nacionality, presence: true, unless: :new_record?
   # validates :marital_status, presence: true, unless: :new_record?
   # validates :origin_country, presence: true, unless: :new_record?
@@ -146,17 +148,19 @@ class Student < ApplicationRecord
     navigation_icon 'fa-regular fa-user-graduate'
     weight 4
 
+    update do
+      fields :user
+
+      fields :grades, :address do
+        inline_add false
+      end
+
+      fields :nacionality, :origin_country, :origin_city, :birth_date, :marital_status, :grade_title, :grade_university, :graduate_year
+
+    end
+
     edit do
-      # field :user do
-      #   # searchable :full_name
-      # end
       field :user
-      # field :nacionality do
-      #   formatted_value do 
-      #     value.to_s.upcase
-      #   end
-      # end
-      field :address
 
       field :grades do
         # inline_add false
@@ -168,16 +172,6 @@ class Student < ApplicationRecord
       end
 
       fields :nacionality, :origin_country, :origin_city, :birth_date, :marital_status, :grade_title, :grade_university, :graduate_year
-
-
-      # field :address do
-      #   # inline_add false
-      #   associated_collection_scope do
-      #     student = bindings[:object]
-
-      #     proc { |scope| scope.where(student_id: student.id) }
-      #   end
-      # end
 
     end
 

@@ -175,8 +175,12 @@ class Grade < ApplicationRecord
       field :description
     end
 
-    edit do
+    update do
       fields :study_plan, :admission_type, :registration_status, :enabled_enroll_process
+    end
+
+    edit do
+      fields :study_plan, :admission_type, :registration_status
     end
 
     export do

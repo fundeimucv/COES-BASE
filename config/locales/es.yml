@@ -486,6 +486,7 @@ es:
         simple_average: 'Promedio Simple'
         appointment_time: Cita Horaria
         duration_slot_time: Duración Franja Horaria
+        enabled_enroll_process: 'Permiso especial para inscribir en'
       address:
         state: 'Estado'
         municipality: 'Municipio'
