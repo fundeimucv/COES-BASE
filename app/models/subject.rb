@@ -15,6 +15,7 @@ class Subject < ApplicationRecord
   has_one :school, through: :area
 
   has_many :courses, dependent: :destroy
+  has_many :sections, through: :courses
 
   has_many :parents, foreign_key: :subject_dependent_id, class_name: 'Dependency'
   has_many :subject_parents, through: :parents
@@ -140,6 +141,10 @@ class Subject < ApplicationRecord
     self.dependencies.count
   end
 
+  def total_courses
+    courses.count
+  end
+
   rails_admin do
     navigation_label 'Gestión Académica'
     navigation_icon 'fa-regular fa-book'
@@ -170,6 +175,10 @@ class Subject < ApplicationRecord
         searchable :name
       end
 
+      def total_courses
+        label 'T. Cour'
+      end
+
       field :unit_credits do 
         label 'Crédi'
         column_width 10
@@ -178,7 +187,7 @@ class Subject < ApplicationRecord
     end
 
     show do
-      fields :area, :code, :name, :unit_credits, :ordinal, :qualification_type, :modality, :created_at, :updated_at, :subject_parents, :subject_dependents
+      fields :area, :code, :name, :unit_credits, :ordinal, :qualification_type, :modality, :created_at, :updated_at, :subject_parents, :subject_dependents, :courses, :sections
     end
 
     edit do
