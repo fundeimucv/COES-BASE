@@ -3,7 +3,7 @@ class Teacher < ApplicationRecord
   # t.bigint "area_id", null: false
 
   # HISTORY:
-  has_paper_trail on: [:create, :destroy, :touch, :update]
+  has_paper_trail on: [:create, :destroy, :update]
 
   # ASSOCIATIONS:
   belongs_to :user

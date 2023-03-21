@@ -12,6 +12,9 @@ class School < ApplicationRecord
   # t.datetime "updated_at", null: false
   # t.bigint "faculty_id"
   # t.string "contact_email", default: "coes.fau@gmail.com", null: false
+
+  # HISTORY:
+  has_paper_trail on: [:create, :destroy, :update]
   
   # ASSOCIATIONS
   belongs_to :active_process, foreign_key: 'active_process_id', class_name: 'AcademicProcess', optional: true

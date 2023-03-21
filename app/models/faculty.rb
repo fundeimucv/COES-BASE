@@ -19,6 +19,9 @@ class Faculty < ApplicationRecord
     self.code.upcase!
   end
 
+  # HISTORY:
+  has_paper_trail on: [:create, :destroy, :update]
+
 	# ASSOCIATIONS:
 	# has_many:
 	has_many :admins, as: :env_authorizable, dependent: :destroy

@@ -7,6 +7,9 @@ class AcademicRecord < ApplicationRecord
   # ENUMERIZE:
   enum status: [:sin_calificar, :aprobado, :aplazado, :retirado, :perdida_por_inasistencia, :equivalencia_interna, :equivalencia_externa]
 
+  # HISTORY:
+  has_paper_trail on: [:create, :destroy, :update]
+
   # ASSOCIATIONS:
   belongs_to :section
   belongs_to :enroll_academic_process

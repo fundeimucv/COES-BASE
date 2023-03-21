@@ -35,6 +35,15 @@ es:
       model_name: 'Entidad'
       last_created: 'Último Creado'
       records: 'Registros'
+      created_at: 'Fecha de Acción'
+      username: 'Usuario'
+      item: 'Generó'
+      message: 'Mensaje'
+      create: 'Creó'
+      changes: 'Cambios Realizados'
+      rollback: 'Acciones'
+      view_changes: 'Ver Cambios'
+
     actions:
       index:
         title: 'Listado'

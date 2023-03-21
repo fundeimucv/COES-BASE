@@ -5,6 +5,9 @@ class EnrollAcademicProcess < ApplicationRecord
   # t.integer "enroll_status"
   # t.integer "permanence_status"
 
+  # HISTORY:
+  has_paper_trail on: [:create, :destroy, :update]
+
   # ASSOCIATIONS:
   belongs_to :grade
   has_one :student, through: :grade

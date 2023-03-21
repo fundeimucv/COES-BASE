@@ -8,6 +8,9 @@ class Section < ApplicationRecord
   # t.integer "modality"
   # t.boolean "enabled"
 
+  # HISTORY:
+  has_paper_trail on: [:create, :destroy, :update]
+
   # ASSOCIATIONS:
   # belongs_to
   belongs_to :course

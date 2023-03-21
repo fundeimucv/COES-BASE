@@ -8,6 +8,9 @@ class PaymentReport < ApplicationRecord
   # t.string "payable_type"
   # t.bigint "payable_id"  
 
+  # HISTORY:
+  has_paper_trail on: [:create, :destroy, :update]
+
   # ASSOCIATIONS:
   belongs_to :origin_bank, class_name: 'Bank', foreign_key: 'origin_bank_id'
   belongs_to :payable, polymorphic: true

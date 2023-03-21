@@ -3,6 +3,10 @@ class Bank < ApplicationRecord
     # t.string "code"
     # t.string "name" 
 
+
+  # HISTORY:
+  has_paper_trail on: [:create, :destroy, :update]
+
   # ASSOCIATION:
   has_many :payment_reports, foreign_key: :origin_bank_id
 

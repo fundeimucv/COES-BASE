@@ -23,7 +23,7 @@ class Student < ApplicationRecord
   enum marital_status: ESTADOS_CIVILES
 
   # HISTORY:
-  has_paper_trail on: [:create, :destroy, :touch, :update]
+  has_paper_trail on: [:create, :destroy, :update]
 
   # ASSOCIATIONS:
   #belons_to

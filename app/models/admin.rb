@@ -9,7 +9,7 @@ class Admin < ApplicationRecord
   enum role: [:super, :jefe_control_estudio, :director, :jefe_departamento, :asistente]
 
   # HISTORY:
-  has_paper_trail on: [:create, :destroy, :touch, :update]
+  has_paper_trail on: [:create, :destroy, :update]
 
   # ASSOCIATIONS:
   belongs_to :user

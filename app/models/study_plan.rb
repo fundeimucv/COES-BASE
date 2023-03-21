@@ -2,8 +2,11 @@ class StudyPlan < ApplicationRecord
   # SCHEMA:
   # t.string "code"
   # t.string "name"
-  # t.bigint "school_id", null: false  
-
+  # t.bigint "school_id", null: false 
+  
+  
+  # HISTORY:
+  has_paper_trail on: [:create, :destroy, :update]
 
   # ASSOCIATIONS:
   belongs_to :school

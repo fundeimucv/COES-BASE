@@ -44,11 +44,11 @@ es:
       cancel: "Cancelar"
     actions:
       history_show:
-        title: "Listado de Bitácora %{model_label}"
+        title: "Bitácora %{model_label}"
         menu: "Bitácora"
         breadcrumb: "Bitácora"
       history_index:
-        title: "Listado de Bitácora %{model_label}"
+        title: "Bitácora %{model_label}"
         menu: "Bitácora"
         breadcrumb: "Bitácora"
       import:

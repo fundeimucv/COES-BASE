@@ -10,6 +10,9 @@ class Subject < ApplicationRecord
   # t.bigint "area_id", null: false  
   # t.boolean "force_absolute", default: false  
 
+  # HISTORY:
+  has_paper_trail on: [:create, :destroy, :update]
+
   # ASSOCIATIONS:
   belongs_to :area
   has_one :school, through: :area

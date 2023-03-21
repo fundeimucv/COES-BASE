@@ -24,7 +24,7 @@ class User < ApplicationRecord
   enum sex: [:Femenino, :Masculino]
 
   # HISTORY:
-  has_paper_trail on: [:create, :destroy, :touch, :update]
+  has_paper_trail on: [:create, :destroy, :update]
 
   # ASSOCIATIONS:
   has_one :admin, inverse_of: :user, foreign_key: :user_id, dependent: :destroy
