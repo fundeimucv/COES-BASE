@@ -16,7 +16,11 @@ class Section < ApplicationRecord
 
   # has_one
   has_one :subject, through: :course
+  # accepts_nested_attributes_for :subject
+
   has_one :academic_process, through: :course
+  # accepts_nested_attributes_for :academic_process
+
   has_one :period, through: :academic_process
   has_one :school, through: :academic_process
   has_one :faculty, through: :school
@@ -44,8 +48,10 @@ class Section < ApplicationRecord
   validates :course, presence: true
   validates :modality, presence: true
 
+  validates_uniqueness_of :code, scope: [:course_id], message: 'La oferta docente ya existe!', field_name: false    
+
   # SCOPE:
-  scope :custom_search, -> (keyword) { joins(:user, :subject).where("users.ci ILIKE '%#{keyword}%' OR users.email ILIKE '%#{keyword}%' OR users.first_name ILIKE '%#{keyword}%' OR users.last_name ILIKE '%#{keyword}%' OR users.number_phone ILIKE '%#{keyword}%' OR subjects.name ILIKE '%#{keyword}%' OR subjects.code ILIKE '%#{keyword}%'") }
+  scope :custom_search, -> (keyword) { joins(:subject).where("subjects.name ILIKE '%#{keyword}%' OR subjects.code ILIKE '%#{keyword}%'") }
   scope :qualified, -> () {where(qualified: true)}
 
   scope :without_teacher_assigned, -> () {where(teacher_id: nil)}
@@ -217,6 +223,13 @@ class Section < ApplicationRecord
 
     edit do
       field :code do
+        # label do 
+        #   if session[:academic_process_id]
+        #     'Hola'
+        #   else
+        #     'Chau'
+        #   end
+        # end
         html_attributes do
           {:length => 8, :size => 8, :onInput => "$(this).val($(this).val().toUpperCase().replace(/[^A-Za-z0-9]/g,''))"}
         end
