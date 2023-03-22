@@ -187,11 +187,13 @@ class Section < ApplicationRecord
       field :schedule_name do
         label 'Horarios'
       end
-      field :qualified
-      
-      field :total_academic_records do
-        label 'Total Insc'
+
+      field :capacity_vs_enrolls do
+        label 'Inscr / Cupo'
       end
+
+      field :qualified
+
     end
 
     show do
