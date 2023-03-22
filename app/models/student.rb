@@ -176,8 +176,14 @@ class Student < ApplicationRecord
     end
 
     show do
-      field :description do
-        label 'Descripción'
+      field :user_personal_data do
+        label 'Datos Personales'
+        formatted_value do
+          bindings[:view].render(partial: 'users/personal_data', locals: {user: bindings[:object].user})
+        end        
+      end
+      field :description_grades do
+        label 'Registro Académico'
         formatted_value do
           bindings[:view].render(partial: 'students/show', locals: {student: bindings[:object]})
         end

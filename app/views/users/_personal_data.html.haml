@@ -1,8 +1,14 @@
-.text-center
-  %table.table.table-condensed.table-hover
+.text-center.border
+  %table.table.table-condensed
     %tbody
       %tr
-        %td.string_type= user.profile_set
+        - if user.profile_set
+          %td.string_type= user.profile_set
         %td.string_type= user.ci
         %td.string_type= user.first_name
         %td.string_type= user.last_name
+        %td.string_type= user.email
+        - if user.number_phone
+          %td.string_type= user.number_phone
+        - if user.sex  
+          %td.string_type= user.sex.titleize 
