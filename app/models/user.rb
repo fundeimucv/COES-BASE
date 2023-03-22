@@ -227,14 +227,15 @@ class User < ApplicationRecord
     return aux
   end
 
-  def profile_set
-    if self.profile_picture and self.profile_picture.attached? and self.profile_picture.representable?
-      # ActionController::Base.helpers.image_tag(Object.new.extend(ActionView::Helpers::AssetUrlHelper).image_url(self.profile_picture_as_thumb, class: "img-thumbnail"))
+  # def profile_set
+  #   # "<img src='/assets/foto_perfil_default_35.png' class='img-thumbnail' />"
+  #   if self.profile_picture and self.profile_picture.attached? and self.profile_picture.representable?
+  #     ActionController::Base.helpers.image_tag(Object.new.extend(ActionView::Helpers::AssetUrlHelper).image_url(self.profile_picture, class: "img-thumbnail"))
 
-      "<img href='#{Object.new.extend(ActionView::Helpers::AssetUrlHelper).image_url(self.profile_picture_as_thumb)}' class='img-thumbnail' />"
+  #     # "<img src='#{Object.new.extend(ActionView::Helpers::AssetUrlHelper).image_url(self.profile_picture)}' class='img-thumbnail' />"
       
-    end
-  end
+  #   end
+  # end
 
 
   # INTENTOS FALLIDOS REGEXP, AHORA INCLUYE Ñ PERO FALTA EL ACENTO

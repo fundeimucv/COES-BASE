@@ -6,7 +6,7 @@
   - subjects_offer_by_dependency = grade.subjects_offer_by_dependent
   - courses_offer = courses_offer.where(subject_id: subjects_offer_by_dependency)
 
-- courses_offer = courses_offer.order_by_subject_ordinal
+- courses_offer = courses_offer.order_by_subject_code
 
 - limitCredits = academic_process.max_credits
 - limitSubjects = academic_process.max_subjects
@@ -22,7 +22,7 @@
 
     = render partial: 'enroll_academic_processes/courses_offer', locals: {courses: courses_offer, pcis: false, grade: grade}
 
-    - pcis = academic_process.courses.pcis.order_by_subject_ordinal
+    - pcis = academic_process.courses.pcis.order_by_subject_code
     - if pcis.any?
       %hr
       %h4 Asignaturas PCI 
@@ -37,6 +37,28 @@
     = submit_tag 'Preinscribirse', class: "#{disabledClass} btn btn-success btn-sm", id: 'submitBtn', 'data-disable-with': 'Enviando', disabled: !enableSubmit, onclick: 'completeEnroll(this);'
 
 :javascript
+
+  function filterSections(ele){
+    console.log(ele.value);
+    var keyword = ele.value;
+    keyword = keyword.toUpperCase();
+    var table_1 = document.getElementById("courses_offer");
+    var all_tr = table_1.getElementsByTagName("tr");
+
+    for(var i=0; i<all_tr.length; i++){
+        var name_column = all_tr[i].getElementsByTagName("td")[1];
+        if(name_column){
+            var name_value = name_column.textContent || name_column.innerText;
+            name_value = name_value.toUpperCase();
+            if(name_value.indexOf(keyword) > -1){
+                all_tr[i].style.display = ""; // show
+            }else{
+                all_tr[i].style.display = "none"; // hide
+            }
+        }
+    }    
+
+  }
 
   function reserve(url, ev, el) {
     // toastr.options.timeOut = 3500; 
@@ -59,10 +81,10 @@
         totalizar();
         let trParent = el.closest('tr');
         if (opcion.val() == '')
-          trParent.removeClass('table-info');
+          trParent.removeClass('table-success');
         else{
           let cantidad = opcion.text()
-          trParent.addClass('table-info');
+          trParent.addClass('table-success');
         }
 
 

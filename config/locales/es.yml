@@ -407,7 +407,7 @@ es:
         process_before: Proceso Anterior
         enrollment_days: Jornadas de Inscripción por Cita Horaria
       academic_record:
-        section: 'Sección'
+        section: 'Oferta Docente'
         enroll_academic_process: 'Inscripción en Proceso Académico'
         first_q: 'Primera Calificación'
         second_q: 'Segunda Calificación'

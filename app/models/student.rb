@@ -39,7 +39,8 @@ class Student < ApplicationRecord
 
   has_many :study_plans, through: :grades
   has_many :admission_types, through: :grades
-
+  has_many :enroll_academic_processes, through: :grades
+  has_many :academic_records, through: :enroll_academic_processes
 
   # VALIDATIONS:
   validates :user, presence: true, uniqueness: true
@@ -92,10 +93,6 @@ class Student < ApplicationRecord
 
   def user_ci
     self.user.ci if self.user
-  end
-
-  def user_profile
-    user.profile_set if user
   end
 
   # CALLBACKS:
@@ -152,7 +149,7 @@ class Student < ApplicationRecord
     weight 4
 
     update do
-      fields :user
+      field :user
 
       fields :grades, :address do
         inline_add false
@@ -179,8 +176,14 @@ class Student < ApplicationRecord
     end
 
     show do
-      field :description do
-        label 'Descripción'
+      field :user_personal_data do
+        label 'Datos Personales'
+        formatted_value do
+          bindings[:view].render(partial: 'users/personal_data', locals: {user: bindings[:object].user})
+        end        
+      end
+      field :description_grades do
+        label 'Registro Académico'
         formatted_value do
           bindings[:view].render(partial: 'students/show', locals: {student: bindings[:object]})
         end
@@ -191,11 +194,17 @@ class Student < ApplicationRecord
     list do
       search_by :custom_search
 
-      field :user_profile do
+      field :user_image_profile do
         label 'Perfile'
-        formatted_value do # used in form views
-          value.html_safe if value
-        end        
+
+        formatted_value do
+          if (bindings[:object].user and bindings[:object].user.profile_picture and bindings[:object].user.profile_picture.attached? and bindings[:object].user.profile_picture.representable?)
+            bindings[:view].render(partial: "layouts/set_image", locals: {image: bindings[:object].user.profile_picture, size: '30x30', alt: "foto perfil #{bindings[:object].user.nick_name}"})
+          else
+            false
+          end
+        end
+
       end
 
       field :user_ci do

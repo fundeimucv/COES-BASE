@@ -1,10 +1,18 @@
-%table.table.table-striped.table-sm.table-hover.table-bordered.responsive-table
+
+%table#courses_offer.table.table-striped.table-sm.table-hover.table-bordered.responsive-table
   %thead
     %tr
       %th{style: 'width: 4%'} #
+      / %th{style: 'width: 4%'} SubId
+      / %th{style: 'width: 4%'} CouId
       %th{style: 'width: 56%'}
-        Asignaturas
-        %span.badge.bg-dark= courses.count
+        =# text_field_tag 'Buscar', nil, onkeyup: 'filterSections(this);', class: 'form-control '
+        .input-group.input-group-sm.mb-3{style: 'width: 80%;'}
+          %span#inputGroup-sizing-sm.input-group-text 
+            %span.badge.bg-dark= courses.count
+            = " Asignaturas "
+          %input.form-control{"aria-describedby" => "inputGroup-sizing-sm", "aria-label" => "", type: "text", onkeyup: 'filterSections(this);', placeholder: 'Buscar', autofocus: true}
+
       %th{style: 'width: 5%'} Sem
       %th{style: 'width: 5%'} Créd
       %th{style: 'width: 30%'} Sección
@@ -17,10 +25,12 @@
       - if ac and ac.aprobado?
         - approved = true
         - desc_qualification = ac.q_value_to_02i
-      - reservada = !section_id.nil? ? 'table-info' : ''
+      - reservada = !section_id.nil? ? 'table-success' : ''
       - asigApproved = approved ? 'text-muted border border-success' : ''
       %tr{class: "#{asigApproved} #{reservada}"}
         %td.align-middle.text-right= i+1
+        / %td.align-middle= course.subject_id
+        / %td.align-middle= course.id
         %td.align-middle
           = course.subject_desc_with_pci
           = ac.badge_approved if ac

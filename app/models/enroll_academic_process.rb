@@ -44,6 +44,8 @@ class EnrollAcademicProcess < ApplicationRecord
   
   scope :total_with_i_academic_records, -> (i){(joins(:academic_records).group(:"enroll_academic_processes.id").having('COUNT(*) = ?', i).count).count}
 
+  scope :custom_search, -> (keyword) { joins(:user, :period).where("users.ci ILIKE '%#{keyword}%' OR periods.year = #{keyword}") }
+
   # FUNCTIONS:
   def set_default_values_by_import
     self.enroll_status = :confirmado
@@ -90,6 +92,8 @@ class EnrollAcademicProcess < ApplicationRecord
     visible false
     
     list do
+      search_by :custom_search
+
       # filters [:student, :period, :enroll_status, :permanence_status, :created_at]
       fields :enroll_status#, :permanence_status
 
