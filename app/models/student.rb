@@ -92,10 +92,6 @@ class Student < ApplicationRecord
     self.user.ci if self.user
   end
 
-  def user_profile
-    user.profile_set if user
-  end
-
   # CALLBACKS:
   # HOOKS:
 
@@ -195,11 +191,17 @@ class Student < ApplicationRecord
     list do
       search_by :custom_search
 
-      field :user_profile do
+      field :user_image_profile do
         label 'Perfile'
-        formatted_value do # used in form views
-          value.html_safe if value
-        end        
+
+        formatted_value do
+          if (bindings[:object].user and bindings[:object].user.profile_picture and bindings[:object].user.profile_picture.attached? and bindings[:object].user.profile_picture.representable?)
+            bindings[:view].render(partial: "layouts/set_image", locals: {image: bindings[:object].user.profile_picture, size: '30x30', alt: "foto perfil #{bindings[:object].user.nick_name}"})
+          else
+            false
+          end
+        end
+
       end
 
       field :user_ci do

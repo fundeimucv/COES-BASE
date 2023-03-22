@@ -8,6 +8,7 @@
 .tab-content
 	- student.grades.each_with_index do |g,i|
 		- active = (i.eql? 0) ? 'active' : ''
-		.tab-pane.fade.show{class: active, id: "grade#{g.id}", role: :tabpanel, 'aria-labelledby': "grade-#{g.id}-tab"}
+		- show = (i.eql? 0) ? 'show' : ''
+		.tab-pane.fade{class: "#{active} #{show}", id: "grade#{g.id}", role: :tabpanel, 'aria-labelledby': "grade-#{g.id}-tab"}
 
 			= render template: 'grades/show', locals: {grade: g}
