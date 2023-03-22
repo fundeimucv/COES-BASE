@@ -6,7 +6,7 @@
   - subjects_offer_by_dependency = grade.subjects_offer_by_dependent
   - courses_offer = courses_offer.where(subject_id: subjects_offer_by_dependency)
 
-- courses_offer = courses_offer.order_by_subject_ordinal
+- courses_offer = courses_offer.order_by_subject_code
 
 - limitCredits = academic_process.max_credits
 - limitSubjects = academic_process.max_subjects
@@ -22,7 +22,7 @@
 
     = render partial: 'enroll_academic_processes/courses_offer', locals: {courses: courses_offer, pcis: false, grade: grade}
 
-    - pcis = academic_process.courses.pcis.order_by_subject_ordinal
+    - pcis = academic_process.courses.pcis.order_by_subject_code
     - if pcis.any?
       %hr
       %h4 Asignaturas PCI 
