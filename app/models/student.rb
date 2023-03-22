@@ -150,7 +150,7 @@ class Student < ApplicationRecord
     weight 4
 
     update do
-      fields :user
+      field :user
 
       fields :grades, :address do
         inline_add false

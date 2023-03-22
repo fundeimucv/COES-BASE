@@ -38,6 +38,28 @@
 
 :javascript
 
+  function filterSections(ele){
+    console.log(ele.value);
+    var keyword = ele.value;
+    keyword = keyword.toUpperCase();
+    var table_1 = document.getElementById("courses_offer");
+    var all_tr = table_1.getElementsByTagName("tr");
+
+    for(var i=0; i<all_tr.length; i++){
+        var name_column = all_tr[i].getElementsByTagName("td")[1];
+        if(name_column){
+            var name_value = name_column.textContent || name_column.innerText;
+            name_value = name_value.toUpperCase();
+            if(name_value.indexOf(keyword) > -1){
+                all_tr[i].style.display = ""; // show
+            }else{
+                all_tr[i].style.display = "none"; // hide
+            }
+        }
+    }    
+
+  }
+
   function reserve(url, ev, el) {
     // toastr.options.timeOut = 3500; 
     let opcion = el.children("option:selected");
@@ -59,10 +81,10 @@
         totalizar();
         let trParent = el.closest('tr');
         if (opcion.val() == '')
-          trParent.removeClass('table-info');
+          trParent.removeClass('table-success');
         else{
           let cantidad = opcion.text()
-          trParent.addClass('table-info');
+          trParent.addClass('table-success');
         }
 
 
