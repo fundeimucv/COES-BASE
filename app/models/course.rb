@@ -19,8 +19,11 @@ class Course < ApplicationRecord
   validates :subject, presence: true
   validates :academic_process, presence: true
 
+  # validates_uniqueness_of :subject_id, scope: [:academic_process_id], message: 'Ya existe la asignatura para el proceso académico.', field_name: false
+
   scope :pcis, -> {where(offer_as_pci: true)}
   scope :order_by_subject_ordinal, -> {joins(:subject).order('subjects.ordinal': :asc)}
+  scope :order_by_subject_code, -> {joins(:subject).order('subjects.code': :asc)}
 
   def name 
     "#{self.period.name}-#{self.subject.desc}" if self.period and self.school and self.subject
