@@ -127,11 +127,11 @@ class Subject < ApplicationRecord
   def modality_initial_letter
     case modality
     when 'obligatoria'
-      'OB'
+      'B'
     when 'electiva'
-      'E'
+      'O'
     when 'optativa'
-      'OP'
+      'L'
     when 'proyecto'
       'P'
     end      
