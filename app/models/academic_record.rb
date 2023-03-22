@@ -303,7 +303,7 @@ class AcademicRecord < ApplicationRecord
   rails_admin do
     navigation_label 'Inscripciones'
     navigation_icon 'fa-solid fa-signature'
-    visible false
+    # visible false
 
     list do
       search_by :custom_search
@@ -324,7 +324,18 @@ class AcademicRecord < ApplicationRecord
     end
 
     edit do
-      fields :section, :enroll_academic_process#, :status#, :qualifications
+      field :section do
+        inline_add false
+        inline_edit false
+        help 'Ingrese el código de la asignatura y SELECCIONE la correspondiente al período y código de la sección'
+      end
+
+      field :enroll_academic_process do 
+        inline_add false
+        inline_edit false
+        help 'Ingrese la cédula de identidad del estudiante y SELECCIONE la correspondiente inscripción en el período'
+
+      end
     end
 
     export do

@@ -127,7 +127,7 @@ class Section < ApplicationRecord
   end
 
   def name
-    "#{self.code}-#{self.course.name}" if self.course
+     "#{self.course.name}-#{self.description_with_quotes}" if self.course
   end
 
   def total_academic_records
