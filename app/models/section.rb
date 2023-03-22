@@ -165,7 +165,7 @@ class Section < ApplicationRecord
 
     list do
       search_by :custom_search
-      filters [:period_name]
+      filters [:period]
       field :code do
         label 'Id'
         column_width 30
@@ -174,11 +174,19 @@ class Section < ApplicationRecord
         label 'Asignatura'
         column_width 320
       end
-      field :period_name do
+      field :period do
         label 'Período'
         column_width 100
-        filterable [{:periods => :year}, {:period_types => :code}]
+        sortable :name
+        filterable :name #[:letter, :year]
+        searchable :name #[:letter, :year]
+
       end
+      field :capacity_vs_enrolls do
+        sortable 'sections.capacity'
+        label 'Inscr / Cupo'
+      end
+      field :qualified
       field :teacher_desc do
         label 'Profesor'
         column_width 320
@@ -188,11 +196,7 @@ class Section < ApplicationRecord
         label 'Horarios'
       end
 
-      field :capacity_vs_enrolls do
-        label 'Inscr / Cupo'
-      end
 
-      field :qualified
 
     end
 

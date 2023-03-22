@@ -18,16 +18,18 @@ class Period < ApplicationRecord
 	validates_uniqueness_of :year, scope: [:period_type], message: 'Periodo existente', field_name: false
 
 	# SCOPE:
-	scope :by_name, -> (year, code) {joins(:period_type).where(year: year, 'period_type.code': code)}
-	scope :find_by_name, -> (name) {joins(:period_type).where(year: name.split('-').first, 'period_type.code': name.split('-').last).first}
+	# scope :by_name, -> (year, code) {joins(:period_type).where(year: year, 'period_types.code': code)}
 
+	# scope :find_by_name, -> (name) {joins(:period_type).where(year: name.split('-').first, 'period_types.code': name.split('-').last).first}
+
+	before_save :set_name
 
 
 	def name_revert
 		"#{period_type.code.upcase}#{year}" if period_type
 	end
 
-	def name
+	def get_name
 		"#{year}-#{period_type.code.upcase}" if period_type
 	end
 
@@ -41,10 +43,7 @@ class Period < ApplicationRecord
     visible false
 
     list do 
-    	field :year
-    	field :period_type_name do
-    		label 'Tipo de Período'
-    	end
+			field :name
     end
 
     edit do
@@ -52,7 +51,7 @@ class Period < ApplicationRecord
     end
 
     show do
-    	fields :year, :period_type
+    	fields :name
     end
 
     export do
@@ -60,6 +59,12 @@ class Period < ApplicationRecord
     		label 'Periodo'
     	end
     end
+  end
+
+  private
+
+  def set_name
+  	self.name = self.get_name
   end
 
 end

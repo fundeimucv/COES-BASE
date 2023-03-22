@@ -357,7 +357,7 @@ class AcademicRecord < ApplicationRecord
     end
     row[3] = fields[:nombre_periodo] if row[3].blank?
 
-    period = Period.find_by_name(row[3]) 
+    period = Period.find_by(name: row[3]) 
 
     if period
       # LIMPIAR CI
