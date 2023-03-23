@@ -12,11 +12,14 @@ class SectionsController < ApplicationController
       @subject = @section.subject
       @period = @section.period
       @school = @section.school
-      @academic_records = @section.academic_records
+      @academic_records = @section.academic_records.sort_bt_name
       respond_to do |format|
         format.html
         format.pdf do
-          render pdf: "ACTA#{@section.number_acta}", template: "sections/acta", formats: [:html], page_size: 'letter'
+          render pdf: "ACTA#{@section.number_acta}", template: "sections/acta", formats: [:html], page_size: 'letter'#, header:  {html: { content: '<h1>HOLA MUNDO</h1>'}}
+
+
+
         end
       end
     else

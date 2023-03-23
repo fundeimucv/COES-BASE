@@ -10,6 +10,7 @@
 
 - limitCredits = academic_process.max_credits
 - limitSubjects = academic_process.max_subjects
+#message.alert.alert-info{style: 'display: none;'}
 
 .alert.alert-warning.text-center.alert-dismissible.fase.show{role: :alert}
   = msgDanger.html_safe
@@ -37,7 +38,6 @@
     = submit_tag 'Preinscribirse', class: "#{disabledClass} btn btn-success btn-sm", id: 'submitBtn', 'data-disable-with': 'Enviando', disabled: !enableSubmit, onclick: 'completeEnroll(this);'
 
 :javascript
-
   function filterSections(ele){
     console.log(ele.value);
     var keyword = ele.value;
@@ -61,7 +61,7 @@
   }
 
   function reserve(url, ev, el) {
-    // toastr.options.timeOut = 3500; 
+
     let opcion = el.children("option:selected");
     $.ajax({
     url: url,
@@ -76,7 +76,7 @@
     complete: function(json){
       if (json["responseJSON"].status == 'success'){
         console.log(json);
-        // toastr.success(json["responseJSON"].data);
+        toastr.success(json["responseJSON"].data);
 
         totalizar();
         let trParent = el.closest('tr');
@@ -89,11 +89,20 @@
 
 
       }else{
-        // toastr.error(json["responseJSON"].data);
+        toastr.error(json["responseJSON"].data);
         ev.preventDefault();
       }
+      toastr.success(json["responseJSON"].data);
       console.log('responseJSON: '+json["responseJSON"].data);
       opcion.text(json["responseJSON"].cupo);
+      let msg = $("#message");
+      msg.text(json["responseJSON"].data);
+      // msg.toggleClass('none');
+      msg.show(500);
+      setTimeout(function() {msg.hide(500);}, 3000);
+      
+      // msg.text('');
+
       // $('#cargando').modal('hide');
     }
     });

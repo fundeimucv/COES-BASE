@@ -6,6 +6,8 @@ import jquery from 'jquery';
 window.jQuery = jquery;
 window.$ = jquery;
 
+import * as toastr from "toastr";
+window.toastr = toastr;
 import * as bootstrap from 'bootstrap';
 window.bootstrap = bootstrap;
 
