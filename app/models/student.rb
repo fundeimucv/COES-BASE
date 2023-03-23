@@ -195,7 +195,7 @@ class Student < ApplicationRecord
       search_by :custom_search
 
       field :user_image_profile do
-        label 'Perfile'
+        label 'Perfil'
 
         formatted_value do
           if (bindings[:object].user and bindings[:object].user.profile_picture and bindings[:object].user.profile_picture.attached? and bindings[:object].user.profile_picture.representable?)

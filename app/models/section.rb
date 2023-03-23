@@ -267,7 +267,14 @@ class Section < ApplicationRecord
     end
 
     export do
-      fields :period, :code, :subject, :user, :qualified, :modality, :schedules
+      fields :period, :code, :subject, :user, :qualified, :modality, :schedules, :capacity
+
+      field :total_students do 
+        label 'Total inscritos'
+        formatted_value do
+          bindings[:object].total_students
+        end
+      end
     end
   end
 
