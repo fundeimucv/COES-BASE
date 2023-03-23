@@ -278,7 +278,7 @@ class Student < ApplicationRecord
     user.email if user
   end
   def address_state
-    address.state.titleize if address and address.state
+    address.city.titleize if address and address.city
   end
   def grade_admission_type
     grades.map{|g| g.admission_type.name if g.admission_type}.to_sentence
