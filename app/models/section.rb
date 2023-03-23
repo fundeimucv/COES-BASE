@@ -13,7 +13,7 @@ class Section < ApplicationRecord
 
   before_create :paper_trail_create
   before_destroy :paper_trail_destroy
-  before_update :paper_trail_update#, on: :update
+  before_update :paper_trail_update
 
   # ASSOCIATIONS:
   # belongs_to

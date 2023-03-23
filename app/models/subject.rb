@@ -13,6 +13,10 @@ class Subject < ApplicationRecord
   # HISTORY:
   has_paper_trail on: [:create, :destroy, :update]
 
+  before_create :paper_trail_create
+  before_destroy :paper_trail_destroy
+  before_update :paper_trail_update
+
   # ASSOCIATIONS:
   belongs_to :area
   has_one :school, through: :area
@@ -298,5 +302,25 @@ class Subject < ApplicationRecord
 
     return [total_newed, total_updated, no_registred]
   end
+
+  private
+
+
+    def paper_trail_update
+      # changed_fields = self.changes.keys - ['created_at', 'updated_at']
+      object = I18n.t("activerecord.models.#{self.model_name.param_key}.one")
+      # self.paper_trail_event = "¡#{object} actualizado en #{changed_fields.to_sentence}"
+      self.paper_trail_event = "¡#{object} actualizada!"
+    end  
+
+    def paper_trail_create
+      object = I18n.t("activerecord.models.#{self.model_name.param_key}.one")
+      self.paper_trail_event = "¡#{object} registrada!"
+    end  
+
+    def paper_trail_destroy
+      object = I18n.t("activerecord.models.#{self.model_name.param_key}.one")
+      self.paper_trail_event = "¡Asignatura eliminada!"
+    end
 
 end
