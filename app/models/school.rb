@@ -90,7 +90,11 @@ class School < ApplicationRecord
 
     list do
       checkboxes false
-      fields :code, :name, :type_entity
+      fields :code, :name, :type_entity do
+        queryable false
+        filterable false
+        searchable false
+      end
     end
 
     show do
