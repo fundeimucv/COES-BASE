@@ -37,7 +37,7 @@ es:
       records: 'Registros'
       created_at: 'Fecha de Acción'
       username: 'Usuario'
-      item: '¿Qué hizo?'
+      item: '¿A quién?'
       message: 'Acción Realizada'
       changes: 'Acción Realizada'    
 
@@ -425,6 +425,7 @@ es:
         user: 'Usuario'
         status: Estado
         subject: 'Asignatura'
+        study_plan: Plan de Estudio
       academic_record/status_q:
         sin_calificar: 'Sin Calificar'
         aprobado: 'Aprobados'

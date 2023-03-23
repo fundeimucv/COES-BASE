@@ -8,6 +8,10 @@ class EnrollAcademicProcess < ApplicationRecord
   # HISTORY:
   has_paper_trail on: [:create, :destroy, :update]
 
+  before_create :paper_trail_create
+  before_destroy :paper_trail_destroy
+  before_update :paper_trail_update
+
   # ASSOCIATIONS:
   belongs_to :grade
   has_one :student, through: :grade
@@ -125,5 +129,29 @@ class EnrollAcademicProcess < ApplicationRecord
       fields :enroll_status, :permanence_status, :grade, :academic_process, :student, :user
     end
   end
+
+
+  private
+
+
+    def paper_trail_update
+      changed_fields = self.changes#.keys - ['created_at', 'updated_at']
+      changed_fields = changed_fields.map do |fi| 
+        elem = I18n.t("activerecord.attributes.#{self.model_name.param_key}.#{fi[0]}").to_s
+        elem += " de #{fi[1][0]} a #{fi[1][1]}"
+      end
+      object = I18n.t("activerecord.models.#{self.model_name.param_key}.one")
+      self.paper_trail_event = "¡#{object} actualizada en: #{changed_fields.to_sentence}"
+    end  
+    def paper_trail_create
+      object = I18n.t("activerecord.models.#{self.model_name.param_key}.one")
+      self.paper_trail_event = "¡#{object} registrado!"
+    end  
+
+    def paper_trail_destroy
+      object = I18n.t("activerecord.models.#{self.model_name.param_key}.one")
+      self.paper_trail_event = "¡Proceso Académico eliminado!"
+    end
+
 
 end
