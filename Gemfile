@@ -115,4 +115,3 @@ gem "mailersend-ruby"
 
 # Bitácora
 gem "paper_trail"
-# gem 'rails_admin_history_rollback'
