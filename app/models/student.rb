@@ -225,7 +225,7 @@ class Student < ApplicationRecord
       field :user_first_name do
         label 'Nombres'
       end
-      field :address_state do
+      field :address_short do
         label 'Ciudad'
       end
 
@@ -277,8 +277,8 @@ class Student < ApplicationRecord
   def user_email
     user.email if user
   end
-  def address_state
-    address.city.titleize if address and address.city
+  def address_short
+    address.city_and_state if address
   end
   def grade_admission_type
     grades.map{|g| g.admission_type.name if g.admission_type}.to_sentence

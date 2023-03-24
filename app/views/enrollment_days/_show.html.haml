@@ -14,7 +14,7 @@
     - grades.each do |grade, i|
       %tr
         %td.text-center= grade.label_status_enroll_academic_process(academic_process.id)
-        %td= grade.student.address.city if grade.student.address
+        %td= grade.student.address.city_and_state if grade.student.address
         %td= grade.student.user_ci
         %td= link_to grade.user.reverse_name, "/admin/student/#{grade.student_id}", target: '_black'
         %td.text-center= grade.appointment_from 
