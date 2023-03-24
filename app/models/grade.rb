@@ -192,7 +192,7 @@ class Grade < ApplicationRecord
     edit do
       fields :study_plan, :admission_type, :registration_status, :appointment_time
       field :duration_slot_time do 
-        label 'Duración Franja Horaria (minutos)'
+        label 'Duración (minutos)'
       end
     end
 
