@@ -71,6 +71,14 @@ class Grade < ApplicationRecord
 
   # TO CSV:
 
+  def appointment_from_to
+    if self.appointment_time and self.appointment_slot_time
+      aux = (I18n.localize(self.appointment_time, format: "%A, %d de %B de %Y de %I:%M%p")) 
+      aux += (I18n.localize(self.appointment_slot_time, format: "a %I:%M%p,"))
+      return aux
+    end
+  end
+
   def appointment_from
     I18n.l(self.appointment_time, format: "%I:%M %p") if self.appointment_time
   end
@@ -178,11 +186,14 @@ class Grade < ApplicationRecord
     end
 
     update do
-      fields :study_plan, :admission_type, :registration_status, :enabled_enroll_process
+      fields :study_plan, :admission_type, :registration_status, :enabled_enroll_process, :appointment_time, :duration_slot_time
     end
 
     edit do
-      fields :study_plan, :admission_type, :registration_status
+      fields :study_plan, :admission_type, :registration_status, :appointment_time
+      field :duration_slot_time do 
+        label 'Duración Franja Horaria (minutos)'
+      end
     end
 
     export do
