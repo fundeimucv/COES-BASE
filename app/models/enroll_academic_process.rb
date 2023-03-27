@@ -33,6 +33,8 @@ class EnrollAcademicProcess < ApplicationRecord
   validates :grade, presence: true
   validates :academic_process, presence: true
   validates :enroll_status, presence: true
+
+  validates_uniqueness_of :academic_process, scope: [:grade], message: 'Ya registrado en Proceso academico', field_name: false
   # validates :permanence_status, presence: true
 
   # SCOPE:

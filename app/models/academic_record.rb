@@ -37,6 +37,10 @@ class AcademicRecord < ApplicationRecord
   validates :section, presence: true
   validates :enroll_academic_process, presence: true
   validates :status, presence: true
+  validates_uniqueness_of :enroll_academic_process, scope: [:section], message: 'Ya inscrito en la sección', field_name: false
+
+  validates_with SamePeriodValidator, field_name: false  
+  validates_with SameSchoolValidator, field_name: false  
 
   # CALLBACK
   after_save :set_options_q
@@ -121,6 +125,7 @@ class AcademicRecord < ApplicationRecord
 
 
   # FUNCTIONS:
+
 
   def set_status valor
     valor.strip!
