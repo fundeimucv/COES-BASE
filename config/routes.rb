@@ -13,6 +13,12 @@ Rails.application.routes.draw do
   resources :qualifications, only: :update
   resources :period_types
   resources :academic_records, :periods, :profiles, :sections, :courses
+  
+  resources :sections do
+    member do
+      get 'export'
+    end     
+  end
 
 
   resources :enroll_academic_processes do
@@ -43,7 +49,6 @@ Rails.application.routes.draw do
     member do
       get 'edit_images'
     end
-
   end
   resources :students do
     collection do

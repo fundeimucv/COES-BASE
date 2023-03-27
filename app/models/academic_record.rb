@@ -126,6 +126,31 @@ class AcademicRecord < ApplicationRecord
 
   # FUNCTIONS:
 
+  def student_name_with_retired
+    aux = user.reverse_name
+    aux += " (retirado)" if retirado? 
+    return aux
+  end
+
+
+  def data_to_excel
+
+    data = [self.user.ci, self.student_name_with_retired]
+
+    if self.enroll_academic_process
+      data << self.enroll_academic_process.enroll_status.titleize if self.enroll_academic_process.enroll_status
+
+      if self.enroll_academic_process.retirado?
+        data += ['--', '--']
+      else
+        data += [self.user.email, self.user.number_phone]
+      end
+    else
+      data += ['--', '--', '--']
+    end
+    return data
+  end
+
 
   def set_status valor
     valor.strip!
