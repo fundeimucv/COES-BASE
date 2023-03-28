@@ -23,6 +23,9 @@ class User < ApplicationRecord
   # ENUMERIZE:
   enum sex: [:Femenino, :Masculino]
 
+  # VALIDATION PASSWORD:
+  before_save :set_updated_password
+
   # HISTORY:
   has_paper_trail on: [:create, :destroy, :update]
   
@@ -392,6 +395,13 @@ class User < ApplicationRecord
     def paper_trail_destroy
       object = I18n.t("activerecord.models.#{self.model_name.param_key}.one")
       self.paper_trail_event = "¡Usuario eliminado!"
+    end
+
+  private
+    def set_updated_password
+      if (self.changes.keys.count.eql? 1 and self.changes.keys.include? "encrypted_password")
+        self.updated_password = true
+      end
     end
 
 end
