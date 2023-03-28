@@ -360,7 +360,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_03_28_204428) do
     t.datetime "updated_at", null: false
     t.string "reset_password_token"
     t.datetime "reset_password_sent_at"
-    t.string "updated_password", default: "f"
+    t.boolean "updated_password", default: false
     t.index ["ci"], name: "index_users_on_ci", unique: true
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
