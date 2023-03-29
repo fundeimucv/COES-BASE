@@ -1,6 +1,12 @@
 @import "custom_style";
 @import "bootstrap/scss/bootstrap";
 
+.image_profile{
+  position: absolute;
+  left: 20px;
+  top: 20px	
+}
+
 .font-sm{
 font-size: 15px;
 }
