@@ -48,11 +48,6 @@ class AcademicRecord < ApplicationRecord
 
   after_destroy :destroy_enroll_academic_process
 
-  # TRIGGER FUNCTIONS:
-  def set_options_q
-    self.qualifications.destroy_all if self.pi? or self.retirado? or (self.subject and self.subject.absoluta?)
-  end
-
   # SCOPE:
   scope :custom_search, -> (keyword) { joins(:user, :subject).where("users.ci ILIKE '%#{keyword}%' OR users.email ILIKE '%#{keyword}%' OR users.first_name ILIKE '%#{keyword}%' OR users.last_name ILIKE '%#{keyword}%' OR users.number_phone ILIKE '%#{keyword}%' OR subjects.name ILIKE '%#{keyword}%' OR subjects.code ILIKE '%#{keyword}%'") }
 
@@ -539,33 +534,33 @@ class AcademicRecord < ApplicationRecord
 
   private
 
+  # TRIGGER FUNCTIONS:
+  def set_options_q
+    self.qualifications.destroy_all if self.pi? or self.retirado? or (self.subject and self.subject.absoluta?)
+  end
+
   def destroy_enroll_academic_process
     self.enroll_academic_process.destroy unless self.enroll_academic_process.academic_records.any?
   end
 
   def update_grade_numbers
-
     self.grade.update(efficiency: self.grade.calculate_efficiency, simple_average: self.grade.calculate_average, weighted_average: self.grade.calculate_weighted_average)
   end
 
-  
-  private
+  def paper_trail_update
+    changed_fields = self.changes.keys - ['created_at', 'updated_at']
+    object = I18n.t("activerecord.models.#{self.model_name.param_key}.one")
+    self.paper_trail_event = "¡#{object} actualizado en #{changed_fields.to_sentence}"
+  end  
 
+  def paper_trail_create
+    object = I18n.t("activerecord.models.#{self.model_name.param_key}.one")
+    self.paper_trail_event = "¡Completada inscripción en oferta académica!"
+  end  
 
-    def paper_trail_update
-      changed_fields = self.changes.keys - ['created_at', 'updated_at']
-      object = I18n.t("activerecord.models.#{self.model_name.param_key}.one")
-      self.paper_trail_event = "¡#{object} actualizado en #{changed_fields.to_sentence}"
-    end  
-
-    def paper_trail_create
-      object = I18n.t("activerecord.models.#{self.model_name.param_key}.one")
-      self.paper_trail_event = "¡Completada inscripción en oferta académica!"
-    end  
-
-    def paper_trail_destroy
-      object = I18n.t("activerecord.models.#{self.model_name.param_key}.one")
-      self.paper_trail_event = "¡Registro Académico eliminado!"
-    end
+  def paper_trail_destroy
+    object = I18n.t("activerecord.models.#{self.model_name.param_key}.one")
+    self.paper_trail_event = "¡Registro Académico eliminado!"
+  end
 
 end
