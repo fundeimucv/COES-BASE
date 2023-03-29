@@ -22,7 +22,9 @@ class EnrollAcademicProcessesController < ApplicationController
         format.pdf do
           @version = @enroll_academic_process.versions.create(event: 'Se generó Constancia de Inscripción')
 
-          crypt = ActiveSupport::MessageEncryptor.new(Rails.application.secrets.secret_key_base[0..31])
+          salt  = SecureRandom.random_bytes(32)
+          key   = ActiveSupport::KeyGenerator.new('password').generate_key(salt, 32) 
+          crypt = ActiveSupport::MessageEncryptor.new(key)
 
           @encrypted_id, @salt = crypt.encrypt_and_sign(@version.id).split("/")
 
