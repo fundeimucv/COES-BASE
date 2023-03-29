@@ -1,4 +1,9 @@
-- if image and image.attached?
-  = link_to main_app.url_for(image), target: '_blank', rel: 'noopener noreferrer' do
-    = image_tag main_app.url_for(image), size: size, alt: alt
+- begin
+  - if image 
+    = link_to main_app.url_for(image), target: '_blank', rel: 'noopener noreferrer' do
+      = image_tag main_app.url_for(image), size: size, alt: alt  
+- rescue Exception => e
+  
+
+
 
