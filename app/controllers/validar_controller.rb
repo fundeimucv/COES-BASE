@@ -19,15 +19,19 @@ class ValidarController < ApplicationController
     def set_version
       begin
         @enroll_academic_process = EnrollAcademicProcess.find (params[:object_id])
-        crypt = ActiveSupport::MessageEncryptor.new(Rails.application.secrets.secret_key_base[0..31])
-        
-        params[:id] = "#{params[:id]}/#{params[:salt]}" unless (params[:salt].blank?)
 
-        decrypted_id = crypt.decrypt_and_verify(params[:id])
-        @version = @enroll_academic_process.versions.find(decrypted_id)
+        # salt  = SecureRandom.random_bytes(32)
+        # key   = ActiveSupport::KeyGenerator.new('password').generate_key(salt, 32) 
+        # crypt = ActiveSupport::MessageEncryptor.new(key)
+        
+        # params[:id] = "#{params[:id]}/#{params[:salt]}" unless (params[:salt].blank?)
+
+        # decrypted_id = crypt.decrypt_and_verify(params[:id])
+
+        @version = @enroll_academic_process.versions.find(params[:id])
         
       rescue Exception => e
-        flash[:danger] = 'Recurso no accesible. Puede que el documento no sea válido o halla sido alterado. Contacte a las autoridades para la validación del documento.'
+        flash[:danger] = "Recurso no accesible. Puede que el documento no sea válido o halla sido alterado. Contacte a las autoridades para la validación del documento: #{e}"
         redirect_to root_path
       end
     end

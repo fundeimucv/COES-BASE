@@ -22,11 +22,11 @@ class EnrollAcademicProcessesController < ApplicationController
         format.pdf do
           @version = @enroll_academic_process.versions.create(event: 'Se generó Constancia de Inscripción')
 
-          salt  = SecureRandom.random_bytes(32)
-          key   = ActiveSupport::KeyGenerator.new('password').generate_key(salt, 32) 
-          crypt = ActiveSupport::MessageEncryptor.new(key)
+          # salt  = SecureRandom.random_bytes(32)
+          # key   = ActiveSupport::KeyGenerator.new('password').generate_key(salt, 32) 
+          # crypt = ActiveSupport::MessageEncryptor.new(key)
 
-          @encrypted_id, @salt = crypt.encrypt_and_sign(@version.id).split("/")
+          # @encrypted_id, @salt = crypt.encrypt_and_sign(@version.id).split("/")
 
           render pdf: "ConstanciaInscripcion#{@enroll_academic_process.short_name}", template: "enroll_academic_processes/constance", formats: [:html], page_size: 'letter', backgroud: false,  header:  {html: { content: '<h1>HOLA MUNDO</h1>'}}, footer: { center: '[page] de [topage]'}
         end

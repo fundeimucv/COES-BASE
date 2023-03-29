@@ -38,7 +38,7 @@
 
 %p.text-justify= "Constancia que se expide a solicitud de la parte interesada en la Ciudad Universitaria en Caracas, el día #{I18n.l(Time.now, format: "%d de %B de %Y")}.".html_safe
 
-- enlace = "https://coesfau.com/validar/#{@encrypted_id}/constancia_inscripcion?salt=#{@salt}&object_id=#{@enroll_academic_process.id}"
+- enlace = "https://coesfau.com/validar/#{@version.id}/constancia_inscripcion?object_id=#{@enroll_academic_process.id}"
 
 - imagen_qr = CodigoQr.generate_image enlace
 - #pdf.image imagen_qr, width: 120, at: [10, (pdf.y)+40]
