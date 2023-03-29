@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_03_22_161542) do
+ActiveRecord::Schema[7.0].define(version: 2023_03_28_183151) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -267,6 +267,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_03_22_161542) do
     t.string "contact_email", default: "coes.fau@gmail.com", null: false
     t.bigint "active_process_id"
     t.bigint "enroll_process_id"
+    t.string "boss_name", default: ""
     t.index ["active_process_id"], name: "index_schools_on_active_process_id"
     t.index ["enroll_process_id"], name: "index_schools_on_enroll_process_id"
     t.index ["faculty_id"], name: "index_schools_on_faculty_id"

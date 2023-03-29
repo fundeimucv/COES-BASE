@@ -70,6 +70,9 @@ class EnrollAcademicProcess < ApplicationRecord
     subjects.sum(:unit_credits)
   end
 
+  def short_name
+    "#{self.school.code}_#{self.period.name_revert}_#{self.student.user_ci}"
+  end
 
   def name
     "(#{self.school.code}) #{self.period.name}:#{self.student.name}" if ( self.period and self.school and self.student)
@@ -138,9 +141,11 @@ class EnrollAcademicProcess < ApplicationRecord
 
     def paper_trail_update
       changed_fields = self.changes#.keys - ['created_at', 'updated_at']
-      changed_fields = changed_fields.map do |fi| 
-        elem = I18n.t("activerecord.attributes.#{self.model_name.param_key}.#{fi[0]}").to_s
-        elem += " de #{fi[1][0]} a #{fi[1][1]}"
+      changed_fields = changed_fields.map do |fi|
+        if fi[0] != 'updated_at'
+          elem = I18n.t("activerecord.attributes.#{self.model_name.param_key}.#{fi[0]}").to_s
+          elem += " de #{fi[1][0]} a #{fi[1][1]}"
+        end
       end
       object = I18n.t("activerecord.models.#{self.model_name.param_key}.one")
       self.paper_trail_event = "¡#{object} actualizada en: #{changed_fields.to_sentence}"

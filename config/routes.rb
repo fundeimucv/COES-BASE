@@ -9,6 +9,11 @@ Rails.application.routes.draw do
   match "/importer/subjects" => "importer#subjects" , :as => "importer_subjects", :via => [:get, :post]
   match "/importer/academic_records" => "importer#academic_records" , :as => "importer_academic_records", :via => [:get, :post]
 
+  resources :validar, only: :index do
+    member do
+      get 'constancia_inscripcion'
+    end
+  end
   resources :page, only: :show
   resources :qualifications, only: :update
   resources :period_types

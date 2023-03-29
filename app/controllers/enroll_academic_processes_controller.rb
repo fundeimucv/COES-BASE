@@ -7,8 +7,35 @@ class EnrollAcademicProcessesController < ApplicationController
   end
 
   # GET /enroll_academic_processes/1 or /enroll_academic_processes/1.json
+
   def show
+
+    if @enroll_academic_process.school.active_process.eql? @enroll_academic_process.academic_process and @enroll_academic_process.confirmado?
+
+      @school = @enroll_academic_process.school
+      @faculty = @school.faculty
+      @user = @enroll_academic_process.user
+      @period = @enroll_academic_process.period
+      @academic_records = @enroll_academic_process.academic_records
+      respond_to do |format|
+        format.html
+        format.pdf do
+          @version = @enroll_academic_process.versions.create(event: 'Se generó Constancia de Inscripción')
+
+          crypt = ActiveSupport::MessageEncryptor.new(Rails.application.secrets.secret_key_base[0..31])
+
+          @encrypted_id, @salt = crypt.encrypt_and_sign(@version.id).split("/")
+
+          render pdf: "ConstanciaInscripcion#{@enroll_academic_process.short_name}", template: "enroll_academic_processes/constance", formats: [:html], page_size: 'letter', backgroud: false,  header:  {html: { content: '<h1>HOLA MUNDO</h1>'}}, footer: { center: '[page] de [topage]'}
+        end
+      end
+
+    else
+      flash[:warning] = 'Debe estar activado el proceso académico o la inscripción para descargar el documento solicitado.'
+      redirect_back fallback_location: root_path      
+    end
   end
+
 
   # GET /enroll_academic_processes/new
   def new
@@ -158,7 +185,8 @@ class EnrollAcademicProcessesController < ApplicationController
   def update
     respond_to do |format|
       if @enroll_academic_process.update(enroll_academic_process_params)
-        format.html { redirect_to enroll_academic_process_url(@enroll_academic_process), notice: "Enroll academic process was successfully updated." }
+        flash[:success] = "Inscripción en Proceso Académico #{@enroll_academic_process.period.name} Actualizada"
+        format.html { redirect_back fallback_location: enroll_academic_process_url(@enroll_academic_process) }
         format.json { render :show, status: :ok, location: @enroll_academic_process }
       else
         format.html { render :edit, status: :unprocessable_entity }

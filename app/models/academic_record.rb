@@ -177,6 +177,18 @@ class AcademicRecord < ApplicationRecord
     "<span class= 'badge bg-success'>Aprobado (#{self.q_value_to_02i_to_from})</span>" if self.aprobado?
   end
 
+  def badge_status
+    "<span class= 'badge bg-#{self.badge_status_class}'> #{self.status.titleize} </span>"
+  end
+
+  def badge_status_class
+    valor = 'secondary'
+    valor = 'success' if self.aprobado?
+    valor = 'danger' if (self.aplazado? || self.retirado? || self.pi?)
+    valor += ' text-muted' if self.retirado?
+    return valor    
+  end
+
   def tr_class_by_status_q
     valor = ''
     valor = 'table-success' if self.aprobado?

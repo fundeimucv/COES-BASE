@@ -46,11 +46,18 @@ class User < ApplicationRecord
   end
 
   def profile_picture_as_thumb
-    profile_picture.variant(resize_to_limit: [100, 100]).processed
+    begin
+      profile_picture.variant(resize_to_limit: [100, 100]).processed
+    rescue Exception => e
+      
+    end
   end
 
   def ci_image_as_thumb
-    ci_image.variant(resize_to_limit: [100, 100]).processed
+    begin
+      ci_image.variant(resize_to_limit: [100, 100]).processed
+    rescue Exception => e
+    end
   end  
 
   attr_accessor :remove_profile_picture
@@ -98,7 +105,6 @@ class User < ApplicationRecord
   end
 
   before_save :set_clean_values
-
   # HOOKS:
   def after_import_save(record)
     # called on the model after it is saved
