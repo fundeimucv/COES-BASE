@@ -382,7 +382,6 @@ class User < ApplicationRecord
 
   private
 
-
     def paper_trail_update
       # changed_fields = self.changes.keys - ['created_at', 'updated_at']
       object = I18n.t("activerecord.models.#{self.model_name.param_key}.one")

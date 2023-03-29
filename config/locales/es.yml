@@ -427,6 +427,7 @@ es:
         status: Estado
         subject: 'Asignatura'
         study_plan: Plan de Estudio
+        qualifications: Calificaciones
       academic_record/status_q:
         sin_calificar: 'Sin Calificar'
         aprobado: 'Aprobados'
