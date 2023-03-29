@@ -3,7 +3,12 @@
 
 %br
 %p.text-justify
-  = "Quien suscribe, Jefe de Control de Estudios de la #{@faculty.name.upcase}, de la Universidad Central de Venezuela, por medio de la presente hace constar que #{@user.la_el} BR. <b>#{@user.reverse_name}</b>, titular de la Cédula de Identidad <b>#{@user.ci}</b> está inscrit#{@user.genero} en la <b>#{@school.name.upcase}</b> para el período <b>#{@period.name}</b> con las siguientes asignaturas:".html_safe
+
+  - if @study_contance
+    - total = @enroll_academic_process.total_subjects
+    = "Quien suscribe, Jefe de Control de Estudios de la #{@faculty.name.upcase}, de la Universidad Central de Venezuela, por medio de la presente hace constar que #{@user.la_el} BR. <b>#{@user.reverse_name}</b>, titular de la Cédula de Identidad <b>#{@user.ci}</b> es estudiante regular de la  <b>#{@school.name.upcase}</b> y está cursando en el periodo <b>#{@period.name}</b> #{'la'.pluralize(total)} #{'siguiente'.pluralize(total)} #{'asignatura'.pluralize(total)}:".html_safe
+  - else
+    = "Quien suscribe, Jefe de Control de Estudios de la #{@faculty.name.upcase}, de la Universidad Central de Venezuela, por medio de la presente hace constar que #{@user.la_el} BR. <b>#{@user.reverse_name}</b>, titular de la Cédula de Identidad <b>#{@user.ci}</b> está inscrit#{@user.genero} en la  <b>#{@school.name.upcase}</b> para el período <b>#{@period.name}</b> con las siguientes asignaturas:".html_safe
 %br
 %br
 %table.table.table-sm.table-bordered
@@ -38,7 +43,8 @@
 
 %p.text-justify= "Constancia que se expide a solicitud de la parte interesada en la Ciudad Universitaria en Caracas, el día #{I18n.l(Time.now, format: "%d de %B de %Y")}.".html_safe
 
-- enlace = "https://coesfau.com/validar/#{@version.id}/constancia_inscripcion?object_id=#{@enroll_academic_process.id}"
+- enlace = "https://coesfau.com/validar/#{@version.id}/constancias?object_id=#{@enroll_academic_process.id}"
+- enlace +="&study=true" if @study_contance.eql? true
 
 - imagen_qr = CodigoQr.generate_image enlace
 - #pdf.image imagen_qr, width: 120, at: [10, (pdf.y)+40]

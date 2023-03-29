@@ -11,7 +11,7 @@ Rails.application.routes.draw do
 
   resources :validar, only: :index do
     member do
-      get 'constancia_inscripcion'
+      get 'constancias'
     end
   end
   resources :page, only: :show

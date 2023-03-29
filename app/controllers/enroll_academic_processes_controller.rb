@@ -1,5 +1,5 @@
 class EnrollAcademicProcessesController < ApplicationController
-  before_action :set_enroll_academic_process, only: %i[ show edit update destroy ]
+  before_action :set_enroll_academic_process, only: %i[ show edit update destroy study_constance ]
 
   # GET /enroll_academic_processes or /enroll_academic_processes.json
   def index
@@ -17,10 +17,17 @@ class EnrollAcademicProcessesController < ApplicationController
       @user = @enroll_academic_process.user
       @period = @enroll_academic_process.period
       @academic_records = @enroll_academic_process.academic_records
+      event = 'Se generó Constancia de Inscripción'
+      @study_contance = params[:study] ? true : false
+      file_name = "ConstanciaInscripcion#{@enroll_academic_process.short_name}"
+      if @study_contance
+        file_name = "ConstanciaEstudio#{@enroll_academic_process.short_name}"
+        event = 'Se generó Constancia de Estudio'
+      end
       respond_to do |format|
         format.html
         format.pdf do
-          @version = @enroll_academic_process.versions.create(event: 'Se generó Constancia de Inscripción')
+          @version = @enroll_academic_process.versions.create(event: event)
 
           # salt  = SecureRandom.random_bytes(32)
           # key   = ActiveSupport::KeyGenerator.new('password').generate_key(salt, 32) 
@@ -28,7 +35,8 @@ class EnrollAcademicProcessesController < ApplicationController
 
           # @encrypted_id, @salt = crypt.encrypt_and_sign(@version.id).split("/")
 
-          render pdf: "ConstanciaInscripcion#{@enroll_academic_process.short_name}", template: "enroll_academic_processes/constance", formats: [:html], page_size: 'letter', backgroud: false,  header:  {html: { content: '<h1>HOLA MUNDO</h1>'}}, footer: { center: '[page] de [topage]'}
+
+          render pdf: file_name, template: "enroll_academic_processes/constance", formats: [:html], page_size: 'letter', backgroud: false,  header:  {html: { content: '<h1>HOLA MUNDO</h1>'}}, footer: { center: '[page] de [topage]'}
         end
       end
 

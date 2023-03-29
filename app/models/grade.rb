@@ -27,7 +27,7 @@ class Grade < ApplicationRecord
 
   # ENUMERIZE:
   enum registration_status: [:universidad, :facultad, :escuela]
-  enum enrollment_status: [:preinscrito, :asignado, :confirmado, :reincorporado]
+  enum enrollment_status: [:preinscrito, :asignado, :confirmado]
   enum graduate_status: [:no_graduable, :tesista, :posible_graduando, :graduando, :graduado]
 
   #SCOPES:
@@ -186,14 +186,24 @@ class Grade < ApplicationRecord
     end
 
     update do
-      fields :study_plan, :admission_type, :registration_status, :enabled_enroll_process, :appointment_time, :duration_slot_time
+      fields :study_plan, :admission_type, :registration_status, :enabled_enroll_process, :enrollment_status
+      field :appointment_time do
+        label 'Fecha y Hora Cita Horaria'
+      end
+      field :duration_slot_time do 
+        label 'Duración Cita Horaria (minutos)'
+      end
     end
 
     edit do
-      fields :study_plan, :admission_type, :registration_status, :appointment_time
-      field :duration_slot_time do 
-        label 'Duración (minutos)'
+      fields :study_plan, :admission_type, :registration_status
+      field :enrollment_status
+      field :appointment_time do
+        label 'Fecha y Hora Cita Horaria'
       end
+      field :duration_slot_time do 
+        label 'Duración Cita Horaria (minutos)'
+      end      
     end
 
     export do

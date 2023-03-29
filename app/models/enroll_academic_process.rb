@@ -53,6 +53,10 @@ class EnrollAcademicProcess < ApplicationRecord
   scope :custom_search, -> (keyword) { joins(:user, :period).where("users.ci ILIKE '%#{keyword}%' OR periods.year = #{keyword}") }
 
   # FUNCTIONS:
+  def any_permanence_articulo?
+    (self.articulo3? or self.articulo6? or self.articulo7?)
+  end
+
   def set_default_values_by_import
     self.enroll_status = :confirmado
     self.permanence_status = :regular
