@@ -1,0 +1,23 @@
+%h1 Listing billboards
+
+%table
+  %thead
+    %tr
+      %th Content
+      %th Active
+      %th
+      %th
+      %th
+
+  %tbody
+    - @billboards.each do |billboard|
+      %tr
+        %td= billboard.content
+        %td= billboard.active
+        %td= link_to 'Show', billboard
+        %td= link_to 'Edit', edit_billboard_path(billboard)
+        %td= link_to 'Destroy', billboard, method: :delete, data: { confirm: 'Are you sure?' }
+
+%br
+
+= link_to 'New Billboard', new_billboard_path

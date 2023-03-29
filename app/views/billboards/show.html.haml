@@ -1,0 +1,12 @@
+%p#notice= notice
+
+%p
+  %b Content:
+  = @billboard.content
+%p
+  %b Active:
+  = @billboard.active
+
+= link_to 'Edit', edit_billboard_path(@billboard)
+\|
+= link_to 'Back', billboards_path
