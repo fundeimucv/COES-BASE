@@ -131,7 +131,7 @@ class EnrollAcademicProcess < ApplicationRecord
     end
 
     edit do
-      fields :grade, :academic_process, :enroll_status#, :permanence_status
+      fields :grade, :academic_process, :enroll_status, :permanence_status
     end
 
     export do
