@@ -22,7 +22,7 @@
 
 	- # VALIDA QUE TENGA CITA HORARIA, QUE NO SE HAYA PREINSCRITO
 	- # >>>>> OJO: FALTA VALIDAR QUE NO HAYA OCURRIDO LA CITA, ES DECIR, QUE ESTÉ EN EL FUTURO <<<<<
-	- if (grade.appointment_time and grade.duration_slot_time and enroll_in_process.nil?)
+	- if (grade.appointment_time and grade.duration_slot_time and grade.appointment_time > Time.zone.now and enroll_in_process.nil?)
 		- # MENSAJE DE CITA HORARIA:
 		= render partial: 'grades/msg_appointment_time', locals: {grade: grade}
 
