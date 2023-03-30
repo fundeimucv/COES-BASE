@@ -198,7 +198,12 @@ class EnrollAcademicProcessesController < ApplicationController
       if @enroll_academic_process.update(enroll_academic_process_params)
         flash[:success] = "Inscripción en Proceso Académico #{@enroll_academic_process.period.name} Actualizada"
 
-        flash[:info] = 'Se envió un correo al estudiante con la información.' if send_confirmation and  UserMailer.enroll_confirmation(@enroll_academic_process.id).deliver_now
+        begin
+          flash[:info] = 'Se envió un correo al estudiante con la información.' if send_confirmation and UserMailer.enroll_confirmation(@enroll_academic_process.id).deliver_now
+          
+        rescue Exception => e
+          flash[:warning] = "No se pudo enviar el correo: #{e}"
+        end
 
         format.html { redirect_back fallback_location: enroll_academic_process_url(@enroll_academic_process) }
         format.json { render :show, status: :ok, location: @enroll_academic_process }
