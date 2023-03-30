@@ -404,7 +404,8 @@ class User < ApplicationRecord
 
   private
     def set_updated_password
-      if (self.changes.keys.count.eql? 1 and self.changes.keys.include? "encrypted_password")
+      chagebles = self.changes.keys - ['updated_at']
+      if (chagebles.count.eql? 1 and chagebles.include? "encrypted_password")
         self.updated_password = true
       end
     end

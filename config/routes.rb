@@ -52,7 +52,8 @@ Rails.application.routes.draw do
 
   resources :users, only: [:edit, :update] do
     member do
-      get 'edit_images'
+      get :edit_images
+      get :edit_password
     end
   end
   resources :students do

@@ -24,7 +24,17 @@ class UsersController < ApplicationController
     # back = teacher_session_dashboard_path if logged_as_teacher?
     # back =  if logged_as_student?
 
-    redirect_to student_session_dashboard_path
+    if @user.admin?
+      redirect = rails_admin_path
+    elsif @user.teacher?
+      redirect = teacher_session_dashboard_path
+    elsif @user.student?
+      redirect = student_session_dashboard_path
+    else 
+      redirect = root_path
+    end
+
+    redirect_to redirect
 
   end
 
