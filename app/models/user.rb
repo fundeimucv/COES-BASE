@@ -24,7 +24,7 @@ class User < ApplicationRecord
   enum sex: [:Femenino, :Masculino]
 
   # VALIDATION PASSWORD:
-  before_save :set_updated_password
+  before_action :set_updated_password
 
   # HISTORY:
   has_paper_trail on: [:create, :destroy, :update]
