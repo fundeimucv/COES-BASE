@@ -1,4 +1,4 @@
-- logged_as_admin = (current_user and current_user.admin? and session[:rol].eql? 'admin')
+- logged_as_admin = (current_user and current_user.admin? and session[:rol].eql? 'admin') ? true : false
 .badge.bg-info.align-top= academic_record.status.titleize
 - if logged_as_admin
   - msg = 'Eliminar inscripción'
