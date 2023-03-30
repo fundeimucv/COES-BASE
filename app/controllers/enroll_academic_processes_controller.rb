@@ -1,5 +1,5 @@
 class EnrollAcademicProcessesController < ApplicationController
-  before_action :set_enroll_academic_process, only: %i[ show edit update destroy ]
+  before_action :set_enroll_academic_process, only: %i[ show edit update destroy study_constance ]
 
   # GET /enroll_academic_processes or /enroll_academic_processes.json
   def index
@@ -7,8 +7,45 @@ class EnrollAcademicProcessesController < ApplicationController
   end
 
   # GET /enroll_academic_processes/1 or /enroll_academic_processes/1.json
+
   def show
+
+    if @enroll_academic_process.school.active_process.eql? @enroll_academic_process.academic_process and @enroll_academic_process.confirmado?
+
+      @school = @enroll_academic_process.school
+      @faculty = @school.faculty
+      @user = @enroll_academic_process.user
+      @period = @enroll_academic_process.period
+      @academic_records = @enroll_academic_process.academic_records
+      event = 'Se generó Constancia de Inscripción'
+      @study_contance = params[:study] ? true : false
+      file_name = "ConstanciaInscripcion#{@enroll_academic_process.short_name}"
+      if @study_contance
+        file_name = "ConstanciaEstudio#{@enroll_academic_process.short_name}"
+        event = 'Se generó Constancia de Estudio'
+      end
+      respond_to do |format|
+        format.html
+        format.pdf do
+          @version = @enroll_academic_process.versions.create(event: event)
+
+          # salt  = SecureRandom.random_bytes(32)
+          # key   = ActiveSupport::KeyGenerator.new('password').generate_key(salt, 32) 
+          # crypt = ActiveSupport::MessageEncryptor.new(key)
+
+          # @encrypted_id, @salt = crypt.encrypt_and_sign(@version.id).split("/")
+
+
+          render pdf: file_name, template: "enroll_academic_processes/constance", formats: [:html], page_size: 'letter', backgroud: false,  header:  {html: { content: '<h1>HOLA MUNDO</h1>'}}, footer: { center: '[page] de [topage]'}
+        end
+      end
+
+    else
+      flash[:warning] = 'Debe estar activado el proceso académico o la inscripción para descargar el documento solicitado.'
+      redirect_back fallback_location: root_path      
+    end
   end
+
 
   # GET /enroll_academic_processes/new
   def new
@@ -158,7 +195,8 @@ class EnrollAcademicProcessesController < ApplicationController
   def update
     respond_to do |format|
       if @enroll_academic_process.update(enroll_academic_process_params)
-        format.html { redirect_to enroll_academic_process_url(@enroll_academic_process), notice: "Enroll academic process was successfully updated." }
+        flash[:success] = "Inscripción en Proceso Académico #{@enroll_academic_process.period.name} Actualizada"
+        format.html { redirect_back fallback_location: enroll_academic_process_url(@enroll_academic_process) }
         format.json { render :show, status: :ok, location: @enroll_academic_process }
       else
         format.html { render :edit, status: :unprocessable_entity }

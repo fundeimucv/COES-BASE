@@ -1,1 +1,40 @@
+@import "custom_style";
 @import "bootstrap/scss/bootstrap";
+
+.image_profile{
+  position: absolute;
+  left: 20px;
+  top: 20px	
+}
+
+.font-sm{
+font-size: 15px;
+}
+
+.text-justify {
+	text-align: justify;
+}
+
+/* body{
+	background-image: url('logo_bg.png');
+	background-size: auto auto;
+	background-repeat: repeat;
+	opacity: 0.1;
+	transform: rotate(30deg);
+
+} */
+
+
+.alert-message{
+	background-color: #fdf1cc; 
+	color: #946e01;
+	padding: 15px;
+}
+
+table, th, td {
+  border: 1px solid black;
+  border-collapse: collapse;
+} 
+table {
+  width: 100%;
+}

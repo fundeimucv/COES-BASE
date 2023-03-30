@@ -3,6 +3,11 @@
   %thead
     %tr
       %th #
+      - if (current_user and current_user.admin? and current_user.admin.yo?)
+        %th AcRe ID
+        %th Sec ID
+        %th EnrollID
+        %th Period
       %th CI
       %th Estudiante
       
@@ -29,6 +34,11 @@
       - status = acre.status
       %tr{id: "acRe#{acre.id}", class: acre.tr_class_by_status_q}
         %td= i+1
+        - if current_user and current_user.admin? and current_user.admin.yo?
+          %td= acre.id
+          %td= acre.section.id
+          %td= acre.enroll_academic_process_id
+          %td= acre.period.name
         %td= user.ci
         %td
           - if current_user.admin? and session[:rol].eql? 'admin'

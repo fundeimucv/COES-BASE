@@ -58,4 +58,10 @@ class Qualification < ApplicationRecord
     self.grade.update(efficiency: self.grade.calculate_efficiency, simple_average: self.grade.calculate_average, weighted_average: self.grade.calculate_weighted_average)
   end
 
+  rails_admin do
+    export do
+      fields :value, :type_q
+    end
+  end
+
 end

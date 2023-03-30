@@ -49,11 +49,18 @@ class User < ApplicationRecord
   end
 
   def profile_picture_as_thumb
-    profile_picture.variant(resize_to_limit: [100, 100]).processed
+    begin
+      profile_picture.variant(resize_to_limit: [100, 100]).processed
+    rescue Exception => e
+      
+    end
   end
 
   def ci_image_as_thumb
-    ci_image.variant(resize_to_limit: [100, 100]).processed
+    begin
+      ci_image.variant(resize_to_limit: [100, 100]).processed
+    rescue Exception => e
+    end
   end  
 
   attr_accessor :remove_profile_picture
@@ -101,7 +108,6 @@ class User < ApplicationRecord
   end
 
   before_save :set_clean_values
-
   # HOOKS:
   def after_import_save(record)
     # called on the model after it is saved
@@ -289,7 +295,7 @@ class User < ApplicationRecord
       end
 
       field :password do
-        read_only true
+        # read_only true
         aux = 'Si está creando un nuevo usuario, la contraseña será igual a la cédula de identidad. Posteriormente, el usuario mismo podrá cambiarla al iniciar sesión. Si está editando un usuario ya creado, podrá autogestionar su contraseña mediante la opción "Recuperar contraseña" del inicio de sesión.'
         help aux
 
@@ -378,7 +384,6 @@ class User < ApplicationRecord
   end
 
   private
-
 
     def paper_trail_update
       # changed_fields = self.changes.keys - ['created_at', 'updated_at']

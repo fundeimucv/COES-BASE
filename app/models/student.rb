@@ -166,14 +166,7 @@ class Student < ApplicationRecord
     edit do
       field :user
 
-      field :grades do
-        # inline_add false
-        associated_collection_scope do
-          student = bindings[:object]
-
-          proc { |scope| scope.where(student_id: student.id) }
-        end
-      end
+      field :grades
 
       fields :nacionality, :origin_country, :origin_city, :birth_date, :marital_status, :grade_title, :grade_university, :graduate_year
 

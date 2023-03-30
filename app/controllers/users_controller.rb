@@ -5,15 +5,20 @@ class UsersController < ApplicationController
   # def edit
   # end
 
+  def edit_images
+  end
+
   def update
-    # if user_params
-    # else
-    #   flash[:info] = '¡Sin cambios realizados!'
-    # end
-    if @user.update(user_params)
-      flash[:success] = '¡Datos guardados con éxito!'
-    else
-      flash[:danger] = "#{@user.errors.full_messages.to_sentence}"
+    begin
+      if @user.update(user_params)
+        flash[:success] = '¡Datos guardados con éxito!'
+      else
+        flash[:danger] = "#{@user.errors.full_messages.to_sentence}"
+      end
+      
+    rescue Exception => e
+      e = 'Sin cambios realizados' if e.to_s.include? 'param is missing or the value is empty: user'
+      flash[:info] = e
     end
     # back = root_path
     # back = teacher_session_dashboard_path if logged_as_teacher?
