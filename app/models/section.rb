@@ -187,6 +187,10 @@ class Section < ApplicationRecord
      "#{self.course.name}-#{self.description_with_quotes}" if self.course
   end
 
+  def desc_subj_code
+    "#{subject.desc} (#{self.code})"
+  end
+
   def total_academic_records
     academic_records.count
   end

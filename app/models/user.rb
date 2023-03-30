@@ -216,6 +216,13 @@ class User < ApplicationRecord
     "#{self.ci} (#{self.email}): #{self.first_name} #{self.last_name}"
   end
 
+  def email_desc
+    compile = last_name ? "#{last_name.titleize} " : "" 
+    compile += "#{first_name.titleize} " if first_name
+    compile += "<#{email}>"
+    compile
+  end
+
   def ci_fullname
     "#{ci}: #{full_name}"
   end
