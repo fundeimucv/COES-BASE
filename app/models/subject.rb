@@ -170,7 +170,7 @@ class Subject < ApplicationRecord
       end
 
       field :name do
-        column_width 400
+        column_width 300
         searchable true
       end
 
@@ -180,19 +180,21 @@ class Subject < ApplicationRecord
       end
       field :unit_credits do 
         label 'Crédi'
-        column_width 10
+        column_width 20
       end
 
       field :total_courses do
-        label 'T. Cursos'
-        column_width 50
+        label 'Cursos'
+        column_width 20
       end
 
-      fields :modality, :ordinal
+      fields :modality, :ordinal do
+        column_width 20
+      end
 
       field :total_dependencies do
-        label 'T. Depend'
-        column_width 200
+        label 'Depends'
+        column_width 20
       end
     end
 
