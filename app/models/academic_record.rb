@@ -50,7 +50,7 @@ class AcademicRecord < ApplicationRecord
 
   # SCOPE:
   default_scope { joins(:user, :section, :period, :subject) }
-  scope :custom_search, -> (keyword) { where("users.ci ILIKE '%#{keyword}%' OR users.first_name ILIKE '%#{keyword}%' OR users.last_name ILIKE '%#{keyword}%' OR subjects.name ILIKE '%#{keyword}%' OR subjects.code ILIKE '%#{keyword}%' OR sections.code ILIKE '%#{keyword}%' OR periods.name ILIKE '%#{keyword}%'") }
+  scope :custom_search, -> (keyword) {where("users.ci ILIKE '%#{keyword}%' OR users.first_name ILIKE '%#{keyword}%' OR users.last_name ILIKE '%#{keyword}%' OR subjects.name ILIKE '%#{keyword}%' OR subjects.code ILIKE '%#{keyword}%' OR sections.code ILIKE '%#{keyword}%' OR periods.name ILIKE '%#{keyword}%'") }
 
 
   scope :prenroll, -> {joins(:enroll_academic_process).where('enroll_academic_processes.enroll_status = ?', :preinscrito)}
@@ -360,9 +360,9 @@ class AcademicRecord < ApplicationRecord
       field :period_name do
         label 'Período'
         column_width 100
-        searchable 'periods.name'
-        filterable 'periods.name'
-        sortable 'periods.name'
+        searchable 'periods_academic_records.name'
+        filterable 'periods_academic_records.name'
+        sortable 'periods_academic_records.name'
         formatted_value do
           bindings[:object].period.name if bindings[:object].period
         end
@@ -382,11 +382,11 @@ class AcademicRecord < ApplicationRecord
       field :subject_code do
         label 'Asignatura'
         column_width 300
-        searchable 'subjects.code'
-        filterable 'subjects.code'
-        sortable 'subjects.code'
+        searchable ['subjects_academic_records.code', 'subjects_academic_records.name']
+        filterable ['subjects_academic_records.code', 'subjects_academic_records.name']
+        sortable 'subjects_academic_records.code'
         formatted_value do
-          bindings[:object].subject.desc if bindings[:object].subject
+          bindings[:view].link_to( bindings[:object].subject.desc, "/admin/subject/#{bindings[:object].subject.id}") if bindings[:object].subject.present?
         end
       end
 
@@ -395,7 +395,7 @@ class AcademicRecord < ApplicationRecord
         column_width 240
         searchable ['users.ci', 'users.first_name', 'users.last_name']
         filterable ['users.ci', 'users.first_name', 'users.last_name']
-        sortable ['users.ci', 'users.first_name', 'users.last_name']
+        sortable 'users.ci'
         formatted_value do
           bindings[:view].link_to(bindings[:object].student.name, "/admin/student/#{bindings[:object].student.id}") if bindings[:object].student.present?
         end
