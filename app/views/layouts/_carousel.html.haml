@@ -1,0 +1,23 @@
+/ Carrousel
+#demo.carousel.slide(data-bs-ride="carousel")
+    / Indicators/dots
+    .carousel-indicators
+        %button.active(data-bs-slide-to="0" data-bs-target="#demo" type="button")
+        %button(data-bs-slide-to="1" data-bs-target="#demo" type="button")
+        %button(data-bs-slide-to="2" data-bs-target="#demo" type="button")
+    / The slideshow/carousel
+    .carousel-inner
+        .carousel-item.active
+            = image_tag 'bg_vista_fau_cuadros2.jpeg', class:'d-block w-100', alt: 'Vista FAU'
+        .carousel-item
+            = image_tag 'logo.png', class:'d-block w-100', class:'d-block w-100', alt: 'Vista FAU'
+        .carousel-item
+            = image_tag 'logo_ucv.png', class:'d-block w-100', class:'d-block w-100', alt: 'Vista FAU'
+
+    / Left and right controls/icons
+    %button.carousel-control-prev(data-bs-slide="prev" data-bs-target="#demo" type="button")
+        %span.carousel-control-prev-icon(aria-hidden="true")
+        %span.visually-hidden Previous
+    %button.carousel-control-next(data-bs-slide="next" data-bs-target="#demo" type="button")
+        %span.carousel-control-next-icon(aria-hidden="true")
+        %span.visually-hidden Next

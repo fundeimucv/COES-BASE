@@ -115,3 +115,7 @@ gem "mailersend-ruby"
 
 # Bitácora
 gem "paper_trail"
+
+# For Carrousel
+gem 'bootstrap', '~> 5.2.2'
+gem 'jquery-rails'

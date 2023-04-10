@@ -1,12 +1,13 @@
 - model_class = Billboard
 
-= btn_add_success new_billboard_path, 'Agregar Nueva Cartelera', 'Nueva'
+/= btn_add_success new_billboard_path, 'Agregar Nueva Cartelera', 'Nueva'
 %table.table.table-striped.mt-3
   %thead
     %tr
       %th= model_class.human_attribute_name(:content)
       %th= model_class.human_attribute_name(:active)
       %th=t '.actions', default: t("helpers.actions")
+        
   %tbody
     - @billboards.each do |billboard|
       %tr
