@@ -241,7 +241,7 @@ class Section < ApplicationRecord
         label 'Sec'
         column_width 30
         formatted_value do
-          bindings[:view].link_to(bindings[:object].code, "/admin/section/#{bindings[:object].id}") if bindings[:object].section.present?
+          bindings[:view].link_to(bindings[:object].code, "/admin/section/#{bindings[:object].id}") if bindings[:object].present?
 
         end
       end
