@@ -1,4 +1,4 @@
-/ Carrousel
+/ Carousel
 #demo.carousel.slide(data-bs-ride="carousel")
     / Indicators/dots
     .carousel-indicators
@@ -9,10 +9,12 @@
     .carousel-inner
         .carousel-item.active
             = image_tag 'bg_vista_fau_cuadros2.jpeg', class:'d-block w-100', alt: 'Vista FAU'
-        .carousel-item
-            = image_tag 'logo.png', class:'d-block w-100', class:'d-block w-100', alt: 'Vista FAU'
-        .carousel-item
-            = image_tag 'logo_ucv.png', class:'d-block w-100', class:'d-block w-100', alt: 'Vista FAU'
+        - billboards.each do |c|
+            .carousel-item{style: 'width: 400px; height: 80px'}
+                = raw c.content
+            .carousel-item{style: 'width: 400px; height: 80px'}
+                = raw c.content
+            
 
     / Left and right controls/icons
     %button.carousel-control-prev(data-bs-slide="prev" data-bs-target="#demo" type="button")

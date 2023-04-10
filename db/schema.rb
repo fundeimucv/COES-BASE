@@ -10,8 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-
-ActiveRecord::Schema[7.0].define(version: 2023_03_28_204428) do
+ActiveRecord::Schema[7.0].define(version: 2023_03_28_213254) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -37,6 +36,16 @@ ActiveRecord::Schema[7.0].define(version: 2023_03_28_204428) do
     t.integer "status", default: 0
     t.index ["enroll_academic_process_id"], name: "index_academic_records_on_enroll_academic_process_id"
     t.index ["section_id"], name: "index_academic_records_on_section_id"
+  end
+
+  create_table "action_text_rich_texts", force: :cascade do |t|
+    t.string "name", null: false
+    t.text "body"
+    t.string "record_type", null: false
+    t.bigint "record_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["record_type", "record_id", "name"], name: "index_action_text_rich_texts_uniqueness", unique: true
   end
 
   create_table "active_storage_attachments", force: :cascade do |t|
@@ -126,6 +135,12 @@ ActiveRecord::Schema[7.0].define(version: 2023_03_28_204428) do
   create_table "banks", force: :cascade do |t|
     t.string "code"
     t.string "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "billboards", force: :cascade do |t|
+    t.boolean "active", default: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end

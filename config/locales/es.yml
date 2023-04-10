@@ -463,6 +463,11 @@ es:
         bank: 'Banco'
         account_type: 'Tipo de Cuenta'
         school: 'Escuela'
+      billboard:
+        active: 'Activa'
+        created_at: 'Fecha de Creación'
+        updated_at: 'Fecha de Edición'
+        content: 'Contenido de Cartelera'
       course:
         period: Período
         school: Escuela

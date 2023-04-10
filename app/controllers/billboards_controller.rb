@@ -86,6 +86,6 @@ class BillboardsController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def billboard_params
-      params.require(:billboard).permit(:active)
+      params.require(:billboard).permit(:active, :content)
     end
 end

@@ -1,3 +1,4 @@
+require 'same_period_validator'
 RailsAdmin.config do |config|
   config.asset_source = :webpack
 
