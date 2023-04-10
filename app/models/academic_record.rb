@@ -375,7 +375,7 @@ class AcademicRecord < ApplicationRecord
         filterable 'sections.code'
         sortable 'sections.code'
         formatted_value do
-          bindings[:view].link_to(bindings[:object].section.code, "/admin/section/#{bindings[:object].section_id}")
+          bindings[:view].link_to(bindings[:object].section.code, "/admin/section/#{bindings[:object].section_id}") if bindings[:object].section.present?
         end
       end
 
@@ -397,7 +397,7 @@ class AcademicRecord < ApplicationRecord
         filterable ['users.ci', 'users.first_name', 'users.last_name']
         sortable ['users.ci', 'users.first_name', 'users.last_name']
         formatted_value do
-          bindings[:view].link_to(bindings[:object].student.name, "/admin/student/#{bindings[:object].student.id}")
+          bindings[:view].link_to(bindings[:object].student.name, "/admin/student/#{bindings[:object].student.id}") if bindings[:object].student.present?
         end
       end
 

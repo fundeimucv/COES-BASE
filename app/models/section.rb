@@ -241,7 +241,7 @@ class Section < ApplicationRecord
         label 'Sec'
         column_width 30
         formatted_value do
-          bindings[:view].link_to(bindings[:object].code, "/admin/section/#{bindings[:object].id}")
+          bindings[:view].link_to(bindings[:object].code, "/admin/section/#{bindings[:object].id}") if bindings[:object].section.present?
 
         end
       end
@@ -253,7 +253,7 @@ class Section < ApplicationRecord
         filterable 'subjects.code'
         sortable 'subjects.code'
         formatted_value do
-          bindings[:view].link_to(bindings[:object].subject.desc, "/admin/subject/#{bindings[:object].subject.id}")
+          bindings[:view].link_to(bindings[:object].subject.desc, "/admin/subject/#{bindings[:object].subject.id}") if bindings[:object].subject.present?
 
         end
       end
@@ -265,7 +265,7 @@ class Section < ApplicationRecord
         filterable ['users.ci', 'users.first_name', 'users.last_name']
         sortable ['users.ci', 'users.first_name', 'users.last_name']
         formatted_value do
-          bindings[:view].link_to(bindings[:object].teacher.desc, "/admin/teacher/#{bindings[:object].teacher_id}")
+          bindings[:view].link_to(bindings[:object].teacher.desc, "/admin/teacher/#{bindings[:object].teacher_id}") if bindings[:object].teacher.present?
         end
       end
       field :schedule_name do
