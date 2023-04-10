@@ -4,14 +4,14 @@
 %table.table.table-striped.mt-3
   %thead
     %tr
-      %th= model_class.human_attribute_name(:contenido)
-      %th= model_class.human_attribute_name(:activa)
+      %th= model_class.human_attribute_name(:content)
+      %th= model_class.human_attribute_name(:active)
       %th=t '.actions', default: t("helpers.actions")
   %tbody
     - @billboards.each do |billboard|
       %tr
-        %td= raw billboard.contenido
-        %td= agregar_onoffswitch 'habilitar', billboard.id, set_activa_billboard_path(billboard), billboard.activa
+        %td= raw billboard.content
+        %td= agregar_onoffswitch 'habilitar', billboard.id, set_active_billboard_path(billboard), billboard.active
 
         %td
           = link_to edit_billboard_path(billboard), class: 'btn btn-sm', title: "#{ t('.edit', default: t('helpers.links.edit')) }" do
