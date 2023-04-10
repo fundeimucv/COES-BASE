@@ -5,6 +5,7 @@ window.toastr = toastr;
 
 document.addEventListener("rails_admin.dom_ready", function() {
 	$('[rel="tooltip"]').tooltip();
+	$('[title!=""]').tooltip();
 	$('#update_if_exists').removeClass('form-control');
 
 	$(".diplayModalBtn").on('click', function() {
