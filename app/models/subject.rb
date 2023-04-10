@@ -284,7 +284,7 @@ class Subject < ApplicationRecord
     modality = fields['modality']
     if row[4]
       aux = row[4].strip.downcase
-      modality = aux if Subject.modalities.values.include? aux
+      modality = aux if Subject.modalities.keys.include? aux
     end
     
     subject.modality = modality
