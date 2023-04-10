@@ -116,7 +116,7 @@ class AcademicRecord < ApplicationRecord
   scope :by_subjects, -> {joins(:subject).order('subjects.code': :asc)}
   # scope :perdidos, -> {perdida_por_inasistencia}
 
-  scope :sort_bt_name, -> {joins(:user).order('users.last_name desc, users.first_name')}
+  scope :sort_by_user_name, -> {joins(:user).order('users.last_name desc, users.first_name')}
 
 
   # FUNCTIONS:
