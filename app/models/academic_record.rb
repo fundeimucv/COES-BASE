@@ -365,7 +365,7 @@ class AcademicRecord < ApplicationRecord
         sortable 'periods.name'
         formatted_value do
           bindings[:object].period.name if bindings[:object].period
-        end        
+        end
       end
 
       field :section_code do

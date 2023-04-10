@@ -58,7 +58,8 @@ class Section < ApplicationRecord
   validates_uniqueness_of :code, scope: [:course_id], message: 'La oferta docente ya existe!', field_name: false    
 
   # SCOPE:
-  scope :custom_search, -> (keyword) { joins(:subject).where("subjects.name ILIKE '%#{keyword}%' OR subjects.code ILIKE '%#{keyword}%'") }
+  default_scope {joins(:user, :period, :subject)}
+  scope :custom_search, -> (keyword) { where("subjects.name ILIKE '%#{keyword}%' OR subjects.code ILIKE '%#{keyword}%'") }
   scope :qualified, -> () {where(qualified: true)}
 
   scope :without_teacher_assigned, -> () {where(teacher_id: nil)}
@@ -72,8 +73,6 @@ class Section < ApplicationRecord
   def total_students
     self.academic_records.count
   end
-
-  
 
   def excel_list
     require 'spreadsheet'
@@ -226,39 +225,74 @@ class Section < ApplicationRecord
 
     list do
       search_by :custom_search
-      filters [:period]
-      field :code do
-        label 'Id'
-        column_width 30
-      end
-      field :subject_desc do
-        label 'Asignatura'
-        column_width 320
-      end
-      field :period do
+      filters [:period_name, :code, :subject_code, :teacher_desc]
+      field :period_name do
         label 'Período'
         column_width 100
-        sortable :name
-        filterable :name #[:letter, :year]
-        searchable :name #[:letter, :year]
+        searchable 'periods.name'
+        filterable 'periods.name'
+        sortable 'periods.name'
+        formatted_value do
+          bindings[:object].period.name if bindings[:object].period
+        end
+      end
 
+      field :code do
+        label 'Sec'
+        column_width 30
+        formatted_value do
+          bindings[:view].link_to(bindings[:object].code, "/admin/section/#{bindings[:object].id}")
+
+        end
       end
-      field :capacity_vs_enrolls do
-        sortable 'sections.capacity'
-        label 'Inscr / Cupo'
+
+      field :subject_code do
+        label 'Asignatura'
+        column_width 240
+        searchable 'subjects.code'
+        filterable 'subjects.code'
+        sortable 'subjects.code'
+        formatted_value do
+          bindings[:view].link_to(bindings[:object].subject.desc, "/admin/subject/#{bindings[:object].subject.id}")
+
+        end
       end
-      field :qualified
+
       field :teacher_desc do
         label 'Profesor'
-        column_width 320
+        column_width 240
+        searchable ['users.ci', 'users.first_name', 'users.last_name']
+        filterable ['users.ci', 'users.first_name', 'users.last_name']
+        sortable ['users.ci', 'users.first_name', 'users.last_name']
+        formatted_value do
+          bindings[:view].link_to(bindings[:object].teacher.desc, "/admin/teacher/#{bindings[:object].teacher_id}")
+        end
       end
-
       field :schedule_name do
         label 'Horarios'
       end
 
+      field :total_inscritos do
+        label 'Tot Insc'
+        column_width 40
+        formatted_value do
+          bindings[:object].total_academic_records
+        end
+      end
 
 
+      field :cupos do
+        label 'Cupos'
+        column_width 40
+        sortable 'sections.capacity'
+        formatted_value do
+          bindings[:object].capacity
+        end        
+      end
+
+      field :qualified do
+        column_width 40
+      end
     end
 
     show do

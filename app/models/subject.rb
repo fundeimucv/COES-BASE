@@ -135,6 +135,11 @@ class Subject < ApplicationRecord
 
   end
 
+  def label_modality
+    return ApplicationController.helpers.label_status("bg-info", self.modality.titleize)
+
+  end
+
   def modality_initial_letter
     case modality
     when 'obligatoria'
@@ -192,9 +197,17 @@ class Subject < ApplicationRecord
         column_width 20
       end
 
-      fields :modality, :ordinal do
+      field :modality_label do
+        label 'Modalidad'
         column_width 20
+        searchable 'modality'
+        filterable 'modality'
+        sortable 'modality'
+        formatted_value do
+          bindings[:object].label_modality
+        end        
       end
+
 
       field :total_dependencies do
         label 'Depends'
