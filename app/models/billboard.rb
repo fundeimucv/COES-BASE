@@ -17,6 +17,12 @@ class Billboard < ApplicationRecord
 		
 	end
 
+
+	rails_admin do
+		navigation_icon 'fa-regular fa-calendar-alt'
+	end
+	
+
 	private
 
 		def paper_trail_update
