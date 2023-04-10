@@ -61,7 +61,7 @@ RailsAdmin.config do |config|
     show
     edit
     delete do
-      except [School, StudyPlan, Faculty, Subject]
+      except [School, StudyPlan, Faculty, Subject, EnrollAcademicProcess]
     end
     import do
       only [User, Student, Teacher, Subject, Section, AcademicRecord]

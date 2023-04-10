@@ -49,7 +49,9 @@ class AcademicRecord < ApplicationRecord
   after_destroy :destroy_enroll_academic_process
 
   # SCOPE:
-  scope :custom_search, -> (keyword) { joins(:user, :subject).where("users.ci ILIKE '%#{keyword}%' OR users.email ILIKE '%#{keyword}%' OR users.first_name ILIKE '%#{keyword}%' OR users.last_name ILIKE '%#{keyword}%' OR users.number_phone ILIKE '%#{keyword}%' OR subjects.name ILIKE '%#{keyword}%' OR subjects.code ILIKE '%#{keyword}%'") }
+  default_scope { joins(:user, :section, :period, :subject) }
+  scope :custom_search, -> (keyword) { where("users.ci ILIKE '%#{keyword}%' OR users.first_name ILIKE '%#{keyword}%' OR users.last_name ILIKE '%#{keyword}%' OR subjects.name ILIKE '%#{keyword}%' OR subjects.code ILIKE '%#{keyword}%' OR sections.code ILIKE '%#{keyword}%' OR periods.name ILIKE '%#{keyword}%'") }
+
 
   scope :prenroll, -> {joins(:enroll_academic_process).where('enroll_academic_processes.enroll_status = ?', :preinscrito)}
 
@@ -116,7 +118,7 @@ class AcademicRecord < ApplicationRecord
   scope :by_subjects, -> {joins(:subject).order('subjects.code': :asc)}
   # scope :perdidos, -> {perdida_por_inasistencia}
 
-  scope :sort_bt_name, -> {joins(:user).order('users.last_name desc, users.first_name')}
+  scope :sort_by_user_name, -> {joins(:user).order('users.last_name desc, users.first_name')}
 
 
   # FUNCTIONS:
@@ -354,19 +356,69 @@ class AcademicRecord < ApplicationRecord
 
     list do
       search_by :custom_search
-      fields :period, :section, :student do
-        searchable :name
-        filterable :name
-        sortable :name
+      filters [:period_name, :section_code, :subject_code, :student_desc]
+      field :period_name do
+        label 'Período'
+        column_width 100
+        searchable 'periods.name'
+        filterable 'periods.name'
+        sortable 'periods.name'
+        formatted_value do
+          bindings[:object].period.name if bindings[:object].period
+        end
       end
+
+      field :section_code do
+        label 'Sec'
+        column_width 50
+        searchable 'sections.code'
+        filterable 'sections.code'
+        sortable 'sections.code'
+        formatted_value do
+          bindings[:view].link_to(bindings[:object].section.code, "/admin/section/#{bindings[:object].section_id}")
+        end
+      end
+
+      field :subject_code do
+        label 'Asignatura'
+        column_width 300
+        searchable 'subjects.code'
+        filterable 'subjects.code'
+        sortable 'subjects.code'
+        formatted_value do
+          bindings[:object].subject.desc if bindings[:object].subject
+        end
+      end
+
+      field :student_desc do
+        label 'Estudiante'
+        column_width 240
+        searchable ['users.ci', 'users.first_name', 'users.last_name']
+        filterable ['users.ci', 'users.first_name', 'users.last_name']
+        sortable ['users.ci', 'users.first_name', 'users.last_name']
+        formatted_value do
+          bindings[:view].link_to(bindings[:object].student.name, "/admin/student/#{bindings[:object].student.id}")
+        end
+      end
+
+      field :credits do
+        label 'Creditos'
+        column_width 30
+        formatted_value do
+          bindings[:object].subject.unit_credits if bindings[:object].subject
+        end        
+      end
+      
       field :definitive_label do
         label 'Definitiva'
+        column_width 30
       end
-      field :status do
+      field :status_value do
         label 'Estado'
-      end
-      field :type_q_label do
-        label 'Tipo'
+        column_width 200
+        formatted_value do
+          bindings[:object].status.titleize if bindings[:object].status
+        end        
       end
     end
 

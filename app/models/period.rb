@@ -1,6 +1,7 @@
 class Period < ApplicationRecord
 	#SCHEMA:
     # t.integer "year", null: false
+    # t.string "name"
 	
 	#ASSOCIATIONS:
 	# belongs_to

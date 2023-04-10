@@ -38,9 +38,13 @@ class EnrollAcademicProcess < ApplicationRecord
   # validates :permanence_status, presence: true
 
   # SCOPE:
+  default_scope { joins(:user, :period) }
+  scope :todos, -> {where('0 = 0')}
+
   scope :of_academic_process, -> (academic_process_id) {where(academic_process_id: academic_process_id)}
 
   scope :sort_by_period, -> {joins(period: :period_type).order('periods.year': :desc, 'period_types.name': :asc)}
+
 
   scope :without_academic_records, -> {joins(:academic_records).group(:"enroll_academic_processes.id").having('COUNT(*) = 0').count}
 
@@ -50,7 +54,7 @@ class EnrollAcademicProcess < ApplicationRecord
   
   scope :total_with_i_academic_records, -> (i){(joins(:academic_records).group(:"enroll_academic_processes.id").having('COUNT(*) = ?', i).count).count}
 
-  scope :custom_search, -> (keyword) { joins(:user, :period).where("users.ci ILIKE '%#{keyword}%' OR periods.year = #{keyword}") }
+  scope :custom_search, -> (keyword) { where("users.ci ILIKE '%#{keyword}%' OR periods.name = '%#{keyword}%'") }
 
   # FUNCTIONS:
   def any_permanence_articulo?
@@ -63,7 +67,7 @@ class EnrollAcademicProcess < ApplicationRecord
   end
 
   def total_academic_records
-    self.academic_records.count
+    self.subjects.count
   end
 
   def total_subjects
@@ -81,7 +85,6 @@ class EnrollAcademicProcess < ApplicationRecord
   def name
     "(#{self.school.code}) #{self.period.name}:#{self.student.name}" if ( self.period and self.school and self.student)
   end
-
 
   def label_status
     # ["CO", "INS", "NUEVO", "PRE", "REINC", "RES", "RET", "VAL"] 
@@ -102,27 +105,48 @@ class EnrollAcademicProcess < ApplicationRecord
   rails_admin do
     navigation_label 'Inscripciones'
     navigation_icon 'fa-solid fa-calendar-check'
-    visible false
     
     list do
       search_by :custom_search
+      filters [:period_name, :student]
+      scopes [:todos, :preinscrito, :reservado, :confirmado, :retirado]
 
-      # filters [:student, :period, :enroll_status, :permanence_status, :created_at]
-      fields :enroll_status#, :permanence_status
+      field :enroll_status_label do
+        label 'Estado'
+        column_width 100
+        searchable 'enroll_status'
+        filterable 'enroll_status'
+        sortable 'enroll_status'
+        formatted_value do
+          bindings[:object].label_status
+        end        
+      end
+
+      field :period_name do
+        label 'Período'
+        column_width 100
+        searchable 'periods.name'
+        filterable 'periods.name'
+        sortable 'periods.name'
+        formatted_value do
+          bindings[:object].period.name if bindings[:object].period
+        end        
+      end
 
       field :student do
-        searchable :name
-        filterable :name
-        sortable :name
+        column_width 340
+        searchable ['users.ci', 'users.first_name', 'users.last_name']
+        filterable ['users.ci', 'users.first_name', 'users.last_name']
+        sortable ['users.ci', 'users.first_name', 'users.last_name']
+      end
+      field :total_subjects do
+        label 'Tot Asig'
+        column_width 40
       end
 
-      field :period do
-        searchable :name
-        filterable :name
-        sortable :name
-      end
-      field :total_academic_records do
-        label 'Total Asignaturas Inscritas'
+      field :total_credits do
+        label 'Tot Cred'
+        column_width 40
       end
 
       field :created_at do
@@ -135,7 +159,7 @@ class EnrollAcademicProcess < ApplicationRecord
     end
 
     export do
-      fields :enroll_status, :permanence_status, :grade, :academic_process, :student, :user
+      fields :enroll_status, :permanence_status, :grade, :period, :student, :user
     end
   end
 

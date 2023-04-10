@@ -19,7 +19,7 @@ class SectionsController < ApplicationController
       @subject = @section.subject
       @period = @section.period
       @school = @section.school
-      @academic_records = @section.academic_records.sort_bt_name
+      @academic_records = @section.academic_records.sort_by_user_name
       respond_to do |format|
         format.html
         format.pdf do

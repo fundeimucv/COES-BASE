@@ -45,6 +45,9 @@ class Subject < ApplicationRecord
   validates :area, presence: true
 
   # SCOPES: 
+
+  scope :todos, -> {where('0 = 0')}
+
   scope :custom_search, -> (keyword) {joins([:area]).where("subjects.name ILIKE ? or subjects.code ILIKE ? or areas.name ILIKE ?", "%#{keyword}%", "%#{keyword}%", "%#{keyword}%")} 
 
   scope :independents, -> {joins('LEFT JOIN dependencies ON dependencies.subject_dependent_id = subjects.id').where('dependencies.subject_dependent_id IS NULL')}
@@ -132,6 +135,11 @@ class Subject < ApplicationRecord
 
   end
 
+  def label_modality
+    return ApplicationController.helpers.label_status("bg-info", self.modality.titleize)
+
+  end
+
   def modality_initial_letter
     case modality
     when 'obligatoria'
@@ -163,6 +171,7 @@ class Subject < ApplicationRecord
     end
 
     list do
+      scopes [:todos, :obligatoria, :electiva, :optativa]
       search_by :custom_search
 
       field :code do
@@ -188,9 +197,17 @@ class Subject < ApplicationRecord
         column_width 20
       end
 
-      fields :modality, :ordinal do
+      field :modality_label do
+        label 'Modalidad'
         column_width 20
+        searchable 'modality'
+        filterable 'modality'
+        sortable 'modality'
+        formatted_value do
+          bindings[:object].label_modality
+        end        
       end
+
 
       field :total_dependencies do
         label 'Depends'
