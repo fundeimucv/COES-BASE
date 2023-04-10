@@ -10,10 +10,24 @@
         .carousel-item.active
             = image_tag 'bg_vista_fau_cuadros2.jpeg', class:'d-block w-100', alt: 'Vista FAU'
         - billboards.each do |c|
-            .carousel-item{style: 'width: 400px; height: 80px'}
-                = raw c.content
-            .carousel-item{style: 'width: 400px; height: 80px'}
-                = raw c.content
+            .carousel-item{style: 'width: 550px; height: 250px'}
+                %table
+                    %thead
+                        %tr 
+                        %th 
+                            = raw c.content
+            .carousel-item{style: 'width: 550px; height: 250px'}
+                %table
+                    %thead
+                        %tr 
+                        %th 
+                            = raw c.content
+            .carousel-item{style: 'width: 550px; height: 250px'}
+                %table
+                    %thead
+                        %tr 
+                        %th 
+                            = raw c.content
             
 
     / Left and right controls/icons
