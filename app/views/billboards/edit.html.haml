@@ -1,7 +1,2 @@
-%h1 Editing billboard
-
-= render 'form'
-
-= link_to 'Show', @billboard
-\|
-= link_to 'Back', billboards_path
+- model_class = Billboard
+= render partial: "form"

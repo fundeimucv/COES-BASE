@@ -1,16 +1,15 @@
 class BillboardsController < ApplicationController
-  before_action :filtro_logueado
-  before_action :filtro_administrador
-  before_action :filtro_autorizado#, except: [:new, :edit]
+  before_action :log_filter
+  before_action :administrator_filter
+  before_action :authorized_filter#, except: [:new, :edit]
   before_action :set_billboard, only: [:show, :edit, :update, :destroy, :set_active, :set_content]
 
 
-  # GET /billboards
-  # GET /billboards.json
+  # GET /billboards or # GET /billboards.json
   def set_active
     @billboard.active = !@billboard.active
     if @billboard.save
-      aux = @billboard.active ? 'Cartelera Activada' : 'Cartelera Desactivada'
+      aux = @billboard.activa ? 'Cartelera Activada' : 'Cartelera Desactivada'
       render json: {data: aux, status: :success}
     else
       render json: {data: "Error al intentar cambiar la noticia : #{@comentario.errors.messages.to_sentence()}", status: :success}
@@ -18,13 +17,14 @@ class BillboardsController < ApplicationController
 
   end
 
+
+  # GET /billboards or /billboards.json
   def index
     @title = "Cartelera"
     @billboards = Billboard.all
   end
 
-  # GET /billboards/1
-  # GET /billboards/1.json
+  # GET /billboards/1 or /billboards/1.json
   def show
     @title = "Vista previa de la Cartelera"
   end
@@ -40,40 +40,38 @@ class BillboardsController < ApplicationController
     @title = "Editando Cartelera"
   end
 
-  # POST /billboards
-  # POST /billboards.json
+  # POST /billboards or /billboards.json
   def create
-    @billboard = Billboard.new(cartelera_params)
+    @billboard = Billboard.new(billboard_params)
 
     respond_to do |format|
       if @billboard.save
-        format.html { redirect_to billboards_path, notice: 'Cartelera creada con éxito.' }
+        format.html { redirect_to billboard_url(@billboard), notice: "Cartelera creada con éxito." }
         format.json { render :show, status: :created, location: @billboard }
       else
-        format.html { render :new }
+        format.html { render :new, status: :unprocessable_entity }
         format.json { render json: @billboard.errors, status: :unprocessable_entity }
       end
     end
   end
 
-  # PATCH/PUT /billboards/1
-  # PATCH/PUT /billboards/1.json
+  # PATCH/PUT /billboards/1 or /billboards/1.json
   def update
     respond_to do |format|
       if @billboard.update(billboard_params)
-        format.html { redirect_to billboards_path, notice: 'Cartelera actualizada con éxito.' }
+        format.html { redirect_to billboard_url(@billboard), notice: "Billboard was successfully updated." }
         format.json { render :show, status: :ok, location: @billboard }
       else
-        format.html { render :edit }
+        format.html { render :edit, status: :unprocessable_entity }
         format.json { render json: @billboard.errors, status: :unprocessable_entity }
       end
     end
   end
 
-  # DELETE /billboards/1
-  # DELETE /billboards/1.json
+  # DELETE /billboards/1 or /billboards/1.json
   def destroy
     @billboard.destroy
+
     respond_to do |format|
       format.html { redirect_to billboards_url, notice: 'Cartelera eliminada con éxito.' }
       format.json { head :no_content }
@@ -86,8 +84,8 @@ class BillboardsController < ApplicationController
       @billboard = Billboard.find(params[:id])
     end
 
-    # Never trust parameters from the scary internet, only allow the white list through.
+    # Only allow a list of trusted parameters through.
     def billboard_params
-      params.require(:billboard).permit(:content, :active, :text)
+      params.require(:billboard).permit(:active)
     end
 end

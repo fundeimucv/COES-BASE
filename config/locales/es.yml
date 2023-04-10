@@ -339,6 +339,9 @@ es:
       bank_account:
         one: 'Cuenta Bancaria'
         other: 'Cuentas Bancarias'
+      billboard:
+        one: 'Cartelera'
+        other: 'Carteleras'
       course:
         one: 'Oferta Académica'
         other: 'Ofertas Académicas'

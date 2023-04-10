@@ -1,11 +1,8 @@
--# frozen_string_literal: true
-= simple_form_for(@billboard) do |f|
-  = f.error_notification
-  = f.error_notification message: f.object.errors[:base].to_sentence if f.object.errors[:base].present?
-
-  .form-inputs
-    = f.input :content
-    = f.input :active
-
-  .form-actions
-    = f.button :submit
+.border.p-3.m-3
+  = form_for @billboard, html: { class: 'form-horizontal' } do |f| 
+    .form-group
+      = f.text_area :contenido, 'data-provider': :summernote
+    .form-group
+      .col-md-offset-2.col-md-10
+        = f.submit nil, class: 'btn btn-primary'
+        = link_to t('.cancel', default: t("helpers.links.cancel")), billboards_path, class: 'btn btn-default'

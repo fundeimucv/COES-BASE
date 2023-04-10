@@ -111,4 +111,38 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  def administrator_filter
+		unless session[:administrador_id]
+			reset_session
+			flash[:danger] = "Debe iniciar sesión como Administrador"  
+			redirect_to root_path
+			return false
+		end
+	end
+
+  def log_filter
+		unless session[:usuario_ci]
+			reset_session
+			flash[:danger] = "Debe iniciar sesión"
+			redirect_to root_path
+			return false
+		end
+	end
+
+  def authorized_filter
+		accion = (!(controller_name.eql? 'secciones') and (action_name.eql? 'show')) ? 'index' : action_name
+		funcion = Restringida.where(controlador: controller_name, accion: accion).first
+
+		if funcion and current_usuario and (current_admin and !current_admin.maestros?) and not(current_usuario.autorizado?(controller_name, accion))
+			msg = 'No posee los privilegios para ejecutar la acción solicitada'
+			respond_to do |format|
+				format.html do 
+					flash[:danger] = msg
+					redirect_back fallback_location: index2_secciones_path
+				end
+				format.json {render json: {data: msg, status: :success, type: :error} }
+			end
+		end
+	end
+
 end
