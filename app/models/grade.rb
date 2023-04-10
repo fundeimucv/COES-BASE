@@ -27,7 +27,7 @@ class Grade < ApplicationRecord
 
   # ENUMERIZE:
   enum registration_status: [:universidad, :facultad, :escuela]
-  enum enrollment_status: [:preinscrito, :asignado, :confirmado, :reincorporado]
+  enum enrollment_status: [:preinscrito, :asignado, :confirmado]
   enum graduate_status: [:no_graduable, :tesista, :posible_graduando, :graduando, :graduado]
 
   #SCOPES:
@@ -70,6 +70,14 @@ class Grade < ApplicationRecord
   # FUNCTIONS:
 
   # TO CSV:
+
+  def appointment_from_to
+    if self.appointment_time and self.appointment_slot_time
+      aux = (I18n.localize(self.appointment_time, format: "%A, %d de %B de %Y de %I:%M%p")) 
+      aux += (I18n.localize(self.appointment_slot_time, format: "a %I:%M%p,"))
+      return aux
+    end
+  end
 
   def appointment_from
     I18n.l(self.appointment_time, format: "%I:%M %p") if self.appointment_time
@@ -178,11 +186,24 @@ class Grade < ApplicationRecord
     end
 
     update do
-      fields :study_plan, :admission_type, :registration_status, :enabled_enroll_process
+      fields :study_plan, :admission_type, :registration_status, :enabled_enroll_process, :enrollment_status
+      field :appointment_time do
+        label 'Fecha y Hora Cita Horaria'
+      end
+      field :duration_slot_time do 
+        label 'Duración Cita Horaria (minutos)'
+      end
     end
 
     edit do
       fields :study_plan, :admission_type, :registration_status
+      field :enrollment_status
+      field :appointment_time do
+        label 'Fecha y Hora Cita Horaria'
+      end
+      field :duration_slot_time do 
+        label 'Duración Cita Horaria (minutos)'
+      end      
     end
 
     export do

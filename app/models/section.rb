@@ -73,6 +73,52 @@ class Section < ApplicationRecord
     self.academic_records.count
   end
 
+  
+
+  def excel_list
+    require 'spreadsheet'
+
+    @book = Spreadsheet::Workbook.new
+    @sheet = @book.create_worksheet :name => "Seccion #{self.name}"
+
+
+    enrolls = self.academic_records.not_retirado.sort_bt_name
+
+
+    @sheet.column(0).width = 15 #estudiantes.collect{|e| e.cal_usuario_ci.length if e.cal_usuario_ci}.max+2;
+    @sheet.column(1).width = 50 #estudiantes.collect{|e| e.cal_usuario.apellido_nombre.length if e.cal_usuario.apellido_nombre}.max+2;
+    @sheet.column(2).width = 15 #estudiantes.collect{|e| e.cal_usuario.correo_electronico.length if e.cal_usuario.correo_electronico}.max+2;
+    @sheet.column(3).width = 40
+    @sheet.column(4).width = 20
+
+    @sheet.row(0).concat ["Profesor: #{self.teacher_desc}"]
+    @sheet.row(1).concat ["Sección: #{self.name}"]
+    @sheet.row(3).concat %w{CI NOMBRES ESTADO CORREO TELÉFONO}
+
+    data = []
+    enrolls.each_with_index do |e,i|
+      usuario = e.user
+      @sheet.row(i+4).concat e.data_to_excel
+    end
+
+    file_name = "reporte_seccion_temp"
+    return file_name if (@book.write file_name)
+  end
+
+
+
+  # def own_grades_to_csv
+
+  #   CSV.generate do |csv|
+  #     csv << ['Cédula', 'Apellido y Nombre', 'desde', 'hasta', 'Efficiencia', 'Promedio', 'Ponderado']
+  #     own_grades_sort_by_appointment.each do |grade|
+  #       user = grade.user
+  #       csv << [user.ci, user.reverse_name, grade.appointment_from, grade.appointment_to, grade.efficiency, grade.simple_average, grade.weighted_average]
+  #     end
+  #   end
+  # end
+
+
   def capacity_vs_enrolls
     # "#{self.capacity} / #{self.total_students}"
     "#{self.total_students} de #{self.capacity}"
@@ -133,8 +179,16 @@ class Section < ApplicationRecord
     "#{self.subject.code.upcase}#{self.code.upcase} #{self.period.name_revert}"
   end
 
+  def name_to_file
+     "#{self.period.name}_#{self.subject.code.upcase}_#{self.code.upcase}" if self.course
+  end
+
   def name
      "#{self.course.name}-#{self.description_with_quotes}" if self.course
+  end
+
+  def desc_subj_code
+    "#{subject.desc} (#{self.code})"
   end
 
   def total_academic_records

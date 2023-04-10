@@ -23,6 +23,9 @@ class User < ApplicationRecord
   # ENUMERIZE:
   enum sex: [:Femenino, :Masculino]
 
+  # VALIDATION PASSWORD:
+  before_update :set_updated_password
+
   # HISTORY:
   has_paper_trail on: [:create, :destroy, :update]
   
@@ -46,11 +49,18 @@ class User < ApplicationRecord
   end
 
   def profile_picture_as_thumb
-    profile_picture.variant(resize_to_limit: [100, 100]).processed
+    begin
+      profile_picture.variant(resize_to_limit: [100, 100]).processed
+    rescue Exception => e
+      
+    end
   end
 
   def ci_image_as_thumb
-    ci_image.variant(resize_to_limit: [100, 100]).processed
+    begin
+      ci_image.variant(resize_to_limit: [100, 100]).processed
+    rescue Exception => e
+    end
   end  
 
   attr_accessor :remove_profile_picture
@@ -98,7 +108,6 @@ class User < ApplicationRecord
   end
 
   before_save :set_clean_values
-
   # HOOKS:
   def after_import_save(record)
     # called on the model after it is saved
@@ -207,6 +216,13 @@ class User < ApplicationRecord
     "#{self.ci} (#{self.email}): #{self.first_name} #{self.last_name}"
   end
 
+  def email_desc
+    compile = last_name ? "#{last_name.titleize} " : "" 
+    compile += "#{first_name.titleize} " if first_name
+    compile += "<#{email}>"
+    compile
+  end
+
   def ci_fullname
     "#{ci}: #{full_name}"
   end
@@ -286,7 +302,7 @@ class User < ApplicationRecord
       end
 
       field :password do
-        read_only true
+        # read_only true
         aux = 'Si está creando un nuevo usuario, la contraseña será igual a la cédula de identidad. Posteriormente, el usuario mismo podrá cambiarla al iniciar sesión. Si está editando un usuario ya creado, podrá autogestionar su contraseña mediante la opción "Recuperar contraseña" del inicio de sesión.'
         help aux
 
@@ -376,7 +392,6 @@ class User < ApplicationRecord
 
   private
 
-
     def paper_trail_update
       # changed_fields = self.changes.keys - ['created_at', 'updated_at']
       object = I18n.t("activerecord.models.#{self.model_name.param_key}.one")
@@ -392,6 +407,14 @@ class User < ApplicationRecord
     def paper_trail_destroy
       object = I18n.t("activerecord.models.#{self.model_name.param_key}.one")
       self.paper_trail_event = "¡Usuario eliminado!"
+    end
+
+  private
+    def set_updated_password
+      chagebles = self.changes.keys - ['updated_at']
+      if (chagebles.count.eql? 1 and chagebles.include? "encrypted_password")
+        self.updated_password = true
+      end
     end
 
 end

@@ -22,7 +22,7 @@
 
 	- # VALIDA QUE TENGA CITA HORARIA, QUE NO SE HAYA PREINSCRITO
 	- # >>>>> OJO: FALTA VALIDAR QUE NO HAYA OCURRIDO LA CITA, ES DECIR, QUE ESTÉ EN EL FUTURO <<<<<
-	- if (grade.appointment_time and grade.duration_slot_time and enroll_in_process.nil?)
+	- if (grade.appointment_time and grade.duration_slot_time and grade.appointment_time > Time.zone.now and enroll_in_process.nil?)
 		- # MENSAJE DE CITA HORARIA:
 		= render partial: 'grades/msg_appointment_time', locals: {grade: grade}
 
@@ -50,7 +50,7 @@
 			- #permitida = !(@grado.articulo_7? or @grado.articulo_6? or @grado.iniciado_periodo_id.eql? @periodo_inscripcion.id)
 			- #NOTA INTERNA: La siguiente línea no funciona con or. por lo que fue cambiada a || 
 			- #Tiene que ver con que el or pareciera un or exclusivo, es decir que tienen que ser todos true. O tiene que ver con que algunos valores no son binarios (true or flase) sino que son null u otra cosa
-			- enabled_enroll_by_general = enrolling || valid_to_regular_enroll 
+			- enabled_enroll_by_general = false #enrolling || valid_to_regular_enroll 
 
 			- if (enabled_enroll_by_appointment || enabled_enroll_by_general)
 				%h4.text-center.text-success.mt-1= "INSCRIPCIÓN  #{academic_process.period.name} ABIERTA"

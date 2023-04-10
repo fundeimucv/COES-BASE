@@ -60,6 +60,7 @@ class Subject < ApplicationRecord
     self.code.strip!
     self.name.upcase!
     self.code.upcase!
+    self.code = "0#{self.code}" if self.code[0] != '0' 
   end
 
   # GENERALS FUNCTIONS: 
@@ -173,24 +174,28 @@ class Subject < ApplicationRecord
         searchable true
       end
 
-      field :total_dependencies do
-        label 'T. Dependencias'
-        column_width 200
-      end
       field :area do
-        column_width 300
+        column_width 200
         searchable :name
       end
-
-      def total_courses
-        label 'T. Cour'
-      end
-
       field :unit_credits do 
         label 'Crédi'
-        column_width 10
+        column_width 20
       end
-      fields :unit_credits, :ordinal, :qualification_type, :modality, :created_at, :updated_at
+
+      field :total_courses do
+        label 'Cursos'
+        column_width 20
+      end
+
+      fields :modality, :ordinal do
+        column_width 20
+      end
+
+      field :total_dependencies do
+        label 'Depends'
+        column_width 20
+      end
     end
 
     show do
@@ -279,7 +284,7 @@ class Subject < ApplicationRecord
     modality = fields['modality']
     if row[4]
       aux = row[4].strip.downcase
-      modality = aux if Subject.modalities.values.include? aux
+      modality = aux if Subject.modalities.keys.include? aux
     end
     
     subject.modality = modality

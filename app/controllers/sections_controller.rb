@@ -1,9 +1,16 @@
 class SectionsController < ApplicationController
-  before_action :set_section, only: %i[ show update ]
+  before_action :set_section, only: %i[ show update export ]
 
   # GET /sections or /sections.json
   def index
     @sections = Section.all
+  end
+
+
+  def export
+    respond_to do |format|
+      format.xls {send_file @section.excel_list, filename: "Listado_Sec_#{@section.name_to_file}.xls", disposition: 'inline'}
+    end
   end
 
   # GET /sections/1 or /sections/1.json

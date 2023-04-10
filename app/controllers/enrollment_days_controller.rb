@@ -57,7 +57,7 @@ class EnrollmentDaysController < ApplicationController
       resto = @enrollment_day.mod_to_grades
       if resto > 0
         limitado = academic_proccess.readys_to_enrollment_day
-        limitado[0..resto-1].each{|gr| total_update += 1 if gr.update(appointment_time: @enrollment_day.start+(total_timeslots-1*@enrollment_day.slot_duration_minutes).minutes, duration_slot_time: @enrollment_day.slot_duration_minutes)}
+        limitado[0..resto-1].each{|gr| total_update += 1 if gr.update(appointment_time: @enrollment_day.start+(total_timeslots*@enrollment_day.slot_duration_minutes).minutes, duration_slot_time: @enrollment_day.slot_duration_minutes)}
       end
 
       flash[:success] += ". Se generaron #{total_update} citas"

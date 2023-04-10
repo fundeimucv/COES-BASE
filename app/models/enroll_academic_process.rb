@@ -33,6 +33,8 @@ class EnrollAcademicProcess < ApplicationRecord
   validates :grade, presence: true
   validates :academic_process, presence: true
   validates :enroll_status, presence: true
+
+  validates_uniqueness_of :academic_process, scope: [:grade], message: 'Ya registrado en Proceso academico', field_name: false
   # validates :permanence_status, presence: true
 
   # SCOPE:
@@ -51,6 +53,10 @@ class EnrollAcademicProcess < ApplicationRecord
   scope :custom_search, -> (keyword) { joins(:user, :period).where("users.ci ILIKE '%#{keyword}%' OR periods.year = #{keyword}") }
 
   # FUNCTIONS:
+  def any_permanence_articulo?
+    (self.articulo3? or self.articulo6? or self.articulo7?)
+  end
+
   def set_default_values_by_import
     self.enroll_status = :confirmado
     self.permanence_status = :regular
@@ -68,6 +74,9 @@ class EnrollAcademicProcess < ApplicationRecord
     subjects.sum(:unit_credits)
   end
 
+  def short_name
+    "#{self.school.code}_#{self.period.name_revert}_#{self.student.user_ci}"
+  end
 
   def name
     "(#{self.school.code}) #{self.period.name}:#{self.student.name}" if ( self.period and self.school and self.student)
@@ -122,7 +131,7 @@ class EnrollAcademicProcess < ApplicationRecord
     end
 
     edit do
-      fields :grade, :academic_process, :enroll_status#, :permanence_status
+      fields :grade, :academic_process, :enroll_status, :permanence_status
     end
 
     export do
@@ -136,9 +145,11 @@ class EnrollAcademicProcess < ApplicationRecord
 
     def paper_trail_update
       changed_fields = self.changes#.keys - ['created_at', 'updated_at']
-      changed_fields = changed_fields.map do |fi| 
-        elem = I18n.t("activerecord.attributes.#{self.model_name.param_key}.#{fi[0]}").to_s
-        elem += " de #{fi[1][0]} a #{fi[1][1]}"
+      changed_fields = changed_fields.map do |fi|
+        if fi[0] != 'updated_at'
+          elem = I18n.t("activerecord.attributes.#{self.model_name.param_key}.#{fi[0]}").to_s
+          elem += " de #{fi[1][0]} a #{fi[1][1]}"
+        end
       end
       object = I18n.t("activerecord.models.#{self.model_name.param_key}.one")
       self.paper_trail_event = "¡#{object} actualizada en: #{changed_fields.to_sentence}"

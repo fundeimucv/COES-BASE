@@ -126,7 +126,7 @@ class School < ApplicationRecord
         inline_edit false
       end
 
-      fields :bank_accounts, :contact_email
+      fields :bank_accounts, :contact_email, :boss_name
     end
 
     export do
