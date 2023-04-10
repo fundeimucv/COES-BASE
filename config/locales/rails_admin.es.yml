@@ -28,6 +28,8 @@ es:
       reset_filters: "Resetear filtros"
       refresh: "Buscar"
     form:
+      operators:
+        like: Contiene
       bulk_delete: 'Confirmación de Eliminación'
       new_model: 'Nuevo'
       char_length_of: "Caracteres entre"

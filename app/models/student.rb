@@ -92,7 +92,7 @@ class Student < ApplicationRecord
   end
 
   def name
-    user.description if user
+    user.ci_fullname if user
   end
 
   def user_ci
