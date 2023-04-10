@@ -45,6 +45,9 @@ class Subject < ApplicationRecord
   validates :area, presence: true
 
   # SCOPES: 
+
+  scope :todos, -> {where('0 = 0')}
+
   scope :custom_search, -> (keyword) {joins([:area]).where("subjects.name ILIKE ? or subjects.code ILIKE ? or areas.name ILIKE ?", "%#{keyword}%", "%#{keyword}%", "%#{keyword}%")} 
 
   scope :independents, -> {joins('LEFT JOIN dependencies ON dependencies.subject_dependent_id = subjects.id').where('dependencies.subject_dependent_id IS NULL')}
@@ -163,6 +166,7 @@ class Subject < ApplicationRecord
     end
 
     list do
+      scopes [:todos, :obligatoria, :electiva, :optativa]
       search_by :custom_search
 
       field :code do
