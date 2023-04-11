@@ -50,15 +50,18 @@ class Section < ApplicationRecord
   enum modality: [:nota_final, :equivalencia_interna]
 
   # VALIDATIONS:
-  validates :code, presence: true
+
+  validates :code, presence: true, uniqueness: { scope: :course_id, message: 'Ya existe la sesión para el curso', case_sensitive: false, field_name: false}, length: { in: 1..4, too_long: "%{count} caracteres es el máximo permitido", too_short: "%{count} caracter es el mínimo permitido"}
   validates :capacity, presence: true
   validates :course, presence: true
   validates :modality, presence: true
 
-  validates_uniqueness_of :code, scope: [:course_id], message: 'La oferta docente ya existe!', field_name: false    
+  # validates_uniqueness_of :code, scope: [:course_id], message: 'La oferta docente ya existe!', field_name: false
+
 
   # SCOPE:
-  default_scope {joins(:user, :period, :subject)}
+  default_scope {joins(:period, :subject)}
+
   scope :custom_search, -> (keyword) { where("subjects.name ILIKE '%#{keyword}%' OR subjects.code ILIKE '%#{keyword}%'") }
   scope :qualified, -> () {where(qualified: true)}
 
@@ -225,7 +228,7 @@ class Section < ApplicationRecord
 
     list do
       search_by :custom_search
-      filters [:period_name, :code, :subject_code, :teacher_desc]
+      filters [:period_name, :code, :subject_code]
       field :period_name do
         label 'Período'
         column_width 100
@@ -241,7 +244,7 @@ class Section < ApplicationRecord
         label 'Sec'
         column_width 30
         formatted_value do
-          bindings[:view].link_to(bindings[:object].code, "/admin/section/#{bindings[:object].id}")
+          bindings[:view].link_to(bindings[:object].code, "/admin/section/#{bindings[:object].id}") if bindings[:object].present?
 
         end
       end
@@ -253,7 +256,7 @@ class Section < ApplicationRecord
         filterable 'subjects.code'
         sortable 'subjects.code'
         formatted_value do
-          bindings[:view].link_to(bindings[:object].subject.desc, "/admin/subject/#{bindings[:object].subject.id}")
+          bindings[:view].link_to(bindings[:object].subject.desc, "/admin/subject/#{bindings[:object].subject.id}") if bindings[:object].subject.present?
 
         end
       end
@@ -261,11 +264,11 @@ class Section < ApplicationRecord
       field :teacher_desc do
         label 'Profesor'
         column_width 240
-        searchable ['users.ci', 'users.first_name', 'users.last_name']
-        filterable ['users.ci', 'users.first_name', 'users.last_name']
-        sortable ['users.ci', 'users.first_name', 'users.last_name']
+        # searchable ['users.ci', 'users.first_name', 'users.last_name']
+        # filterable ['users.ci', 'users.first_name', 'users.last_name']
+        # sortable ['users.ci', 'users.first_name', 'users.last_name']
         formatted_value do
-          bindings[:view].link_to(bindings[:object].teacher.desc, "/admin/teacher/#{bindings[:object].teacher_id}")
+          bindings[:view].link_to(bindings[:object].teacher.desc, "/admin/teacher/#{bindings[:object].teacher_id}") if bindings[:object].teacher.present?
         end
       end
       field :schedule_name do
