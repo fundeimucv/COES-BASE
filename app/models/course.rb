@@ -25,6 +25,12 @@ class Course < ApplicationRecord
   scope :order_by_subject_ordinal, -> {joins(:subject).order('subjects.ordinal': :asc)}
   scope :order_by_subject_code, -> {joins(:subject).order('subjects.code': :asc)}
 
+  # ORIGINAL CON LEFT JOIN
+  # scope :without_sections, -> {joins("LEFT JOIN sections s ON s.course_id = courses.id").where(s: {course_id: nil})}
+  
+  # OPTIMO CON LEFT OUTER JOIN
+  scope :without_sections, -> {left_joins(:sections).where('sections.course_id': nil)}
+
   def name 
     "#{self.period.name}-#{self.subject.desc}" if self.period and self.school and self.subject
   end
