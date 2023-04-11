@@ -9,12 +9,11 @@ class Billboard < ApplicationRecord
 	# Rich Text
     has_rich_text :content
 
-    scope :activas, -> {where "activa = ?", 1}
+    scope :activas, -> {where(active: true)}
 
 
 	def activada_valor
 		activa ? 'Activada' : 'Desactivada'
-		
 	end
 
 

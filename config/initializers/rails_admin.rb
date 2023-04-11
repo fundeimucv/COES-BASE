@@ -75,9 +75,13 @@ RailsAdmin.config do |config|
 
 
 
-  # config.model "ActionText::RichText" do
-  #   visible false
-  # end
+  config.model "ActionText::EncryptedRichText" do
+    visible false
+  end
+
+  config.model "ActionText::RichText" do
+    visible false
+  end  
 
   # config.model 'User' do
   #   configure :preview do
