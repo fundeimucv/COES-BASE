@@ -11,6 +11,7 @@ class Billboard < ApplicationRecord
 
     scope :activas, -> {where(active: true)}
 
+    validates :content, presence: true
 
 	def activada_valor
 		activa ? 'Activada' : 'Desactivada'
@@ -19,6 +20,11 @@ class Billboard < ApplicationRecord
 
 	rails_admin do
 		navigation_icon 'fa-regular fa-calendar-alt'
+
+		edit do
+			field :active
+			field :content
+		end		
 	end
 	
 

@@ -3,6 +3,12 @@
 import * as toastr from "toastr";
 window.toastr = toastr;
 
+// import "trix"
+import "@rails/actiontext"
+
+
+
+
 document.addEventListener("rails_admin.dom_ready", function() {
 	$('[rel="tooltip"]').tooltip();
 	$('[title!=""]').tooltip();

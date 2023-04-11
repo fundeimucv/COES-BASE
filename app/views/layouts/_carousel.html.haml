@@ -10,7 +10,7 @@
         .carousel-item.active
             = image_tag 'bg_vista_fau_cuadros2.jpeg', class:'d-block w-100', alt: 'Vista FAU'
         - billboards.each do |c|
-            .carousel-item{style: 'width: 550px; height: 250px'}
+            .carousel-item{style: 'width: 550px'}
                 %div{style: 'text-align:center; margin: auto'}
                     = raw c.content
 
