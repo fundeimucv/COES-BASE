@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_03_28_213254) do
+ActiveRecord::Schema[7.0].define(version: 2023_04_11_215040) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -23,6 +23,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_03_28_213254) do
     t.datetime "updated_at", null: false
     t.integer "modality", default: 0, null: false
     t.bigint "process_before_id"
+    t.string "name"
     t.index ["period_id"], name: "index_academic_processes_on_period_id"
     t.index ["process_before_id"], name: "index_academic_processes_on_process_before_id"
     t.index ["school_id"], name: "index_academic_processes_on_school_id"
@@ -151,6 +152,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_03_28_213254) do
     t.boolean "offer_as_pci"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "name"
     t.index ["academic_process_id"], name: "index_courses_on_academic_process_id"
     t.index ["subject_id"], name: "index_courses_on_subject_id"
   end
@@ -300,6 +302,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_03_28_213254) do
     t.datetime "updated_at", null: false
     t.bigint "teacher_id"
     t.string "classroom"
+    t.index ["code", "course_id"], name: "index_sections_on_code_and_course_id", unique: true
     t.index ["course_id"], name: "index_sections_on_course_id"
     t.index ["teacher_id"], name: "index_sections_on_teacher_id"
   end

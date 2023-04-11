@@ -40,15 +40,15 @@ class EnrollmentDaysController < ApplicationController
       total_update = 0
 
       flash[:success] = 'Jornada de Inscripción por Cita Horaria Creada con Éxito'
-      academic_proccess = @enrollment_day.academic_process
+      academic_process = @enrollment_day.academic_process
 
       total_timeslots = @enrollment_day.total_timeslots
       grades_by_timeslot = @enrollment_day.grades_by_timeslot
       for a in 0..(total_timeslots-1) do
-        limitado = academic_proccess.readys_to_enrollment_day
+        limitado = academic_process.readys_to_enrollment_day
 
         limitado[0..grades_by_timeslot-1].each do |gr| 
-          # if !(gr.enroll_academic_processes.of_academic_process(academic_proccess.id).any?)
+          # if !(gr.enroll_academic_processes.of_academic_process(academic_process.id).any?)
             total_update += 1 if gr.update(appointment_time: @enrollment_day.start+(a*@enrollment_day.slot_duration_minutes).minutes, duration_slot_time: @enrollment_day.slot_duration_minutes)
           # end
         end
@@ -56,7 +56,7 @@ class EnrollmentDaysController < ApplicationController
       end
       resto = @enrollment_day.mod_to_grades
       if resto > 0
-        limitado = academic_proccess.readys_to_enrollment_day
+        limitado = academic_process.readys_to_enrollment_day
         limitado[0..resto-1].each{|gr| total_update += 1 if gr.update(appointment_time: @enrollment_day.start+(total_timeslots*@enrollment_day.slot_duration_minutes).minutes, duration_slot_time: @enrollment_day.slot_duration_minutes)}
       end
 
@@ -84,11 +84,11 @@ class EnrollmentDaysController < ApplicationController
 
   # DELETE /enrollment_days/1 or /enrollment_days/1.json
   def destroy
-    academic_proccess_id = @enrollment_day.academic_process_id
+    academic_process_id = @enrollment_day.academic_process_id
     @enrollment_day.destroy
 
     respond_to do |format|
-      format.html { redirect_to "/admin/academic_process/#{academic_proccess_id}", notice: "Jornadas de Inscripción por Cita Horaria eliminada con éxito. Todos sus respectivas citas horarias fueron limpiadas " }
+      format.html { redirect_to "/admin/academic_process/#{academic_process_id}", notice: "Jornadas de Inscripción por Cita Horaria eliminada con éxito. Todos sus respectivas citas horarias fueron limpiadas " }
       format.json { head :no_content }
     end
   end

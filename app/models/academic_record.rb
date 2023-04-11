@@ -59,8 +59,8 @@ class AcademicRecord < ApplicationRecord
 
   scope :with_totals, ->(school_id, period_id) {joins(:school).where("schools.id = ?", school_id).of_period(period_id).joins(:user).joins(:subject).joins(grade: :study_plan).group(:grade_id).select('study_plans.id plan_id, study_plans.total_credits plan_creditos, grados.*, SUM(subjects.unit_credits) total_creditos, COUNT(*) subjects, SUM(IF (academic_records.status = 1, subjects.creditos, 0)) aprobados')}
 
-  scope :of_period, lambda { |period_id| joins(:academic_proccess).where "academic_process.period_id = ?", period_id}
-  scope :of_periods, lambda { |periods_ids| joins(:academic_proccess).where "academic_process.period_id IN (?)", periods_ids}
+  scope :of_period, lambda { |period_id| joins(:academic_process).where "academic_process.period_id = ?", period_id}
+  scope :of_periods, lambda { |periods_ids| joins(:academic_process).where "academic_process.period_id IN (?)", periods_ids}
 
   scope :on_reparacion, -> {joins(:qualifications).where('qualificactions.type_q': :reparacion)}
 
@@ -75,12 +75,12 @@ class AcademicRecord < ApplicationRecord
 
   scope :coursing, -> {where "academic_records.status != 1 and academic_records.status != 2 and academic_records.status != 3"} # Excluye retiradas también
 
-  scope :total_credits_coursed_on_process, -> (periods_ids) {coursed.joins(:academic_proccess).where('academic_proccesses.id': periods_ids).joins(:subject).sum('subjects.unit_credits')}
-  scope :total_credits_approved_on_process, -> (periods_ids) {aprobado.joins(:academic_proccess).where('academic_proccesses.id': periods_ids).joins(:subject).sum('subjects.unit_credits')}
+  scope :total_credits_coursed_on_process, -> (periods_ids) {coursed.joins(:academic_process).where('academic_processes.id': periods_ids).joins(:subject).sum('subjects.unit_credits')}
+  scope :total_credits_approved_on_process, -> (periods_ids) {aprobado.joins(:academic_process).where('academic_processes.id': periods_ids).joins(:subject).sum('subjects.unit_credits')}
 
-  scope :total_credits_coursed_on_periods, lambda{|periods_ids| coursed.joins(:academic_proccess).where('academic_proccesses.period_id IN (?)', periods_ids).joins(:subject).sum('subjects.unit_credits')}
+  scope :total_credits_coursed_on_periods, lambda{|periods_ids| coursed.joins(:academic_process).where('academic_processes.period_id IN (?)', periods_ids).joins(:subject).sum('subjects.unit_credits')}
 
-  scope :total_credits_approved_on_periods, lambda{|periods_ids| aprobado.joins(:academic_proccess).where('academic_proccesses.period_id IN (?)', periods_ids).joins(:subject).sum('subjects.unit_credits')}
+  scope :total_credits_approved_on_periods, lambda{|periods_ids| aprobado.joins(:academic_process).where('academic_processes.period_id IN (?)', periods_ids).joins(:subject).sum('subjects.unit_credits')}
 
   scope :total_credits, -> {joins(:subject).sum('subjects.unit_credits')}
   scope :total_subjects, -> {(joins(:subject).group('subjects.id').count).count}
@@ -104,7 +104,7 @@ class AcademicRecord < ApplicationRecord
   # scope :by_equivalencia_interna, -> {joins(:section).where "sections.modality = 1"}
   # scope :by_equivalencia_externa, -> {joins(:section).where "sections.modality = 2"}
 
-  scope :student_enrolled_by_period, lambda { |period_id| joins(:academic_proccess).where("academic_proccesses.period_id": period_id).group(:student).count } 
+  scope :student_enrolled_by_period, lambda { |period_id| joins(:academic_process).where("academic_processes.period_id": period_id).group(:student).count } 
 
   scope :total_by_qualification_modality?, -> {joins(:subject).group("subjects.modality").count}
 
@@ -371,9 +371,9 @@ class AcademicRecord < ApplicationRecord
       field :section_code do
         label 'Sec'
         column_width 50
-        searchable 'sections.code'
-        filterable 'sections.code'
-        sortable 'sections.code'
+        # searchable 'sections.code'
+        # filterable 'sections.code'
+        # sortable 'sections.code'
         formatted_value do
           bindings[:view].link_to(bindings[:object].section.code, "/admin/section/#{bindings[:object].section_id}") if bindings[:object].section.present?
         end
@@ -393,9 +393,9 @@ class AcademicRecord < ApplicationRecord
       field :student_desc do
         label 'Estudiante'
         column_width 240
-        searchable ['users.ci', 'users.first_name', 'users.last_name']
-        filterable ['users.ci', 'users.first_name', 'users.last_name']
-        sortable 'users.ci'
+        # searchable ['users.ci', 'users.first_name', 'users.last_name']
+        # filterable ['users.ci', 'users.first_name', 'users.last_name']
+        # sortable 'users.ci'
         formatted_value do
           bindings[:view].link_to(bindings[:object].student.name, "/admin/student/#{bindings[:object].student.id}") if bindings[:object].student.present?
         end

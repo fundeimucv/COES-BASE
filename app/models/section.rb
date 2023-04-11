@@ -50,19 +50,17 @@ class Section < ApplicationRecord
   enum modality: [:nota_final, :equivalencia_interna]
 
   # VALIDATIONS:
-
-  validates :code, presence: true, uniqueness: { scope: :course_id, message: 'Ya existe la sesión para el curso', case_sensitive: false, field_name: false}, length: { in: 1..4, too_long: "%{count} caracteres es el máximo permitido", too_short: "%{count} caracter es el mínimo permitido"}
+  validates :code, presence: true, uniqueness: { scope: :course_id, message: 'Ya existe la sesión para el curso', case_sensitive: false, field_name: false}, length: { in: 1..7, too_long: "%{count} caracteres es el máximo permitido", too_short: "%{count} caracter es el mínimo permitido"}
   validates :capacity, presence: true
   validates :course, presence: true
   validates :modality, presence: true
 
-  # validates_uniqueness_of :code, scope: [:course_id], message: 'La oferta docente ya existe!', field_name: false
-
-
   # SCOPE:
-  # default_scope {joins(:period, :subject)}
+  default_scope {joins(:course).order('courses.name')}
+  scope :sort_by_period, -> {joins(:period).order('periods.name')}
 
-  scope :custom_search, -> (keyword) { joins(:user, :period, :subject).where("subjects.name ILIKE '%#{keyword}%' OR subjects.code ILIKE '%#{keyword}%' OR periods.name ILIKE '%#{keyword}%' OR users.ci ILIKE '%#{keyword}%'") }
+  scope :custom_search, -> (keyword) { joins(:period, :subject).where("sections.code ILIKE '%#{keyword}%' OR subjects.name ILIKE '%#{keyword}%' OR subjects.code ILIKE '%#{keyword}%' OR periods.name ILIKE '%#{keyword}%'").sort_by_period }
+  
   scope :qualified, -> () {where(qualified: true)}
 
   scope :without_teacher_assigned, -> () {where(teacher_id: nil)}
@@ -229,16 +227,25 @@ class Section < ApplicationRecord
     list do
       search_by :custom_search
       # filters [:period_name, :code, :subject_code]
-      field :period_name do
+      sort_by 'courses.name'
+      fields :academic_process do
         label 'Período'
         column_width 100
-        # searchable 'periods.name'
-        # filterable 'periods.name'
-        # sortable 'periods.name'
-        formatted_value do
-          bindings[:object].period.name if bindings[:object].period
+        pretty_value do
+          value.period.name
         end
       end
+
+      # field :period_name do
+      #   label 'Período'
+      #   column_width 100
+      #   # searchable 'periods.name'
+      #   # filterable 'periods.name'
+      #   # sortable 'periods.name'
+      #   formatted_value do
+      #     bindings[:object].period.name if bindings[:object].period
+      #   end
+      # end
 
       field :code do
         label 'Sec'

@@ -38,7 +38,6 @@ class EnrollAcademicProcess < ApplicationRecord
   # validates :permanence_status, presence: true
 
   # SCOPE:
-  # default_scope { joins(:user, :period) }
   scope :todos, -> {where('0 = 0')}
 
   scope :of_academic_process, -> (academic_process_id) {where(academic_process_id: academic_process_id)}

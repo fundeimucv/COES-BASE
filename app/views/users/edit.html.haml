@@ -7,12 +7,7 @@
       = simple_form_for @user, html: { class: 'form-horizontal', novalidate: false } do |f|
         %h5.text-center.bg-dark.text-info.p-1 REGISTRO DE DATOS
         %h5.text-center.bg-info.p-1 PASO 2: COMPLETAR DATOS PERSONALES Y DE CONTACTO
-        
-        - if updated_password = true
-          - # Password:
-          %div{'data-bs-toggle': :tooltip, title: 'Cambie su contraseña a un valor distinto a la cédula de identidad'}
-            = f.input :password, required: true, minlength: 6, passwordrules: "required: upper; required: lower; required: digit; minlength: 8; allowed: [-().&@?'#,/&quot;+]; max-consecutive: 2"
-            = f.input :password_confirmation, required: true, input_html: {minlength: 6}
+
         %hr
         - # Cedula de Identidad:
         = f.input :ci, readonly: true, disabled: true 

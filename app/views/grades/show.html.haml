@@ -45,7 +45,7 @@
 
 			- special_enabled_to_enroll = (grade.enabled_enroll_process.eql? academic_process.id)
 
-			- valid_to_regular_enroll = (current_enrollment_day.nil? and ((grade.confirmado? or grade.reincorporado?) and (grade.is_new? or enrolled_in_before_progress) or special_enabled_to_enroll ))
+			- valid_to_regular_enroll = (current_enrollment_day.nil? and ((grade.confirmado?) and (grade.is_new? or enrolled_in_before_progress) or special_enabled_to_enroll ))
 
 			- #permitida = !(@grado.articulo_7? or @grado.articulo_6? or @grado.iniciado_periodo_id.eql? @periodo_inscripcion.id)
 			- #NOTA INTERNA: La siguiente línea no funciona con or. por lo que fue cambiada a || 

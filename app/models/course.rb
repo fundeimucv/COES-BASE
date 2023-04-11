@@ -3,6 +3,8 @@ class Course < ApplicationRecord
   # t.bigint "academic_process_id", null: false
   # t.bigint "subject_id", null: false
   # t.boolean "offer_as_pci"
+  # t.string "name"
+  # Course.all.map{|ap| ap.update(name: 'x')}  
 
   # ASSOCIATIONS:
   # belongs_to
@@ -31,8 +33,12 @@ class Course < ApplicationRecord
   # OPTIMO CON LEFT OUTER JOIN
   scope :without_sections, -> {left_joins(:sections).where('sections.course_id': nil)}
 
-  def name 
-    "#{self.period.name}-#{self.subject.desc}" if self.period and self.school and self.subject
+
+  # CALLBACKS:
+  before_save :set_name
+
+  def get_name
+    "#{self.academic_process.name}-#{self.subject.desc}" if self.period and self.school and self.subject
   end
 
   def total_sections
@@ -72,4 +78,8 @@ class Course < ApplicationRecord
 
   end
   
+  private
+    def set_name
+      self.name = self.get_name
+    end
 end

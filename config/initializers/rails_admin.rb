@@ -57,7 +57,9 @@ RailsAdmin.config do |config|
       except [School]
 
     end
-    bulk_delete
+    bulk_delete do
+      except [AcademicProcess, Subject]
+    end
     show
     edit
     delete do
