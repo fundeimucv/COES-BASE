@@ -38,7 +38,7 @@ class EnrollAcademicProcess < ApplicationRecord
   # validates :permanence_status, presence: true
 
   # SCOPE:
-  default_scope { joins(:user, :period) }
+  # default_scope { joins(:user, :period) }
   scope :todos, -> {where('0 = 0')}
 
   scope :of_academic_process, -> (academic_process_id) {where(academic_process_id: academic_process_id)}
@@ -54,7 +54,7 @@ class EnrollAcademicProcess < ApplicationRecord
   
   scope :total_with_i_academic_records, -> (i){(joins(:academic_records).group(:"enroll_academic_processes.id").having('COUNT(*) = ?', i).count).count}
 
-  scope :custom_search, -> (keyword) { where("users.ci ILIKE '%#{keyword}%' OR periods.name = '%#{keyword}%'") }
+  scope :custom_search, -> (keyword) { joins(:user, :period).where("users.ci ILIKE '%#{keyword}%' OR periods.name ILIKE '%#{keyword}%'") }
 
   # FUNCTIONS:
   def any_permanence_articulo?
@@ -108,7 +108,7 @@ class EnrollAcademicProcess < ApplicationRecord
     
     list do
       search_by :custom_search
-      filters [:period_name, :student]
+      # filters [:period_name, :student]
       scopes [:todos, :preinscrito, :reservado, :confirmado, :retirado]
 
       field :enroll_status_label do
@@ -125,9 +125,9 @@ class EnrollAcademicProcess < ApplicationRecord
       field :period_name do
         label 'Período'
         column_width 100
-        searchable 'periods.name'
-        filterable 'periods.name'
-        sortable 'periods.name'
+        # searchable 'periods.name'
+        # filterable 'periods.name'
+        # sortable 'periods.name'
         formatted_value do
           bindings[:object].period.name if bindings[:object].period
         end        
@@ -135,9 +135,9 @@ class EnrollAcademicProcess < ApplicationRecord
 
       field :student do
         column_width 340
-        searchable ['users.ci', 'users.first_name', 'users.last_name']
-        filterable ['users.ci', 'users.first_name', 'users.last_name']
-        sortable ['users.ci', 'users.first_name', 'users.last_name']
+        # searchable ['users.ci', 'users.first_name', 'users.last_name']
+        # filterable ['users.ci', 'users.first_name', 'users.last_name']
+        # sortable ['users.ci', 'users.first_name', 'users.last_name']
       end
       field :total_subjects do
         label 'Tot Asig'

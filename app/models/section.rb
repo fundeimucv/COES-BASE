@@ -60,9 +60,9 @@ class Section < ApplicationRecord
 
 
   # SCOPE:
-  default_scope {joins(:period, :subject)}
+  # default_scope {joins(:period, :subject)}
 
-  scope :custom_search, -> (keyword) { where("subjects.name ILIKE '%#{keyword}%' OR subjects.code ILIKE '%#{keyword}%'") }
+  scope :custom_search, -> (keyword) { joins(:user, :period, :subject).where("subjects.name ILIKE '%#{keyword}%' OR subjects.code ILIKE '%#{keyword}%' OR periods.name ILIKE '%#{keyword}%' OR users.ci ILIKE '%#{keyword}%'") }
   scope :qualified, -> () {where(qualified: true)}
 
   scope :without_teacher_assigned, -> () {where(teacher_id: nil)}
@@ -228,13 +228,13 @@ class Section < ApplicationRecord
 
     list do
       search_by :custom_search
-      filters [:period_name, :code, :subject_code]
+      # filters [:period_name, :code, :subject_code]
       field :period_name do
         label 'Período'
         column_width 100
-        searchable 'periods.name'
-        filterable 'periods.name'
-        sortable 'periods.name'
+        # searchable 'periods.name'
+        # filterable 'periods.name'
+        # sortable 'periods.name'
         formatted_value do
           bindings[:object].period.name if bindings[:object].period
         end
@@ -252,9 +252,9 @@ class Section < ApplicationRecord
       field :subject_code do
         label 'Asignatura'
         column_width 240
-        searchable 'subjects.code'
-        filterable 'subjects.code'
-        sortable 'subjects.code'
+        # searchable 'subjects.code'
+        # filterable 'subjects.code'
+        # sortable 'subjects.code'
         formatted_value do
           bindings[:view].link_to(bindings[:object].subject.desc, "/admin/subject/#{bindings[:object].subject.id}") if bindings[:object].subject.present?
 
