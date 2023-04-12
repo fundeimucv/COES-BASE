@@ -20,9 +20,11 @@ class EnrollAcademicProcessesController < ApplicationController
       event = 'Se generó Constancia de Inscripción'
       @study_contance = params[:study] ? true : false
       file_name = "ConstanciaInscripcion#{@enroll_academic_process.short_name}"
+      @title = 'CONSTANCIA DE INSCRIPCIÓN'
       if @study_contance
         file_name = "ConstanciaEstudio#{@enroll_academic_process.short_name}"
         event = 'Se generó Constancia de Estudio'
+        @title = 'CONSTANCIA DE ESTUDIO'
       end
       respond_to do |format|
         format.html
