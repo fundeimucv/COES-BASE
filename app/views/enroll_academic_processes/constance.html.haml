@@ -24,7 +24,7 @@
     - @academic_records.each do |acre|
       %tr
         %td.text-center= acre.subject.code
-        %td= acre.subject.name
+        %td= acre.subject_name_with_retiro.html_safe
         %td.text-center= acre.section.code
         %td.text-center= acre.subject.unit_credits
         / %td.text-center=# acre.status.titleize

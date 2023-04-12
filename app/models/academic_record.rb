@@ -170,6 +170,12 @@ class AcademicRecord < ApplicationRecord
     return aux
   end
 
+  def subject_name_with_retiro  
+    aux = "#{subject.name}"
+    aux += " <b>(Retirada)</b>" if retirado? 
+    return aux
+  end
+
   def badge_approved
     "<span class= 'badge bg-success'>Aprobado (#{self.q_value_to_02i_to_from})</span>" if self.aprobado?
   end
