@@ -155,7 +155,13 @@ class AcademicRecord < ApplicationRecord
 
     if (valor.eql? 'PI' or valor.eql? 'RT' or valor.eql? 'A' or valor.eql? 'AP' or valor.eql? 'EQ')
       self.status = I18n.t(valor)
-      return true
+      if valor.eql? 'PI'
+        qua = self.qualifications.find_or_initialize_by(type_q: :final)
+        qua.value = 0
+        return qua.save        
+      else
+        return true
+      end
     else
       qua = self.qualifications.find_or_initialize_by(type_q: :final)
       qua.value = valor.to_i
@@ -202,6 +208,10 @@ class AcademicRecord < ApplicationRecord
 
   def name
     "#{user.ci_fullname} en #{section.name}" if (user and section)
+  end
+
+  def desc_conv_absolute
+    I18n.t(self.status)
   end
 
   def pi?
@@ -312,7 +322,9 @@ class AcademicRecord < ApplicationRecord
   end
 
   def num_to_s num = definitive_q_value 
-    if pi? or retirado? or (subject and subject.absoluta?) or num.nil? or !(num.is_a? Integer or num.is_a? Float)
+    if pi?
+      'CERO'
+    elsif retirado? or (subject and subject.absoluta?) or num.nil? or !(num.is_a? Integer or num.is_a? Float)
       status.humanize.upcase
     else
       numeros = %W(CERO UNO DOS TRES CUATRO CINCO SEIS SIETE OCHO NUEVE DIEZ ONCE DOCE TRECE CATORCE QUINCE DIECISÉIS DIECISIETE DIECIOCHO DIE)
@@ -594,7 +606,9 @@ class AcademicRecord < ApplicationRecord
 
   # TRIGGER FUNCTIONS:
   def set_options_q
-    self.qualifications.destroy_all if self.pi? or self.retirado? or (self.subject and self.subject.absoluta?)
+    self.qualifications.destroy_all if (self.pi? or self.retirado? or (self.subject and self.subject.absoluta?))
+
+    self.qualifications.create(type_q: :final, value: 0) if self.pi?
   end
 
   def destroy_enroll_academic_process

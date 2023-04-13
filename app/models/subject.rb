@@ -127,7 +127,7 @@ class Subject < ApplicationRecord
   end
 
   def conv_header
-    data = ["N°", "CÉDULA DE IDENTIDAD", "APELLIDOS Y NOMBRES", "COD. PLAN", "CALIF. DESCR.", "TIPO", "CALIF. EN LETRAS"]
+    data = ["N°", "CÉDULA", "APELLIDOS Y NOMBRES", "PLAN", "CALIF. DESCR.", "TIPO", "CALIF. EN LETRAS"]
 
     data.insert(6, "CALIF. NUM.") unless self.as_absolute?
 

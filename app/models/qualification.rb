@@ -22,7 +22,7 @@ class Qualification < ApplicationRecord
   after_destroy :update_academic_record_status
   def update_academic_record_status
     definitive_q_value = self.academic_record.definitive_q_value
-    if definitive_q_value and 
+    if definitive_q_value and !self.academic_record.pi?
       status = (definitive_q_value >= 10) ? :aprobado : :aplazado
       self.academic_record.update(status: status)
     end
@@ -41,6 +41,20 @@ class Qualification < ApplicationRecord
       value < 10
     else
       false
+    end
+  end
+
+  def desc_conv
+    if self.final?
+      if self.academic_record.pi?
+        'PI'
+      elsif self.academic_record.retirado?
+        'RT'
+      else
+        I18n.t(self.type_q)
+      end
+    else
+      I18n.t(self.type_q)
     end
   end
 
