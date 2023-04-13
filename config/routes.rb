@@ -75,10 +75,17 @@ Rails.application.routes.draw do
   
   resources :faculties do
     resources :schools do
-      resources :admission_types, :grades, :study_plans
+      resources :admission_types, :study_plans
       resources :areas do
         resources :subjects
       end
+    end
+  end
+
+  
+  resources :grades do
+    member do
+      get 'kardex'
     end
   end
 

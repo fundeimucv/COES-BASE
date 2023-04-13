@@ -2,8 +2,8 @@
   .image_profile
     - if image = @user.profile_picture_as_thumb
       = image_tag main_app.url_for(image)
-  %p UNIVERSIDAD CENTRAL DE VENEZUELA
-  %p= "CONTROL DE ESTUDIO #{@school.type_entity.upcase}"
-  %p.font-sm= @school.name.upcase
-  %h2= title
+%p UNIVERSIDAD CENTRAL DE VENEZUELA
+%p= "CONTROL DE ESTUDIO #{@school.type_entity.upcase}"
+%p.font-sm= @school.name.upcase
+%h2= title
 
