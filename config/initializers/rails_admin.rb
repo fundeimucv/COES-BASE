@@ -41,9 +41,14 @@ RailsAdmin.config do |config|
     config.rollback_on_error = false
   end
 
+  # config.navigation_static_links = {
+  #   'Cambiar Período' => 'http://www.google.com'
+  # }
+  # config.navigation_static_label = "Opciones"
 
   config.actions do
     dashboard                     # mandatory
+    require_relative '../../lib/rails_admin/config/actions/dashboard'
     index do                         # mandatory
 
       except [SectionTeacher, Profile, Address, EnrollmentDay, Qualification, Dependency]
