@@ -1,18 +1,18 @@
 
 %table.table.table-sm
   %thead
-    %tr
+    %tr.text-center
       %td Sec
       %td Asignatura
       %td Período
       %td Profesor
-      %td Créd
-      %td.text-center Capac
-      %td.col-1.text-center Calif
+      %td Créditos
+      %td Cupos
+      %td.col-1 Calif
   %tbody
-    %tr
+    %tr.text-center
       %td= section.code
-      %td
+      %td{title: section.subject.desc}
         - if section.subject
           - if current_user.admin? and session[:rol].eql? 'admin'
             %a{href: "/admin/subject/#{section.subject_id}"}= section.subject.desc 
@@ -20,19 +20,19 @@
             = section.subject.desc
 
       %td= section.period.name if section.period
-      %td
+      %td{title: section.teacher.desc}
         - if section.teacher 
           - if current_user.admin? and session[:rol].eql? 'admin'
             %a{href: "/admin/teacher/#{section.teacher_id}"}= section.teacher.desc 
           - else
             = section.teacher.desc
 
-      %td.text-center= section.subject.unit_credits
-      %td.text-center
+      %td= section.subject.unit_credits
+      %td
         .badge.bg-secondary= section.total_academic_records
         de
         .badge.bg-info= section.capacity
-      %td.text-center
+      %td
         - if section.qualified?
           .fa.fa-check
         - else
