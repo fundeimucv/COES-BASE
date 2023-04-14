@@ -32,6 +32,9 @@ es:
   sin_calificar: SC
 
   admin:
+    misc:
+      more: 'Más'
+      count: Total
     table_headers:
       model_name: 'Entidad'
       last_created: 'Último Creado'

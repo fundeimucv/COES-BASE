@@ -31,6 +31,7 @@ class AcademicProcess < ApplicationRecord
   has_many :students, through: :grades
   has_many :courses
   has_many :sections, through: :courses
+  has_many :academic_records, through: :sections
   has_many :subjects, through: :courses
 
   # ENUMERIZE:
@@ -85,6 +86,10 @@ class AcademicProcess < ApplicationRecord
     total << ApplicationController.helpers.label_status_with_tooptip('bg-danger', total_sections_without_teacher_assigned, 'Sin Profesor Asignado')
 
     return total
+  end
+
+  def total_academic_records
+    self.academic_records.count
   end
 
   def total_sections
@@ -143,6 +148,13 @@ class AcademicProcess < ApplicationRecord
           %{<a href='/admin/enroll_academic_process?query=#{bindings[:object].period.name}'><span class='badge bg-info'>#{value}</span></a>}.html_safe
         end
       end
+      field :total_academic_records do
+        column_width 100
+        label 'T Inscripciones'
+        pretty_value do
+          %{<a href='/admin/academic_record?query=#{bindings[:object].period.name}'><span class='badge bg-info'>#{value}</span></a>}.html_safe
+        end
+      end      
     end
 
     edit do

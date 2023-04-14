@@ -20,7 +20,8 @@
             = section.subject.desc
 
       %td= section.period.name if section.period
-      %td{title: section.teacher.desc}
+      - teacher_desc = section.teacher.desc if section.teacher
+      %td{title: teacher_desc}
         - if section.teacher 
           - if current_user.admin? and session[:rol].eql? 'admin'
             %a{href: "/admin/teacher/#{section.teacher_id}"}= section.teacher.desc 
