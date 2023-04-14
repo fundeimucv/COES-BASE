@@ -9,21 +9,19 @@
 		- @period_name = nil
 		- ap = school.academic_processes.first
 		- @period_name = ap.period.name if (ap and ap.period)
+		- @query = "?query=#{@period_name}" unless @period_name.blank?
 
 		.col.mx-3
-
 			.row
 				- object = I18n.t("activerecord.models.academic_record.other")
 				= link_to "/admin/academic_record#{@query}", class: 'btn btn-primary' do
 					%h1.fa.fa-calendar
 					%h4.text-center= "#{object.upcase} #{@period_name}"
-
 			.row
 				- object = I18n.t("activerecord.models.section.one")
 				= link_to "/admin/section#{@query}", class: 'btn btn-primary' do
 					%h1.fa.fa-list
 					%h4.text-center= "#{object.upcase} #{@period_name}"
-
 			.row
 				- object = I18n.t("activerecord.models.enroll_academic_process.one")
 				= link_to "/admin/enroll_academic_process#{@query}", class: 'btn btn-primary' do
