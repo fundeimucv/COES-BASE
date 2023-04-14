@@ -59,7 +59,7 @@ class Section < ApplicationRecord
   # default_scope {joins(:course).order('courses.name')}
   scope :sort_by_period, -> {joins(:period).order('periods.name')}
 
-  scope :custom_search, -> (keyword) { joins(:period, :subject, :user).where("sections.code ILIKE '%#{keyword}%' OR subjects.name ILIKE '%#{keyword}%' OR subjects.code ILIKE '%#{keyword}%' OR periods.name ILIKE '%#{keyword}%'").sort_by_period }
+  scope :custom_search, -> (keyword) { joins(:period, :subject).where("sections.code ILIKE '%#{keyword}%' OR subjects.name ILIKE '%#{keyword}%' OR subjects.code ILIKE '%#{keyword}%' OR periods.name ILIKE '%#{keyword}%'").sort_by_period }
   
   scope :qualified, -> () {where(qualified: true)}
 
@@ -224,14 +224,13 @@ class Section < ApplicationRecord
     navigation_icon 'fa-solid fa-list'
     weight -1
 
-
     list do
       search_by :custom_search
       # filters [:period_name, :code, :subject_code]
       sort_by 'courses.name'
       field :academic_process do
         label 'Período'
-        column_width 100
+        column_width 120
         pretty_value do
           value.period.name
         end
@@ -278,18 +277,6 @@ class Section < ApplicationRecord
       field :subject do
         label 'Asignatura'
         column_width 240
-
-        associated_collection_cache_all false
-        associated_collection_scope do
-          # bindings[:object] & bindings[:controller] are available, but not in scope's block!
-          Proc.new { |scope|
-            # scoping all Players currently, let's limit them to the team's league
-            # Be sure to limit if there are a lot of Players and order them by position
-            scope = scope.joins(:subject, :course)
-            scope = scope.limit(30) # 'order' does not work here
-          }
-        end
-
         searchable 'subjects.code'
         filterable 'subjects.code'
         sortable 'subjects.code'
@@ -300,7 +287,7 @@ class Section < ApplicationRecord
         column_width 240
         # searchable ['users.ci', 'users.first_name', 'users.last_name']
         # filterable ['users.ci', 'users.first_name', 'users.last_name']
-        # sortable ['users.ci', 'users.first_name', 'users.last_name']
+        # sortable 'users.ci'
         formatted_value do
           bindings[:view].link_to(bindings[:object].teacher.desc, "/admin/teacher/#{bindings[:object].teacher_id}") if bindings[:object].teacher.present?
         end

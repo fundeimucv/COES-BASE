@@ -374,17 +374,44 @@ class AcademicRecord < ApplicationRecord
 
     list do
       search_by :custom_search
+      sort_by 'periods.name'
       # filters [:period_name, :section_code, :subject_code, :student_desc]
-      field :period_name do
-        label 'Período'
-        column_width 100
-        # searchable 'periods_academic_records.name'
-        # filterable 'periods_academic_records.name'
-        # sortable 'periods_academic_records.name'
+      # field :period_name do
+      #   label 'Período'
+      #   column_width 100
+      #   # searchable 'periods_academic_records.name'
+      #   # filterable 'periods_academic_records.name'
+      #   # sortable 'periods_academic_records.name'
+      #   formatted_value do
+      #     bindings[:object].period.name if bindings[:object].period
+      #   end
+      # end
+
+      field :period do
+        label 'Period'
+        column_width 120
+
+        associated_collection_cache_all false
+        associated_collection_scope do
+          # bindings[:object] & bindings[:controller] are available, but not in scope's block!
+          Proc.new { |scope|
+            # scoping all Players currently, let's limit them to the team's league
+            # Be sure to limit if there are a lot of Players and order them by position
+            scope = scope.joins(:period)
+            scope = scope.limit(30) # 'order' does not work here
+          }
+        end
+
+        searchable 'periods.name'
+        filterable 'periods.name'
+        sortable 'periods.name'
         formatted_value do
-          bindings[:object].period.name if bindings[:object].period
+          bindings[:view].link_to(bindings[:object].subject.desc, "/admin/subject/#{bindings[:object].subject.id}") if bindings[:object].subject.present?
+
         end
       end
+
+
 
       field :section_code do
         label 'Sec'
@@ -397,16 +424,36 @@ class AcademicRecord < ApplicationRecord
         end
       end
 
-      field :subject_code do
+      # field :subject_code do
+      #   label 'Asignatura'
+      #   column_width 300
+      #   # searchable ['subjects_academic_records.code', 'subjects_academic_records.name']
+      #   # filterable ['subjects_academic_records.code', 'subjects_academic_records.name']
+      #   # sortable 'subjects_academic_records.code'
+      #   formatted_value do
+      #     bindings[:view].link_to( bindings[:object].subject.desc, "/admin/subject/#{bindings[:object].subject.id}") if bindings[:object].subject.present?
+      #   end
+      # end
+
+      field :subject do
         label 'Asignatura'
         column_width 300
-        # searchable ['subjects_academic_records.code', 'subjects_academic_records.name']
-        # filterable ['subjects_academic_records.code', 'subjects_academic_records.name']
-        # sortable 'subjects_academic_records.code'
-        formatted_value do
-          bindings[:view].link_to( bindings[:object].subject.desc, "/admin/subject/#{bindings[:object].subject.id}") if bindings[:object].subject.present?
+
+        searchable 'subjects.code'
+        filterable 'subjects.code'
+        sortable 'subjects.code'
+
+        associated_collection_cache_all false
+        associated_collection_scope do
+          # bindings[:object] & bindings[:controller] are available, but not in scope's block!
+          Proc.new { |scope|
+            # scoping all Players currently, let's limit them to the team's league
+            # Be sure to limit if there are a lot of Players and order them by position
+            scope = scope.joins(:subject, :course)
+            scope = scope.limit(30) # 'order' does not work here
+          }
         end
-      end
+      end      
 
       field :student_desc do
         label 'Estudiante'
