@@ -53,3 +53,11 @@
 								%span.fa.fa-calendar
 								= "#{object.upcase} #{@period_name}"	
 
+- if false
+	:javascript
+
+		document.addEventListener("rails_admin.dom_ready", function() {
+
+			$('[data-bs-toggle="collapse"]').click();
+
+		});
