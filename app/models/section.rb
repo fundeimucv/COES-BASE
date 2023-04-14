@@ -310,12 +310,12 @@ class Section < ApplicationRecord
       #   label 'Descripción'
       # end
       # fields :teacher, :academic_records
-      field :schedules do
-        label 'Horario'
-        formatted_value do
-          value.name
-        end
-      end
+      # field :schedules do
+      #   label 'Horario'
+      #   formatted_value do
+      #     value.name
+      #   end
+      # end
 
       # field :schedule_table do
       #   label 'Horario'
