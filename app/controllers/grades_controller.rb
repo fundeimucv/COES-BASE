@@ -8,10 +8,14 @@ class GradesController < ApplicationController
 
   # GET /grades/1 or /grades/1.json
   def show
+    @school = @grade.school
+    @faculty = @school.faculty
+    @user = @grade.user
+    @academic_records = @grade.academic_records
+    @title = 'KARDEX'
     respond_to do |format|
       format.html
       format.pdf do
-        #@version = @enroll_academic_process.versions.create(event: event)
         render pdf: 'kardex', template: "grades/kardex", formats: [:html], page_size: 'letter', backgroud: false,  header:  {html: { content: '<h1>HOLA MUNDO</h1>'}}, footer: { center: 'Página: [page] de [topage]', font_size: '8'}
       end
     end

@@ -2,3 +2,35 @@
 
 %br
 
+.mb-3
+	%h4.text-center.bg-info.py-2
+		%strong Resumen Académico
+
+	%br/
+	
+	= render partial: '/users/personal_data_pdf', locals: {user: @user}	
+	
+	%br
+	
+	= render partial: '/grades/general', locals: {grade: @grade}
+	.container
+		.row
+			.col
+				= render partial: '/grades/numbers_table', locals: {grade: @grade}
+			.col
+				= render partial: '/grades/total_table', locals: {grade: @grade}
+
+	%br/
+
+	%p Esquema de calificación por convocatoria
+	%li DS2 | DA: Diferido Aprobado | DR: Diferido Reprobado | NP: No Presentó |
+	%li FS1 | A: Aprobado | AB: Abandonada | AP: Aplazado | CO: Convalidada | EE: Aprobado Equivalente Externa | EI: Aprobado Equivalente Interna | EL: Eliminada Artículo 156 | EX: Exonerado | IS: Insuficiente | NF: Nota Final | NP: No Presentó | PI: Pérdida por Inasistencia | RC: Reconocimiento Créditos | RT: Retirada | SN: Sin Nota | SU: Suficiente |
+	%li FS2 | A: Aprobado | AB: Abandonada | AP: Aplazado | CO: Convalidada | EE: Aprobado Equivalente Externa | EI: Aprobado Equivalente Interna | EL: Eliminada Artículo 156 | EQ: Equivalencia | EX: Exonerado | IS: Insuficiente | NF: Nota Final | NP: No Presentó | PI: Pérdida por Inasistencia | RC: Reconocimiento Créditos | RT: Retirada | SN: Sin Nota | SU: Suficiente |
+	%li RS1 | NP: No Presentó | RA: Reparación Aprobada | RR: Reparación Reprobada |
+	%li RS2 | NP: No Presentó | RA: Reparación Aprobada | RR: Reparación Reprobada |
+
+	%h4 
+		%strong NOTA: CUANDO EXISTA DISCREPANCIA ENTRE LOS DATOS CONTENIDOS EN LAS ACTAS DE EXAMENES Y ESTE COMPROBANTE, LOS PRIMEROS SE TENDRÁN COMO AUTENTICOS PARA CUALQUIER FIN.
+	%h4
+		%strong * ESTE COMPROBANTE ES DE CARACTER INFORMATIVO, NO TIENE VALIDEZ LEGAL. *
+%br
