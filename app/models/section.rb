@@ -218,6 +218,27 @@ class Section < ApplicationRecord
   def schedule_table
     schedules.each{|s| s.name}.to_sentence
   end
+
+  def total_sc
+    academic_records.sin_calificar.count
+  end
+
+  def total_aprobados
+    academic_records.not_perdida_por_inasistencia.aprobado.count
+  end
+
+  def total_aplazados
+    academic_records.not_perdida_por_inasistencia.aplazado.count
+  end
+
+  def total_retirados
+    academic_records.retirado.count
+  end
+
+  def total_pi
+    academic_records.perdida_por_inasistencia.count
+  end
+
   # RAILS_ADMIN:
   rails_admin do
     navigation_label 'Inscripciones'
@@ -316,22 +337,54 @@ class Section < ApplicationRecord
         label 'Horarios'
       end
 
-      field :total_inscritos do
-        label 'Tot Insc'
-        column_width 40
-        formatted_value do
-          bindings[:object].total_academic_records
-        end
-      end
 
-
-      field :cupos do
+      field :capacity do
         label 'Cupos'
         column_width 40
         sortable 'sections.capacity'
-        formatted_value do
-          bindings[:object].capacity
+        pretty_value do
+          ApplicationController.helpers.label_status('bg-secondary', value)
         end        
+      end
+
+      field :total_academic_records do
+        label 'Insc'
+        column_width 40
+        pretty_value do
+          ApplicationController.helpers.label_status('bg-secondary', value)
+        end
+      end
+
+      field :total_sc do
+        label 'SC'
+        pretty_value do
+          ApplicationController.helpers.label_status('bg-secondary', value)
+        end         
+      end
+      field :total_aprobados do
+        label 'A'
+        help 'Aprobado'
+        pretty_value do
+          ApplicationController.helpers.label_status('bg-success', value)
+        end         
+      end
+      field :total_aplazados do
+        label 'AP'
+        pretty_value do
+          ApplicationController.helpers.label_status('bg-danger', value)
+        end         
+      end
+      field :total_retirados do
+        label 'Ret'
+        pretty_value do
+          ApplicationController.helpers.label_status('bg-secondary', value)
+        end         
+      end 
+      field :total_pi do
+        label 'PI'
+        pretty_value do
+          ApplicationController.helpers.label_status('bg-danger', value)
+        end         
       end
 
       field :qualified do
@@ -406,7 +459,26 @@ class Section < ApplicationRecord
         formatted_value do
           bindings[:object].total_students
         end
+      end      
+
+      field :total_sc do
+        label 'SC'
+        help 'Sin Clificar'
       end
+      field :total_aprobados do
+        label 'A'
+        help 'Aprobado'
+      end
+      field :total_aplazados do
+        label 'AP'
+      end
+      field :total_retirados do
+        label 'Ret'
+      end 
+      field :total_pi do
+        label 'PI'
+      end       
+
     end
   end
 
