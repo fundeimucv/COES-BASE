@@ -56,7 +56,7 @@ class Section < ApplicationRecord
   validates :modality, presence: true
 
   # SCOPE:
-  default_scope {joins(:course).order('courses.name')}
+  # default_scope {joins(:course).order('courses.name')}
   scope :sort_by_period, -> {joins(:period).order('periods.name')}
 
   scope :custom_search, -> (keyword) { joins(:period, :subject).where("sections.code ILIKE '%#{keyword}%' OR subjects.name ILIKE '%#{keyword}%' OR subjects.code ILIKE '%#{keyword}%' OR periods.name ILIKE '%#{keyword}%'").sort_by_period }
@@ -218,6 +218,27 @@ class Section < ApplicationRecord
   def schedule_table
     schedules.each{|s| s.name}.to_sentence
   end
+
+  def total_sc
+    academic_records.sin_calificar.count
+  end
+
+  def total_aprobados
+    academic_records.not_perdida_por_inasistencia.aprobado.count
+  end
+
+  def total_aplazados
+    academic_records.not_perdida_por_inasistencia.aplazado.count
+  end
+
+  def total_retirados
+    academic_records.retirado.count
+  end
+
+  def total_pi
+    academic_records.perdida_por_inasistencia.count
+  end
+
   # RAILS_ADMIN:
   rails_admin do
     navigation_label 'Inscripciones'
@@ -228,13 +249,31 @@ class Section < ApplicationRecord
       search_by :custom_search
       # filters [:period_name, :code, :subject_code]
       sort_by 'courses.name'
-      fields :academic_process do
+      field :academic_process do
         label 'Período'
-        column_width 100
+        column_width 120
         pretty_value do
           value.period.name
         end
       end
+
+      # field :course do
+      #   associated_collection_cache_all false
+      #   associated_collection_scope do
+      #     # bindings[:object] & bindings[:controller] are available, but not in scope's block!
+      #     Proc.new { |scope|
+      #       # scoping all Players currently, let's limit them to the team's league
+      #       # Be sure to limit if there are a lot of Players and order them by position
+      #       scope = scope.joins(:course)
+      #       scope = scope.limit(30) # 'order' does not work here
+      #     }
+      #   end
+      #   formatted_value do
+      #     nil
+      #     bindings[:view].link_to(bindings[:object].subject.desc, "/admin/subject/#{bindings[:object].subject.id}") if bindings[:object].subject.present?
+
+      #   end        
+      # end
 
       # field :period_name do
       #   label 'Período'
@@ -256,16 +295,12 @@ class Section < ApplicationRecord
         end
       end
 
-      field :subject_code do
+      field :subject do
         label 'Asignatura'
         column_width 240
-        # searchable 'subjects.code'
-        # filterable 'subjects.code'
-        # sortable 'subjects.code'
-        formatted_value do
-          bindings[:view].link_to(bindings[:object].subject.desc, "/admin/subject/#{bindings[:object].subject.id}") if bindings[:object].subject.present?
-
-        end
+        searchable 'subjects.code'
+        filterable 'subjects.code'
+        sortable 'subjects.code'
       end
 
       field :teacher_desc do
@@ -273,31 +308,82 @@ class Section < ApplicationRecord
         column_width 240
         # searchable ['users.ci', 'users.first_name', 'users.last_name']
         # filterable ['users.ci', 'users.first_name', 'users.last_name']
-        # sortable ['users.ci', 'users.first_name', 'users.last_name']
+        # sortable 'users.ci'
         formatted_value do
           bindings[:view].link_to(bindings[:object].teacher.desc, "/admin/teacher/#{bindings[:object].teacher_id}") if bindings[:object].teacher.present?
         end
       end
+
+      # field :teacher do
+      #   column_width 240
+      #   associated_collection_cache_all false
+      #   associated_collection_scope do
+      #     # bindings[:object] & bindings[:controller] are available, but not in scope's block!
+      #     Proc.new { |scope|
+      #       # scoping all Players currently, let's limit them to the team's league
+      #       # Be sure to limit if there are a lot of Players and order them by position
+      #       scope = scope.joins(:teacher, :user)
+      #       scope = scope.limit(30) # 'order' does not work here
+      #     }
+      #   end
+      #   searchable ['users.ci', 'users.first_name', 'users.last_name']
+      #   filterable ['users.ci', 'users.first_name', 'users.last_name']
+      #   sortable ['users.ci', 'users.first_name', 'users.last_name']
+
+
+      # end
+
       field :schedule_name do
         label 'Horarios'
       end
 
-      field :total_inscritos do
-        label 'Tot Insc'
-        column_width 40
-        formatted_value do
-          bindings[:object].total_academic_records
-        end
-      end
-
-
-      field :cupos do
+      field :capacity do
         label 'Cupos'
         column_width 40
         sortable 'sections.capacity'
-        formatted_value do
-          bindings[:object].capacity
+        pretty_value do
+          ApplicationController.helpers.label_status('bg-info', value)
         end        
+      end
+
+      field :total_academic_records do
+        label 'Insc'
+        column_width 40
+        pretty_value do
+          ApplicationController.helpers.label_status('bg-secondary', value)
+        end
+      end
+
+      field :total_sc do
+        label 'SC'
+        pretty_value do
+          ApplicationController.helpers.label_status('bg-secondary', value)
+        end         
+      end
+      field :total_aprobados do
+        label 'A'
+        help 'Aprobado'
+        pretty_value do
+          ApplicationController.helpers.label_status('bg-success', value)
+        end         
+      end
+      field :total_aplazados do
+        label 'AP'
+        pretty_value do
+          ApplicationController.helpers.label_status('bg-danger', value)
+        end         
+      end
+      field :total_retirados do
+        label 'Ret'
+        pretty_value do
+          ApplicationController.helpers.label_status('bg-secondary', value)
+        end         
+      end 
+      field :total_pi do
+        label 'PI'
+        pretty_value do
+          ApplicationController.helpers.label_status('bg-danger', value)
+        end         
       end
 
       field :qualified do
@@ -372,7 +458,26 @@ class Section < ApplicationRecord
         formatted_value do
           bindings[:object].total_students
         end
+      end      
+
+      field :total_sc do
+        label 'SC'
+        help 'Sin Clificar'
       end
+      field :total_aprobados do
+        label 'A'
+        help 'Aprobado'
+      end
+      field :total_aplazados do
+        label 'AP'
+      end
+      field :total_retirados do
+        label 'Ret'
+      end 
+      field :total_pi do
+        label 'PI'
+      end       
+
     end
   end
 

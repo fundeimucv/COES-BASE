@@ -208,9 +208,8 @@ class Subject < ApplicationRecord
         end        
       end
 
-
       field :total_dependencies do
-        label 'Depends'
+        label 'Dependencias'
         column_width 20
       end
     end

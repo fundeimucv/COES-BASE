@@ -1,4 +1,5 @@
 es:
+  delete: Eliminar
   edit: Editar
   new: Nuevo
   index: Listado
@@ -347,8 +348,8 @@ es:
         one: 'Cartelera'
         other: 'Carteleras'
       course:
-        one: 'Oferta Académica'
-        other: 'Ofertas Académicas'
+        one: 'Curso'
+        other: 'Cursos'
       enroll_academic_process:
         one: 'Inscripción en Proceso Académico'
         other: 'Inscripciones en Proceso Académico'
@@ -581,7 +582,7 @@ es:
         grades: Grados
         students: Estudiantes
         schedules: Horarios
-        classroom: 'Áula'
+        classroom: 'Aula'
         created_at: Fecha Creación
         updated_at: Fecha Última Actualización
       student:
