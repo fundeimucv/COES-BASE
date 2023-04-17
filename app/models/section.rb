@@ -337,13 +337,12 @@ class Section < ApplicationRecord
         label 'Horarios'
       end
 
-
       field :capacity do
         label 'Cupos'
         column_width 40
         sortable 'sections.capacity'
         pretty_value do
-          ApplicationController.helpers.label_status('bg-secondary', value)
+          ApplicationController.helpers.label_status('bg-info', value)
         end        
       end
 

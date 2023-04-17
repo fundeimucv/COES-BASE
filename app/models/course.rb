@@ -101,18 +101,22 @@ class Course < ApplicationRecord
       field :total_academic_records do
         label 'Ins'
         pretty_value do
-          ApplicationController.helpers.label_status('bg-info', value)
+          ApplicationController.helpers.label_status('bg-secondary', value)
         end
       end
       field :total_sc do
         label 'SC'
+        help 'Sin Calificar'
+        pretty_value do
+          ApplicationController.helpers.label_status('bg-secondary', value)
+        end
       end
       field :total_aprobados do
         label 'A'
         help 'Aprobado'
         pretty_value do
           ApplicationController.helpers.label_status('bg-success', value)
-        end        
+        end
       end
       field :total_aplazados do
         label 'AP'
@@ -123,7 +127,7 @@ class Course < ApplicationRecord
       field :total_retirados do
         label 'Ret'
         pretty_value do
-          ApplicationController.helpers.label_status('bg-info', value)
+          ApplicationController.helpers.label_status('bg-secondary', value)
         end        
       end 
       field :total_pi do
