@@ -1,32 +1,17 @@
 
 - total = @academic_records.count
 - if total > 0
-	- top = 30
-	- if total <= top
+	- top = 32
+	- total_pages = (total/top)
+	- total_pages = 0 if total.eql? top
+	- for i in 0..total_pages do
+		- indice = i*top
 		= render '/sections/acta_header'
 		= render 'acta_title'
-		= render 'acta_description'
-		= render partial: 'acta_academic_records', locals: {academic_records: @academic_records, global_i: 0}
-		-# aux = (total < 30 and ) ? (total)-7 : 0
-		-# (aux).times do
-		%br
-		= render 'signatures'
-	- else
-		- part = (total/top)
-		- rest = total%top
-		- total
-		- for i in 0..part do
-			- indice = i*top
-			= render '/sections/acta_header'
-			= render 'acta_title'
-			= render 'acta_description'			
-			= render partial: 'acta_academic_records', locals: {academic_records: @academic_records[indice..indice+(top-1)], global_i: indice}
-			- if !(i.eql? part)
-				- 8.times do
-					%br
-			- else
-				- aux = (rest < 30) ? (top-rest)-5 : 0
-				- aux.times do
-					%br
-				= render 'signatures'
+		= render 'acta_description'			
+		= render partial: 'acta_academic_records', locals: {academic_records: @academic_records[indice..indice+(top-1)], global_i: indice}
+		- if (i.eql? total_pages)
+			= render 'signatures'
+		- else
+			.page-break
 

@@ -1,6 +1,8 @@
 @import "custom_style";
 @import "bootstrap/scss/bootstrap";
 
+.page-break { display:block; clear:both; page-break-after:always; }
+
 .image_profile{
   position: absolute;
   left: 20px;
@@ -8,7 +10,8 @@
 }
 .signatures{
 	position: absolute;
-  top: 1000px;
+  bottom: 100;
+  right: 0;
 }
 
 .font-title{
@@ -40,14 +43,14 @@ text-left{
 	text-align: left;
 }
 
-/* body{
+#watermark_bg{
 	background-image: url('logo_bg.png');
 	background-size: auto auto;
 	background-repeat: repeat;
 	opacity: 0.1;
 	transform: rotate(30deg);
 
-} */
+}
 
 
 .alert-message{
