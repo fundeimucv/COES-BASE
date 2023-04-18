@@ -605,6 +605,7 @@ es:
       study_plan:
         code: 'Código'
         name: 'Nombre'
+        required_credits: 'Créditos Requeridos'
       subject:
         school: Escuela
         courses: Cursos

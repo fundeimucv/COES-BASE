@@ -19,6 +19,7 @@ class StudyPlan < ApplicationRecord
   # VALIDATIONS:
   validates :code, presence: true, uniqueness: {case_sensitive: false}
   validates :name, presence: true, uniqueness: {case_sensitive: false}
+  validates :required_credits, presence: true
   validates :school, presence: true
 
   # CALLBACKS:
@@ -45,11 +46,11 @@ class StudyPlan < ApplicationRecord
     navigation_icon 'fa-solid fa-award'
     weight -2
     list do
-      fields :code, :name
+      fields :code, :name, :required_credits
     end
 
     export do
-      fields :code, :name
+      fields :code, :name, :required_credits
     end
 
     edit do
@@ -60,6 +61,7 @@ class StudyPlan < ApplicationRecord
         end
       end
       field :name
+      field :required_credits
     end
 
   end
