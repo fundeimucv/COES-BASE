@@ -20,6 +20,7 @@ class AcademicRecord < ApplicationRecord
   belongs_to :enroll_academic_process
 
   has_many :qualifications, dependent: :destroy
+  accepts_nested_attributes_for :qualifications#, reject_if: proc { |attributes| attributes['academic_record_id'].blank? }  
 
   has_one :academic_process, through: :enroll_academic_process
   has_one :grade, through: :enroll_academic_process
@@ -41,6 +42,8 @@ class AcademicRecord < ApplicationRecord
 
   validates_with SamePeriodValidator, field_name: false  
   validates_with SameSchoolValidator, field_name: false  
+
+  validates :qualifications, presence: true, if: lambda{ |object| (object.subject.present? and object.subject.numerica? and (object.aprobado? or object.aplazado? or object.equivalencia_interna? or object.equivalencia_externa?))}
 
   # CALLBACK
   after_save :set_options_q
@@ -498,8 +501,9 @@ class AcademicRecord < ApplicationRecord
         inline_add false
         inline_edit false
         help 'Ingrese la cédula de identidad del estudiante y SELECCIONE la correspondiente inscripción en el período'
-
       end
+      field :status
+      field :qualifications
     end
 
     export do
@@ -653,8 +657,15 @@ class AcademicRecord < ApplicationRecord
   private
 
   # TRIGGER FUNCTIONS:
+  def validate_state_vs_qualification
+    if definitive_q and (self.aprobado? or self.aplazado?)
+      self.status = definitive_q.approved? ? :aprobado : :aplazado
+    end
+
+  end
+
   def set_options_q
-    self.qualifications.destroy_all if (self.pi? or self.retirado? or (self.subject and self.subject.absoluta?))
+    self.qualifications.destroy_all if (self.pi? or self.retirado? or self.sin_calificar? or (self.subject and self.subject.absoluta?))
 
     self.qualifications.create(type_q: :final, value: 0) if self.pi?
   end
