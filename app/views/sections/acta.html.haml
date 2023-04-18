@@ -1,7 +1,7 @@
 
 - total = @academic_records.count
 - if total > 0
-	- top = 32
+	- top = 30
 	- total_pages = (total/top)
 	- total_pages = 0 if total.eql? top
 	- for i in 0..total_pages do
