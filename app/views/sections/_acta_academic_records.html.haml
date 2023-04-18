@@ -12,10 +12,10 @@
       %th LETRAS
 
   %tbody
-    - @academic_records.each_with_index do |ar, i|
+    - academic_records.each_with_index do |ar, i|
       - if !ar.qualifications.any? or @section.subject.as_absolute?
         %tr
-          %td.text-center= i+1
+          %td.text-center= global_i+i+1
           %td.text-center= ar.user.ci
           %td.padding-x= ar.user.reverse_name
           %td.text-center= ar.study_plan.code
@@ -26,7 +26,7 @@
       - else
         - ar.qualifications.each do |q|
           %tr
-            %td.text-center= i+1
+            %td.text-center= global_i+i+1
             %td.text-center= ar.user.ci
             %td.padding-x= ar.user.reverse_name
             %td.text-center= ar.study_plan.code

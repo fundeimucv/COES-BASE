@@ -1,31 +1,31 @@
-= render 'acta_header'
-= render 'acta_title'
-= render 'acta_description'
-= render 'acta_academic_records'
 
-.signatures
-  .font-title.text-center FACULTAD
-  %table.no_border
-    %thead
-      %tr
-        %th.text-center{style: 'width: 500px'} JURADO EXAMINADOR
-        %th.text-center{style: 'width: 500px'} SECRETARÍA
-  %br
-  %table.no_border
-    %thead
-      %tr
-        %th APELLIDOS Y NOMBRES
-        %th FIRMAS
-        %th 
-      %tr{style: 'height:30px'}
-        %th _________________________________
-        %th ______________________
-        %th NOMBRE ______________________        
-      %tr{style: 'height:30px'}
-        %th _________________________________
-        %th ______________________
-        %th FIRMA _______________________
-      %tr{style: 'height:30px'}
-        %th _________________________________
-        %th ______________________
-        %th FECHA _______________________
+- total = @academic_records.count
+- if total > 0
+	- top = 35
+	- if total <= top
+		= render '/sections/acta_header'
+		= render 'acta_title'
+		= render 'acta_description'
+		= render partial: 'acta_academic_records', locals: {academic_records: @academic_records, global_i: 0}
+		- (top-total).times do
+			%br
+		= render 'signatures'
+	- else
+		- part = (top/total)+1
+		- rest = total%top
+		- total
+		- for i in 0..part do
+			- indice = i*top
+			= render '/sections/acta_header'
+			= render 'acta_title'
+			= render 'acta_description'			
+			= render partial: 'acta_academic_records', locals: {academic_records: @academic_records[(indice)..(indice+1)*top-1], global_i: indice}
+			- if !(i.eql? part)
+				- 10.times do
+					%br
+			- else
+				- aux = (rest < 30) ? (top-rest)-5 : 0
+				- aux.times do
+					%br
+				= render 'signatures'
+

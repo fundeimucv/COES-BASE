@@ -11,8 +11,40 @@ module ApplicationHelper
 
 		content_tag :b, rel: :tooltip, 'data-bs-toggle': 'tooltip', 'data-bs-placement': placement, 'data-bs-original-title': title do
 			capture_haml{"<span class='text-center badge #{klazz}'>#{content}</span>".html_safe }
-		end
-	
+		end	
 	end
+
+	def signatures
+
+		capture_haml {
+			".signatures
+				.font-title.text-center FACULTAD
+					%table.no_border
+						%thead
+							%tr
+							%th.text-center{style: 'width: 500px'} JURADO EXAMINADOR
+							%th.text-center{style: 'width: 500px'} SECRETARÍA
+					%br
+					%table.no_border
+						%thead
+							%tr
+								%th APELLIDOS Y NOMBRES
+								%th FIRMAS
+								%th 
+							%tr{style: 'height:30px'}
+								%th _________________________________
+								%th ______________________
+								%th NOMBRE ______________________        
+							%tr{style: 'height:30px'}
+								%th _________________________________
+								%th ______________________
+								%th FIRMA _______________________
+							%tr{style: 'height:30px'}
+								%th _________________________________
+								%th ______________________
+								%th FECHA _______________________"
+		}
+
+	end	
 
 end
