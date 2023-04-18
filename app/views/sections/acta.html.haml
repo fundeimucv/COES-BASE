@@ -11,7 +11,7 @@
 			%br
 		= render 'signatures'
 	- else
-		- part = (top/total)+1
+		- part = (total/top)
 		- rest = total%top
 		- total
 		- for i in 0..part do
@@ -19,7 +19,7 @@
 			= render '/sections/acta_header'
 			= render 'acta_title'
 			= render 'acta_description'			
-			= render partial: 'acta_academic_records', locals: {academic_records: @academic_records[(indice)..(indice+1)*top-1], global_i: indice}
+			= render partial: 'acta_academic_records', locals: {academic_records: @academic_records[indice..indice+(top-1)], global_i: indice}
 			- if !(i.eql? part)
 				- 7.times do
 					%br
