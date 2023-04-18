@@ -435,6 +435,7 @@ es:
         subject: 'Asignatura'
         study_plan: Plan de Estudio
         qualifications: Calificaciones
+        address: Dirección
       academic_record/status_q:
         sin_calificar: 'Sin Calificar'
         aprobado: 'Aprobados'
