@@ -498,7 +498,7 @@ class AcademicRecord < ApplicationRecord
       end
 
       field :enroll_academic_process do 
-        inline_add false
+        # inline_add false
         inline_edit false
         help 'Ingrese la cédula de identidad del estudiante y SELECCIONE la correspondiente inscripción en el período'
       end
