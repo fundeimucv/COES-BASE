@@ -2,6 +2,7 @@ class StudyPlan < ApplicationRecord
   # SCHEMA:
   # t.string "code"
   # t.string "name"
+  # t.integer "required_credits"
   # t.bigint "school_id", null: false 
   
   
@@ -39,6 +40,10 @@ class StudyPlan < ApplicationRecord
   # FUNTIONS:
   def desc
     "(#{code}) #{name}"
+  end
+
+  def desc_credits
+    "(Créditos Requeridos) #{required_credits}"
   end
 
   rails_admin do
