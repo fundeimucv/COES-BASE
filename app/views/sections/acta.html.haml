@@ -7,8 +7,9 @@
 		= render 'acta_title'
 		= render 'acta_description'
 		= render partial: 'acta_academic_records', locals: {academic_records: @academic_records, global_i: 0}
-		- (top-total).times do
-			%br
+		-# aux = (total < 30 and ) ? (total)-7 : 0
+		-# (aux).times do
+		%br
 		= render 'signatures'
 	- else
 		- part = (total/top)
