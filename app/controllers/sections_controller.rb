@@ -34,7 +34,7 @@ class SectionsController < ApplicationController
           #   # }
           # )
           # send_data pdf, filename: "ACTA#{@section.number_acta}", disposition: :inline 
-          render pdf: "acta_#{@section.number_acta}", template: "sections/acta", formats: [:html], page_size: 'letter', footer: {center: "Página: [page] de [topage]", font_size: '10'} 
+          render pdf: "acta_#{@section.number_acta}", template: "sections/acta", formats: [:html], page_size: 'letter', footer: {center: "Página: [page] de [topage]", font_size: '10'},  margin: {top: 5} 
         end
 
       end
