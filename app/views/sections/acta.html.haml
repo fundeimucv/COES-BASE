@@ -22,10 +22,10 @@
 			= render 'acta_description'			
 			= render partial: 'acta_academic_records', locals: {academic_records: @academic_records[indice..indice+(top-1)], global_i: indice}
 			- if !(i.eql? part)
-				- 7.times do
+				- 8.times do
 					%br
 			- else
-				- aux = (rest < 30) ? (top-rest)-7 : 0
+				- aux = (rest < 30) ? (top-rest)-5 : 0
 				- aux.times do
 					%br
 				= render 'signatures'
