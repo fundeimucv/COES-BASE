@@ -408,9 +408,8 @@ class AcademicRecord < ApplicationRecord
         searchable 'periods.name'
         filterable 'periods.name'
         sortable 'periods.name'
-        formatted_value do
-          bindings[:view].link_to(bindings[:object].subject.desc, "/admin/subject/#{bindings[:object].subject.id}") if bindings[:object].subject.present?
-
+        pretty_value do
+          value.name
         end
       end
 
@@ -481,11 +480,11 @@ class AcademicRecord < ApplicationRecord
         label 'Definitiva'
         column_width 30
       end
-      field :status_value do
+      field :status do
         label 'Estado'
         column_width 200
-        formatted_value do
-          bindings[:object].status.titleize if bindings[:object].status
+        pretty_value do
+          ApplicationController.helpers.label_status('bg-info', value.titleize)
         end        
       end
     end
