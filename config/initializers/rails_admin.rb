@@ -80,22 +80,22 @@ RailsAdmin.config do |config|
     history_show
   end
 
-  config.model Section do
-    field :course do
-      visible false
-      associated_collection_cache_all false  # REQUIRED if you want to SORT the list as below
-      associated_collection_scope do
-        # bindings[:object] & bindings[:controller] are available, but not in scope's block!
-        # team = bindings[:object]
-        Proc.new { |scope|
-          # scoping all Players currently, let's limit them to the team's league
-          # Be sure to limit if there are a lot of Players and order them by position
-          scope = scope.joins(:course)
-          scope = scope.limit(30) # 'order' does not work here
-        }
-      end
-    end
-  end
+  # config.model Section do
+  #   field :course do
+  #     # visible false
+  #     associated_collection_cache_all false  # REQUIRED if you want to SORT the list as below
+  #     associated_collection_scope do
+  #       # bindings[:object] & bindings[:controller] are available, but not in scope's block!
+  #       # team = bindings[:object]
+  #       Proc.new { |scope|
+  #         # scoping all Players currently, let's limit them to the team's league
+  #         # Be sure to limit if there are a lot of Players and order them by position
+  #         scope = scope.joins(:course)
+  #         scope = scope.limit(30) # 'order' does not work here
+  #       }
+  #     end
+  #   end
+  # end
 
 
 

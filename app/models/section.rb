@@ -256,31 +256,31 @@ class Section < ApplicationRecord
       search_by :custom_search
       # filters [:period_name, :code, :subject_code]
       sort_by 'courses.name'
-      field :academic_process do
+      # field :academic_process do
+      #   label 'Período'
+      #   column_width 120
+      #   pretty_value do
+      #     value.period.name
+      #   end
+      # end
+
+      field :course do
         label 'Período'
-        column_width 120
+        filterable 'courses.name'
+        associated_collection_cache_all false
+        associated_collection_scope do
+          # bindings[:object] & bindings[:controller] are available, but not in scope's block!
+          Proc.new { |scope|
+            # scoping all Players currently, let's limit them to the team's league
+            # Be sure to limit if there are a lot of Players and order them by position
+            scope = scope.joins(:course)
+            scope = scope.limit(30) # 'order' does not work here
+          }
+        end
         pretty_value do
           value.period.name
         end
       end
-
-      # field :course do
-      #   associated_collection_cache_all false
-      #   associated_collection_scope do
-      #     # bindings[:object] & bindings[:controller] are available, but not in scope's block!
-      #     Proc.new { |scope|
-      #       # scoping all Players currently, let's limit them to the team's league
-      #       # Be sure to limit if there are a lot of Players and order them by position
-      #       scope = scope.joins(:course)
-      #       scope = scope.limit(30) # 'order' does not work here
-      #     }
-      #   end
-      #   formatted_value do
-      #     nil
-      #     bindings[:view].link_to(bindings[:object].subject.desc, "/admin/subject/#{bindings[:object].subject.id}") if bindings[:object].subject.present?
-
-      #   end        
-      # end
 
       # field :period_name do
       #   label 'Período'

@@ -97,19 +97,25 @@ class Course < ApplicationRecord
       sort_by ['courses.name']
       search_by :custom_search
       field :academic_process do
+        label 'Period'
         column_width 100
+        pretty_value do
+          value.period.name
+        end
       end
       field :subject
       field :total_sections do
         label 'T. Sec'
         pretty_value do
           ApplicationController.helpers.label_status('bg-info', value)
-        end        
+        end
       end
       field :total_academic_records do
         label 'Ins'
         pretty_value do
-          ApplicationController.helpers.label_status('bg-secondary', value)
+          # %{<a href='/admin/academic_record?query=#{bindings[:object].name}'><span class='badge bg-info'>#{ApplicationController.helpers.label_status('bg-info', value)}</span></a>}.html_safe
+          ApplicationController.helpers.label_status('bg-info', value)
+
         end
       end
       field :total_sc do
