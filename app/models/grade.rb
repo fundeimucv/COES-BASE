@@ -18,6 +18,7 @@ class Grade < ApplicationRecord
   belongs_to :enabled_enroll_process, foreign_key: 'enabled_enroll_process_id', class_name: 'AcademicProcess', optional: true
 
   has_one :school, through: :study_plan
+  has_one :user, through: :student
   
   has_many :enroll_academic_processes, dependent: :destroy
   has_many :academic_processes, through: :enroll_academic_processes
@@ -63,7 +64,7 @@ class Grade < ApplicationRecord
   # AVANCES EN PIGGLY-SCOPE
   # scope :without_enroll_in_academic_processes, -> (academic_process_id) {left_joins(:enroll_academic_processes).where('enroll_academic_processes.grade_id': nil, 'enroll_academic_processes.academic_process_id': academic_process_id)}
 
-
+  scope :custom_search, -> (keyword) { joins(:user, :school).where("users.ci ILIKE '%#{keyword}%' OR schools.name ILIKE '%#{keyword}%'") }
 
   # VALIDATIONS:
   # validates :student, presence: true
@@ -181,6 +182,7 @@ class Grade < ApplicationRecord
     navigation_icon 'fa-solid fa-graduation-cap'
 
     list do
+      search_by :custom_search
       fields :student, :study_plan, :admission_type, :registration_status, :efficiency, :weighted_average, :simple_average
     end
 
