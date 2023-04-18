@@ -473,6 +473,7 @@ es:
         updated_at: 'Fecha de Edición'
         content: 'Contenido de Cartelera'
       course:
+        area: 'Área'
         period: Período
         school: Escuela
         sections: Oferta Docente
@@ -563,6 +564,7 @@ es:
         starttime: Hora Inicio
         endtime: Hora Final
       section:
+        area: 'Área'
         code: 'Sección'
         capacity: 'Capacidad'
         course: 'Proceso/Asignatura'

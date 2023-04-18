@@ -23,8 +23,18 @@ class SectionsController < ApplicationController
       respond_to do |format|
         format.html
         format.pdf do
-          render pdf: "ACTA#{@section.number_acta}", template: "sections/acta", formats: [:html], page_size: 'letter', footer: {center: "Página: [page] de [topage]", font_size: '8'}
-          # , header: {content: render_to_string('sections/acta_header')} 
+          # pdf_html = ActionController::Base.new.render_to_string(template: "sections/acta", layout: 'pdf')          
+          # pdf = WickedPdf.new.pdf_from_string(
+          #   pdf_html,
+          #   header: {content: render_to_string(partial: '/sections/acta_header'), font_size: '8'}#,
+          #   # footer: {
+          #   #   content: render_to_string(partial:
+          #   #     'sections/acta_header'
+          #   #   )
+          #   # }
+          # )
+          # send_data pdf, filename: "ACTA#{@section.number_acta}", disposition: :inline 
+          render pdf: "acta_#{@section.number_acta}", template: "sections/acta", formats: [:html], page_size: 'letter', footer: {center: "Página: [page] de [topage]", font_size: '10'},  margin: {top: 5} 
         end
 
       end

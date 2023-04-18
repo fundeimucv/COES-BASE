@@ -12,6 +12,7 @@ class Course < ApplicationRecord
   has_one :period, through: :academic_process
   has_one :school, through: :academic_process
   belongs_to :subject
+  has_one :area, through: :subject
   
   # has_many
   has_many :sections, dependent: :destroy
@@ -42,6 +43,13 @@ class Course < ApplicationRecord
 
   def get_name
     "#{self.academic_process.name}-#{self.subject.desc}" if self.period and self.school and self.subject
+  end
+
+  def qualifications_average
+    if total_academic_records > 0
+      values = academic_records.joins(:qualifications).sum('qualifications.value')
+      (values.to_f/total_academic_records.to_f).round(2)
+    end
   end
 
   def total_sections
@@ -136,6 +144,12 @@ class Course < ApplicationRecord
           ApplicationController.helpers.label_status('bg-danger', value)
         end        
       end 
+      field :qualifications_average do
+        label 'Prom'
+        pretty_value do
+          ApplicationController.helpers.label_status('bg-info', value)
+        end         
+      end      
     end
 
     show do
@@ -147,7 +161,7 @@ class Course < ApplicationRecord
     end
 
     export do
-      fields :academic_process, :subject
+      fields :academic_process, :period, :subject, :area
       field :total_sections do
         label 'T. Sec'
       end
@@ -170,6 +184,10 @@ class Course < ApplicationRecord
       field :total_pi do
         label 'PI'
       end 
+      field :qualifications_average do
+        label 'PROM'
+      end
+
     end
 
 

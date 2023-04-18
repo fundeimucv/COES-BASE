@@ -139,7 +139,8 @@ class AcademicProcess < ApplicationRecord
         label 'T Sec.'
         pretty_value do
           %{<a href='/admin/section?query=#{bindings[:object].period.name}'><span class='badge bg-info'>#{value}</span></a>}.html_safe
-        end      end
+        end
+      end
 
       field :total_enroll_academic_processes do
         column_width 100

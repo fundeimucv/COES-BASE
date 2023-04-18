@@ -562,6 +562,7 @@ class AcademicRecord < ApplicationRecord
               # BUSCAR O CREAR SECCIÓN
               if row[2]
                 row[2].strip!
+                row[2].upcase!
               else
                 return [0,0,2]
               end

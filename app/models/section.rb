@@ -75,6 +75,13 @@ class Section < ApplicationRecord
     self.academic_records.count
   end
 
+  def qualifications_average
+    if total_academic_records > 0
+      values = academic_records.joins(:qualifications).sum('qualifications.value')
+      (values.to_f/total_academic_records.to_f).round(2)
+    end
+  end
+
   def excel_list
     require 'spreadsheet'
 
@@ -385,6 +392,13 @@ class Section < ApplicationRecord
           ApplicationController.helpers.label_status('bg-danger', value)
         end         
       end
+      field :qualifications_average do
+        label 'Prom'
+        pretty_value do
+          ApplicationController.helpers.label_status('bg-info', value)
+        end         
+      end
+
 
       field :qualified do
         column_width 40
@@ -476,7 +490,10 @@ class Section < ApplicationRecord
       end 
       field :total_pi do
         label 'PI'
-      end       
+      end
+      field :qualifications_average do
+        label 'PROM'
+      end
 
     end
   end
