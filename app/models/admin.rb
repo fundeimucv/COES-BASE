@@ -22,6 +22,8 @@ class Admin < ApplicationRecord
   belongs_to :env_authorizable, polymorphic: true
   belongs_to :profile, optional: true
 
+  has_many :authorizeds
+
   # VALIDATIONS:
   validates :user, presence: true, uniqueness: true
   validates :env_authorizable, presence: true
@@ -54,24 +56,38 @@ class Admin < ApplicationRecord
     navigation_icon 'fa-regular fa-user-tie'
 
     show do
-     field :user 
-     field :role 
-     field :env_authorizable 
-     field :created_at
+      field :user 
+      field :role do
+        pretty_value do
+          value.titleize
+        end
+      end
+      field :pare do
+        label 'PARE'
+        formatted_value do
+          bindings[:view].render(partial: 'admins/form', locals: {user: bindings[:object].user})
+        end
+      end
+
+
+      # field :env_authorizable 
+      field :created_at
     end
 
     list do
       search_by :custom_search
       field :user
       field :role
-      field :env_authorizable
+      # field :env_authorizable
       field :created_at
     end
 
     edit do
-       field :user 
-       field :role 
-       field :env_authorizable
+      field :user 
+      field :role
+
+      field :env_authorizable
+      # field :authorizeds
 
       # field :role do
       #   html_attributes do

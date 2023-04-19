@@ -14,6 +14,10 @@ module ApplicationHelper
 		end	
 	end
 
+	def translate_model model
+		I18n.t("activerecord.models.#{model}.other")
+	end
+
 	def signatures
 
 		capture_haml {

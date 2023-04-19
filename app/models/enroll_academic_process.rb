@@ -26,6 +26,7 @@ class EnrollAcademicProcess < ApplicationRecord
   has_many :subjects, through: :sections
 
   # ENUMERIZE:
+  # IDEA CON ESTADO DE INSCRIPCIÓN EN GRADE Y ENROLL ACADEMIC PROCESS
   enum enroll_status: [:preinscrito, :reservado, :confirmado, :retirado]
   enum permanence_status: [:nuevo, :regular, :reincorporado, :articulo3, :articulo6, :articulo7]  
 

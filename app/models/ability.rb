@@ -25,6 +25,22 @@ class Ability
         can :manage, [Admin, Student, Teacher, Area, Subject, Bank, BankAccount, PaymentReport, Course, Grade, AcademicProcess, EnrollAcademicProcess, AcademicRecord, Section, AdmissionType, PeriodType, Address, StudyPlan, Period, Dependency, Schedule, EnrollmentDay, Billboard]
         can :crue, [School, User, Faculty]
       else
+
+        # user.admin.authorizeds.each do |auth|
+
+        #   if auth.cannot_all?
+        #     cannot :manage, auth.clazz
+        #   elsif auth.can_all?
+        #     can :manage, auth.clazz
+        #   else
+        #     can :create, auth.clazz if auth.can_create?
+        #     can :read, auth.clazz if auth.can_read?
+        #     can :update, auth.clazz if auth.can_update?
+        #     can :delete, auth.clazz if auth.can_delete?
+        #     can :import, auth.clazz if auth.can_import?
+        #     can :export, auth.clazz if auth.can_export?
+        #   end
+        # end
         cannot :manage, [User, Admin, Student, Teacher, Area, Subject, School, Bank, BankAccount, PaymentReport, Course, Grade, AcademicProcess, EnrollAcademicProcess, AcademicRecord, Section, AdmissionType, PeriodType, Address]
       end
     end

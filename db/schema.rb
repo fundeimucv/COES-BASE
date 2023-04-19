@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_04_11_215040) do
+ActiveRecord::Schema[7.0].define(version: 2023_04_18_213230) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -119,6 +119,21 @@ ActiveRecord::Schema[7.0].define(version: 2023_04_11_215040) do
     t.datetime "updated_at", null: false
     t.index ["parent_area_id"], name: "index_areas_on_parent_area_id"
     t.index ["school_id"], name: "index_areas_on_school_id"
+  end
+
+  create_table "authorizeds", force: :cascade do |t|
+    t.bigint "admin_id", null: false
+    t.string "clazz", null: false
+    t.boolean "can_create", default: false
+    t.boolean "can_read", default: false
+    t.boolean "can_update", default: false
+    t.boolean "can_delete", default: false
+    t.boolean "can_import", default: false
+    t.boolean "can_export", default: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["admin_id", "clazz"], name: "index_authorizeds_on_admin_id_and_clazz", unique: true
+    t.index ["admin_id"], name: "index_authorizeds_on_admin_id"
   end
 
   create_table "bank_accounts", force: :cascade do |t|
@@ -409,6 +424,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_04_11_215040) do
   add_foreign_key "admission_types", "schools"
   add_foreign_key "areas", "areas", column: "parent_area_id"
   add_foreign_key "areas", "schools"
+  add_foreign_key "authorizeds", "admins", primary_key: "user_id", on_update: :cascade, on_delete: :cascade
   add_foreign_key "bank_accounts", "banks"
   add_foreign_key "bank_accounts", "schools"
   add_foreign_key "courses", "academic_processes"
