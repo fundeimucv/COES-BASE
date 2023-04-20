@@ -6,7 +6,7 @@ class Admin < ApplicationRecord
   # t.bigint "env_authorizable_id"
 
   # ENUMERIZE:
-  enum role: [:super, :jefe_control_estudio, :director, :jefe_departamento, :asistente]
+  enum role: [:super, :jefe_control_estudio, :asistente]
 
   # HISTORY:
   has_paper_trail on: [:create, :destroy, :update]
@@ -49,7 +49,11 @@ class Admin < ApplicationRecord
   def check_user_for_destroy
     user_aux = User.find self.user_id
     user_aux.delete if user_aux.without_rol?
-  end  
+  end 
+
+  def authorized?
+  end
+ 
 
   rails_admin do
     navigation_label 'Gestión de Usuarios'
@@ -57,29 +61,29 @@ class Admin < ApplicationRecord
 
     show do
       field :user 
-      field :role do
-        pretty_value do
-          value.titleize
-        end
-      end
+      # field :role do
+      #   pretty_value do
+      #     value.titleize
+      #   end
+      # end
       field :pare do
-        label 'PARE'
+        label 'PARE (Procesos de Acceso Restringido)'
         formatted_value do
-          bindings[:view].render(partial: 'admins/form', locals: {user: bindings[:object].user})
+          bindings[:view].render(partial: 'authorizeds/form', locals: {user: bindings[:object].user})
         end
       end
 
 
       # field :env_authorizable 
-      field :created_at
+      # field :created_at
     end
 
     list do
       search_by :custom_search
       field :user
-      field :role
+      # field :role
       # field :env_authorizable
-      field :created_at
+      # field :created_at
     end
 
     edit do

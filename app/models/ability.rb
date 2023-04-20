@@ -16,32 +16,30 @@ class Ability
     if user.admin?
       can :access, :rails_admin
       can :manage, :dashboard
-      cannot :import, :all
-      can :import, [User, Student, Teacher, Subject, Period, AcademicRecord, Billboard]
+      can :read, Faculty
 
       if user.admin.yo?
         can :manage, :all
       elsif user.admin.jefe_control_estudio?
+        can :import, Authorizable::IMPORTABLES
         can :manage, [Admin, Student, Teacher, Area, Subject, Bank, BankAccount, PaymentReport, Course, Grade, AcademicProcess, EnrollAcademicProcess, AcademicRecord, Section, AdmissionType, PeriodType, Address, StudyPlan, Period, Dependency, Schedule, EnrollmentDay, Billboard]
-        can :crue, [School, User, Faculty]
+        can :crue, [School, User]
       else
 
-        # user.admin.authorizeds.each do |auth|
+        user.admin.authorizeds.each do |authd|
 
-        #   if auth.cannot_all?
-        #     cannot :manage, auth.clazz
-        #   elsif auth.can_all?
-        #     can :manage, auth.clazz
-        #   else
-        #     can :create, auth.clazz if auth.can_create?
-        #     can :read, auth.clazz if auth.can_read?
-        #     can :update, auth.clazz if auth.can_update?
-        #     can :delete, auth.clazz if auth.can_delete?
-        #     can :import, auth.clazz if auth.can_import?
-        #     can :export, auth.clazz if auth.can_export?
-        #   end
-        # end
-        cannot :manage, [User, Admin, Student, Teacher, Area, Subject, School, Bank, BankAccount, PaymentReport, Course, Grade, AcademicProcess, EnrollAcademicProcess, AcademicRecord, Section, AdmissionType, PeriodType, Address]
+            can :read, authd.authorizable_klazz_constantenize if authd.can_read?
+            can :create, authd.authorizable_klazz_constantenize if authd.can_create?
+            can :update, authd.authorizable_klazz_constantenize if authd.can_update?
+            can :delete, authd.authorizable_klazz_constantenize if authd.can_delete?
+            can :import, authd.authorizable_klazz_constantenize if authd.can_import?
+            can :export, authd.authorizable_klazz_constantenize if authd.can_export?
+            # can :history_show, authd.authorizable_klazz_constantenize
+            # can :history_index, authd.authorizable_klazz_constantenize
+
+        end
+
+        # cannot :manage, [User, Admin, Student, Teacher, Area, Subject, School, Bank, BankAccount, PaymentReport, Course, Grade, AcademicProcess, EnrollAcademicProcess, AcademicRecord, Section, AdmissionType, PeriodType, Address]
       end
     end
   end

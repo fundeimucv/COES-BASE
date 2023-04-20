@@ -59,11 +59,10 @@ RailsAdmin.config do |config|
       except [School, Faculty]
     end
     export do
-      except [School]
-
+      except [Faculty, School, StudyPlan]
     end
     bulk_delete do
-      except [AcademicProcess, Subject]
+      only [AcademicRecord, Section, Course]
     end
     show
     edit
@@ -71,7 +70,7 @@ RailsAdmin.config do |config|
       except [School, StudyPlan, Faculty, EnrollAcademicProcess]
     end
     import do
-      only [User, Student, Teacher, Subject, Section, AcademicRecord]
+      only [Student, Teacher, Subject, Section, AcademicRecord]
     end
     # show_in_app
 

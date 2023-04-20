@@ -19,6 +19,7 @@ class AdmissionType < ApplicationRecord
   validates :name, presence: true, uniqueness: true
 
   rails_admin do
+    navigation_label 'Gestión Académica'
     navigation_icon 'fa-regular fa-user-tag'
 
     list do

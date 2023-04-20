@@ -33,7 +33,12 @@ Rails.application.routes.draw do
     end
   end
 
+  resources :authorizeds do
+    collection do
+      post :update_authorize
+    end
 
+  end
 
   resources :enrollment_days, only: [:create, :destroy] do
     member do

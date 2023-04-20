@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_04_18_213230) do
+ActiveRecord::Schema[7.0].define(version: 2023_04_20_111641) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -111,6 +111,14 @@ ActiveRecord::Schema[7.0].define(version: 2023_04_18_213230) do
     t.index ["school_id"], name: "index_admission_types_on_school_id"
   end
 
+  create_table "area_authorizables", force: :cascade do |t|
+    t.string "name", null: false
+    t.string "description"
+    t.string "icon"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "areas", force: :cascade do |t|
     t.string "name", null: false
     t.bigint "school_id", null: false
@@ -121,9 +129,20 @@ ActiveRecord::Schema[7.0].define(version: 2023_04_18_213230) do
     t.index ["school_id"], name: "index_areas_on_school_id"
   end
 
+  create_table "authorizables", force: :cascade do |t|
+    t.bigint "area_authorizable_id", null: false
+    t.string "klazz", null: false
+    t.string "description"
+    t.string "icon"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["area_authorizable_id"], name: "index_authorizables_on_area_authorizable_id"
+    t.index ["klazz", "area_authorizable_id"], name: "index_authorizables_on_klazz_and_area_authorizable_id", unique: true
+  end
+
   create_table "authorizeds", force: :cascade do |t|
     t.bigint "admin_id", null: false
-    t.string "clazz", null: false
+    t.bigint "authorizable_id", null: false
     t.boolean "can_create", default: false
     t.boolean "can_read", default: false
     t.boolean "can_update", default: false
@@ -132,8 +151,9 @@ ActiveRecord::Schema[7.0].define(version: 2023_04_18_213230) do
     t.boolean "can_export", default: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["admin_id", "clazz"], name: "index_authorizeds_on_admin_id_and_clazz", unique: true
+    t.index ["admin_id", "authorizable_id"], name: "index_authorizeds_on_admin_id_and_authorizable_id", unique: true
     t.index ["admin_id"], name: "index_authorizeds_on_admin_id"
+    t.index ["authorizable_id"], name: "index_authorizeds_on_authorizable_id"
   end
 
   create_table "bank_accounts", force: :cascade do |t|
@@ -424,7 +444,9 @@ ActiveRecord::Schema[7.0].define(version: 2023_04_18_213230) do
   add_foreign_key "admission_types", "schools"
   add_foreign_key "areas", "areas", column: "parent_area_id"
   add_foreign_key "areas", "schools"
+  add_foreign_key "authorizables", "area_authorizables"
   add_foreign_key "authorizeds", "admins", primary_key: "user_id", on_update: :cascade, on_delete: :cascade
+  add_foreign_key "authorizeds", "authorizables", on_update: :cascade, on_delete: :cascade
   add_foreign_key "bank_accounts", "banks"
   add_foreign_key "bank_accounts", "schools"
   add_foreign_key "courses", "academic_processes"

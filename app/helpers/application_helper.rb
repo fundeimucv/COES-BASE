@@ -18,6 +18,12 @@ module ApplicationHelper
 		I18n.t("activerecord.models.#{model}.other")
 	end
 
+	def checkbox_auth id, action, value, area_id, onclick=nil
+
+		content_tag :a do
+			check_box_tag "[model#{id}][can_#{action}]", nil, value, {class: "area#{area_id} can_all#{id} read#{id}", onclick: onclick}
+		end
+	end
 	def signatures
 
 		capture_haml {

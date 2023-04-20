@@ -44,6 +44,11 @@ class StudyPlan < ApplicationRecord
     navigation_label 'Gestión Académica'
     navigation_icon 'fa-solid fa-award'
     weight -2
+
+    show do
+      fields :school, :code, :name
+    end
+
     list do
       fields :code, :name
     end

@@ -152,6 +152,11 @@ es:
       second: Segundos
       year: Año
   errors: &errors
+    models:
+      academic_record:
+        attributes:
+          qualifications:
+            blank: "Calificación no puede estar en blanco. Si desea eliminar la calificación, coloque el estado de calificación a 'Sin Calificar'"
     format: ! '%{attribute} %{message}'
     messages:
       accepted: debe ser aceptado
@@ -326,6 +331,12 @@ es:
       academic_record:
         one: 'Registro Académico'
         other: 'Registros Académicos'
+      area_authorizable:
+        one: 'Area Autorizable'
+        other: 'Areas Autorizables'
+      authorizable:
+        one: 'Autorizable'
+        other: 'Autorizables'
       address:
         one: 'Dirección'
         other: 'Direcciones'
@@ -442,6 +453,16 @@ es:
         aplazado: 'Aplazados'
         retirado: 'Retirados'
         diferido: 'Diferidos'
+      authorizable:
+        area_authorizable_id: Área Autorizable
+        klazz: Clase
+        description: Descripción
+        icon: Ícono
+      area_authorizable:
+        name: Nombre
+        description: Descripción
+        icon: Ícono 
+        authorizables: Accesibles       
       admin:
         user: 'Usuario'
         role: 'Rol'
