@@ -20,7 +20,9 @@ class AcademicRecord < ApplicationRecord
   belongs_to :enroll_academic_process
 
   has_many :qualifications, dependent: :destroy
-  accepts_nested_attributes_for :qualifications#, reject_if: proc { |attributes| attributes['academic_record_id'].blank? }  
+  accepts_nested_attributes_for :qualifications, allow_destroy: true#, reject_if: proc { |attributes| attributes['academic_record_id'].blank? }  
+
+
 
   has_one :academic_process, through: :enroll_academic_process
   has_one :grade, through: :enroll_academic_process
@@ -43,7 +45,10 @@ class AcademicRecord < ApplicationRecord
   validates_with SamePeriodValidator, field_name: false  
   validates_with SameSchoolValidator, field_name: false  
 
-  validates :qualifications, presence: true, if: lambda{ |object| (object.subject.present? and object.subject.numerica? and (object.aprobado? or object.aplazado? or object.equivalencia_interna? or object.equivalencia_externa?))}
+  # validates :qualifications, presence: true, if: lambda{ |object| (object.subject.present? and object.subject.numerica? and (object.aprobado? or object.aplazado? or object.equivalencia_interna? or object.equivalencia_externa?))}
+
+  # OJO: Se usó este validador en luegar del de arriba para poder espeficificar el mensaje
+  validates_presence_of :qualifications, message: "Calificación no puede estar en blanco. Si desea eliminar la calificación, coloque el estado de calificación a 'Sin Calificar'", if: lambda{ |object| (object.subject.present? and object.subject.numerica? and (object.aprobado? or object.aplazado? or object.equivalencia_interna? or object.equivalencia_externa?))}
 
   # CALLBACK
   after_save :set_options_q
