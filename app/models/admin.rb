@@ -19,16 +19,19 @@ class Admin < ApplicationRecord
   belongs_to :user
   # accepts_nested_attributes_for :user
   
-  belongs_to :env_authorizable, polymorphic: true
+  belongs_to :env_authorizable, polymorphic: true, optional: true
   belongs_to :profile, optional: true
 
   has_many :authorizeds
 
+  before_save :set_role
+
+
   # VALIDATIONS:
   validates :user, presence: true, uniqueness: true
-  validates :env_authorizable, presence: true
-  validates :user, presence: true
-  validates :role, presence: true
+  # validates :env_authorizable, presence: true
+  # validates :user, presence: true
+  # validates :role, presence: true
 
   # validates :env_authorizable_type, presence: true
 
@@ -185,6 +188,9 @@ class Admin < ApplicationRecord
   
   private
 
+    def set_role
+      self.role = :asistente if self.role.nil?
+    end
 
     def paper_trail_update
       # changed_fields = self.changes.keys - ['created_at', 'updated_at']
