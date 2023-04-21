@@ -16,6 +16,10 @@ class Authorized < ApplicationRecord
     authorizable.klazz.constantize if authorizable
   end
 
+  def can_manage?
+    can_create? or can_update?
+  end
+
   def can_all?
     aux = true
     if authorizable

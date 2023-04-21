@@ -22,20 +22,34 @@ class Ability
         can :manage, :all
       elsif user.admin.jefe_control_estudio?
         can :import, Authorizable::IMPORTABLES
-        can :manage, [Admin, Student, Teacher, Area, Subject, Bank, BankAccount, PaymentReport, Course, Grade, AcademicProcess, EnrollAcademicProcess, AcademicRecord, Section, AdmissionType, PeriodType, Address, StudyPlan, Period, Dependency, Schedule, EnrollmentDay, Billboard]
-        can :crue, [School, User]
+        can :manage, [Admin, Student, Teacher, Area, Subject, Course, Grade, AcademicProcess, EnrollAcademicProcess, AcademicRecord, Section, AdmissionType, PeriodType, Address, StudyPlan, Period, Dependency, Schedule, EnrollmentDay, Billboard, User]
+        can :ru, [School]
       else
-
         user.admin.authorizeds.each do |authd|
+            if authd.authorizable.klazz.eql? 'Subject' and authd.can_manage?
+                can :manage, [Dependency, Area]
+            end
+            if authd.authorizable.klazz.eql? 'Student' and authd.can_manage?
+                can :manage, [User, Address, Grade]
+                can :read, [AdmissionType, StudyPlan]
+            end
+            if authd.authorizable.klazz.eql? 'AcademicProcess' and authd.can_manage?
+                can :manage, [Period, PeriodType]
+            end
+            if authd.authorizable.klazz.eql? 'Section' and authd.can_manage?
+                can :manage, [Schedule]
+            end
+            if authd.authorizable.klazz.eql? 'AcademicRecord' and authd.can_manage?
+                can :read, [Section, EnrollAcademicProcess]
+            end            
 
             can :read, authd.authorizable_klazz_constantenize if authd.can_read?
             can :create, authd.authorizable_klazz_constantenize if authd.can_create?
             can :update, authd.authorizable_klazz_constantenize if authd.can_update?
-            can :delete, authd.authorizable_klazz_constantenize if authd.can_delete?
+            can :destroy, authd.authorizable_klazz_constantenize if authd.can_delete?
             can :import, authd.authorizable_klazz_constantenize if authd.can_import?
             can :export, authd.authorizable_klazz_constantenize if authd.can_export?
-            # can :history_show, authd.authorizable_klazz_constantenize
-            # can :history_index, authd.authorizable_klazz_constantenize
+            can :history, authd.authorizable_klazz_constantenize
 
         end
 

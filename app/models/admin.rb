@@ -6,7 +6,7 @@ class Admin < ApplicationRecord
   # t.bigint "env_authorizable_id"
 
   # ENUMERIZE:
-  enum role: [:super, :jefe_control_estudio, :asistente]
+  enum role: [:desarrollador, :jefe_control_estudio, :asistente]
 
   # HISTORY:
   has_paper_trail on: [:create, :destroy, :update]
@@ -51,9 +51,74 @@ class Admin < ApplicationRecord
     user_aux.delete if user_aux.without_rol?
   end 
 
-  def authorized?
+  def authorized_manage? clazz
+    if yo? or desarrollador? or jefe_control_estudio?
+      return true
+    else
+      
+      if authorizable = Authorizable.where(klazz: clazz).first
+        if authorized = authorizeds.where(authorizable_id: authorizable.id).first
+          return authorized.can_manage?
+        else
+          return false
+        end
+      else
+        return false
+      end
+    end
   end
  
+  def authorized_delete? clazz
+    if yo? or desarrollador? or jefe_control_estudio?
+      return true
+    else
+      
+      if authorizable = Authorizable.where(klazz: clazz).first
+        if authorized = authorizeds.where(authorizable_id: authorizable.id).first
+          return authorized.can_delete?
+        else
+          return false
+        end
+      else
+        return false
+      end
+    end
+  end
+
+  def authorized_update? clazz
+    if yo? or desarrollador? or jefe_control_estudio?
+      return true
+    else
+      
+      if authorizable = Authorizable.where(klazz: clazz).first
+        if authorized = authorizeds.where(authorizable_id: authorizable.id).first
+          return authorized.can_update?
+        else
+          return false
+        end
+      else
+        return false
+      end
+    end
+  end
+
+  def authorized_read? clazz
+    if yo? or desarrollador? or jefe_control_estudio?
+      return true
+    else
+      
+      if authorizable = Authorizable.where(klazz: clazz).first
+        if authorized = authorizeds.where(authorizable_id: authorizable.id).first
+          return authorized.can_read?
+        else
+          return false
+        end
+      else
+        return false
+      end
+    end
+  end
+
 
   rails_admin do
     navigation_label 'Gestión de Usuarios'
@@ -81,16 +146,26 @@ class Admin < ApplicationRecord
     list do
       search_by :custom_search
       field :user
-      # field :role
+      field :role do
+        visible do
+          user = bindings[:view]._current_user
+          (user and user.admin and user.admin.yo? )
+        end
+      end
       # field :env_authorizable
       # field :created_at
     end
 
     edit do
       field :user 
-      field :role
+      field :role do
+        visible do
+          user = bindings[:view]._current_user
+          (user and user.admin and user.admin.yo? )
+        end
+      end
 
-      field :env_authorizable
+      # field :env_authorizable
       # field :authorizeds
 
       # field :role do

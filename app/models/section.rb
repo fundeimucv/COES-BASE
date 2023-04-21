@@ -248,7 +248,7 @@ class Section < ApplicationRecord
 
   # RAILS_ADMIN:
   rails_admin do
-    navigation_label 'Inscripciones'
+    navigation_label 'Gestión Periódica'
     navigation_icon 'fa-solid fa-list'
     weight -1
 

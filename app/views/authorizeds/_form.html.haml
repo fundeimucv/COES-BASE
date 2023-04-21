@@ -10,7 +10,7 @@
 						.text-muted= area.description					
 					%th.text-center
 						= check_box_tag nil, nil, (area.can_all? params[:id]), onclick: "clicked_all('.area#{area.id}', this);"
-					%th.text-center{colspan: 6} Permisos
+					%th.text-center{colspan: 6} Acceso
 				%tr.text-center
 					%th.text-center.col-8 Procesos
 					%th{title: 'Todos/Ninguno'}

@@ -90,8 +90,9 @@ class Course < ApplicationRecord
 
   rails_admin do
     # visible false
-    navigation_label 'Inscripciones'
+    navigation_label 'Gestión Periódica'
     navigation_icon 'fa-solid fa-shapes'
+    weight -2
 
     list do
       sort_by ['courses.name']

@@ -376,8 +376,9 @@ class AcademicRecord < ApplicationRecord
 
   # RAILS_ADMIN
   rails_admin do
-    navigation_label 'Inscripciones'
+    navigation_label 'Gestión Periódica'
     navigation_icon 'fa-solid fa-signature'
+    weight 1
     # visible false
 
     list do
@@ -506,8 +507,18 @@ class AcademicRecord < ApplicationRecord
         inline_edit false
         help 'Ingrese la cédula de identidad del estudiante y SELECCIONE la correspondiente inscripción en el período'
       end
-      field :status
-      field :qualifications
+      field :status do
+        visible do
+          user = bindings[:view]._current_user
+          (user and user.admin and user.admin.authorized_manage? 'Qualification')
+        end
+      end
+      field :qualifications do
+        visible do
+          user = bindings[:view]._current_user
+          (user and user.admin and user.admin.authorized_manage? 'Qualification')
+        end
+      end
     end
 
     export do
