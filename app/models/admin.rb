@@ -148,12 +148,19 @@ class Admin < ApplicationRecord
 
     list do
       search_by :custom_search
-      field :user
+      field :user do
+        pretty_value do
+          value.description
+        end
+      end
       field :role do
         visible do
           user = bindings[:view]._current_user
           (user and user.admin and user.admin.yo? )
         end
+        pretty_value do
+          value.titleize
+        end        
       end
       # field :env_authorizable
       # field :created_at
