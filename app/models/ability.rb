@@ -18,7 +18,7 @@ class Ability
       can :manage, :dashboard
       can :read, Faculty
 
-      if user.admin.yo?
+      if user.desarrollador?
         can :manage, :all
       elsif user.admin.jefe_control_estudio?
         can :import, Authorizable::IMPORTABLES
