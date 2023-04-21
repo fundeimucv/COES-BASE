@@ -20,6 +20,9 @@ class AcademicRecord < ApplicationRecord
   belongs_to :enroll_academic_process
 
   has_many :qualifications, dependent: :destroy
+  accepts_nested_attributes_for :qualifications, allow_destroy: true#, reject_if: proc { |attributes| attributes['academic_record_id'].blank? }  
+
+
 
   has_one :academic_process, through: :enroll_academic_process
   has_one :grade, through: :enroll_academic_process
@@ -41,6 +44,11 @@ class AcademicRecord < ApplicationRecord
 
   validates_with SamePeriodValidator, field_name: false  
   validates_with SameSchoolValidator, field_name: false  
+
+  # validates :qualifications, presence: true, if: lambda{ |object| (object.subject.present? and object.subject.numerica? and (object.aprobado? or object.aplazado? or object.equivalencia_interna? or object.equivalencia_externa?))}
+
+  # OJO: Se usó este validador en luegar del de arriba para poder espeficificar el mensaje
+  validates_presence_of :qualifications, message: "Calificación no puede estar en blanco. Si desea eliminar la calificación, coloque el estado de calificación a 'Sin Calificar'", if: lambda{ |object| (object.subject.present? and object.subject.numerica? and (object.aprobado? or object.aplazado? or object.equivalencia_interna? or object.equivalencia_externa?))}
 
   # CALLBACK
   after_save :set_options_q
@@ -368,8 +376,9 @@ class AcademicRecord < ApplicationRecord
 
   # RAILS_ADMIN
   rails_admin do
-    navigation_label 'Inscripciones'
+    navigation_label 'Gestión Periódica'
     navigation_icon 'fa-solid fa-signature'
+    weight 1
     # visible false
 
     list do
@@ -405,9 +414,8 @@ class AcademicRecord < ApplicationRecord
         searchable 'periods.name'
         filterable 'periods.name'
         sortable 'periods.name'
-        formatted_value do
-          bindings[:view].link_to(bindings[:object].subject.desc, "/admin/subject/#{bindings[:object].subject.id}") if bindings[:object].subject.present?
-
+        pretty_value do
+          value.name
         end
       end
 
@@ -478,11 +486,11 @@ class AcademicRecord < ApplicationRecord
         label 'Definitiva'
         column_width 30
       end
-      field :status_value do
+      field :status do
         label 'Estado'
         column_width 200
-        formatted_value do
-          bindings[:object].status.titleize if bindings[:object].status
+        pretty_value do
+          ApplicationController.helpers.label_status('bg-info', value.titleize)
         end        
       end
     end
@@ -495,10 +503,21 @@ class AcademicRecord < ApplicationRecord
       end
 
       field :enroll_academic_process do 
-        inline_add false
+        # inline_add false
         inline_edit false
         help 'Ingrese la cédula de identidad del estudiante y SELECCIONE la correspondiente inscripción en el período'
-
+      end
+      field :status do
+        visible do
+          user = bindings[:view]._current_user
+          (user and user.admin and user.admin.authorized_manage? 'Qualification')
+        end
+      end
+      field :qualifications do
+        visible do
+          user = bindings[:view]._current_user
+          (user and user.admin and user.admin.authorized_manage? 'Qualification')
+        end
       end
     end
 
@@ -653,8 +672,15 @@ class AcademicRecord < ApplicationRecord
   private
 
   # TRIGGER FUNCTIONS:
+  def validate_state_vs_qualification
+    if definitive_q and (self.aprobado? or self.aplazado?)
+      self.status = definitive_q.approved? ? :aprobado : :aplazado
+    end
+
+  end
+
   def set_options_q
-    self.qualifications.destroy_all if (self.pi? or self.retirado? or (self.subject and self.subject.absoluta?))
+    self.qualifications.destroy_all if (self.pi? or self.retirado? or self.sin_calificar? or (self.subject and self.subject.absoluta?))
 
     self.qualifications.create(type_q: :final, value: 0) if self.pi?
   end

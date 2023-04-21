@@ -26,6 +26,7 @@ class EnrollAcademicProcess < ApplicationRecord
   has_many :subjects, through: :sections
 
   # ENUMERIZE:
+  # IDEA CON ESTADO DE INSCRIPCIÓN EN GRADE Y ENROLL ACADEMIC PROCESS
   enum enroll_status: [:preinscrito, :reservado, :confirmado, :retirado]
   enum permanence_status: [:nuevo, :regular, :reincorporado, :articulo3, :articulo6, :articulo7]  
 
@@ -102,8 +103,9 @@ class EnrollAcademicProcess < ApplicationRecord
   end  
 
   rails_admin do
-    navigation_label 'Inscripciones'
+    navigation_label 'Gestión Periódica'
     navigation_icon 'fa-solid fa-calendar-check'
+    weight 0
     
     list do
       search_by :custom_search

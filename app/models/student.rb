@@ -177,7 +177,7 @@ class Student < ApplicationRecord
         label 'Datos Personales'
         formatted_value do
           bindings[:view].render(partial: 'users/personal_data', locals: {user: bindings[:object].user})
-        end        
+        end
       end
       field :description_grades do
         label 'Registro Académico'
