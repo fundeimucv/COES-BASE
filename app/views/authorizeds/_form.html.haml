@@ -10,7 +10,7 @@
 						.text-muted= area.description					
 					%th.text-center
 						.form-check.form-switch
-							%input.form-check-input{type: "checkbox", onclick: "clicked_all('.area#{area.id}', this);" }
+							= check_box_tag nil, nil, (area.can_all? params[:id]), class: "form-check-input area#{area.id}", onclick: "clicked_all('.area#{area.id}', this);" , title: 'Todos/Ninguno'
 
 					%th.text-center{colspan: 6} Acceso
 				%tr.text-center
