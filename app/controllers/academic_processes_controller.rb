@@ -48,6 +48,11 @@ class AcademicProcessesController < ApplicationController
               nueva_seccion = section.dup
               nueva_seccion.course_id = nuevo_curso.id
               nueva_seccion.profesor_id = nil unless params[:teachers]
+              section.schedules.each do |sh|
+                sh_aux = sh.dup
+                sh_aux.section_id = nueva_seccion.id
+                sh_aux.save
+              end
               if nueva_seccion.save
                 completed +=1
               else
