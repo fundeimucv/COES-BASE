@@ -9,7 +9,9 @@
 						= area.name
 						.text-muted= area.description					
 					%th.text-center
-						= check_box_tag nil, nil, (area.can_all? params[:id]), onclick: "clicked_all('.area#{area.id}', this);"
+						.form-check.form-switch
+							%input.form-check-input{type: "checkbox", onclick: "clicked_all('.area#{area.id}', this);" }
+
 					%th.text-center{colspan: 6} Acceso
 				%tr.text-center
 					%th.text-center.col-8 Procesos
@@ -41,26 +43,34 @@
 							%i{class: "#{authble.icon}"}
 							= authble.name
 							.text-muted= authble.description
-						%td.align-middle= check_box_tag nil, nil, @autorized.can_all?, class: "area#{area.id}", onclick: "clicked_all('.can_all#{authble.id}', this);"
+						%td.align-middle				
+							.form-check.form-switch
+								= check_box_tag nil, nil, @autorized.can_all?, class: "form-check-input area#{area.id}", onclick: "clicked_all('.can_all#{authble.id}', this);", title: 'Todos/Ninguno'
 						%td.align-middle
-							= check_box_tag "#{model_id}[can_read]", nil, @autorized.can_read, class: "area#{area.id} can_all#{authble.id} read#{authble.id}", onclick: "checked_if('.visible#{authble.id}', this, false);" 
+							.form-check
+								= check_box_tag "#{model_id}[can_read]", nil, @autorized.can_read, class: "form-check-input area#{area.id} can_all#{authble.id} read#{authble.id}", onclick: "checked_if('.visible#{authble.id}', this, false);", title: 'Ver Listas y Detalles' 
 
 						%td.align-middle
 							- unless Authorizable::UNCREABLES.include? authble.klazz
-								= check_box_tag "#{model_id}[can_create]", nil, @autorized.can_create, class: "visible#{authble.id} area#{area.id} can_all#{authble.id}", onclick: "checked_if('.read#{authble.id}', this, true);"
+								.form-check
+									= check_box_tag "#{model_id}[can_create]", nil, @autorized.can_create, class: "form-check-input visible#{authble.id} area#{area.id} can_all#{authble.id}", onclick: "checked_if('.read#{authble.id}', this, true);", title: 'Agregar Nuevo'
 
 						%td.align-middle
-							= check_box_tag "#{model_id}[can_update]", nil, @autorized.can_update, class: "visible#{authble.id} area#{area.id} can_all#{authble.id}", onclick: "checked_if('.read#{authble.id}', this, true);"
+							.form-check
+								= check_box_tag "#{model_id}[can_update]", nil, @autorized.can_update, class: "form-check-input visible#{authble.id} area#{area.id} can_all#{authble.id}", onclick: "checked_if('.read#{authble.id}', this, true);", title: 'Editar'
 
 						%td.align-middle
 							- unless Authorizable::UNDELETABLES.include? authble.klazz
-								= check_box_tag "#{model_id}[can_delete]", nil, @autorized.can_delete, class: "visible#{authble.id} area#{area.id} can_all#{authble.id}", onclick: "checked_if('.read#{authble.id}', this, true, true);"
+								.form-check
+									= check_box_tag "#{model_id}[can_delete]", nil, @autorized.can_delete, class: "form-check-input visible#{authble.id} area#{area.id} can_all#{authble.id}", onclick: "checked_if('.read#{authble.id}', this, true, true);", title: 'Eliminar'
 						%td.align-middle
 							- if Authorizable::IMPORTABLES.include? authble.klazz
-								= check_box_tag "#{model_id}[can_import]", nil, @autorized.can_import, class: "visible#{authble.id} area#{area.id} can_all#{authble.id}", onclick: "checked_if('.read#{authble.id}', this, true, true);"
+								.form-check
+									= check_box_tag "#{model_id}[can_import]", nil, @autorized.can_import, class: "form-check-input visible#{authble.id} area#{area.id} can_all#{authble.id}", onclick: "checked_if('.read#{authble.id}', this, true, true);", title: 'Importar'
 						%td.align-middle
 							- unless Authorizable::UNEXPORTABLES.include? authble.klazz
-								= check_box_tag "#{model_id}[can_export]", nil, @autorized.can_export, class: "visible#{authble.id} area#{area.id} can_all#{authble.id}", onclick: "checked_if('.read#{authble.id}', this, true, true);"
+								.form-check
+									= check_box_tag "#{model_id}[can_export]", nil, @autorized.can_export, class: "form-check-input visible#{authble.id} area#{area.id} can_all#{authble.id}", onclick: "checked_if('.read#{authble.id}', this, true, true);", title: 'Exportar'
 
 
 	= submit_tag 'Guardar', class: 'btn btn-primary float-end'
