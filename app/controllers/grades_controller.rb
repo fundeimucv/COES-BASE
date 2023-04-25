@@ -11,15 +11,16 @@ class GradesController < ApplicationController
     user = @grade.user
     respond_to do |format|
       format.pdf do
-        render pdf: "kardex-#{school.code}-#{user.ci}", template: "grades/kardex", locals: {grade: @grade}, formats: [:html], page_size: 'letter', footer: {center: "Página: [page] de [topage]", font_size: '10'},  margin: {top: 5}         
+        # render pdf: "kardex-#{school.code}-#{user.ci}", locals: {grade: @grade}, formats: [:html], page_size: 'letter', footer: {center: "Página: [page] de [topage]", font_size: '10'}, header: {content: render_to_string(partial: 'personal_data_pdf'), formats: [:html], layout: false, font_size: '11', encoding: "UTF-8"}#, disposition: :attachment, margin: {top: 15}
+        render pdf: "kardex-#{school.code}-#{user.ci}", locals: {grade: @grade}, formats: [:html], page_size: 'letter', header: {html: {template: '/grades/kardex_title', formats: [:html], layout: false}}, footer: {center: "Página: [page] de [topage]", font_size: '10'}, margin: {top: 40}#, disposition: :attachment
 
         # pdf_html = ActionController::Base.new.render_to_string(template: "grades/kardex", layout: 'pdf', locals: {grade: @grade})
         # pdf = WickedPdf.new.pdf_from_string(
         #   pdf_html,
-        #   header: {content: render_to_string(partial: '/layouts/main_banner_email'), font_size: '8'},
+        #   header: {content: render_to_string(partial: 'personal_data_pdf'), font_size: '8', show_as_html: true, formats: :html},
         #   footer: {center: "Página: [page] de [topage]", font_size: '10'}
         # )
-        # send_data pdf, filename: "#{@title}-#{@school.code}-#{@user.ci}", disposition: :inline 
+        # send_data pdf, filename: "kardex-#{school.code}-#{user.ci}", disposition: :inline 
 
       end
     end      

@@ -3,6 +3,10 @@
 
 .page-break { display:block; clear:both; page-break-after:always; }
 
+.alwaysbreak { page-break-before: always; }
+.nobreak:before { clear:both; }
+.nobreak { page-break-inside: avoid; }
+
 .image_profile{
   position: absolute;
   left: 20px;
