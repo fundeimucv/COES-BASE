@@ -22,8 +22,6 @@ class AcademicRecord < ApplicationRecord
   has_many :qualifications, dependent: :destroy
   accepts_nested_attributes_for :qualifications, allow_destroy: true#, reject_if: proc { |attributes| attributes['academic_record_id'].blank? }  
 
-
-
   has_one :academic_process, through: :enroll_academic_process
   has_one :grade, through: :enroll_academic_process
   has_one :study_plan, through: :grade
@@ -119,7 +117,7 @@ class AcademicRecord < ApplicationRecord
   scope :student_enrolled_by_credits2, -> { joins(:subject).group('academic_records.student_id', 'subjects.unit_credits').count} 
 
   scope :by_subjects, -> {joins(:subject).order('subjects.code': :asc)}
-  scope :by_subject_types, -> (tipo){joins(:subject).where('subjects.modality': tipo.downcase.singularize)}
+  scope :by_subject_types, -> (tipo){joins(:subject).where('subjects.modality': tipo.downcase)}
   # scope :perdidos, -> {perdida_por_inasistencia}
 
   scope :sort_by_user_name, -> {joins(:user).order('users.last_name desc, users.first_name')}
@@ -305,10 +303,6 @@ class AcademicRecord < ApplicationRecord
     q_value_to_02i post_q
   end
 
-  def post_type_q
-    post_q ? post_q.type_q : nil
-  end
-
   def definitive_type_q
     definitive_q ? definitive_q.type_q : :final
   end
@@ -349,6 +343,20 @@ class AcademicRecord < ApplicationRecord
       end
     end
   end
+
+
+  def conv_type
+
+    type = definitive_type_q[0]
+    type ||= 'F'
+
+    modality_process = academic_process.modality[0]
+    modality_process ||= 'S'
+
+    aux = "#{type.upcase}#{modality_process.upcase}#{period.period_type.code.last}"
+
+    aux
+  end  
 
   def conv_descrip force_final = false # convocados
 

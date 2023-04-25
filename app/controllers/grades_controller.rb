@@ -7,15 +7,20 @@ class GradesController < ApplicationController
   end
 
   def kardex
-    @school = @grade.school
-    @faculty = @school.faculty
-    @user = @grade.user
-    @academic_records = @grade.academic_records
-    @enroll_academic_processes = @grade.enroll_academic_processes
-    @title = 'kardex'
+    school = @grade.school
+    user = @grade.user
     respond_to do |format|
       format.pdf do
-        render pdf: "#{@kardex}#{@school.code}-#{@user.ci}", template: "grades/kardex", formats: [:html], page_size: 'letter', footer: {center: "Página: [page] de [topage]", font_size: '10'},  margin: {top: 5}         
+        render pdf: "kardex-#{school.code}-#{user.ci}", template: "grades/kardex", locals: {grade: @grade}, formats: [:html], page_size: 'letter', footer: {center: "Página: [page] de [topage]", font_size: '10'},  margin: {top: 5}         
+
+        # pdf_html = ActionController::Base.new.render_to_string(template: "grades/kardex", layout: 'pdf', locals: {grade: @grade})
+        # pdf = WickedPdf.new.pdf_from_string(
+        #   pdf_html,
+        #   header: {content: render_to_string(partial: '/layouts/main_banner_email'), font_size: '8'},
+        #   footer: {center: "Página: [page] de [topage]", font_size: '10'}
+        # )
+        # send_data pdf, filename: "#{@title}-#{@school.code}-#{@user.ci}", disposition: :inline 
+
       end
     end      
   end

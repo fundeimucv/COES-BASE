@@ -1,7 +1,12 @@
-%table.no_border{style: 'width: 100%'}
-	%tbody
-		%tr
-			%th Exp:
-			%td= grade.id
-			%th Plan de estudio:
-			%td= grade.study_plan.name
+%table{style: 'width: 100%'}
+  %tbody
+    %tr
+      %th Cédula
+      %th Nombre
+      %th Plan de estudio
+      %th Expediente
+    %tr
+      %td= grade.user.ci
+      %td= grade.user.reverse_name
+      %td= grade.study_plan.name
+      %td= grade.id

@@ -1,19 +1,14 @@
 - if study_plan.subject_types.any?
-    .mt-3.text-center 
-        %b Cuadro Resumen Créditos
-
-    %table.no_border.mt-3{style: 'width: 300px;margin-left:370px'}
+    %table.no_border.mt-3{style: 'width: 400px;margin-left:300px'}
         %thead
             %tr
-                %th Tipología
-                %th 
-                %th Créditos Requeridos
-                %th Créditos Superados
+                %th.text-start{style: 'width: 150px;'} Tipología
+                %th{style: 'width: 100px;'} Requeridos
+                %th{style: 'width: 100px;'} Superados
         %tbody
             - study_plan.subject_types.each do |tipo|
                 %tr
-                    %th= tipo.name.upcase
-                    %th= tipo.code
+                    %th.text-start= "#{tipo.name.titleize} (#{tipo.code})"
                     %td= tipo.required_credits
-                    %td= grado.credits_completed_by_type tipo
+                    %td= grade.credits_completed_by_type tipo.name
 
