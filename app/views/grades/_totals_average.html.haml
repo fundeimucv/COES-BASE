@@ -1,0 +1,15 @@
+.text-center.mt-3 
+	%b Promedios:
+%table.no_border{style: 'width: 250px; margin-left: 400px'}
+	%tr
+		%td.text-end Simple Total:
+		%td.text-end.fw-bold= grade.simple_average
+	%tr
+		%td.text-end Simple Aprobado:
+		%td.text-end.fw-bold= grade.calculate_average_approved
+	%tr
+		%td.text-end Ponderado Total:
+		%td.text-end.fw-bold= grade.weighted_average
+	%tr
+		%td.text-end Ponderado Aprobado:
+		%td.text-end.fw-bold= grade.calculate_weighted_average_approved

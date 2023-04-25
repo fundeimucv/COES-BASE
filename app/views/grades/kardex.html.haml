@@ -1,41 +1,27 @@
 = render partial: 'layouts/main_banner_email', locals: {title: @title, school: @school} 
 
+.text-center
+	%h2 Historia Académica
+	%br
+	= render partial: '/users/personal_data_pdf', locals: {user: @user}	
+	= render partial: '/grades/general_kardex', locals: {grade: @grade}
+
+= render partial: '/grades/credits_kardex', locals: {study_plan: @grade.study_plan, grade: @grade}
+= render partial: '/grades/numbers_kardex', locals: {grade: @grade}
+
+=# render partial: 'enroll_academic_processes/academic_history', locals: {enroll_academic_processes: @enroll_academic_processes}
+
 %br
 
-.mb-3
-	%h4.text-center.bg-info.py-2
-		%strong Resumen Académico
+/%h6 Esquema de calificación por convocatoria
+/%h6 DS2 | DA: Diferido Aprobado | DR: Diferido Reprobado | NP: No Presentó |
+/%h6 FS1 | A: Aprobado | AB: Abandonada | AP: Aplazado | CO: Convalidada | EE: Aprobado Equivalente Externa | EI: Aprobado Equivalente Interna | EL: Eliminada Artículo 156 | EX: Exonerado | IS: Insuficiente | NF: Nota Final | NP: No Presentó | PI: Pérdida por Inasistencia | RC: Reconocimiento Créditos | RT: Retirada | SN: Sin Nota | SU: Suficiente |
+/%h6 FS2 | A: Aprobado | AB: Abandonada | AP: Aplazado | CO: Convalidada | EE: Aprobado Equivalente Externa | EI: Aprobado Equivalente Interna | EL: Eliminada Artículo 156 | EQ: Equivalencia | EX: Exonerado | IS: Insuficiente | NF: Nota Final | NP: No Presentó | PI: Pérdida por Inasistencia | RC: Reconocimiento Créditos | RT: Retirada | SN: Sin Nota | SU: Suficiente |
+/%h6 RS1 | NP: No Presentó | RA: Reparación Aprobada | RR: Reparación Reprobada |
+/%h6 RS2 | NP: No Presentó | RA: Reparación Aprobada | RR: Reparación Reprobada |
 
-	%br/
-	
-	= render partial: '/users/personal_data_pdf', locals: {user: @user}	
-			
-	%br
-	
-	= render partial: '/grades/general', locals: {grade: @grade}
-	%br
-	.container
-		.row
-			.col
-				= render partial: '/grades/credits', locals: {grade: @grade}
-			.col
-				= render partial: '/grades/numbers_table', locals: {grade: @grade}
-			.col
-				= render partial: '/grades/total_table', locals: {grade: @grade}
-			/.col
-			/	= render partial: 'enroll_academic_processes/academic_history', locals: {enroll_academic_processes: @enroll_academic_processes}
-
-	%br
-
-	/%h6 Esquema de calificación por convocatoria
-	/%h6 DS2 | DA: Diferido Aprobado | DR: Diferido Reprobado | NP: No Presentó |
-	/%h6 FS1 | A: Aprobado | AB: Abandonada | AP: Aplazado | CO: Convalidada | EE: Aprobado Equivalente Externa | EI: Aprobado Equivalente Interna | EL: Eliminada Artículo 156 | EX: Exonerado | IS: Insuficiente | NF: Nota Final | NP: No Presentó | PI: Pérdida por Inasistencia | RC: Reconocimiento Créditos | RT: Retirada | SN: Sin Nota | SU: Suficiente |
-	/%h6 FS2 | A: Aprobado | AB: Abandonada | AP: Aplazado | CO: Convalidada | EE: Aprobado Equivalente Externa | EI: Aprobado Equivalente Interna | EL: Eliminada Artículo 156 | EQ: Equivalencia | EX: Exonerado | IS: Insuficiente | NF: Nota Final | NP: No Presentó | PI: Pérdida por Inasistencia | RC: Reconocimiento Créditos | RT: Retirada | SN: Sin Nota | SU: Suficiente |
-	/%h6 RS1 | NP: No Presentó | RA: Reparación Aprobada | RR: Reparación Reprobada |
-	/%h6 RS2 | NP: No Presentó | RA: Reparación Aprobada | RR: Reparación Reprobada |
-
-	%h4 
-		%strong NOTA: CUANDO EXISTA DISCREPANCIA ENTRE LOS DATOS CONTENIDOS EN LAS ACTAS DE EXAMENES Y ESTE COMPROBANTE, LOS PRIMEROS SE TENDRÁN COMO AUTENTICOS PARA CUALQUIER FIN.
-	%h4
-		%strong * ESTE COMPROBANTE ES DE CARACTER INFORMATIVO, NO TIENE VALIDEZ LEGAL *.
+%h4 
+	%strong NOTA: CUANDO EXISTA DISCREPANCIA ENTRE LOS DATOS CONTENIDOS EN LAS ACTAS DE EXAMENES Y ESTE COMPROBANTE, LOS PRIMEROS SE TENDRÁN COMO AUTENTICOS PARA CUALQUIER FIN.
+%h4
+	%strong * ESTE COMPROBANTE ES DE CARACTER INFORMATIVO, NO TIENE VALIDEZ LEGAL *.
 %br

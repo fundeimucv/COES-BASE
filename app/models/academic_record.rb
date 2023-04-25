@@ -5,7 +5,7 @@ class AcademicRecord < ApplicationRecord
   # t.integer "status"
 
   # ENUMERIZE:
-  enum status: [:sin_calificar, :aprobado, :aplazado, :retirado, :perdida_por_inasistencia, :equivalencia_interna, :equivalencia_externa]
+  enum status: [:sin_calificar, :aprobado, :aplazado, :retirado, :perdida_por_inasistencia, :equivalencia]
 
   # HISTORY:
   has_paper_trail on: [:create, :destroy, :update]
@@ -45,10 +45,10 @@ class AcademicRecord < ApplicationRecord
   validates_with SamePeriodValidator, field_name: false  
   validates_with SameSchoolValidator, field_name: false  
 
-  # validates :qualifications, presence: true, if: lambda{ |object| (object.subject.present? and object.subject.numerica? and (object.aprobado? or object.aplazado? or object.equivalencia_interna? or object.equivalencia_externa?))}
+  # validates :qualifications, presence: true, if: lambda{ |object| (object.subject.present? and object.subject.numerica? and (object.aprobado? or object.aplazado? or object.equivalencia? ))}
 
   # OJO: Se usó este validador en luegar del de arriba para poder espeficificar el mensaje
-  validates_presence_of :qualifications, message: "Calificación no puede estar en blanco. Si desea eliminar la calificación, coloque el estado de calificación a 'Sin Calificar'", if: lambda{ |object| (object.subject.present? and object.subject.numerica? and (object.aprobado? or object.aplazado? or object.equivalencia_interna? or object.equivalencia_externa?))}
+  validates_presence_of :qualifications, message: "Calificación no puede estar en blanco. Si desea eliminar la calificación, coloque el estado de calificación a 'Sin Calificar'", if: lambda{ |object| (object.subject.present? and object.subject.numerica? and (object.aprobado? or object.aplazado? or object.equivalencia?))}
 
   # CALLBACK
   after_save :set_options_q
@@ -95,22 +95,17 @@ class AcademicRecord < ApplicationRecord
 
   scope :total_subjects_coursed, -> {coursed.total_subjects}
   scope :total_subjects_approved, -> {aprobado.total_subjects}
+  scope :total_subjects_equivalence, -> {equivalencia.total_subjects}
 
   scope :total_credits_coursed, -> {coursed.total_credits}
   scope :total_credits_approved, -> {aprobado.total_credits}
+  scope :total_credits_equivalence, -> {equivalencia.total_credits}
   
   scope :weighted_average, -> {joins(:subject).joins(:qualifications).coursed.sum('subjects.unit_credits * qualifications.value')}
 
   scope :promedio, -> {joins(:qualifications).coursed.average('qualifications.value')}
   scope :promedio_approved, -> {aprobado.promedio}
   scope :weighted_average_approved, -> {aprobado.weighted_average}
-
-  scope :without_equivalence, -> {joins(:section).not_equivalencia_interna} 
-
-  scope :by_equivalence, -> {joins(:section).equivalencia_interna}
-
-  # scope :by_equivalencia_interna, -> {joins(:section).where "sections.modality = 1"}
-  # scope :by_equivalencia_externa, -> {joins(:section).where "sections.modality = 2"}
 
   scope :student_enrolled_by_period, lambda { |period_id| joins(:academic_process).where("academic_processes.period_id": period_id).group(:student).count } 
 
@@ -124,6 +119,7 @@ class AcademicRecord < ApplicationRecord
   scope :student_enrolled_by_credits2, -> { joins(:subject).group('academic_records.student_id', 'subjects.unit_credits').count} 
 
   scope :by_subjects, -> {joins(:subject).order('subjects.code': :asc)}
+  scope :by_subject_types, -> (tipo){joins(:subject).where('subjects.modality': tipo.downcase.singularize)}
   # scope :perdidos, -> {perdida_por_inasistencia}
 
   scope :sort_by_user_name, -> {joins(:user).order('users.last_name desc, users.first_name')}

@@ -6,18 +6,29 @@ class GradesController < ApplicationController
     @grades = Grade.all
   end
 
+  def kardex
+    @school = @grade.school
+    @faculty = @school.faculty
+    @user = @grade.user
+    @academic_records = @grade.academic_records
+    @enroll_academic_processes = @grade.enroll_academic_processes
+    @title = 'kardex'
+    respond_to do |format|
+      format.pdf do
+        render pdf: "#{@kardex}#{@school.code}-#{@user.ci}", template: "grades/kardex", formats: [:html], page_size: 'letter', footer: {center: "Página: [page] de [topage]", font_size: '10'},  margin: {top: 5}         
+      end
+    end      
+  end
+
   # GET /grades/1 or /grades/1.json
   def show
     @school = @grade.school
     @faculty = @school.faculty
     @user = @grade.user
     @academic_records = @grade.academic_records
-    @title = 'KARDEX'
+    @enroll_academic_processes = @grade.enroll_academic_processes
     respond_to do |format|
       format.html
-      format.pdf do
-        render pdf: 'kardex', template: "grades/kardex", formats: [:html], page_size: 'letter', backgroud: false,  header:  {html: { content: '<h1>HOLA MUNDO</h1>'}}, footer: { center: 'Página: [page] de [topage]', font_size: '8'}
-      end
     end
   end
 
@@ -77,28 +88,6 @@ class GradesController < ApplicationController
     # Only allow a list of trusted parameters through.
     def grade_params
       params.require(:grade).permit(:student_id, :study_plan_id, :graduate_status, :admission_type_id, :registration_status, :efficiency, :weighted_average, :simple_average)
-    end
-
-  private
-    # GET Kardex
-    def kardex
-      @school = @enroll_academic_process.school
-      @faculty = @school.faculty
-      @user = @enroll_academic_process.user
-      @period = @enroll_academic_process.period
-      @academic_records = @enroll_academic_process.academic_records
-      event = 'Se generó el Kardex'
-      @kardex = params[:study] ? true : false
-      file_name = "kardex#{@enroll_academic_process.short_name}"
-      @title = 'KARDEX'
-      respond_to do |format|
-        format.html
-        format.pdf do
-          @version = @enroll_academic_process.versions.create(event: event)
-          render pdf: file_name, template: "enroll_academic_processes/kardex", formats: [:html], page_size: 'letter', backgroud: false,  header:  {html: { content: '<h1>HOLA MUNDO</h1>'}}, footer: { center: '[page] de [topage]'}
-        end
-      end
-      
     end
 
 end

@@ -74,6 +74,11 @@ class School < ApplicationRecord
 
 
   # FUNCTIONS:
+
+  def modalities
+    academic_processes.map{|ap| ap.modality}.uniq.to_sentence if academic_processes.any?
+  end
+
   def description
     "#{self.code}: #{self.name}. (#{self.faculty.name}) #{self.type_entity.titleize}"
   end

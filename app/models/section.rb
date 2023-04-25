@@ -47,7 +47,7 @@ class Section < ApplicationRecord
   # has_and_belongs_to_many :secondary_teachers, class_name: 'SectionTeacher'
 
   #ENUMERIZE:
-  enum modality: [:nota_final, :equivalencia_interna]
+  enum modality: [:nota_final, :equivalencia]
 
   # VALIDATIONS:
   validates :code, presence: true, uniqueness: { scope: :course_id, message: 'Ya existe la sesión para el curso', case_sensitive: false, field_name: false}, length: { in: 1..7, too_long: "%{count} caracteres es el máximo permitido", too_short: "%{count} caracter es el mínimo permitido"}
@@ -147,7 +147,7 @@ class Section < ApplicationRecord
 
   def set_default_values_by_import
     self.capacity = 50 
-    self.modality =  (self.code.eql? 'U') ? :equivalencia_interna : :nota_final
+    self.modality =  (self.code.eql? 'U') ? :equivalencia : :nota_final
   end
 
   def totaly_qualified?

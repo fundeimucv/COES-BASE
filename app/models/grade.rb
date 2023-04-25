@@ -31,6 +31,14 @@ class Grade < ApplicationRecord
   enum enrollment_status: [:preinscrito, :asignado, :confirmado]
   enum graduate_status: [:no_graduable, :tesista, :posible_graduando, :graduando, :graduado]
 
+
+  # VALIDATIONS:
+  # validates :student, presence: true
+  validates :study_plan, presence: true
+  validates :admission_type, presence: true
+
+  validates_uniqueness_of :study_plan, scope: [:student], message: 'El estudiante ya tiene el grado asociado', field_name: false
+
   #SCOPES:
   scope :with_day_enroll_eql_to, -> (day){ where(appointment_time: day.all_day)}
   scope :with_appointment_time, -> { where("appointment_time IS NOT NULL")}
@@ -53,7 +61,7 @@ class Grade < ApplicationRecord
   
   scope :total_with_enrollments_in_period, -> (period_id) { with_enrollments_in_period(period_id).uniq.count }
 
-  scope :with_academic_records, -> { where('(SELECT COUNT(*) FROM  "grades" INNER JOIN "enroll_academic_processes" ON "enroll_academic_processes"."grade_id" = "grades"."id" INNER JOIN "academic_records" ON "academic_records"."enroll_academic_process_id" = "enroll_academic_processes"."id") > 0') }
+  # scope :with_academic_records, -> { where('(SELECT COUNT(*) FROM  "grades" INNER JOIN "enroll_academic_processes" ON "enroll_academic_processes"."grade_id" = "grades"."id" INNER JOIN "academic_records" ON "academic_records"."enroll_academic_process_id" = "enroll_academic_processes"."id") > 0') }
 
   scope :with_academic_records, -> {joins(:academic_records)}
   
@@ -66,16 +74,11 @@ class Grade < ApplicationRecord
 
   scope :custom_search, -> (keyword) { joins(:user, :school).where("users.ci ILIKE '%#{keyword}%' OR schools.name ILIKE '%#{keyword}%'") }
 
-  # VALIDATIONS:
-  # validates :student, presence: true
-  validates :study_plan, presence: true
-  validates :admission_type, presence: true
-
-  validates_uniqueness_of :study_plan, scope: [:student], message: 'El estudiante ya tiene el grado asociado', field_name: false
-
   # FUNCTIONS:
-
-  # TO CSV:
+  # APPOINTMENT_TIME:
+  def appointment_slot_time
+    (self.appointment_time and self.duration_slot_time) ? self.appointment_time+self.duration_slot_time.minutes : nil    
+  end
 
   def appointment_from_to
     if self.appointment_time and self.appointment_slot_time
@@ -93,16 +96,21 @@ class Grade < ApplicationRecord
     I18n.l(self.appointment_time+self.duration_slot_time.minutes, format: "%I:%M %p") if (self.appointment_time and self.duration_slot_time.minutes)
   end
 
+  def appointment_time_desc
+    if (appointment_time and duration_slot_time)
+      aux = ""
+      aux += "#{I18n.l(appointment_time)}" if appointment_time
+      aux += " | duración: #{duration_slot_time} minutos" if duration_slot_time
+      return aux
+    end
+  end
+
   def label_status_enroll_academic_process(academic_process_id)
     if iep = self.enroll_academic_processes.of_academic_process(academic_process_id).first
       iep.label_status
     else
       ApplicationController.helpers.label_status('bg-secondary', 'Sin Inscripción')
     end
-  end
-
-  def subjects_approved
-    self.academic_records.aprobado.joins(:subject).select('subjects.id')
   end
 
   def subjects_offer_by_dependent
@@ -131,13 +139,6 @@ class Grade < ApplicationRecord
     Subject.where(id: asignaturas_disponibles_ids)
   end
 
-
-
-  # APPOINTMENT_TIME:
-  def appointment_slot_time
-    (self.appointment_time and self.duration_slot_time) ? self.appointment_time+self.duration_slot_time.minutes : nil    
-  end
-
   def is_new?
     !enroll_academic_processes.any?
   end
@@ -148,15 +149,6 @@ class Grade < ApplicationRecord
 
   def can_enroll_by_apponintment? #puede_inscribir?
     ((self.appointment_time and self.duration_slot_time) and (Time.zone.now > self.appointment_time) and (Time.zone.now < self.appointment_time+self.duration_slot_time.minutes) ) ? true : false
-  end
-
-  def appointment_time_desc
-    if (appointment_time and duration_slot_time)
-      aux = ""
-      aux += "#{I18n.l(appointment_time)}" if appointment_time
-      aux += " | duración: #{duration_slot_time} minutos" if duration_slot_time
-      return aux
-    end
   end
 
   def user
@@ -171,55 +163,27 @@ class Grade < ApplicationRecord
     "Plan de Estudio: #{study_plan.name}, Admitido vía: #{admission_type.name}, Estado de Inscripción: #{registration_status.titleize}" if (study_plan and admission_type and registration_status)
   end
 
+
+  # NUMBERSTINY:
+
   def numbers
     "Efi: #{efficiency}, Prom. Ponderado: #{weighted_average}, Prom. Simple: #{simple_average}"
     # redear una tabla descripción. OJO Sí es posible estandarizar
   end
-  # RAILS_ADMIN:
-  rails_admin do
-    visible false
-    navigation_label 'Inscripciones'
-    navigation_icon 'fa-solid fa-graduation-cap'
 
-    list do
-      search_by :custom_search
-      fields :student, :study_plan, :admission_type, :registration_status, :efficiency, :weighted_average, :simple_average
-    end
-
-    show do
-      fields :student, :enroll_academic_processes, :enabled_enroll_process
-      field :numbers
-      field :description
-    end
-
-    update do
-      fields :study_plan, :admission_type, :registration_status, :enabled_enroll_process, :enrollment_status
-      field :appointment_time do
-        label 'Fecha y Hora Cita Horaria'
-      end
-      field :duration_slot_time do 
-        label 'Duración Cita Horaria (minutos)'
-      end
-    end
-
-    edit do
-      fields :study_plan, :admission_type, :registration_status
-      field :enrollment_status
-      field :appointment_time do
-        label 'Fecha y Hora Cita Horaria'
-      end
-      field :duration_slot_time do 
-        label 'Duración Cita Horaria (minutos)'
-      end      
-    end
-
-    export do
-      fields :student, :study_plan, :admission_type, :registration_status
-    end
+  def subjects_approved
+    self.academic_records.aprobado.joins(:subject).select('subjects.id')
   end
 
+  # TOTALS CREDITS:
 
-  # NUMBERSTINY:
+  def credits_completed_by_type tipo
+    academic_records.aprobado.or(academic_records.equivalencia).by_subject_types(tipo).total_credits
+  end
+
+  def total_credits
+    self.academic_records.total_credits
+  end
 
   def total_credits_coursed process_ids = nil
     if process_ids
@@ -229,14 +193,6 @@ class Grade < ApplicationRecord
     end
   end
 
-  def total_subjects_coursed
-    academic_records.total_subjects_coursed
-  end
-
-  def total_subjects_approved
-    academic_records.total_subjects_approved
-  end  
-
   def total_credits_approved process_ids = nil
     if process_ids
       academic_records.total_credits_approved_on_process process_ids
@@ -245,16 +201,43 @@ class Grade < ApplicationRecord
     end
   end
 
-  def total_credits_approved_without_equivalence
-    academic_records.without_equivalence.total_credits_approved
+  def total_credits_eq
+    self.academic_records.total_credits_equivalence
   end
 
-  def total_credits_approved_by_equivalence
-    self.academic_records.by_equivalence.total_credits
+  def total_credits_approved_or_eq
+    academic_records.aprobado.or(academic_records.equivalencia).total_credits
   end
 
-  def total_credits
-    self.academic_records.total_credits
+  def total_credits_by_type_subject tipo
+    academic_records.joins(:subject).by_type(tipo).total_credits
+  end
+
+  # def credits_approved_by_eq
+    # Ojo: Esta función siempre arroja cero porque no pueden existir EI y A, porque son estados direrentes
+
+  #   self.academic_records.aprobado.joins(:subject, :section).equivalencia.sum('subjects.unit_credits')
+  # end
+
+  # TOTALS SUBJECTS:
+  def total_subjects_coursed
+    academic_records.total_subjects_coursed
+  end
+
+  def total_subjects_approved
+    academic_records.total_subjects_approved
+  end
+
+  def total_subjects_eq
+    academic_records.total_subjects_equivalence
+  end  
+
+  def total_subjects_approved_or_eq
+    academic_records.aprobado.or(academic_records.equivalencia).total_subjects
+  end
+
+  def total_subjects_retiradas
+    academic_records.retirado.total_subjects
   end
 
   def update_all_efficiency
@@ -315,6 +298,50 @@ class Grade < ApplicationRecord
   def calculate_average_approved
     aux = self.academic_records.promedio_approved
     (aux and aux.is_a? BigDecimal) ? aux.round(4) : 0.0
+  end
+
+
+  # RAILS_ADMIN:
+  rails_admin do
+    visible false
+    navigation_label 'Inscripciones'
+    navigation_icon 'fa-solid fa-graduation-cap'
+
+    list do
+      search_by :custom_search
+      fields :student, :study_plan, :admission_type, :registration_status, :efficiency, :weighted_average, :simple_average
+    end
+
+    show do
+      fields :student, :enroll_academic_processes, :enabled_enroll_process
+      field :numbers
+      field :description
+    end
+
+    update do
+      fields :study_plan, :admission_type, :registration_status, :enabled_enroll_process, :enrollment_status
+      field :appointment_time do
+        label 'Fecha y Hora Cita Horaria'
+      end
+      field :duration_slot_time do 
+        label 'Duración Cita Horaria (minutos)'
+      end
+    end
+
+    edit do
+      fields :study_plan, :admission_type, :registration_status
+      field :enrollment_status
+      field :appointment_time do
+        label 'Fecha y Hora Cita Horaria'
+      end
+      field :duration_slot_time do 
+        label 'Duración Cita Horaria (minutos)'
+      end      
+    end
+
+    export do
+      fields :student, :study_plan, :admission_type, :registration_status
+    end
   end
 
   after_initialize do

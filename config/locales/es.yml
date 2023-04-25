@@ -17,8 +17,8 @@ es:
   perdida_por_inasistencia: PI
   PI: perdida_por_inasistencia
 
-  equivalencia_interna: EQ
-  EQ: equivalencia_interna
+  equivalencia: EQ
+  EQ: equivalencia
   
   retirado: RT
   RT: retirado
@@ -406,6 +406,9 @@ es:
       subject:
         one: 'Asignatura'
         other: 'Asignaturas'
+      subject_type:
+        one: 'Tipo de Asignatura'
+        other: 'Tipos de Asignatura'
       teacher:
         one: 'Profesor'
         other: 'Profesores'
@@ -629,7 +632,7 @@ es:
       study_plan:
         code: 'Código'
         name: 'Nombre'
-        required_credits: 'Créditos Requeridos'
+        subject_types: 'Tipos de Asignatura'
       subject:
         school: Escuela
         courses: Cursos
@@ -645,6 +648,10 @@ es:
         subject_dependents: Asignaturas de Dependencias
         created_at: 'Fecha de Registro'
         updated_at: 'Fecha de Actualización'
+      subject_type:
+        name: Nombre
+        code: Letra Identificativa
+        required_credits: Créditos Requeridos 
       teacher:
         area: 'Área'
         user: 'Usuario'
@@ -689,8 +696,8 @@ es:
         par: 'Parciales'
       section:
         nota_final: 'Final'
-        equivalencia_externa: 'Equivalencia Externa'
-        equivalencia_interna: 'Equivalencia Interna' 
+        equivalencia: 'Equivalencia'
+        equivalencia: 'Equivalencia' 
         diferido: 'Diferido' 
         reparacion: 'Reparación'
         suficiencia: 'Suficiencia'

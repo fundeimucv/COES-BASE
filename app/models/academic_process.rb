@@ -53,6 +53,10 @@ class AcademicProcess < ApplicationRecord
   before_save :set_name
 
 
+  def exame_type
+    "#{period.period_type.name.upcase} #{modality.upcase}" if (period and period.period_type and modality)
+  end
+
   def default_value_by_import
     max_credits = 24
     max_subject = 5

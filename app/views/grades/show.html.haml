@@ -57,8 +57,5 @@
 
 
 = render partial: 'grades/academic_resume', locals: {grade: grade}
-= link_to "/grades/#{grade.id}.pdf", class: 'btn btn-success btn-sm float-right' do
-	.fa.fa-download.fa-list
-Kardex PDF
 
 = render template: 'enroll_academic_processes/index', locals: {enroll_academic_processes: grade.enroll_academic_processes}
