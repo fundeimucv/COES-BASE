@@ -2,7 +2,10 @@
 
 - enroll_academic_processes.sort_by_period.each do |enroll_academic_process|
   .border.m-3.p-4
-    %table.table.table-condensed
+    - school = enroll_academic_process.school
+    - enrolling = (school.active_process.eql? enroll_academic_process.academic_process)
+    - titulo = enrolling ? 'Proceso de Inscripción Abierto' : ''
+    %table.table.table-sm
       %thead
         %tr
           %th.text-center Período
@@ -13,7 +16,12 @@
 
       %tbody
         %tr
-          %td.text-center= enroll_academic_process.academic_process.period.name
+          %td.text-center{title: titulo}
+            - if enrolling
+              %i.fa-solid.fa-calendar-check.text-success
+              %i.fa-solid.fa-graduation-cap.text-success
+
+            = enroll_academic_process.academic_process.period.name
           %td.text-center
             .badge.bg-info= enroll_academic_process.enroll_status
           %td.text-center
