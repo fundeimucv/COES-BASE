@@ -58,7 +58,10 @@ class Subject < ApplicationRecord
 
   scope :custom_search, -> (keyword) {joins([:area]).where("subjects.name ILIKE ? or subjects.code ILIKE ? or areas.name ILIKE ?", "%#{keyword}%", "%#{keyword}%", "%#{keyword}%")} 
 
-  scope :independents, -> {joins('LEFT JOIN subject_links ON subject_links.prelate_subject_id = subjects.id').where('subject_links.prelate_subject_id IS NULL')}
+  # scope :independents, -> {joins('LEFT JOIN subject_links ON subject_links.prelate_subject_id = subjects.id').where('subject_links.prelate_subject_id IS NULL')}
+
+  scope :independents, -> {left_joins(:prelate_links).where('subject_links.prelate_subject_id': nil)}
+
 
   # CALLBACKS:
   before_save :clean_values
@@ -82,35 +85,36 @@ class Subject < ApplicationRecord
     aux << prelate_tree
     aux << depend_tree
     return aux.flatten.uniq
-  end
-
-  def prelate_tree names=false
-    if (prelate_links.count > 1)
-      prelate_links.map{|subj_link| subj_link.prelate_subject.prelate_tree (names)}
-    elsif (prelate_links.count.eql? 1)
-      if aux = self.prelate_links.first.depend_subject
-        names ? aux.name : aux.id
-      end
-    end
-  end
-
-  def depend_tree names=false
-    if (depend_links.count > 1)
-      depend_links.map{|subj_link| subj_link.depend_subject.depend_tree (names)}
-    elsif (depend_links.count.eql? 1)
-      if aux = self.depend_links.first.prelate_subject
-        names ? aux.name : aux.id
-      end
-    end
-  end
-
-  def prelate_tree_names
-    prelate_tree true
-  end
-
-  def depend_tree_names
-    depend_tree true
   end  
+
+  def prelate_tree
+    self.prelate_links.map{|link| [link.prelate_subject_id, link.prelate_subject.prelate_tree].uniq.flatten} 
+  end
+
+  def depend_tree
+    self.depend_links.map{|link| [link.depend_subject_id, link.depend_subject.depend_tree].uniq.flatten} 
+  end  
+
+  # def prelate_tree names=false
+
+  #   if (prelate_links.count > 1)
+  #     prelate_links.map{|subj_link| subj_link.prelate_subject.prelate_tree (names)}
+  #   elsif (prelate_links.count.eql? 1)
+  #     if aux = self.prelate_links.first.prelate_subject
+  #       names ? aux.name : aux.id
+  #     end
+  #   end
+  # end
+
+  # def depend_tree names=false
+  #   if (depend_links.count > 1)
+  #     depend_links.map{|subj_link| subj_link.depend_subject.depend_tree (names)}
+  #   elsif (depend_links.count.eql? 1)
+  #     if aux = self.depend_links.first.depend_subject
+  #       names ? aux.name : aux.id
+  #     end
+  #   end
+  # end
 
   # DESCRIPTIONS TYPES:
 
@@ -213,6 +217,11 @@ class Subject < ApplicationRecord
       end
       field :unit_credits do 
         label 'Crédi'
+        column_width 20
+      end
+
+      field :ordinal do
+        label 'Orden'
         column_width 20
       end
 

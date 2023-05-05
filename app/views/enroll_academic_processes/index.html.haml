@@ -2,9 +2,12 @@
 
 - enroll_academic_processes.sort_by_period.each do |enroll_academic_process|
   .border.m-3.p-4
+    - academic_process = enroll_academic_process.academic_process
+    - period = academic_process.period
+    - academic_records = enroll_academic_process.academic_records
     - school = enroll_academic_process.school
-    - enrolling = (school.enroll_process.eql? enroll_academic_process.academic_process)
-    - active = (school.active_process.eql? enroll_academic_process.academic_process)
+    - enrolling = (school.enroll_process.eql? academic_process)
+    - active = (school.active_process.eql? academic_process)
 
     - titulo_inscrip = enrolling ? 'Proceso de Inscripción Abierto' : ''
     - titulo_activo = enrolling ? 'Proceso Académico Activo' : ''
@@ -19,20 +22,19 @@
 
       %tbody
         %tr
-          %td.text-center
+          %td.text-center{title: period.name}
             - if active
               %i.fa-solid.fa-calendar-check.text-success{title: titulo_activo}
             - if enrolling
               %i.fa-solid.fa-graduation-cap.text-success{title: titulo_inscrip}
-
-            = enroll_academic_process.academic_process.period.name
+            = period.name
           %td.text-center
             .badge.bg-info= enroll_academic_process.enroll_status
           %td.text-center
             .badge.bg-info= enroll_academic_process.permanence_status
-          %td.text-center= enroll_academic_process.academic_records.count
+          %td.text-center= academic_records.count
           %td.text-center
             = render partial: 'enroll_academic_processes/options', locals: {enroll_academic_process: enroll_academic_process}
 
         %tr
-          = render partial: 'academic_records/index_to_history', locals: {academic_records: enroll_academic_process.academic_records}
+          = render partial: 'academic_records/index_to_history', locals: {academic_records: academic_records}
