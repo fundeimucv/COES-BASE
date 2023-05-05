@@ -115,29 +115,34 @@ class Grade < ApplicationRecord
 
   def subjects_offer_by_dependent
     # Buscamos los ids de las asignaturas aprobadas
-    aprobadas_ids = subjects_approved.ids
 
-    # Buscamos por ids de las asignaturas que dependen de las aprobadas
-    dependent_subject_ids = SubjectLink.where('prelate_subject_id IN (?)', aprobadas_ids).map{|dep| dep.depend_subject_id}
+    if is_new?
+      Subject.independents.where(ordinal: 1)
+    else
+      aprobadas_ids = subjects_approved.ids
 
-    ids_subjects_positives = []
+      # Buscamos por ids de las asignaturas que dependen de las aprobadas
+      dependent_subject_ids = SubjectLink.where('prelate_subject_id IN (?)', aprobadas_ids).map{|dep| dep.depend_subject_id}
 
-    # Ahora por cada asignatura válida miramos sus respectivas dependencias a ver si todas están aprobadas
+      ids_subjects_positives = []
 
-    # OJO: REVISAR, Creo que este paso es REDUNDANTE, si tienes las dependencias de las aprovadas, no deberías mirar si aprobó las asignaturas de esas dependencias. 
-    dependent_subject_ids.each do |subj_id|
-      ids_aux = SubjectLink.where(depend_subject_id: subj_id).map{|dep| dep.prelate_subject_id}
-      ids_aux.reject!{|id| aprobadas_ids.include? id}
-      ids_subjects_positives << subj_id if (ids_aux.eql? []) #Si aprobó todas las dependencias
+      # Ahora por cada asignatura válida miramos sus respectivas dependencias a ver si todas están aprobadas
+
+      # OJO: REVISAR, Creo que este paso es REDUNDANTE, si tienes las dependencias de las aprovadas, no deberías mirar si aprobó las asignaturas de esas dependencias. 
+      dependent_subject_ids.each do |subj_id|
+        ids_aux = SubjectLink.where(depend_subject_id: subj_id).map{|dep| dep.prelate_subject_id}
+        ids_aux.reject!{|id| aprobadas_ids.include? id}
+        ids_subjects_positives << subj_id if (ids_aux.eql? []) #Si aprobó todas las dependencias
+      end
+
+      # Buscamos las asignaturas sin prelación
+      ids_subjects_independients = self.school.subjects.independents.ids
+
+      # Sumamos todas las ids ()
+      asignaturas_disponibles_ids = ids_subjects_positives + ids_subjects_independients
+
+      Subject.where(id: asignaturas_disponibles_ids)
     end
-
-    # Buscamos las asignaturas sin prelación
-    ids_subjects_independients = self.school.subjects.independents.ids
-
-    # Sumamos todas las ids ()
-    asignaturas_disponibles_ids = ids_subjects_positives + ids_subjects_independients
-
-    Subject.where(id: asignaturas_disponibles_ids)
   end
 
   def is_new?
