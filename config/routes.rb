@@ -14,6 +14,7 @@ Rails.application.routes.draw do
       get 'constancias'
     end
   end
+  resources :subject_links, only: :destroy
   resources :page, only: :show
   resources :qualifications, only: :update
   resources :period_types

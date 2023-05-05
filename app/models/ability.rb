@@ -22,12 +22,12 @@ class Ability
         can :manage, :all
       elsif user.admin.jefe_control_estudio?
         can :import, Authorizable::IMPORTABLES
-        can :manage, [Admin, Student, Teacher, Area, Subject, Course, Grade, AcademicProcess, EnrollAcademicProcess, AcademicRecord, Section, AdmissionType, PeriodType, Address, StudyPlan, Period, Dependency, Schedule, EnrollmentDay, Billboard, User]
+        can :manage, [Admin, Student, Teacher, Area, Subject, Course, Grade, AcademicProcess, EnrollAcademicProcess, AcademicRecord, Section, AdmissionType, PeriodType, Address, StudyPlan, Period, SubjectLink, Schedule, EnrollmentDay, Billboard, User]
         can :ru, [School]
       else
         user.admin.authorizeds.each do |authd|
             if authd.authorizable.klazz.eql? 'Subject' and authd.can_manage?
-                can :manage, [Dependency, Area]
+                can :manage, [SubjectLink, Area]
             end
             if authd.authorizable.klazz.eql? 'Student' and authd.can_manage?
                 can :manage, [User, Address, Grade]

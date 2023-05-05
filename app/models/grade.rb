@@ -118,14 +118,15 @@ class Grade < ApplicationRecord
     aprobadas_ids = subjects_approved.ids
 
     # Buscamos por ids de las asignaturas que dependen de las aprobadas
-    subjects_dependients_ids = Dependency.where('subject_parent_id IN (?)', aprobadas_ids).map{|dep| dep.subject_dependent_id}
+    dependent_subject_ids = SubjectLink.where('prelate_subject_id IN (?)', aprobadas_ids).map{|dep| dep.depend_subject_id}
 
     ids_subjects_positives = []
 
-    # Ahora por cada asignatura habilitada miramos sus respectivas dependencias a ver si todas están aprobadas
+    # Ahora por cada asignatura válida miramos sus respectivas dependencias a ver si todas están aprobadas
 
-    subjects_dependients_ids.each do |subj_id|
-      ids_aux = Dependency.where(subject_dependent_id: subj_id).map{|dep| dep.subject_parent_id}
+    # OJO: REVISAR, Creo que este paso es REDUNDANTE, si tienes las dependencias de las aprovadas, no deberías mirar si aprobó las asignaturas de esas dependencias. 
+    dependent_subject_ids.each do |subj_id|
+      ids_aux = SubjectLink.where(depend_subject_id: subj_id).map{|dep| dep.prelate_subject_id}
       ids_aux.reject!{|id| aprobadas_ids.include? id}
       ids_subjects_positives << subj_id if (ids_aux.eql? []) #Si aprobó todas las dependencias
     end

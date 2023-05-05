@@ -288,9 +288,9 @@ es:
           attributes:
             period:
               required: requerido
-        dependency:
+        subject_link:
           attributes:
-            subject_dependent:
+            depend_subject:
               required: requerido
         grade:
           attributes:
@@ -644,8 +644,8 @@ es:
         qualification_type: 'Tipo de calificación'
         modality: 'Modalidad'
         area: 'Área'
-        subject_parents: Asignaturas de Prelaciones
-        subject_dependents: Asignaturas de Dependencias
+        prelate_subjects: Prelada por
+        depend_subjects: Asignaturas que prela
         created_at: 'Fecha de Registro'
         updated_at: 'Fecha de Actualización'
       subject_type:

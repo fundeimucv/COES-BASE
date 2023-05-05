@@ -51,7 +51,7 @@ RailsAdmin.config do |config|
     require_relative '../../lib/rails_admin/config/actions/dashboard'
     index do                         # mandatory
 
-      except [SectionTeacher, Profile, Address, EnrollmentDay, Qualification, Dependency]
+      except [SectionTeacher, Profile, Address, EnrollmentDay, Qualification, SubjectLink]
       # except [Address, SectionTeacher, Profile, User, StudyPlan, Period, Course, Faculty]
 
     end
