@@ -137,7 +137,11 @@ class Admin < ApplicationRecord
       field :pare do
         label 'PARE (Procesos de Acceso Restringido)'
         formatted_value do
-          bindings[:view].render(partial: 'authorizeds/form', locals: {user: bindings[:object].user})
+          current_admin = bindings[:view]._current_user.admin
+          if current_admin and current_admin.asistente?
+
+            bindings[:view].render(partial: 'authorizeds/form', locals: {user: bindings[:object].user})
+          end
         end
       end
 
@@ -156,7 +160,7 @@ class Admin < ApplicationRecord
       field :role do
         visible do
           user = bindings[:view]._current_user
-          (user and user.admin and user.admin.yo? )
+          (user and user.admin and user.admin.desarrollador? )
         end
         pretty_value do
           value.titleize
