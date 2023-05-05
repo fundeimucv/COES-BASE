@@ -412,6 +412,9 @@ es:
       teacher:
         one: 'Profesor'
         other: 'Profesores'
+      tutorial: 
+        one: 'Tutorial'
+        other: 'Tutoriales'
       user:
         one: 'Usuario'
         other: 'Usuarios'
@@ -657,6 +660,13 @@ es:
         user: 'Usuario'
         created_at: 'Fecha de Registro'
         sections: 'Secciones'
+      tutorial:
+        id: 'Vídeo N°'
+        name_function: 'Nombre de la Función'
+        description: 'Descripción'
+        video: 'Vídeo Demostrativo'
+        created_at: 'Creado'
+        updated_at: 'Actualizado'
       user:
         email: 'Correo Electrónico'
         ci: 'Cédula de identidad'
