@@ -137,8 +137,7 @@ class Admin < ApplicationRecord
       field :pare do
         label 'PARE (Procesos de Acceso Restringido)'
         formatted_value do
-          current_admin = bindings[:view]._current_user.admin
-          if current_admin and current_admin.asistente?
+          if bindings[:object].asistente?
 
             bindings[:view].render(partial: 'authorizeds/form', locals: {user: bindings[:object].user})
           end
