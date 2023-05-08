@@ -415,6 +415,9 @@ es:
       tutorial: 
         one: 'Tutorial'
         other: 'Tutoriales'
+      group_tutorial: 
+        one: 'Módulo de Tutorial'
+        other: 'Módulo de Tutoriales'
       user:
         one: 'Usuario'
         other: 'Usuarios'
@@ -660,8 +663,17 @@ es:
         user: 'Usuario'
         created_at: 'Fecha de Registro'
         sections: 'Secciones'
+      group_tutorial:
+        id: 'Módulo N°'
+        group_tutorial: 'Módulo de Tutoriales'
+        name_group: 'Nombre del Módulo'
+        description: 'Descripción'
+        tutorials: 'Tutoriales'
+        created_at: 'Creado'
+        updated_at: 'Actualizado'
       tutorial:
         id: 'Vídeo N°'
+        group_tutorial: 'Módulo Perteneciente'
         name_function: 'Nombre de la Función'
         description: 'Descripción'
         video: 'Vídeo Demostrativo'

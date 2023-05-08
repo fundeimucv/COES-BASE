@@ -51,7 +51,7 @@ RailsAdmin.config do |config|
     require_relative '../../lib/rails_admin/config/actions/dashboard'
     index do                         # mandatory
 
-      except [SectionTeacher, Profile, Address, EnrollmentDay, Qualification, Dependency]
+      except [SectionTeacher, Profile, Address, EnrollmentDay, Qualification, Dependency, Tutorial]
       # except [Address, SectionTeacher, Profile, User, StudyPlan, Period, Course, Faculty]
 
     end
@@ -59,7 +59,7 @@ RailsAdmin.config do |config|
       except [School, Faculty]
     end
     export do
-      except [Faculty, School, StudyPlan]
+      except [Faculty, School, StudyPlan, GroupTutorial, Tutorial]
     end
     bulk_delete do
       only [AcademicRecord, Section, Course]
