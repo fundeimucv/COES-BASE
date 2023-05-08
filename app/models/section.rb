@@ -47,7 +47,7 @@ class Section < ApplicationRecord
   # has_and_belongs_to_many :secondary_teachers, class_name: 'SectionTeacher'
 
   #ENUMERIZE:
-  enum modality: [:nota_final, :equivalencia_interna]
+  enum modality: [:nota_final, :equivalencia]
 
   # VALIDATIONS:
   validates :code, presence: true, uniqueness: { scope: :course_id, message: 'Ya existe la sesión para el curso', case_sensitive: false, field_name: false}, length: { in: 1..7, too_long: "%{count} caracteres es el máximo permitido", too_short: "%{count} caracter es el mínimo permitido"}
@@ -147,7 +147,7 @@ class Section < ApplicationRecord
 
   def set_default_values_by_import
     self.capacity = 50 
-    self.modality =  (self.code.eql? 'U') ? :equivalencia_interna : :nota_final
+    self.modality =  (self.code.eql? 'U') ? :equivalencia : :nota_final
   end
 
   def totaly_qualified?
@@ -248,7 +248,7 @@ class Section < ApplicationRecord
 
   # RAILS_ADMIN:
   rails_admin do
-    navigation_label 'Inscripciones'
+    navigation_label 'Gestión Periódica'
     navigation_icon 'fa-solid fa-list'
     weight -1
 
@@ -256,31 +256,31 @@ class Section < ApplicationRecord
       search_by :custom_search
       # filters [:period_name, :code, :subject_code]
       sort_by 'courses.name'
-      field :academic_process do
+      # field :academic_process do
+      #   label 'Período'
+      #   column_width 120
+      #   pretty_value do
+      #     value.period.name
+      #   end
+      # end
+
+      field :course do
         label 'Período'
-        column_width 120
+        filterable 'courses.name'
+        associated_collection_cache_all false
+        associated_collection_scope do
+          # bindings[:object] & bindings[:controller] are available, but not in scope's block!
+          Proc.new { |scope|
+            # scoping all Players currently, let's limit them to the team's league
+            # Be sure to limit if there are a lot of Players and order them by position
+            scope = scope.joins(:course)
+            scope = scope.limit(30) # 'order' does not work here
+          }
+        end
         pretty_value do
           value.period.name
         end
       end
-
-      # field :course do
-      #   associated_collection_cache_all false
-      #   associated_collection_scope do
-      #     # bindings[:object] & bindings[:controller] are available, but not in scope's block!
-      #     Proc.new { |scope|
-      #       # scoping all Players currently, let's limit them to the team's league
-      #       # Be sure to limit if there are a lot of Players and order them by position
-      #       scope = scope.joins(:course)
-      #       scope = scope.limit(30) # 'order' does not work here
-      #     }
-      #   end
-      #   formatted_value do
-      #     nil
-      #     bindings[:view].link_to(bindings[:object].subject.desc, "/admin/subject/#{bindings[:object].subject.id}") if bindings[:object].subject.present?
-
-      #   end        
-      # end
 
       # field :period_name do
       #   label 'Período'

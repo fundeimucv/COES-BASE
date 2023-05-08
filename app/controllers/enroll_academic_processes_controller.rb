@@ -10,7 +10,7 @@ class EnrollAcademicProcessesController < ApplicationController
 
   def show
 
-    if @enroll_academic_process.school.active_process.eql? @enroll_academic_process.academic_process and @enroll_academic_process.confirmado?
+    if (@enroll_academic_process.school.enroll_process.eql? @enroll_academic_process.academic_process or @enroll_academic_process.school.active_process.eql? @enroll_academic_process.academic_process) and @enroll_academic_process.confirmado?
 
       @school = @enroll_academic_process.school
       @faculty = @school.faculty
@@ -38,13 +38,13 @@ class EnrollAcademicProcessesController < ApplicationController
           # @encrypted_id, @salt = crypt.encrypt_and_sign(@version.id).split("/")
 
 
-          render pdf: file_name, template: "enroll_academic_processes/constance", formats: [:html], page_size: 'letter', backgroud: false,  header:  {html: { content: '<h1>HOLA MUNDO</h1>'}}, footer: { center: 'Página: [page] de [topage]', font_size: '8'}
+          render pdf: file_name, template: "enroll_academic_processes/constance", formats: [:html], page_size: 'letter', backgroud: false,  footer: { center: 'Página: [page] de [topage]', font_size: '8'}
         end
       end
 
     else
       flash[:warning] = 'Debe estar activado el proceso académico o la inscripción para descargar el documento solicitado.'
-      redirect_back fallback_location: root_path      
+      redirect_back fallback_location: '/admin'
     end
   end
 

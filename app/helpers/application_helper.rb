@@ -1,6 +1,6 @@
 module ApplicationHelper
 	def render_haml(haml, locals = {})
-		Haml::Engine.new(haml.strip_heredoc, format: :html5).render(self, locals)
+		Haml::Engine.new(haml.strip_heredoc, format: :html5).render(locals)
 	end
 
 	def label_status(klazz, content)
@@ -12,6 +12,25 @@ module ApplicationHelper
 		content_tag :b, rel: :tooltip, 'data-bs-toggle': 'tooltip', 'data-bs-placement': placement, 'data-bs-original-title': title do
 			capture_haml{"<span class='text-center badge #{klazz}'>#{content}</span>".html_safe }
 		end	
+	end
+
+	def translate_model model
+		I18n.t("activerecord.models.#{model}.other")
+	end
+
+	def checkbox_auth id, action, value, area_id, onclick=nil
+
+		content_tag :a do
+			check_box_tag "[model#{id}][can_#{action}]", nil, value, {class: "area#{area_id} can_all#{id} read#{id}", onclick: onclick}
+		end
+	end
+
+	def simple_toggle href, value, title_tooltip, color_type, icon, onclick_action = nil
+		target = (href.include? 'descargar') ? '_blank' : ''
+		link_to href, class: "tooltip-btn text-#{color_type}", onclick: onclick_action, target: target, 'data_toggle': :tooltip, title: title_tooltip do
+			capture_haml{"<i class= '#{icon}'></i> #{value}".html_safe}
+		end
+
 	end
 
 	def signatures

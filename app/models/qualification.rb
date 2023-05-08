@@ -21,6 +21,10 @@ class Qualification < ApplicationRecord
 
   after_save :update_academic_record_status
 
+  def name
+    "#{type_q.titleize} #{value}" if (type_q and value)
+  end
+
   after_destroy :update_academic_record_status
   def update_academic_record_status
     definitive_q_value = self.academic_record.definitive_q_value

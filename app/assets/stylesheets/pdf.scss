@@ -3,15 +3,23 @@
 
 .page-break { display:block; clear:both; page-break-after:always; }
 
+.alwaysbreak { page-break-before: always; }
+.nobreak:before { clear:both; }
+.nobreak { page-break-inside: avoid; }
+
 .image_profile{
   position: absolute;
   left: 20px;
-  top: 20px	
+  top: 10px	
 }
 .signatures{
 	position: absolute;
   bottom: 100;
   right: 0;
+}
+
+.table-striped > tbody > tr:nth-child(odd) td {
+	background-color: #F0F0F0 !important;
 }
 
 .font-title{

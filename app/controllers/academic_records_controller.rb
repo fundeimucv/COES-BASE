@@ -55,7 +55,7 @@ class AcademicRecordsController < ApplicationController
     flash[:info] = '¡Registro Eliminado!'
 
     respond_to do |format|
-      format.html { redirect_back fallback_location: root_path, notice: "Registro Académico Eliminado" }
+      format.html { redirect_back fallback_location: root_path}
       format.json { head :no_content }
     end
   end
