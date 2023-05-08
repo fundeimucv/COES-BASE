@@ -10,11 +10,11 @@ p '      Creada Facultad!    '.center(200, '=') if fau = Faculty.create(code: 'F
 
 p '      Creado Primer Usuario!    '.center(200, '=') if user = User.create!(email: 'moros.daniel@gmail.com', first_name: 'Daniel Josué', last_name: 'Moros Castillo', ci: '15573230', password: 123123)
 
-p '      Creado Primer Admin!    '.center(200, '=') if Admin.create!(user_id: user.id, role: :super, env_authorizable: fau)
+p '      Creado Primer Admin!    '.center(200, '=') if Admin.create!(user_id: user.id, role: :desarrollador, env_authorizable: fau)
 
 p '      Creado Segundo Usuario!    '.center(200, '=') if user = User.create!(email: 'saavedraazuaje73@gmail.com', first_name: 'Carlos Alberto', last_name: 'Saavedra Azuaje', ci: '10264009', password: 123123)
 
-p '      Creado Primer Admin!    '.center(200, '=') if Admin.create!(user_id: user.id, role: :super, env_authorizable: fau)
+p '      Creado Primer Admin!    '.center(200, '=') if Admin.create!(user_id: user.id, role: :desarrollador, env_authorizable: fau)
 
 p '      Creada Escuela!    '.center(200, '=') if escuela = School.create(code: 'EACRV', name: 'Escuela de Arquitectura Carlos Raúl Villanueva', faculty: fau)
 
