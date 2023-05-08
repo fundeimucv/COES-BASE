@@ -7,7 +7,7 @@ class NestedDependencyValidator < ActiveModel::Validator
 
   private
     def nested_dependency(record)
-      tree = record.prelate_subject.full_dependency_tree_ids2
+      tree = record.prelate_subject.full_dependency_tree_ids
       (tree.include? record.depend_subject_id)
     end    
 end
