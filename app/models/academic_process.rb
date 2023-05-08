@@ -49,6 +49,8 @@ class AcademicProcess < ApplicationRecord
   # SCOPE:
   default_scope { order(name: :desc) }
 
+  scope :without_enroll_academic_processes, -> {left_joins(:enroll_academic_processes).where('enroll_academic_processes.academic_process_id': nil)}
+
   # CALLBACKS:
   before_save :set_name
 

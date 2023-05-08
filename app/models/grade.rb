@@ -53,9 +53,14 @@ class Grade < ApplicationRecord
 
   # ATENCIÓN: EL UNIQ DEBO HACERLO EN EL LLAMADO DEL SCOPE ANTERIOR YA QUE DE LO CONTRARIO DEVUELVE LA CANTIDAD DE REGISTROS VINCULADOS A LAS enroll_academic_processes
 
-  scope :enrolled_in_academic_process, -> (academic_process_id) { joins(:academic_processes).where('academic_processes.id': academic_process_id) }
+  scope :enrolled_in_academic_process, -> (academic_process_id) { joins(:enroll_academic_processes).where('enroll_academic_processes.academic_process_id': academic_process_id) }
 
-  scope :not_enrolled_in_academic_process, -> (academic_process_id) { joins(:enroll_academic_processes, :academic_processes).where.not("academic_processes.id": academic_process_id) }
+  # scope :not_enrolled_in_academic_process, -> (academic_process_id) { joins(:enroll_academic_processes, :academic_processes).where.not("academic_processes.id": academic_process_id) }
+
+  scope :not_enrolled_in_academic_process, -> (academic_process_id) {joins(:enroll_academic_processes).where('enroll_academic_processes.academic_process_id != ?', academic_process_id)}
+
+  scope :left_not_enrolled_in_academic_process, -> (academic_process_id) {left_joins(:enroll_academic_processes).where('enroll_academic_processes.academic_process_id != ?', academic_process_id)}
+
 
   scope :sort_by_numbers, -> () {order([efficiency: :desc, simple_average: :desc, weighted_average: :desc])}
   
