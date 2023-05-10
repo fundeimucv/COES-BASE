@@ -1,5 +1,5 @@
 class EnrollAcademicProcessesController < ApplicationController
-  before_action :set_enroll_academic_process, only: %i[ show edit update destroy study_constance ]
+  before_action :set_enroll_academic_process, only: %i[ show edit update destroy study_constance total_retire ]
 
   # GET /enroll_academic_processes or /enroll_academic_processes.json
   def index
@@ -193,6 +193,19 @@ class EnrollAcademicProcessesController < ApplicationController
     end
   end
 
+  def total_retire
+    aux = true
+    @enroll_academic_process.academic_records.each do |ar|
+      aux = ar.update!(status: :retirado)
+    end
+    if aux.blank? or aux.eql? true
+      flash[:info] = '¡Actualización Exitosa!'
+    else
+      flash[:danger] = aux
+    end
+    redirect_back fallback_location: "/admin/student/#{@enroll_academic_process.student.id}"
+  end
+
   # PATCH/PUT /enroll_academic_processes/1 or /enroll_academic_processes/1.json
   def update
     respond_to do |format|
@@ -220,8 +233,8 @@ class EnrollAcademicProcessesController < ApplicationController
   def destroy
     @enroll_academic_process.destroy
 
-    respond_to do |format|
-      format.html { redirect_to enroll_academic_processes_url, notice: "Enroll academic process was successfully destroyed." }
+    respond_to do |format|      
+      format.html { redirect_to "/admin/student/#{@enroll_academic_process.student.id}", notice: "¡Inscripción en Proceso Académico eliminada con éxito!" }
       format.json { head :no_content }
     end
   end

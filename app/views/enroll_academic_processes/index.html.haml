@@ -18,7 +18,7 @@
           %th.text-center Estado Inscripción
           %th.text-center Estado de Permanencia
           %th.text-center Total inscripciones
-          %th.text-center Opciones
+          %th.text-end{style: 'width:50%'} Opciones
 
       %tbody
         %tr
@@ -33,8 +33,8 @@
           %td.text-center
             .badge.bg-info= enroll_academic_process.permanence_status
           %td.text-center= academic_records.count
-          %td.text-center
-            = render partial: 'enroll_academic_processes/options', locals: {enroll_academic_process: enroll_academic_process}
+          %td.text-center{style: 'width:50%'}
+            = render partial: 'enroll_academic_processes/options', locals: {enroll_academic_process: enroll_academic_process, enabled_options: (enrolling or active)}
 
         %tr
-          = render partial: 'academic_records/index_to_history', locals: {academic_records: academic_records}
+          = render partial: 'academic_records/index_to_history', locals: {academic_records: academic_records, enabled_options: (enrolling or active)}

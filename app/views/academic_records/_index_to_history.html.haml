@@ -8,7 +8,8 @@
       %th Tipo
       %th Sec
       %th Cal
-      %th Opc
+      - if enabled_options
+        %th Opciones
 
   %tbody
     - academic_records.by_subjects.each do |academic_record|
@@ -20,4 +21,6 @@
         %td= subject.modality_initial_letter
         %td= link_to_if logged_as_admin, academic_record.section.code, "/admin/section/#{academic_record.section.id}"
         %td= academic_record.final_q_to_02i
-        %td.align-middle= render partial: 'academic_records/options', locals: {academic_record: academic_record}
+        - if enabled_options
+          %td.align-middle
+            = render partial: 'academic_records/options', locals: {academic_record: academic_record}

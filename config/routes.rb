@@ -28,6 +28,9 @@ Rails.application.routes.draw do
 
 
   resources :enroll_academic_processes do
+    member do
+      put :total_retire
+    end
     collection do
       post :reserve_space
       post :enroll

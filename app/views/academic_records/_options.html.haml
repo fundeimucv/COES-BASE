@@ -10,7 +10,13 @@
       .fa-solid.fa-trash
 
   - if !academic_record.pi? and (current_user.admin.authorized_update? 'AcademicRecord')
-    - unless academic_record.retirado?
+    - if academic_record.retirado?
+      - msg = 'Reinscribir Asignatura'
+      = form_tag "/academic_records/#{academic_record.id}", method: :put, class: 'float-end align-middle' do
+        = hidden_field_tag '[academic_record]status', :sin_calificar
+        = button_tag(class: 'btn btn-success btn-sm', 'data-bs-toggle': :tooltip, 'data-bs-placement': :top, title: msg, rel: "tooltip", type: :submit) do
+          .fa.fa-calendar-plus
+    - else
       - msg = 'Retirar Asignatura'
       = form_tag "/academic_records/#{academic_record.id}", method: :put, class: 'float-end align-middle' do
         = hidden_field_tag '[academic_record]status', :retirado
