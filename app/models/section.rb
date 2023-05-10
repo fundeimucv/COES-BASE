@@ -396,12 +396,21 @@ class Section < ApplicationRecord
         label 'Prom'
         pretty_value do
           ApplicationController.helpers.label_status('bg-info', value)
-        end         
+        end
       end
 
-
       field :qualified do
-        column_width 40
+        column_width 20
+      end
+
+      field :acta do
+        label 'Acta'
+        pretty_value do
+          current_user = bindings[:view]._current_user
+          if (current_user.admin? and bindings[:view].session[:rol] and bindings[:view].session[:rol].eql? 'admin' and current_user.admin.authorized_manage? 'Section' and bindings[:object].qualified?)
+            ApplicationController.helpers.btn_toggle_download 'btn-success', "/sections/#{bindings[:object].id}.pdf", 'Generar Acta', nil
+          end
+        end
       end
     end
 

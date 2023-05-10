@@ -120,7 +120,7 @@ class AcademicRecord < ApplicationRecord
   scope :by_subject_types, -> (tipo){joins(:subject).where('subjects.modality': tipo.downcase)}
   # scope :perdidos, -> {perdida_por_inasistencia}
 
-  scope :sort_by_user_name, -> {joins(:user).order('users.last_name desc, users.first_name')}
+  scope :sort_by_user_name, -> {joins(:user).order('users.last_name asc, users.first_name asc')}
 
 
   # FUNCTIONS:

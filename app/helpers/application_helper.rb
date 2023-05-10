@@ -3,6 +3,25 @@ module ApplicationHelper
 		Haml::Engine.new(haml.strip_heredoc, format: :html5).render(locals)
 	end
 
+	def btn_toggle type, icon, href, title_tooltip, value, onclick_action=nil
+
+		target = ''
+		rel = ''
+
+		if (icon.include? 'fa-download')
+			target = '_blank'
+			rel = 'noopener noreferrer'
+		end
+		link_to href, class: "btn btn-sm #{type}", title: title_tooltip, onclick: onclick_action, target: target, rel: rel do
+			capture_haml{"<i class= '#{icon}'></i> #{value}".html_safe}
+		end
+	end
+
+	def btn_toggle_download classes, href, title_tooltip, value, onclick_action=nil
+		btn_toggle classes, 'fa fa-download', href, title_tooltip, value, onclick_action
+	end
+
+
 	def label_status(klazz, content)
 		capture_haml{"<span class='text-center badge #{klazz}'>#{content}</span>".html_safe }
 	end

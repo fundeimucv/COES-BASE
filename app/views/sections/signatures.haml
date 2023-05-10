@@ -1,4 +1,4 @@
-.signatures
+.signature
   %br
   .font-title.text-center FACULTAD
   %table.no_border
@@ -25,3 +25,15 @@
         %th _________________________________
         %th ______________________
         %th FECHA _______________________
+
+%br
+#pdfkit_pages.text-center 
+
+
+:javascript
+  var pdfInfo = {};
+  var x = document.location.search.substring(1).split('&');
+  for (var i in x) { var z = x[i].split('=',2); pdfInfo[z[0]] = unescape(z[1]); }
+  var page = pdfInfo.page || 1;
+  var pageCount = pdfInfo.topage || 1;
+  document.getElementById('pdfkit_pages').textContent = 'Página: '+page+' de '+pageCount;
