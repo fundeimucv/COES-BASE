@@ -15,7 +15,7 @@
   %tbody
     - academic_records.each_with_index do |ar, i|
       - if !ar.qualifications.any? or section.subject.as_absolute?
-        %tr
+        %tr.h-30
           %td.text-center= i+1
           %td.text-center= ar.user.ci
           %td.padding-x= ar.user.reverse_name
@@ -26,7 +26,7 @@
           %td.padding-x= ar.num_to_s
       - else
         - ar.qualifications.each do |q|
-          %tr
+          %tr.h-30
             %td.text-center= i+1
             %td.text-center= ar.user.ci
             %td.padding-x= ar.user.reverse_name
@@ -38,7 +38,7 @@
     - if rest > 0
       - loops = (total_by_page-rest)-1 
       - loops.times do
-        %tr
+        %tr.h-30
           %td= '**'
           %td.text-center= '********'
           %td.padding-x= '***************************************************'
