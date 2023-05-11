@@ -46,7 +46,7 @@
               - disable_promt = ''
 
               - if sections.any?
-                = collection_select("sections", nil, sections, :id, :description_with_quotes, {selected: section_id, include_blank: 'Seleccione Sección'}, {class: "form-control selectInscripcion", style: 'width: 90%', title: course.subject.desc_to_select, credits: course.subject.unit_credits, gradeId: grade.id, courseId: course.id, pci: pcis, onchange: "selected(this);"})
+                = collection_select("sections", nil, sections, :id, :description_with_quotes, {selected: section_id, include_blank: 'Seleccione Sección'}, {class: "form-control selectInscripcion", style: 'width: 90%', titulo: course.subject.desc_to_select, credits: course.subject.unit_credits, gradeId: grade.id, courseId: course.id, pci: pcis, onchange: "selected(this);"})
               - else
                 - disable_promt = 'Sin cupos'
             - else
