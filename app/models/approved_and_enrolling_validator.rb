@@ -1,7 +1,7 @@
 class ApprovedAndEnrollingValidator < ActiveModel::Validator
   def validate(record)
     if approved_and_enrolling(record)
-      record.errors.add "Está seleccionando #{record.subject.name.upcase} que ya fue aprobada", "Ponga atención en la selección."
+      record.errors.add "#{record.subject.name.upcase} ya fue aprobada", "e intenta inscribirla en un periodo activo para inscirbir. Si desea cargar un histórico, cierre primero la inscrición actual para la escuela e inténtelo nuevamente."
     end
   end
 

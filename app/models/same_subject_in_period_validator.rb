@@ -1,7 +1,7 @@
 class SameSubjectInPeriodValidator < ActiveModel::Validator
   def validate(record)
     if same_course_in_period(record)
-      record.errors.add "Está seleccionando #{record.subject.name.upcase} que ya fue inscrita", "en el Período #{record.enroll_academic_process.period.name}. Ponga atención en la selección."
+      record.errors.add "#{record.subject.name.upcase} ya fue inscrita", "en el Período #{record.enroll_academic_process.period.name}"
     end
   end
 
