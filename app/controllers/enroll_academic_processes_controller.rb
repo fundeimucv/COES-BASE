@@ -88,7 +88,7 @@ class EnrollAcademicProcessesController < ApplicationController
           enroll_academic_process.enroll_status = :reservado 
           enroll_academic_process.save!
         end
-        enroll_academic_process
+
         if enroll_academic_process
           # INTENTO POR TOTAL DE CREDITOS Y ASIGNATURAS: 
           credits_attemp = enroll_academic_process.total_credits+course.subject.unit_credits

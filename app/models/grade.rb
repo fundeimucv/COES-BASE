@@ -186,6 +186,10 @@ class Grade < ApplicationRecord
     self.academic_records.aprobado.joins(:subject).select('subjects.id')
   end
 
+  def subjects_approved_ids
+    subjects_approved.map{|su| su.id}
+  end
+
   # TOTALS CREDITS:
 
   def credits_completed_by_type tipo

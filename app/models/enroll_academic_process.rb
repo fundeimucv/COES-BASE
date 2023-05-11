@@ -45,7 +45,6 @@ class EnrollAcademicProcess < ApplicationRecord
 
   scope :sort_by_period, -> {joins(period: :period_type).order('periods.year': :desc, 'period_types.name': :desc)}
 
-
   scope :without_academic_records, -> {joins(:academic_records).group(:"enroll_academic_processes.id").having('COUNT(*) = 0').count}
 
   scope :with_any_academic_records, -> {joins(:academic_records).group(:"enroll_academic_processes.id").having('COUNT(*) > 0').count}
@@ -64,6 +63,10 @@ class EnrollAcademicProcess < ApplicationRecord
   def set_default_values_by_import
     self.enroll_status = :confirmado
     self.permanence_status = :regular
+  end
+
+  def enrolling?
+    school.enroll_process_id.eql? academic_process_id  
   end
 
   def total_academic_records

@@ -41,7 +41,9 @@ class AcademicRecord < ApplicationRecord
   validates_uniqueness_of :enroll_academic_process, scope: [:section], message: 'Ya inscrito en la sección', field_name: false
 
   validates_with SamePeriodValidator, field_name: false  
-  validates_with SameSchoolValidator, field_name: false  
+  validates_with SameSchoolValidator, field_name: false
+  validates_with SameSubjectInPeriodValidator, field_name: false  
+  validates_with ApprovedAndEnrollingValidator, field_name: false
 
   # validates :qualifications, presence: true, if: lambda{ |object| (object.subject.present? and object.subject.numerica? and (object.aprobado? or object.aplazado? or object.equivalencia? ))}
 
