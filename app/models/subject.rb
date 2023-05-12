@@ -62,6 +62,8 @@ class Subject < ApplicationRecord
 
   scope :independents, -> {left_joins(:prelate_links).where('subject_links.prelate_subject_id': nil)}
 
+  scope :not_inicial, -> {where('ordinal > 1')}
+
 
   # CALLBACKS:
   before_save :clean_values

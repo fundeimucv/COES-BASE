@@ -124,7 +124,7 @@ class Grade < ApplicationRecord
     if is_new?
       Subject.independents.where(ordinal: 1)
     else
-      aprobadas_ids = subjects_approved.ids
+      aprobadas_ids = self.subjects_approved_ids
 
       # Buscamos por ids de las asignaturas que dependen de las aprobadas
       dependent_subject_ids = SubjectLink.where('prelate_subject_id IN (?)', aprobadas_ids).map{|dep| dep.depend_subject_id}
@@ -141,7 +141,7 @@ class Grade < ApplicationRecord
       end
 
       # Buscamos las asignaturas sin prelación
-      ids_subjects_independients = self.school.subjects.independents.ids
+      ids_subjects_independients = self.school.subjects.independents.not_inicial.ids
 
       # Sumamos todas las ids ()
       asignaturas_disponibles_ids = ids_subjects_positives + ids_subjects_independients
