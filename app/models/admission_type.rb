@@ -43,7 +43,13 @@ class AdmissionType < ApplicationRecord
 
     edit do
       field :name
-      field :code
+      field :code do
+        html_attributes do
+          {length: 4, size: 4, onInput: "$(this).val($(this).val().replace(/[^0-9]/g,''))"}
+        end
+        help 'Sólo 4 dígitos numéricos permitidos' 
+      end
+
       field :school
     end
 

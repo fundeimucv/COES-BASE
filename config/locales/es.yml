@@ -473,6 +473,7 @@ es:
         profile: 'Perfil de Usuario' 
         created_at: 'Fecha Registro'
       admission_type:
+        code: Código
         name: 'Nombre'
         school: 'Escuela'
         total_students: 'Total Estudiantes'
