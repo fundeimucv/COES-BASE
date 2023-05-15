@@ -17,6 +17,7 @@ class AdmissionType < ApplicationRecord
 
   #VALIDATIONS:
   validates :name, presence: true, uniqueness: true
+  validates :code, presence: true, uniqueness: true
 
   rails_admin do
     navigation_label 'Gestión Académica'
@@ -24,6 +25,7 @@ class AdmissionType < ApplicationRecord
 
     list do
       field :name
+      field :code
       field :school
 
       field :total_students do
@@ -35,16 +37,19 @@ class AdmissionType < ApplicationRecord
 
     show do
       field :name
+      field :code
       field :school
     end
 
     edit do
       field :name
+      field :code
       field :school
     end
 
     export do
       fields :name
+      fields :code
     end
   end
 
