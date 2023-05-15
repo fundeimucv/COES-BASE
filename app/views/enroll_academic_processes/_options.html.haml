@@ -7,11 +7,11 @@
     = link_to "/admin/enroll_academic_process/#{enroll_academic_process.id}", class: 'btn btn-primary btn-sm float-end mx-1 align-middle' do
       .fa-solid.fa-search
 
-- if current_user.admin.authorized_manage? 'EnrollAcademicProcess' and enroll_academic_process.academic_records.not_retirado.any?
+- if enabled_to_admin and current_user.admin.authorized_manage? 'EnrollAcademicProcess' and enroll_academic_process.academic_records.not_retirado.any?
   = link_to "/enroll_academic_processes/#{enroll_academic_process.id}/total_retire", class: 'btn btn-sm float-end btn-danger mx-1 align-middle', 'data-confirm': "Esta acción retirará todas los registros académicos de la inscripción ¿Está completamente suguro?", method: :put, 'data-bs-toggle': :tooltip, 'data-bs-placement': :top, title: 'Retirar todas las asignaturas inscritas en éste período', rel: :tooltip do
     .fa.fa-calendar-minus
 
-- if (current_user.admin.authorized_delete? 'EnrollAcademicProcess')
+- if enabled_to_admin and (current_user.admin.authorized_delete? 'EnrollAcademicProcess')
   - if enroll_academic_process.academic_records.any?
     = link_to 'javascript:void(0)', class: 'btn btn-secondary btn-sm float-end mx-1 align-middle', disabled: true, 'data-bs-toggle': :tooltip, 'data-bs-placement': :top, title: 'Eliminar Inscripción. Para activar esta opción elimine primero todos los registros académicos del período', rel: :tooltip do
       .fa.fa-remove
