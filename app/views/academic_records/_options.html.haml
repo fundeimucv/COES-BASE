@@ -17,6 +17,17 @@
         = button_tag(class: 'btn btn-success btn-sm', 'data-bs-toggle': :tooltip, 'data-bs-placement': :top, title: msg, rel: "tooltip", type: :submit) do
           .fa.fa-calendar-plus
     - else
+      - msg = 'Cambio de  sección'
+      - section = academic_record.section
+      - sections = academic_record.course.sections.where('id != ?', section.id)
+      - content = render partial: 'sections/form_change_section', locals: {section: section, sections: sections}
+
+      = link_to "#", class: 'btn btn-warning btn-sm float-end align-middle mx-2', 'data-bs-toggle': :tooltip, 'data-bs-placement': :top, title: msg, rel: "tooltip" do
+        / %i.fa-solid.fa-recycle
+        %i.fa-solid.fa-person-booth
+
+
+
       - msg = 'Retirar Asignatura'
       = form_tag "/academic_records/#{academic_record.id}", method: :put, class: 'float-end align-middle' do
         = hidden_field_tag '[academic_record]status', :retirado
