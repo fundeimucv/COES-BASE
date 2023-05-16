@@ -1,5 +1,5 @@
 class SectionsController < ApplicationController
-  before_action :set_section, only: %i[ show update export ]
+  before_action :set_section, only: %i[ show update export change]
 
   # GET /sections or /sections.json
   def index
@@ -81,6 +81,6 @@ class SectionsController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def section_params
-      params.require(:section).permit(:code, :capacity, :course_id, :teacher_id, :qualified, :modality, :enabled)
+      params.require(:section).permit(:id, :code, :capacity, :course_id, :teacher_id, :qualified, :modality, :enabled)
     end
 end
