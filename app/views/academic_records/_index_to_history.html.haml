@@ -16,7 +16,7 @@
       - subject = academic_record.subject
       %tr{class: academic_record.tr_class_by_status_q}
         %td= link_to_if logged_as_admin, subject.code, "/admin/subject/#{subject.id}"
-        %td= subject.name
+        %td{title: subject.name}= subject.name
         %td= subject.unit_credits
         %td= subject.modality_initial_letter
         %td= link_to_if logged_as_admin, academic_record.section.code, "/admin/section/#{academic_record.section.id}"
