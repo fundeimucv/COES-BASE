@@ -127,7 +127,7 @@ class Grade < ApplicationRecord
       aprobadas_ids = self.subjects_approved_ids
 
       # Buscamos por ids de las asignaturas que dependen de las aprobadas
-      dependent_subject_ids = SubjectLink.where(prelate_subject_id: aprobadas_ids).reject{|dep| aprobadas_ids.include? dep.depend_subject_id}.map{|dep| dep.depend_subject.id}
+      dependent_subject_ids = SubjectLink.in_prelation(aprobadas_ids).not_in_dependency(aprobadas_ids).pluck(:depend_subject_id).uniq
 
       # ids_subjects_positives = []
 
