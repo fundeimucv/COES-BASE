@@ -26,7 +26,7 @@
         - approved = true
         - desc_qualification = ac.q_value_to_02i
       - reservada = !section_id.nil? ? 'table-success' : ''
-      - asigApproved = approved ? 'text-muted border border-success' : ''
+      - asigApproved = approved ? 'text-muted border table-success' : ''
       - sections = course.sections#.con_cupos
       - # ATENCIÓN: El scope "con_cupos" no va, ya que es importante seleccionar secciones que haya inscrito o con cupos jutas. Esto con el objetivo de que luego pueda cambiar secciones
       - if sections.any?
