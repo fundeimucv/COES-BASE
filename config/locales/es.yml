@@ -631,6 +631,7 @@ es:
         grade_university: Universidad
         graduate_year: Año de Graduado
       study_plan:
+        school: 'Escuela'
         code: 'Código'
         name: 'Nombre'
         subject_types: 'Tipos de Asignatura'
