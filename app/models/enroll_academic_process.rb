@@ -35,7 +35,7 @@ class EnrollAcademicProcess < ApplicationRecord
   validates :academic_process, presence: true
   validates :enroll_status, presence: true
 
-  validates_uniqueness_of :academic_process, scope: [:grade], message: 'Ya registrado en Proceso academico', field_name: false
+  validates_uniqueness_of :academic_process, scope: [:grade], message: 'Ya inscrito en período', field_name: false
   # validates :permanence_status, presence: true
 
   # SCOPE:
@@ -110,6 +110,36 @@ class EnrollAcademicProcess < ApplicationRecord
     navigation_icon 'fa-solid fa-calendar-check'
     weight 0
     
+    show do
+      field :enrolling do
+        label "INSCRIPCIÓN"
+        formatted_value do
+          current_user = bindings[:view]._current_user
+
+          admin = current_user.admin
+
+          if admin and admin.authorized_manage? 'EnrollAcademicProcess'
+            grade = bindings[:object].grade
+            # school = grade.school
+            if academic_process = bindings[:object].academic_process
+              enroll_in_process = grade.enroll_academic_processes.where(academic_process_id: academic_process.id).first
+
+              totalCreditsReserved = enroll_in_process ? enroll_in_process.total_credits : 0
+              totalSubjectsReserved = enroll_in_process ? enroll_in_process.total_subjects : 0
+
+              bindings[:view].render(partial: '/enroll_academic_processes/form', locals: {grade: grade, academic_process: academic_process, totalCreditsReserved: totalCreditsReserved, totalSubjectsReserved: totalSubjectsReserved})
+            end
+          else
+            'Acceso restringido'
+          end
+        end
+      end      
+    end
+
+    edit do
+      fields :grade, :academic_process, :enroll_status, :permanence_status
+    end
+
     list do
       search_by :custom_search
       # filters [:period_name, :student]
@@ -156,10 +186,6 @@ class EnrollAcademicProcess < ApplicationRecord
       field :created_at do
         label 'Fecha de Inscripción'
       end
-    end
-
-    edit do
-      fields :grade, :academic_process, :enroll_status, :permanence_status
     end
 
     export do

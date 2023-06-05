@@ -62,7 +62,7 @@ class Subject < ApplicationRecord
 
   scope :independents, -> {left_joins(:prelate_links).where('subject_links.prelate_subject_id': nil)}
 
-  scope :not_inicial, -> {where('ordinal > 1')}
+  scope :not_inicial, -> {where('ordinal != 1')}
 
 
   # CALLBACKS:
@@ -281,7 +281,10 @@ class Subject < ApplicationRecord
     end
 
     edit do
-      field :area
+      field :area do
+        inline_edit false
+        inline_add false
+      end
       field :code do
         html_attributes do
           {length: 20, size: 20, onInput: "$(this).val($(this).val().toUpperCase().replace(/[^A-Za-z0-9]/g,''))"}

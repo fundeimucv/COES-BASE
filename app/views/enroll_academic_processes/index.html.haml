@@ -1,6 +1,7 @@
-%h4.text-center.mt-2.bg-info.py-2 Historial Académico
+%h4
+  .text-center.mt-2.bg-info.py-2 Historial Académico
 
-- enroll_academic_processes.sort_by_period.each do |enroll_academic_process|
+- grade.enroll_academic_processes.sort_by_period.each do |enroll_academic_process|
   .border.m-3.p-4
     - academic_process = enroll_academic_process.academic_process
     - period = academic_process.period
@@ -34,7 +35,7 @@
             .badge.bg-info= enroll_academic_process.permanence_status
           %td.text-center= academic_records.count
           %td.text-center{style: 'width:50%'}
-            = render partial: 'enroll_academic_processes/options', locals: {enroll_academic_process: enroll_academic_process, enabled_options: (enrolling or active)}
+            = render partial: 'enroll_academic_processes/options', locals: {period: period, enroll_academic_process: enroll_academic_process, enabled_options: (enrolling or active)}
 
         %tr
           = render partial: 'academic_records/index_to_history', locals: {academic_records: academic_records, enabled_options: (enrolling or active)}
