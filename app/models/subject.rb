@@ -64,9 +64,12 @@ class Subject < ApplicationRecord
 
   scope :not_inicial, -> {where('ordinal != 1')}
 
-
   # CALLBACKS:
   before_save :clean_values
+
+  def section_codes
+    sections.select(:code).distinct.map{|s| s.code}
+  end
   
   # HOOKS:
   def clean_values
@@ -167,8 +170,12 @@ class Subject < ApplicationRecord
 
   def label_modality
     return ApplicationController.helpers.label_status("bg-info", self.modality.titleize)
-
   end
+
+  def label_qualification_type
+    return ApplicationController.helpers.label_status("bg-info", self.qualification_type.titleize)
+  end
+  
 
   def modality_initial_letter
     case modality
@@ -240,6 +247,17 @@ class Subject < ApplicationRecord
         sortable 'modality'
         formatted_value do
           bindings[:object].label_modality
+        end        
+      end
+
+      field :qualification_type_label do
+        label 'Tipo Calif'
+        column_width 20
+        searchable 'qualification_type'
+        filterable 'qualification_type'
+        sortable 'qualification_type'
+        formatted_value do
+          bindings[:object].label_qualification_type
         end        
       end
 

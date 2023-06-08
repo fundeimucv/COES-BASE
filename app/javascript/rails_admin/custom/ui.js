@@ -22,3 +22,8 @@ document.addEventListener("rails_admin.dom_ready", function() {
 	$(".form-text:not(:has(span))").addClass('alert alert-warning');
 	
 });
+
+function messageSendData(clase, msg) {
+	if (clase == 'danger') toastr.error(msg);
+	else toastr.success(msg);
+}

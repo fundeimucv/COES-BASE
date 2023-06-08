@@ -18,10 +18,10 @@
 							= "Preinscribirse en #{academic_process.period.name}"
 		.col-md-4
 			- id = 'addInscriptionModal'
-			%button.btn.btn-info.float-end.btn-lg.my-3{"data-bs-target": "##{id}", "data-bs-toggle": :modal, type: :button}
+			%a.btn.btn-info.float-end.btn-lg.my-3{"data-bs-target": "##{id}", "data-bs-toggle": :modal, type: :button}
 				.fa.fa-calendar-check
-				Inscribir en Otro Periodo
-				- title = 'Agregar Inscripción en Otro Período'
+				Agregar Histórico
+				- title = 'Agregar Registros Históricos'
 				- content = render partial: '/enroll_academic_processes/enroll_in_period_form', locals: {grade: grade}
 			= render partial: '/layouts/scaffold-modal', locals: {content: content, title: title, id: id}
 

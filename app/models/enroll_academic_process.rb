@@ -120,14 +120,16 @@ class EnrollAcademicProcess < ApplicationRecord
 
           if admin and admin.authorized_manage? 'EnrollAcademicProcess'
             grade = bindings[:object].grade
-            # school = grade.school
-            if academic_process = bindings[:object].academic_process
-              enroll_in_process = grade.enroll_academic_processes.where(academic_process_id: academic_process.id).first
 
-              totalCreditsReserved = enroll_in_process ? enroll_in_process.total_credits : 0
-              totalSubjectsReserved = enroll_in_process ? enroll_in_process.total_subjects : 0
+            school = grade.school
+          
+            if bindings[:object].academic_process.eql? school.enroll_process
+              totalCreditsReserved = bindings[:object].total_credits
+              totalSubjectsReserved = bindings[:object].total_subjects
 
               bindings[:view].render(partial: '/enroll_academic_processes/form', locals: {grade: grade, academic_process: academic_process, totalCreditsReserved: totalCreditsReserved, totalSubjectsReserved: totalSubjectsReserved})
+            else
+              bindings[:view].render(partial: "/academic_records/form", locals: {enroll: bindings[:object], subjects: school.subjects})
             end
           else
             'Acceso restringido'

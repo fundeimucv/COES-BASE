@@ -1,18 +1,132 @@
 -# frozen_string_literal: true
-= simple_form_for(@academic_record) do |f|
-  = f.error_notification
-  = f.error_notification message: f.object.errors[:base].to_sentence if f.object.errors[:base].present?
 
-  .form-inputs
-    = f.association :section
-    = f.association :enroll_academic_process
-    = f.input :first_q
-    = f.input :second_q
-    = f.input :third_q
-    = f.input :final_q
-    = f.input :post_q
-    = f.input :status_q
-    = f.input :type_q
+.row.text-center.fw-bold
+  .col-3{title: 'Descripción de la asigntura'} Asignatura
+  .col-2{title: 'Identificador de la Sección'} Sección
+  .col-1.border-end{title: 'Equivalencia'} EQ
+  .absoluta{style: 'display:none'}
+    .col-4 Absoluta
+  .numerica{style: 'display:none'}
+    .col-1{title: 'Pérdida por Inasistencia'} PI
+    .col-1{title: 'Retirada'} RT
+    .col-1{title: 'Tipo de Calificación'} Tipo
+    .col-1{title: 'Calificación'} Calif
+    .col-2 
 
-  .form-actions
-    = f.button :submit
+- enroll.academic_records.each do |ac|
+  .row
+    .col-3= ar.subject.desc
+    .col-2= ar.section.code
+    .col-1= ar.definitive_q_value
+    .col-1= ar.type_q_label
+    .col-1
+      - if ar.retirado?
+        %i.fa-regular.fa-check.text-danger
+    .col-2
+      - if ar.pi?
+        %i.fa-regular.fa-check.text-danger
+
+= form_tag "/academic_records" do
+  = hidden_field_tag 'academic_record[enroll_academic_process_id]', enroll.id
+  .row
+    .col-3= collection_select nil, :subject_id, subjects, :id, :desc, {include_blank: '-- Seleccione Asigntura --'}, {class: 'form-control', onchange: "getSections(this)"}
+    .col-2
+      - admin = current_user.admin         
+      - if true #admin and admin.authorized_manage? 'Section'
+        #subjectSectionsCode.text-center
+          .input-group
+            = select_tag :section_code, options_for_select([]), {class: "form-control", id: 'sessions', required: true, disabled: true} 
+
+            = link_to 'javascript:void(0)', id: 'addCode', class: 'input-group-text btn btn-success disabled', title: 'Agregar Código', onclick: "$('#newSection').show(); $('#subjectSectionsCode').hide();" do
+              %i.fa-regular.fa-plus
+        #newSection.text-center{style: 'display:none'}
+          .input-group
+            = text_field_tag :section_code, {}, {placeholder: 'Código', class: "form-control", required: true, oninput: "notSpecialChars(this)", maxlength: 3}          
+                    
+            = link_to 'javascript:void(0)', id: 'restoreSections', class: 'input-group-text btn btn-success', title: 'Códigos existentes', onclick: "$('#subjectSectionsCode').show(); $('#newSection').hide();" do
+              %i.fa-regular.fa-minus
+    .col-1.text-center.border-end{title: 'Marque esta casilla para indicar que la sección es de Equivalencia'}
+      = check_box_tag :eq, nil, false, {class: 'btn-check', autocomplete: :off}
+      %label.btn.btn-outline-primary{for: :eq}
+        .fa-regular.fa-check
+
+    .absoluta{style: 'display:none'}
+      .col-4.text-center{title: 'Marque esta casilla si aprobó el curso'}
+        = check_box_tag :approved, nil, false, {class: 'btn-check', autocomplete: :off}
+        %label.btn.btn-outline-primary{for: :approved}
+          .fa-regular.fa-check
+    .numerica{style: 'display:none'}
+      .col-1.text-center{title: 'Marque esta casilla para indicar Pérdida por Inasistencia'}
+        = check_box_tag :pi, nil, false, {class: 'btn-check', onclick: "disabledByCheck(this, 'rt');", autocomplete: :off}
+        %label.btn.btn-outline-primary{for: :pi}
+          .fa-regular.fa-check
+
+      .col-1.text-center{title: 'Marque esta casilla para indicar Retiro'}
+        = check_box_tag :rt, nil, false, {class: 'btn-check', onclick: "disabledByCheck(this, 'pi');", autocomplete: :off}
+        %label.btn.btn-outline-primary{for: :rt}
+          .fa-regular.fa-check
+      .col-1= select_tag '[qualifications]type_q', options_for_select(Qualification.type_qs), {class: "form-control qualificable text-capitalize"}
+      .col-1
+        = text_field_tag '[qualifications]value', {}, {placeholder: 'Cal', class: "form-control qualificable", required: true, step: 1, in: 0...21, oninput: 'onlyValidQ(this);'}
+    .col-2{style: 'display:none'}
+      %button.btn.bt.btn-primary.float-end{type: :submit}
+        %i.fa-regular.fa-check
+        Guardar
+
+:javascript
+
+  function notSpecialChars(ele){
+    var node = $(ele);
+    node.val(node.val().toUpperCase().replace(/[^A-Za-z0-9]/g,''))
+  }  
+
+  function onlyValidQ(ele){
+    var node = $(ele);
+    node.val(node.val().replace(/[^0-9]/g,'') );
+  }
+
+  function disabledByCheck(ele, dis) {
+    let checked = $(ele).prop('checked');
+
+    console.log(dis);
+    $('#'+dis).prop('disabled', checked);
+    let qa = $(`.qualificable`);
+    qa.prop('disabled', checked);
+    qa.prop('readonly', checked);
+  }
+
+  function getSections(ele){
+    $.ajax({
+      url: `/subjects/${ele.value}`,
+      type: 'GET',
+      dataType: 'json',
+      beforeSend: function(xhr) {
+        xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'));
+      },
+      success: function(data) {
+        let sections = $('#sessions');
+        let code = $('#addCode');
+        let toAppend = '';
+        $.each(data.section_codes,function(i,o){
+           toAppend += '<option>'+o+'</option>';
+          });
+
+        console.log(data.qualification_type);
+        sections.find('option').remove().end().append(toAppend);
+        sections.prop('disabled', false);
+        code.prop('disabled', false);
+        code.removeClass('disabled');
+
+      },
+      error: function(json) {
+
+        toastr.error('No se pudo cargar las secciones. Inténtelo nuevamente: '+ json.statusText);
+      },
+      unprocessable_entity: function(json) {
+        toastr.error('No procesar la solicitud. Inténtelo nuevamente: '+ json.statusText);
+
+      }
+    });
+  }
+
+
