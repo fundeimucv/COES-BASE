@@ -6,6 +6,7 @@ window.toastr = toastr;
 // import "trix"
 import "@rails/actiontext"
 
+// import './../../select2setup'
 
 document.addEventListener("rails_admin.dom_ready", function() {
 	$('[rel="tooltip"]').tooltip();
@@ -23,7 +24,3 @@ document.addEventListener("rails_admin.dom_ready", function() {
 	
 });
 
-function messageSendData(clase, msg) {
-	if (clase == 'danger') toastr.error(msg);
-	else toastr.success(msg);
-}

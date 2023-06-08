@@ -9,7 +9,9 @@ class SubjectsController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_subject
-      @subject = Subject.find(params[:id])
+      code = params[:id].split(":").first
+      p "CODE: <#{code}>  ".center(200, '#')
+      @subject = Subject.find_by(code: code)
     end
 
     # Only allow a list of trusted parameters through.
