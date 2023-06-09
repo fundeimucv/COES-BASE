@@ -22,7 +22,7 @@
         .fa.fa-check
 
   = link_to "/admin/enroll_academic_process/#{enroll_academic_process.id}", class: "btn btn-sm float-end btn-warning", title: "Modificar Inscripción #{period.name}" do
-    .fa.fa-calendar-check
+    .fas.fa-info-circle
 
 - if enabled_to_admin and (current_user.admin.authorized_delete? 'EnrollAcademicProcess')
   - if enroll_academic_process.academic_records.any?

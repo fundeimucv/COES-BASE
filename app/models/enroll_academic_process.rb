@@ -69,6 +69,10 @@ class EnrollAcademicProcess < ApplicationRecord
     school.enroll_process_id.eql? academic_process_id  
   end
 
+  def historical?
+    !enrolling?
+  end
+
   def total_academic_records
     self.subjects.count
   end
@@ -112,7 +116,9 @@ class EnrollAcademicProcess < ApplicationRecord
     
     show do
       field :enrolling do
-        label "INSCRIPCIÓN"
+        label do 
+          "INSCRIPCIÓN EN #{bindings[:object].period.name} de #{bindings[:object].user.reverse_name}"
+        end
         formatted_value do
           current_user = bindings[:view]._current_user
 
@@ -120,16 +126,14 @@ class EnrollAcademicProcess < ApplicationRecord
 
           if admin and admin.authorized_manage? 'EnrollAcademicProcess'
             grade = bindings[:object].grade
-
-            school = grade.school
           
-            if bindings[:object].academic_process.eql? school.enroll_process
+            if bindings[:object].enrolling?
               totalCreditsReserved = bindings[:object].total_credits
               totalSubjectsReserved = bindings[:object].total_subjects
 
-              bindings[:view].render(partial: '/enroll_academic_processes/form', locals: {grade: grade, academic_process: academic_process, totalCreditsReserved: totalCreditsReserved, totalSubjectsReserved: totalSubjectsReserved})
+              bindings[:view].render(partial: '/enroll_academic_processes/form', locals: {grade: grade, academic_process: bindings[:object].academic_process, totalCreditsReserved: totalCreditsReserved, totalSubjectsReserved: totalSubjectsReserved})
             else
-              bindings[:view].render(partial: "/academic_records/form", locals: {enroll: bindings[:object], subjects: school.subjects})
+              bindings[:view].render(partial: "/academic_records/making_historical", locals: {enroll: bindings[:object]})
             end
           else
             'Acceso restringido'

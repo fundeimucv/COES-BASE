@@ -25,7 +25,6 @@ class AcademicRecordsController < ApplicationController
 
   # POST /academic_records or /academic_records.json
   def create
-
     @academic_record = AcademicRecord.new(academic_record_params)
 
     if enroll_academic_process = @academic_record.enroll_academic_process
@@ -53,10 +52,11 @@ class AcademicRecordsController < ApplicationController
               @academic_record.status = :perdida_por_inasistencia
             elsif params[:rt]
               @academic_record.status = :retirado
-            else
-              if params[:qualifications] 
-                if @academic_record.save
-                  flash[:success] = 'Se guardó el historial '
+            end
+            if @academic_record.save
+              flash[:success] = 'Se guardó el historial ' 
+              if subject.numerica? and @academic_record.sin_calificar?
+                if params[:qualifications] 
                   qa = @academic_record.qualifications.new
                   qa.type_q = params[:qualifications][:type_q]
                   qa.value = params[:qualifications][:value]
@@ -66,12 +66,13 @@ class AcademicRecordsController < ApplicationController
                     flash[:danger] = "Error al intentar guardar la calificación: #{qa.errors.full_messages.to_sentence}"
                   end
                 else
-                  flash[:danger] = "Error al intentar guardar el histórico: #{@academic_record.errors.full_messages.to_sentence}"
+                  flash[:danger] = 'No se especificó la calificación'
                 end
-              else
-                flash[:danger] = 'No se especificó la calificación'
               end
+            else
+              flash[:danger] = "Error al intentar guardar el histórico: #{@academic_record.errors.full_messages.to_sentence}"
             end
+
           else
             flash[:danger] = 'Error al intentar guardar la sección. No se pudo completar el proceso:'+ section.errors.full_messages.to_sentence
           end

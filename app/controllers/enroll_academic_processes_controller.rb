@@ -182,7 +182,9 @@ class EnrollAcademicProcessesController < ApplicationController
     if grade = Grade.find(params[:grade_id]) and academic_process = AcademicProcess.find(params[:academic_process_id])
       school = grade.school
 
-      @enroll_academic_process = EnrollAcademicProcess.new(grade_id: grade.id, academic_process_id: academic_process.id, permanence_status: :regular, enroll_status: :reservado)
+      @enroll_academic_process = EnrollAcademicProcess.new(grade_id: grade.id, academic_process_id: academic_process.id, permanence_status: :regular)
+      @enroll_academic_process.enroll_status = @enroll_academic_process.historical? ?
+      :confirmado : :reservado
       if @enroll_academic_process.save!
         flash[:success] = 'Proceso de Inscripción Iniciado'
         redirect_to "/admin/enroll_academic_process/#{@enroll_academic_process.id}"
