@@ -110,7 +110,7 @@ class EnrollAcademicProcess < ApplicationRecord
   end  
 
   rails_admin do
-    navigation_label 'Gestión Periódica'
+    navigation_label 'Config Específica'
     navigation_icon 'fa-solid fa-calendar-check'
     weight 0
     

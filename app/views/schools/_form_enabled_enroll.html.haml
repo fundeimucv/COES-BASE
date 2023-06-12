@@ -1,0 +1,10 @@
+.text-center
+
+  = form_tag("/schools/#{school.id}", class: "form-inline", method: :put) do 
+    .input-group{style: 'width:75%'}
+      =# text_field_tag :section_code, {}, {placeholder: 'Identificador', class: "form-control", oninput: "notSpecialChars(this)", maxlength: 3, id: :code}
+      
+      = collection_select(:school, :enroll_process_id, school.academic_processes, :id, :period_name, {include_blank: 'Inscripción Cerrada', selected: school.enroll_process_id}, {class: "form-control form-control-sm", title: "Para cerrar la inscripción seleccione 'Inscripción Cerrada'"})
+              
+      = button_tag(type: :submit, class: 'input-group-text btn btn-success btn-sm', title: 'Clic para guardar selección') do
+        .fa-regular.fa-check

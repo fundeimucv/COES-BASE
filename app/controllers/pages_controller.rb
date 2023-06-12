@@ -7,6 +7,7 @@ class PagesController < ApplicationController
   end
 
   def home
+    reset_session
     redirect_to new_user_session_path
   end
 

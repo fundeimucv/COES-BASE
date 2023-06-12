@@ -56,8 +56,8 @@ class School < ApplicationRecord
   after_initialize :set_unique_faculty
   before_save :clean_name_and_code
 
-
   # HOOKS:
+
   def clean_name_and_code
     self.name.delete! '^A-Za-z|áÁÄäËëÉéÍÏïíÓóÖöÚúÜüñÑ '
     self.name.strip!
@@ -72,8 +72,15 @@ class School < ApplicationRecord
     self.faculty_id = Faculty.first.id if Faculty.count.eql? 1
   end
 
-
   # FUNCTIONS:
+  def enroll_period_name
+    self.enroll_process ? self.enroll_process.name : 'Inscripción Cerrada'
+  end
+
+  def short_name
+    self.name.split(" ")[2] if self.name
+  end
+
 
   def modalities
     academic_processes.map{|ap| ap.modality}.uniq.to_sentence if academic_processes.any?
@@ -84,40 +91,149 @@ class School < ApplicationRecord
   end
 
   def enable_dependents?
-    (enable_dependents.eql? true) ? true : false
+    (enable_dependents.eql? true)
   end
 
+
   rails_admin do
-    navigation_label 'Gestión Académica'
+    navigation_label 'Config General'
     navigation_icon 'fa-regular fa-school'
     weight -3
     # visible false
 
+
     list do
       checkboxes false
-      fields :code, :name, :type_entity do
+      field :code do
+        sortable false
         queryable false
         filterable false
         searchable false
       end
+
+      field :name do
+        sortable false
+        queryable false
+        filterable false
+        searchable false
+        pretty_value do
+          bindings[:object].short_name
+        end
+      end
+
+      field :enable_dependents do
+        label '¿Prelaciones?'
+        queryable false
+        filterable false
+        searchable false
+        sortable false
+        sortable false
+        # pretty_value do
+
+        #   current_user = bindings[:view]._current_user
+        #   admin = current_user.admin
+        #   active = admin and admin.authorized_manage? 'School'
+
+        #   if active
+        #     bindings[:view].render(partial: "/schools/form_dependents", locals: {school: bindings[:object]})
+        #   else
+        #     value
+        #   end
+        # end
+
+      end
+
       fields :enroll_process do
         label 'Período Inscripción'
         queryable false
         filterable false
         searchable false
+        sortable false
+
+        pretty_value do
+
+          if bindings[:object].enroll_process
+            bindings[:view].content_tag(:b, "#{bindings[:object].enroll_process.period.name}", {class: 'bg-success badge'})
+          else
+            "<b class='label bg-warning'>Inscripción Cerrada".html_safe
+          end
+        end
+
       end
       fields :active_process do
         label 'Período Activo'
         queryable false
         filterable false
         searchable false
-      end      
+        sortable false
+
+        pretty_value do
+
+          if bindings[:object].active_process
+            bindings[:view].content_tag(:b, "#{bindings[:object].active_process.period.name}", {class: 'bg-success badge'})
+          else
+            "<b class='label bg-warning'>Sin Período Activo".html_safe
+          end
+        end        
+      end   
     end
 
     show do
       field :description
 
-      fields :study_plans, :periods, :areas, :bank_accounts, :contact_email
+      field :enable_dependents do
+        label 'Activar Prelaciones'
+
+        pretty_value do
+
+          current_user = bindings[:view]._current_user
+          admin = current_user.admin
+          active = admin and admin.authorized_manage? 'School'
+
+          if active
+            bindings[:view].render(partial: "/schools/form_dependents", locals: {school: bindings[:object]})
+          else
+            value
+          end
+        end
+
+      end
+
+      field :enroll_process do
+
+        # pretty_value do
+
+        #   current_user = bindings[:view]._current_user
+        #   admin = current_user.admin
+        #   active = admin and admin.authorized_manage? 'School'
+
+        #   if active
+        #     bindings[:view].render(partial: "/schools/form_enabled_enroll", locals: {school: bindings[:object]})
+        #   else
+        #     value
+        #   end
+        # end
+
+      end
+
+      field :active_process do
+
+        # pretty_value do
+
+        #   current_user = bindings[:view]._current_user
+        #   admin = current_user.admin
+        #   active = admin and admin.authorized_manage? 'School'
+
+        #   if true #active
+        #     bindings[:view].render(partial: "/schools/form_enabled_active", locals: {school: bindings[:object]})
+        #   else
+        #     value
+        #   end
+        # end
+
+      end      
+
+      # fields :study_plans, :periods, :areas, :bank_accounts, :contact_email
     end
 
     edit do
@@ -127,17 +243,19 @@ class School < ApplicationRecord
 
       field :code do
         read_only true
-        html_attributes do
-          {:length => 3, :size => 3, :onInput => "$(this).val($(this).val().toUpperCase().replace(/[^A-Za-z]/g,''))"}
-        end
+        # html_attributes do
+        #   {:length => 3, :size => 3, :onInput => "$(this).val($(this).val().toUpperCase().replace(/[^A-Za-z]/g,''))"}
+        # end
       end
       field :name do
         read_only true
-        html_attributes do
-          {:onInput => "$(this).val($(this).val().toUpperCase())"}
-        end       
+        # html_attributes do
+        #   {:onInput => "$(this).val($(this).val().toUpperCase())"}
+        # end
       end
-      field :enable_dependents
+      field :enable_dependents do
+        help 'Marque esta casilla para activar las prelaciones al momento de inscripción del estudiante. Caso contrario, desmásquela.'
+      end
       fields :active_process, :enroll_process do
         inline_add false
         inline_edit false

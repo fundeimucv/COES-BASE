@@ -54,6 +54,9 @@ class AcademicProcess < ApplicationRecord
   # CALLBACKS:
   before_save :set_name
 
+  def period_name
+    period.name if period
+  end
 
   def exame_type
     "#{period.period_type.name.upcase} #{modality.upcase}" if (period and period.period_type and modality)
@@ -110,6 +113,10 @@ class AcademicProcess < ApplicationRecord
     self.sections.without_teacher_assigned.count
   end
 
+  def enrolling?
+    self.id.eql? self.school.enroll_process_id
+  end
+
   def readys_to_enrollment_day
     # if process_before
     #   grades_before_ids = self.process_before.grades.ids
@@ -121,12 +128,21 @@ class AcademicProcess < ApplicationRecord
   end
 
   rails_admin do
-    navigation_label 'Gestión Periódica'
+    navigation_label 'Config Específica'
     navigation_icon 'fa-solid fa-calendar'
     weight -3
     list do
       sort_by 'periods.name'
+      field :school do
+        column_width 150
+
+        pretty_value do
+          value.short_name
+        end        
+        
+      end
       fields :period do
+        label 'Período'
         column_width 100
         pretty_value do
           value.name
@@ -139,6 +155,20 @@ class AcademicProcess < ApplicationRecord
           value.period.name if value
         end
       end
+
+      # field :active_enroll do
+      #   pretty_value do
+      #     current_user = bindings[:view]._current_user
+      #     admin = current_user.admin
+      #     active = admin and admin.authorized_manage? 'School'
+
+      #     if active
+      #       bindings[:view].render(partial: "/schools/form_enabled_enroll", locals: {academic_process: bindings[:object]})
+      #     else
+      #       value
+      #     end
+      #   end
+      # end
 
       field :total_sections do
         column_width 100
@@ -188,10 +218,6 @@ class AcademicProcess < ApplicationRecord
       field :modality
       field :process_before do
         help 'Atención: Aún cuando este campo no es obligatorio y puede ser omitido (en caso de que se encuentre realizando migraciones de periodos anteriores) es muy importante para las Citas Horarias e Inscripciones'
-      end
-
-      field :subjects do
-        inline_edit false
       end
 
       field :max_credits do

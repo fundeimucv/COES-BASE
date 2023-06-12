@@ -1,0 +1,29 @@
+.text-center
+  .form-check.form-switch
+    = check_box_tag nil, school.id, school.enable_dependents?, class: "form-check-input switch", onclick: "setEnabledDependets(this);"
+
+:javascript
+
+  function setEnabledDependets(ele){
+    let elem = $(ele);
+    let values = `{"school": {"enable_dependents": ${elem.prop('checked')}}}`;
+
+    $.ajax({
+      url: `/schools/${ele.value}`,
+      type: 'PUT',
+      data: JSON.parse(values),
+      dataType: 'json',
+      beforeSend: function(xhr) {
+        xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'));
+      },
+      success: function(json) {
+        toastr.success(json.data);
+      },
+      error: function(json) {
+        toastr.error(json.data);
+      },
+      unprocessable_entity: function(json) {
+        toastr.error(json.data);
+      }
+    });
+  }

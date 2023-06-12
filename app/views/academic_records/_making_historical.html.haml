@@ -5,6 +5,7 @@
 
 - admin = current_user.admin
 - active = admin and admin.authorized_manage? 'AcademicRecord'
-= render partial: 'academic_records/index_to_history', locals: {academic_records: enroll.academic_records, enabled_options: active}
+- if enroll.academic_records.any?
+  = render partial: 'academic_records/index_to_history', locals: {academic_records: enroll.academic_records, enabled_options: active}
 
 = render partial: 'academic_records/form_historical', locals: {enroll: enroll} if active

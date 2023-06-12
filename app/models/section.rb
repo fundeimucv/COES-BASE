@@ -250,14 +250,14 @@ class Section < ApplicationRecord
 
   # RAILS_ADMIN:
   rails_admin do
-    navigation_label 'Gestión Periódica'
+    navigation_label 'Config Específica'
     navigation_icon 'fa-solid fa-list'
     weight -1
 
     list do
       search_by :custom_search
       # filters [:period_name, :code, :subject_code]
-      sort_by 'courses.name'
+      # sort_by 'courses.name'
       # field :academic_process do
       #   label 'Período'
       #   column_width 120

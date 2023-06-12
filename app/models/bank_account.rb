@@ -21,7 +21,7 @@ class BankAccount < ApplicationRecord
 
   rails_admin do
     visible false
-    navigation_label 'Finanzas'
+    navigation_label 'Administrativa'
     navigation_icon 'fa-solid fa-piggy-bank'
 
     edit do

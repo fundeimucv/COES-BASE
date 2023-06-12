@@ -9,7 +9,7 @@ es:
   history_index: Bitácora
   history_show: Bitácora
 
-  dashboard: Escritorio
+  dashboard: Principal
   diferido: ND
   final: NF
   reparacion: NR
@@ -278,6 +278,11 @@ es:
   activerecord:
     errors:
       models:
+        subject_type:
+          attributes:
+            required_credits:
+              required: requerido
+              in: dentro
         academic_record:
           attributes:
             final_q:
@@ -326,8 +331,8 @@ es:
               in: 'Valores deben estar estre 0 y 20'
     models:
       academic_process:
-        one: 'Proceso Académico'
-        other: 'Procesos Académicos'
+        one: 'Período'
+        other: 'Períodos'
       academic_record:
         one: 'Registro Académico'
         other: 'Registros Académicos'
@@ -362,8 +367,8 @@ es:
         one: 'Curso'
         other: 'Cursos'
       enroll_academic_process:
-        one: 'Inscripción en Proceso Académico'
-        other: 'Inscripciones en Proceso Académico'
+        one: 'Inscripción en Periodo'
+        other: 'Inscripciones en Periodo'
       enrollment_days:
         one: 'Jornada de Inscripción por Cita Horaria'
         other: 'Jornadas de Inscripción por Cita Horaria'
@@ -422,15 +427,15 @@ es:
         period: 'Período'
         max_credits: 'Máximo Créditos'
         max_subjects: 'Máximas Asignaturas'
-        enroll_academic_processes: 'Inscripciones en Proceso Académico'
+        enroll_academic_processes: 'Inscripciones en Período'
         grades: 'Grados'
         students: 'Estudiantes'
-        modality: 'Modalidad'
-        process_before: Proceso Anterior
+        modality: 'Tipo'
+        process_before: Período Anterior
         enrollment_days: Jornadas de Inscripción por Cita Horaria
       academic_record:
         section: 'Oferta Docente'
-        enroll_academic_process: 'Inscripción en Proceso Académico'
+        enroll_academic_process: 'Inscripción en Período'
         first_q: 'Primera Calificación'
         second_q: 'Segunda Calificación'
         third_q: 'Tercera Calificación'
@@ -442,7 +447,7 @@ es:
         period: 'Período'
         subject: 'Asignatura'
         grade: 'Grado'
-        academic_process: 'Proceso Académico'
+        academic_process: 'Período'
         period_type: 'Tipo de Período'
         user: 'Usuario'
         status: Estado
@@ -503,12 +508,12 @@ es:
         period: Período
         school: Escuela
         sections: Oferta Docente
-        academic_process: 'Proceso Académico'
+        academic_process: 'Período'
         subject: 'Asignatura'
         offer_as_pci: 'Ofertar cómo PCI'
       enroll_academic_process:
         grade: 'Grado'
-        academic_process: 'Proceso Académico'
+        academic_process: 'Período'
         enroll_status: 'Estado de Inscripción'
         permanence_status: 'Estado de Permanencia'
         student: 'Estudiante'
@@ -576,8 +581,8 @@ es:
         enable_subject_retreat: 'Activar retiro de Asignturas'
         enable_change_course: 'Activar cambio de Sección'
         enable_dependents: 'Activar Dependencias'
-        active_process: Proceso Académico Activo
-        enroll_process: Abrir Inscripción en Proceso Académico 
+        active_process: Período Activo
+        enroll_process: Inscripción en Período
         faculty: 'Facultad'
         periods: 'Períodos'
         areas: 'Áreas'
@@ -596,13 +601,13 @@ es:
         course: 'Proceso/Asignatura'
         teacher: 'Profesor'
         qualified: '¿Calificada?'
-        modality: 'Modalidad'
+        modality: 'Tipo'
         enabled: 'Activa'
         user: 'Profesor'
         subject: 'Asignatura'
         nota_final: 'Final'
-        academic_process: Proceso Académico
-        period: Período
+        academic_process: Período
+        period: Año
         school: Escuela
         faculty: Facultad
         academic_records: 'Registros Académicos'
@@ -644,7 +649,7 @@ es:
         unit_credits: 'Unidad de Créditos'
         ordinal: 'Orden'
         qualification_type: 'Tipo de calificación'
-        modality: 'Modalidad'
+        modality: 'Tipo'
         area: 'Área'
         prelate_subjects: Prelada por
         depend_subjects: Asignaturas que prela
