@@ -58,13 +58,15 @@
 								%span.fa.fa-calendar
 								= "#{object.upcase} #{@period_name}"	
 
-- if true
+- if false
 	:javascript
 
 		document.addEventListener("rails_admin.dom_ready", function() {
 
 			// $('[data-bs-toggle="collapse"]').click();
-			$('header').remove();
-			$('li.breadcrumb-item').remove();
+			// $('header').remove();
+			// $('li.breadcrumb-item').parent().remove();
+			// $('li.breadcrumb-item').parent().remove();
+			// $('li.breadcrumb-item').remove();
 
 		});
