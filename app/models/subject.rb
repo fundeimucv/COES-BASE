@@ -68,9 +68,6 @@ class Subject < ApplicationRecord
   # CALLBACKS:
   before_save :clean_values
 
-  def section_codes
-    sections.select(:code).distinct.map{|s| s.code}
-  end
   
   # HOOKS:
   def clean_values
@@ -84,6 +81,10 @@ class Subject < ApplicationRecord
   end
 
   # GENERALS FUNCTIONS: 
+  def section_codes
+    sections.select(:code).distinct.map{|s| s.code}
+  end
+
   # DEPENDENCIES FUNCTIONS:
 
   def full_dependency_tree_ids
@@ -212,6 +213,12 @@ class Subject < ApplicationRecord
       scopes [:todos, :obligatoria, :electiva, :optativa]
       search_by :custom_search
 
+      field :school do
+        pretty_value do
+          bindings[:object].school.short_name
+          filterable true
+        end        
+      end
       field :code do
         searchable true
       end
