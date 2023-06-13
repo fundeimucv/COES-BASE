@@ -36,6 +36,7 @@ es:
     misc:
       more: 'Más'
       count: Total
+      root_navigation: Otro
     table_headers:
       model_name: 'Entidad'
       last_created: 'Último Creado'
@@ -364,8 +365,8 @@ es:
         one: 'Cartelera'
         other: 'Carteleras'
       course:
-        one: 'Curso'
-        other: 'Cursos'
+        one: 'Programación'
+        other: 'Programaciones'
       enroll_academic_process:
         one: 'Inscripción en Periodo'
         other: 'Inscripciones en Periodo'
@@ -400,8 +401,8 @@ es:
         one: 'Escuela'
         other: 'Escuelas'
       section:
-        one: Oferta Docente
-        other: Oferta Docente
+        one: Sección
+        other: Secciones
       student:
         one: 'Estudiante'
         other: 'Estudiantes'
@@ -580,7 +581,7 @@ es:
         type_entity: 'Tipo de Entidad'
         enable_subject_retreat: 'Activar retiro de Asignturas'
         enable_change_course: 'Activar cambio de Sección'
-        enable_dependents: 'Activar Dependencias'
+        enable_dependents: 'Activar Prelaciones'
         active_process: Período Activo
         enroll_process: Inscripción en Período
         faculty: 'Facultad'
