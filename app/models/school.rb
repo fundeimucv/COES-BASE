@@ -27,7 +27,8 @@ class School < ApplicationRecord
   belongs_to :faculty
 
   has_many :bank_accounts, dependent: :destroy
-  accepts_nested_attributes_for :bank_accounts
+  accepts_nested_attributes_for :bank_accounts, allow_destroy: true
+
   has_many :admission_types
   accepts_nested_attributes_for :admission_types
 
@@ -261,7 +262,10 @@ class School < ApplicationRecord
         inline_edit false
       end
 
-      fields :bank_accounts, :contact_email, :boss_name
+      field :bank_accounts do
+      end
+
+      fields :contact_email, :boss_name
     end
 
     export do

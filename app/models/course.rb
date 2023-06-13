@@ -106,7 +106,7 @@ class Course < ApplicationRecord
       sort_by ['courses.name']
       search_by :custom_search
       field :academic_process do
-        label 'Period'
+        label 'Periodo'
         column_width 100
         pretty_value do
           value.period.name
@@ -168,11 +168,16 @@ class Course < ApplicationRecord
     end
 
     show do
-      fields :academic_process, :subject, :sections
+      fields :academic_process, :subject
+      field :sections do
+        pretty_value do
+          bindings[:view].render(partial: "/sections/index", locals: {sections: bindings[:object].sections, course_id: bindings[:object].id, section_codes: bindings[:object].subject.section_codes})
+        end
+      end
     end
 
     edit do
-      fields :academic_process, :subject#, :sections
+      fields :academic_process, :subject, :sections
     end
 
     export do

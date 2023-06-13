@@ -241,30 +241,30 @@ class AcademicProcess < ApplicationRecord
           user = bindings[:view]._current_user
           (user and user.admin and user.admin.authorized_manage? 'AcademicProcess')
         end
-        label 'Opciones de Oferta Docente'
+        label 'Opciones de Programación'
         pretty_value do
           bindings[:view].render(partial: "/academic_processes/clonation_options", locals: {academic_process: bindings[:object]})
         end
       end
 
-      field :enrollment_days do
-        visible do
-          user = bindings[:view]._current_user
-          (user and user.admin and user.admin.authorized_manage? 'AcademicProcess')
-        end
-        pretty_value do
-          if bindings[:object].process_before
-            enrollment_days = bindings[:object].enrollment_days
-            grades_without_appointment = bindings[:object].readys_to_enrollment_day
+      # field :enrollment_days do
+      #   visible do
+      #     user = bindings[:view]._current_user
+      #     (user and user.admin and user.admin.authorized_manage? 'AcademicProcess')
+      #   end
+      #   pretty_value do
+      #     if bindings[:object].process_before
+      #       enrollment_days = bindings[:object].enrollment_days
+      #       grades_without_appointment = bindings[:object].readys_to_enrollment_day
 
-            bindings[:view].render(partial: "/enrollment_days/index", locals: {enrollment_days: enrollment_days, grades_without_appointment: grades_without_appointment, academic_process: bindings[:object]})
+      #       bindings[:view].render(partial: "/enrollment_days/index", locals: {enrollment_days: enrollment_days, grades_without_appointment: grades_without_appointment, academic_process: bindings[:object]})
 
-          else
-            bindings[:view].content_tag(:p, 'Sin proceso academico anterio vinculado. Para habilitar el sistema de Cita Horaria en este proceso académico, por favor edítelo y agregue un proceso anteriór', {class: 'alert alert-warning'})
-          end
-        end
+      #     else
+      #       bindings[:view].content_tag(:p, 'Sin proceso academico anterio vinculado. Para habilitar el sistema de Cita Horaria en este proceso académico, por favor edítelo y agregue un proceso anteriór', {class: 'alert alert-warning'})
+      #     end
+      #   end
 
-      end
+      # end
     end
 
     export do

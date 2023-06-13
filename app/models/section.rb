@@ -73,6 +73,21 @@ class Section < ApplicationRecord
   scope :has_academic_record, -> (academic_record_id) {joins(:academic_records).where('academic_records.id': academic_record_id)}
 
   # FUNCTIONS:
+  def label_modality
+    ApplicationController.helpers.label_status('bg-info', modality.titleize) if modality
+  end
+
+  def label_qualified
+    if self.qualified?
+      bg = 'bg-success'
+      value = 'Calificada'
+    else
+      bg = 'bg-secondary'
+      value = 'Por Calificar'      
+    end
+    ApplicationController.helpers.label_status(bg, value)
+  end
+
   def total_students
     self.academic_records.count
   end
