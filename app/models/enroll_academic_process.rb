@@ -117,11 +117,11 @@ class EnrollAcademicProcess < ApplicationRecord
     show do
       field :enrolling do
         label do 
-          "INSCRIPCIÓN EN #{bindings[:object].period.name} de #{bindings[:object].user.reverse_name}"
+          "INSCRIPCIÓN #{bindings[:object].period.name} de #{bindings[:object].user.reverse_name}"
         end
         visible do
           current_user = bindings[:view]._current_user
-          (current_user and current_user.admin and admin.authorized_manage? 'EnrollAcademicProcess')
+          (current_user and current_user.admin and current_user.admin.authorized_manage? 'EnrollAcademicProcess')
         end
         formatted_value do          
           grade = bindings[:object].grade          

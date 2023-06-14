@@ -1,17 +1,15 @@
 .text-center
   .form-check.form-switch
-    = check_box_tag "enable_dependents#{school.id}", school.id, school.enable_dependents?, class: "form-check-input switch", onclick: "setEnabledDependets(this);", title: 'Marque esta casilla para activar las prelaciones al momento de inscripción del estudiante. Caso contrario, desmásquela.'
+    - url = "/schools/#{school.id}"
+    = check_box_tag "enable_dependents#{school.id}", school.id, school.enable_dependents?, class: "form-check-input switch", onclick: 'updateElem(`'+url+'`, `{"school":{"enable_dependents":${this.checked}}}`);', title: 'Marque esta casilla para activar las prelaciones al momento de inscripción del estudiante. Caso contrario, desmásquela.'
 
 :javascript
 
-  function setEnabledDependets(ele){
-    let elem = $(ele);
-    let values = `{"school": {"enable_dependents": ${elem.prop('checked')}}}`;
-
+  function updateElem(url, attrs){
     $.ajax({
-      url: `/schools/${ele.value}`,
+      url: `${url}`,
       type: 'PUT',
-      data: JSON.parse(values),
+      data: JSON.parse(attrs),
       dataType: 'json',
       beforeSend: function(xhr) {
         xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'));
@@ -26,4 +24,5 @@
         toastr.error(json.data);
       }
     });
+
   }

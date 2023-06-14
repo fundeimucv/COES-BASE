@@ -39,6 +39,7 @@ class SchoolsController < ApplicationController
   def update
 
     params[:school][:enroll_process_id] = nil if params[:school][:enroll_process_id].eql? '-1'
+    params[:school][:active_process_id] = nil if params[:school][:active_process_id].eql? '-1'
     respond_to do |format|
       if @school.update(school_params)
         # format.json { render json: '¡Escuela actualizada con éxito!', status: :ok}
