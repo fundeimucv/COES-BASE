@@ -1,6 +1,6 @@
 .text-center
   .form-check.form-switch
-    = check_box_tag nil, school.id, school.enable_dependents?, class: "form-check-input switch", onclick: "setEnabledDependets(this);"
+    = check_box_tag "enable_dependents#{school.id}", school.id, school.enable_dependents?, class: "form-check-input switch", onclick: "setEnabledDependets(this);", title: 'Marque esta casilla para activar las prelaciones al momento de inscripción del estudiante. Caso contrario, desmásquela.'
 
 :javascript
 

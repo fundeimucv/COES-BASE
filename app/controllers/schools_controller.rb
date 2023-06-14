@@ -37,6 +37,8 @@ class SchoolsController < ApplicationController
 
   # PATCH/PUT /schools/1 or /schools/1.json
   def update
+
+    params[:school][:enroll_process_id] = nil if params[:school][:enroll_process_id].eql? '-1'
     respond_to do |format|
       if @school.update(school_params)
         # format.json { render json: '¡Escuela actualizada con éxito!', status: :ok}
