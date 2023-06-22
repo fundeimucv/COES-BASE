@@ -475,7 +475,9 @@ class Section < ApplicationRecord
     end
 
     edit do
-      field :course
+      field :course do
+        inline_edit false
+      end
       field :code do
         html_attributes do
           {:length => 8, :size => 8, :onInput => "$(this).val($(this).val().toUpperCase().replace(/[^A-Za-z0-9]/g,''))"}
@@ -485,7 +487,9 @@ class Section < ApplicationRecord
       field :modality do
 
       end
-      field :teacher
+      field :teacher do
+        inline_edit false
+      end
 
       # field :course_id do
       #   formatted_value do

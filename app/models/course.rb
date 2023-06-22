@@ -206,7 +206,7 @@ class Course < ApplicationRecord
         inline_edit false
         inline_add false        
       end
-      # field :sections
+      field :sections
     end
 
     export do
