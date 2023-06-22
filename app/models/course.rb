@@ -105,7 +105,7 @@ class Course < ApplicationRecord
 
   rails_admin do
     # visible false
-    navigation_label 'Config Específica'
+    navigation_label 'Reportes'
     navigation_icon 'fa-solid fa-shapes'
     weight -2
 

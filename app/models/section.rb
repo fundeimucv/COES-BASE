@@ -273,7 +273,7 @@ class Section < ApplicationRecord
 
   # RAILS_ADMIN:
   rails_admin do
-    navigation_label 'Config Específica'
+    navigation_label 'Reportes'
     navigation_icon 'fa-solid fa-list'
     weight -1
 
