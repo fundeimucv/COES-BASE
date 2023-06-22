@@ -20,8 +20,9 @@
           .input-group.input-group-sm{style: 'width: 100%;'}
             %input.form-control{"aria-describedby" => "inputGroup-sizing-sm", "aria-label" => "", type: "text", placeholder: 'Asignaturas', autofocus: true, id: 'filterSubject', name: 'filterSubject'}
 
-        %th.col-1 Activa
-        %th Secciones
+        %th.col-1.text-center Activa
+        - if (current_user&.admin&.authorized_read? 'Section') or (current_user&.admin&.authorized_create? 'Section')
+          %th Secciones
     %tbody.table-group-divider
       - subjects = academic_process.school.subjects.where(modality: params[:scope]).sort_by_code
       - subjects.each_with_index do |subject, i|
@@ -32,12 +33,25 @@
           %td= i+1
           %td= subject.area.name
           %td{title: subject.desc}= subject.desc
-          %td= render partial: 'academic_processes/form_active_subject', locals: {academic_process: academic_process, subject_id: subject.id, has_sections: has_sections, course: course}
+          %td.text-center
+            - if course
+              - if (current_user&.admin&.authorized_delete? 'Course')
+                = render partial: 'academic_processes/form_active_subject', locals: {academic_process: academic_process, subject_id: subject.id, has_sections: has_sections, course: course}
+              - else
+                %i.fas.fa-check
+
+            - else
+              - if (current_user&.admin&.authorized_create? 'Course')
+                = render partial: 'academic_processes/form_active_subject', locals: {academic_process: academic_process, subject_id: subject.id, has_sections: has_sections, course: course}
+              - else
+                %i.fas.fa-remove            
           %td
             - if course
               - if has_sections
-                = render partial: 'academic_processes/sections_list_inline', locals: {sections: sections, has_enrolled: has_enrolled}
-              = ApplicationController.helpers.button_add_section course.id
+                - if (current_user&.admin&.authorized_read? 'Section')
+                  = render partial: 'academic_processes/sections_list_inline', locals: {sections: sections, has_enrolled: has_enrolled}
+              - if (current_user&.admin&.authorized_create? 'Section')
+                = ApplicationController.helpers.button_add_section course.id
 
 :javascript
 

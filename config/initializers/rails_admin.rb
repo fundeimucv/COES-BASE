@@ -50,8 +50,12 @@ RailsAdmin.config do |config|
   # config.navigation_static_label = "Opciones"
 
   config.actions do
-    dashboard                     # mandatory
-    require_relative '../../lib/rails_admin/config/actions/dashboard'
+    dashboard do                     # mandatory
+      # require_relative '../../lib/rails_admin/config/actions/dashboard'
+      show_in_menu false
+      show_in_navigation false
+      visible false
+    end
     index do                         # mandatory
 
       except [SectionTeacher, Profile, Address, EnrollmentDay, Qualification, SubjectLink]
@@ -66,6 +70,7 @@ RailsAdmin.config do |config|
       link_icon do
           'fa-solid fa-shapes'
       end
+      visible true
     end
 
     member :enrollment_day do 
@@ -74,6 +79,7 @@ RailsAdmin.config do |config|
       link_icon do
           'fa-solid fa-bell'
       end
+      visible true
     end
 
     new do
