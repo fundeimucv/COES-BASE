@@ -1,7 +1,7 @@
 .text-center
   .form-check.form-switch
     - url = "/schools/#{school.id}"
-    = check_box_tag "enable_dependents#{school.id}", school.id, school.enable_dependents?, class: "form-check-input switch", onclick: 'updateElem(`'+url+'`, `{"school":{"enable_dependents":${this.checked}}}`);', title: 'Marque esta casilla para activar las prelaciones al momento de inscripción del estudiante. Caso contrario, desmásquela.'
+    = check_box_tag "enable_dependents#{school.id}", school.id, school.enable_dependents?, class: "form-check-input switch", onclick: 'updateElem(`'+url+'`, `{"school":{"enable_dependents":${this.checked}}}`);', title: 'Activar o desactivar las prelaciones al momento de inscripción del estudiante.'
 
 :javascript
 

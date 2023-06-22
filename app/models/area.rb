@@ -19,8 +19,8 @@ class Area < ApplicationRecord
   validates :school_id, presence: true
 
   # SCOPES:
-
   scope :main, -> {where(parent_area_id: nil)}
+  scope :names, -> {select(:name).map{|ar| ar.name}}
 
   # CALLBACKS:
   before_save :clean_name
@@ -33,6 +33,7 @@ class Area < ApplicationRecord
   end
 
   # FUNCTIONS:
+
   def description
     "#{self.id}: #{self.name}"
   end

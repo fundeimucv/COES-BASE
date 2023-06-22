@@ -5,8 +5,10 @@ class Course < ApplicationRecord
   # t.boolean "offer_as_pci"
   # t.string "name"
   # Course.all.map{|ap| ap.update(name: 'x')}  
-
   # HISTORY:
+
+  attr_accessor :session_academic_process_id
+
 	has_paper_trail on: [:create, :destroy, :update]
 
 	before_create :paper_trail_create
@@ -38,6 +40,7 @@ class Course < ApplicationRecord
   scope :order_by_subject_code, -> {joins(:subject).order('subjects.code': :asc)}
 
   scope :custom_search, -> (keyword) {joins(:period, :subject).where("subjects.name ILIKE '%#{keyword}%' OR subjects.code ILIKE '%#{keyword}%' OR periods.name ILIKE '%#{keyword}%'") }
+  # default_scope {of_academic_process(@academic_process.id)}
 
   # ORIGINAL CON LEFT JOIN
   # scope :without_sections, -> {joins("LEFT JOIN sections s ON s.course_id = courses.id").where(s: {course_id: nil})}
@@ -96,16 +99,26 @@ class Course < ApplicationRecord
     end
   end
 
+  def curso_name
+    "Curso #{self.name}"
+  end
+
   rails_admin do
     # visible false
     navigation_label 'Config Específica'
     navigation_icon 'fa-solid fa-shapes'
     weight -2
 
+    object_label_method do
+      :curso_name
+    end
+
+
     list do
       sort_by ['courses.name']
       search_by :custom_search
       field :academic_process do
+        queryable true
         label 'Periodo'
         column_width 100
         pretty_value do
@@ -114,7 +127,7 @@ class Course < ApplicationRecord
       end
       field :subject
       field :total_sections do
-        label 'T. Sec'
+        label "T. Sec"
         pretty_value do
           ApplicationController.helpers.label_status('bg-info', value)
         end
@@ -134,6 +147,13 @@ class Course < ApplicationRecord
           ApplicationController.helpers.label_status('bg-secondary', value)
         end
       end
+
+      field :sections do
+        pretty_value do
+          bindings[:object].sections.map{|sec| ApplicationController.helpers.link_to(sec.code, "/admin/section/#{sec.id}")}.to_sentence.html_safe
+        end
+      end
+
       field :total_aprobados do
         label 'A'
         help 'Aprobado'

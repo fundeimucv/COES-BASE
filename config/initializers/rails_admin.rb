@@ -3,7 +3,7 @@ RailsAdmin.config do |config|
   config.asset_source = :webpack
 
   ### Popular gems integration
-  config.main_app_name = Proc.new { |controller| [ "Coes", "FAU - #{I18n.t(controller.params[:action]).try(:titleize)}" ] }
+  config.main_app_name = Proc.new { |controller| [ "Coes", "FAU" ] }
 
   ## == Devise ==
   config.authenticate_with do
@@ -58,6 +58,16 @@ RailsAdmin.config do |config|
       # except [Address, SectionTeacher, Profile, User, StudyPlan, Period, Course, Faculty]
 
     end
+
+    member :programation do 
+      # subclass Base. Accessible at /admin/<model_name>/<id>/my_member_action
+      only [AcademicProcess]
+      # i18n_key :edit # will have the same menu/title labels as the Edit action.
+      link_icon do
+          'fa-solid fa-shapes'
+      end
+    end
+
     new do
       except [School, Faculty, EnrollAcademicProcess, AcademicRecord]
     end

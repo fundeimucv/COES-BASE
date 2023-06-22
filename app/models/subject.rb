@@ -65,6 +65,8 @@ class Subject < ApplicationRecord
 
   scope :not_inicial, -> {where('ordinal != 1')}
 
+  scope :sort_by_code, -> {order(code: :desc)}
+
   # CALLBACKS:
   before_save :clean_values
 
@@ -212,15 +214,25 @@ class Subject < ApplicationRecord
     list do
       scopes [:todos, :obligatoria, :electiva, :optativa]
       search_by :custom_search
+      checkboxes false
+      sidescroll(num_frozen_columns: 3)
 
-      field :school do
-        pretty_value do
-          bindings[:object].school.short_name
-          filterable true
-        end        
-      end
       field :code do
         searchable true
+      end
+
+      field :school do
+        filterable true
+        pretty_value do
+          bindings[:object].school.short_name
+        end
+      end
+
+      field :periods do
+        label 'Periodos'
+        pretty_value do
+          bindings[:object].periods.map{|pe| pe.name}.to_sentence          
+        end
       end
 
       field :name do

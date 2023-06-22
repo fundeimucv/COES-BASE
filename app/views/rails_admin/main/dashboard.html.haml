@@ -2,6 +2,11 @@
 -# academic_process = AcademicProcess.find session[:academic_processes_id]
 -# @period_name = academic_process.period.name if (academic_process and academic_process.period)
 
+- id = 'changePeriodModal'
+- title = 'Cambiar Período'
+- content = render '/academic_processes/change_process_form'
+= render partial: '/layouts/scaffold-modal', locals: {content: content, title: title, id: id}
+
 - logged_as_admin = (current_user and current_user.admin? and session[:rol].eql? 'admin') ? true : false
 
 .mb-0= render partial: 'layouts/main_banner', locals: {bg_color: 'bg-info bg-opacity-20 '}

@@ -22,8 +22,12 @@ Rails.application.routes.draw do
   
   resources :sections do
     member do
-      get 'export'
-    end     
+      get :export
+    end
+    collection do
+      post :bulk_delete
+    end
+
   end
 
 
@@ -55,6 +59,7 @@ Rails.application.routes.draw do
       get 'clean_courses'
     end
     collection do
+      post :change_process_session
       post 'clone_sections'
     end
   end

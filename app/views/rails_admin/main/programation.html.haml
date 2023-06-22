@@ -1,0 +1,6 @@
+%h3.m-3= "Programación #{@object.short_desc}"
+- content = render("/academic_processes/form_section")
+
+= render partial: 'layouts/scaffold-modal', locals: {id: "NewSectionModal", title: "Nueva Sección", content: content}
+
+= render(partial: "/academic_processes/programation", locals: {academic_process: @object})

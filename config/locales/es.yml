@@ -48,6 +48,11 @@ es:
       changes: 'Acción Realizada'    
 
     actions:
+      programation: 
+        title: "Programación"
+        menu: "Programación"
+        breadcrumb: "Programacion"
+        link: "Programación"
       index:
         title: 'Listado'
     flash:
@@ -435,7 +440,7 @@ es:
         process_before: Período Anterior
         enrollment_days: Jornadas de Inscripción por Cita Horaria
       academic_record:
-        section: 'Oferta Docente'
+        section: 'Sección'
         enroll_academic_process: 'Inscripción en Período'
         first_q: 'Primera Calificación'
         second_q: 'Segunda Calificación'
@@ -508,7 +513,7 @@ es:
         area: 'Área'
         period: Período
         school: Escuela
-        sections: Oferta Docente
+        sections: Secciones
         academic_process: 'Período'
         subject: 'Asignatura'
         offer_as_pci: 'Ofertar cómo PCI'

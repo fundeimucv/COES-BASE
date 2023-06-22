@@ -231,6 +231,14 @@ class Section < ApplicationRecord
     schedules.map{|s| s.name}.to_sentence
   end
 
+  def schedule_teacher_desc_short
+      aux = ""
+      aux += schedules.any? ? schedule_short_name : 'Sin Horario Asignado'
+      aux += teacher ? " | #{teacher&.user&.reverse_name }" : " | Sin profesor Asignado"
+      aux += classroom.blank? ? " | Sin aula" : " | #{classroom}"
+      return aux
+  end
+
   def schedule_short_name
     schedules.map{|s| s.short_name}.to_sentence    
   end
@@ -271,6 +279,8 @@ class Section < ApplicationRecord
 
     list do
       search_by :custom_search
+      # sidescroll(num_frozen_columns: 5)
+      
       # filters [:period_name, :code, :subject_code]
       # sort_by 'courses.name'
       # field :academic_process do
@@ -310,6 +320,14 @@ class Section < ApplicationRecord
       #   end
       # end
 
+      field :subject do
+        label 'Asignatura'
+        column_width 240
+        searchable 'subjects.code'
+        filterable 'subjects.code'
+        sortable 'subjects.code'
+      end
+
       field :code do
         label 'Sec'
         column_width 30
@@ -319,13 +337,7 @@ class Section < ApplicationRecord
         end
       end
 
-      field :subject do
-        label 'Asignatura'
-        column_width 240
-        searchable 'subjects.code'
-        filterable 'subjects.code'
-        sortable 'subjects.code'
-      end
+      field :classroom
 
       field :teacher_desc do
         label 'Profesor'
@@ -459,20 +471,33 @@ class Section < ApplicationRecord
     end
 
     edit do
+      field :course
       field :code do
-        # label do 
-        #   if session[:academic_process_id]
-        #     'Hola'
-        #   else
-        #     'Chau'
-        #   end
-        # end
         html_attributes do
           {:length => 8, :size => 8, :onInput => "$(this).val($(this).val().toUpperCase().replace(/[^A-Za-z0-9]/g,''))"}
         end
       end
 
-      fields :course, :teacher, :modality
+      fields :modality, :teacher
+
+      # field :course_id do
+      #   formatted_value do
+      #     if bindings[:view].params[:course_id]
+      #       view_helper :hidden_field
+
+      #       # I added these next two lines to solve this
+      #       label ""
+      #       help ""
+
+      #       partial :form_field
+      #       def value
+      #         bindings[:view].params[:course_id]
+      #       end
+      #     else
+      #       bindings[:object].course
+      #     end
+      #   end
+      # end 
 
       field :classroom do
         html_attributes do

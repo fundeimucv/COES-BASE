@@ -54,6 +54,11 @@ class AcademicProcess < ApplicationRecord
   # CALLBACKS:
   before_save :set_name
 
+  def subject_active_for_this? subject_id
+    subjects.ids.include?(subject_id)
+  end
+
+
   def period_name
     period.name if period
   end
@@ -66,6 +71,10 @@ class AcademicProcess < ApplicationRecord
     max_credits = 24
     max_subject = 5
     modality = :semestral
+  end
+
+  def short_desc
+    "#{self.school.short_name} #{self.period.name}" if (self.school and self.period)
   end
 
   def get_name
@@ -210,14 +219,21 @@ class AcademicProcess < ApplicationRecord
     end
 
     edit do
+      # group :default do
+      #   hide
+      # end      
       field :period
       field :school do
+        hide
         inline_edit false
         inline_add false
       end
       field :modality
       field :process_before do
         help 'Atención: Aún cuando este campo no es obligatorio y puede ser omitido (en caso de que se encuentre realizando migraciones de periodos anteriores) es muy importante para las Citas Horarias e Inscripciones'
+        pretty_value do
+          bindings[:object].period_name
+        end
       end
 
       field :max_credits do
@@ -236,16 +252,16 @@ class AcademicProcess < ApplicationRecord
         end
       end
 
-      field :courses do
-        visible do
-          user = bindings[:view]._current_user
-          (user and user.admin and user.admin.authorized_manage? 'AcademicProcess')
-        end
-        label 'Opciones de Programación'
-        pretty_value do
-          bindings[:view].render(partial: "/academic_processes/clonation_options", locals: {academic_process: bindings[:object]})
-        end
-      end
+      # field :courses do
+      #   visible do
+      #     user = bindings[:view]._current_user
+      #     (user and user.admin and user.admin.authorized_manage? 'AcademicProcess')
+      #   end
+      #   label "Programación"
+      #   pretty_value do
+      #     bindings[:view].render(partial: "/academic_processes/programation", locals: {academic_process: bindings[:object]})
+      #   end
+      # end
 
       # field :enrollment_days do
       #   visible do
