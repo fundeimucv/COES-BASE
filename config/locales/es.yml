@@ -48,10 +48,15 @@ es:
       changes: 'Acción Realizada'    
 
     actions:
+      enrollment_day: 
+        title: "Cita Horaria"
+        menu: "Cita Horaria"
+        breadcrumb: "Cita Horaria"
+        link: "Cita Horaria"      
       programation: 
         title: "Programación"
         menu: "Programación"
-        breadcrumb: "Programacion"
+        breadcrumb: "Programación"
         link: "Programación"
       index:
         title: 'Listado'

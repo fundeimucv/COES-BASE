@@ -68,6 +68,14 @@ RailsAdmin.config do |config|
       end
     end
 
+    member :enrollment_day do 
+
+      only [AcademicProcess]
+      link_icon do
+          'fa-solid fa-bell'
+      end
+    end
+
     new do
       except [School, Faculty, EnrollAcademicProcess, AcademicRecord]
     end
