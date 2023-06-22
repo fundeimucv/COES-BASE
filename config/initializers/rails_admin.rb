@@ -70,7 +70,6 @@ RailsAdmin.config do |config|
       link_icon do
           'fa-solid fa-shapes'
       end
-      visible true
     end
 
     member :enrollment_day do 
@@ -79,7 +78,6 @@ RailsAdmin.config do |config|
       link_icon do
           'fa-solid fa-bell'
       end
-      visible true
     end
 
     new do
