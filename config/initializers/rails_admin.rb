@@ -90,7 +90,7 @@ RailsAdmin.config do |config|
       only [AcademicRecord, Section]
     end
     show do
-      except [School, StudyPlan, AcademicRecord, EnrollAcademicProcess, Course]
+      except [School, StudyPlan, AcademicRecord, Course]
     end
     edit do
       except [EnrollAcademicProcess, AcademicRecord, Course, Section]
