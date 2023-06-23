@@ -1,4 +1,4 @@
-%h3.m-3= "Programación #{@object.short_desc}"
+%h3.text-center.bg-primary.text-light.mb-4= "#{@object.short_desc}"
 
 - if (current_user&.admin&.authorized_manage? 'Course')
 	- content = render("/academic_processes/form_section")
