@@ -9,7 +9,7 @@
   %td
     - if has_enrolled
       %b{title: 'Elimine las inscripciones en la sección para activar esta opcíon'}
-        = link_to 'javascript:void(0)', class: 'btn btn-sm btn-danger disabled' do
+        = link_to 'javascript:void(0)', class: 'btn btn-sm btn-danger disabled', disabled: true do
           %i.fas.fa-trash
     - else
       - url = '/sections/bulk_delete'

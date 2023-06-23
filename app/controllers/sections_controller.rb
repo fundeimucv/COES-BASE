@@ -48,19 +48,20 @@ class SectionsController < ApplicationController
   # end
 
   # POST /sections or /sections.json
-  # def create
-  #   @section = Section.new(section_params)
+  def create
+    @section = Section.new(section_params)
 
-  #   respond_to do |format|
-  #     if @section.save
-  #       format.html { redirect_to section_url(@section), notice: "Section was successfully created." }
-  #       format.json { render :show, status: :created, location: @section }
-  #     else
-  #       format.html { render :new, status: :unprocessable_entity }
-  #       format.json { render json: @section.errors, status: :unprocessable_entity }
-  #     end
-  #   end
-  # end
+    respond_to do |format|
+      if @section.save
+        # @section.schedules.create(section_params.schedules_attributes)
+        format.html { redirect_back fallback_location: '/admin/academic_process', notice: "Sección Creada con Éxito!" }
+        format.json { render :show, status: :created, location: @section }
+      else
+        format.html { render :new, status: :unprocessable_entity }
+        format.json { render json: @section.errors, status: :unprocessable_entity }
+      end
+    end
+  end
 
   # PATCH/PUT /sections/1 or /sections/1.json
   def update
@@ -82,6 +83,10 @@ class SectionsController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def section_params
-      params.require(:section).permit(:id, :code, :capacity, :course_id, :teacher_id, :qualified, :modality, :enabled)
+      params.require(:section).permit(:id, :code, :capacity, :course_id, :teacher_id, :qualified, :modality, :classroom, :enabled, :schedules_attributes)
     end
+
+  # def schedules_params
+  #   params.require(:schedules).permit(:day, :starttime, :endtime)
+  # end
 end

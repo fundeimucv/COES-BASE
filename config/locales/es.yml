@@ -1,4 +1,5 @@
 es:
+  js: 'Javascript'
   delete: Eliminar
   edit: Editar
   new: Nuevo
@@ -37,6 +38,8 @@ es:
       more: 'Más'
       count: Total
       root_navigation: Otro
+      down: Ver Todos
+      up: Ocultar
     table_headers:
       model_name: 'Entidad'
       last_created: 'Último Creado'
