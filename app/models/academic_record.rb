@@ -214,6 +214,22 @@ class AcademicRecord < ApplicationRecord
     "#{user.ci_fullname} en #{section.name}" if (user and section)
   end
 
+  def absolute?
+    subject&.absoluta?
+  end
+
+  def cal_alfa
+    if absolute? or pi? or rt?
+      desc_conv_absolute
+    else
+      'NF'
+    end
+  end
+
+  def rt?
+    retirado?
+  end
+
   def desc_conv_absolute
     I18n.t(self.status)
   end
