@@ -292,11 +292,6 @@ es:
   activerecord:
     errors:
       models:
-        subject_type:
-          attributes:
-            required_credits:
-              required: requerido
-              in: dentro
         academic_record:
           attributes:
             final_q:
@@ -307,38 +302,47 @@ es:
           attributes:
             period:
               required: requerido
-        subject_link:
+        admin:
           attributes:
-            depend_subject:
-              required: requerido
+            env_authorizable:
+              required: 'requerido'
         grade:
           attributes:
             admission_type:
               required: requerido
-        students:
+        payment_report:
           attributes:
-            user:
-              required: requerido
-        admin:
-          attributes:
-            env_authorizable:
+            payable:
               required: 'requerido'
         school:
           attributes:
             faculty:
               required: 'requerida'
-        payment_report:
+        sections:
           attributes:
-            payable:
-              required: 'requerido'
-        subject:
+            course:
+              required: Curso
+        students:
           attributes:
-            area:
-              required: 'requerida'
+            user:
+              required: requerido
         student:
           attributes:
             user:
               required: requerido
+        subject_link:
+          attributes:
+            depend_subject:
+              required: requerido
+        subject_type:
+          attributes:
+            required_credits:
+              required: requerido
+              in: dentro
+        subject:
+          attributes:
+            area:
+              required: 'requerida'
         qualification:
           attributes:
             value:
@@ -612,7 +616,7 @@ es:
         area: 'Área'
         code: 'Sección'
         capacity: 'Capacidad'
-        course: 'Proceso/Asignatura'
+        course: 'Curso (Período/Asignatura)'
         teacher: 'Profesor'
         qualified: '¿Calificada?'
         modality: 'Tipo'
