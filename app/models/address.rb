@@ -26,7 +26,9 @@ class Address < ApplicationRecord
 
   def city_and_state
     aux = city&.titleize if city
-    aux += " Estado #{state&.titleize}" if state
+    if state
+      aux += state.downcase.eql? 'distrito capital' ? " #{state&.titleize}" : " Estado #{state&.titleize}"
+    end
     return aux
   end
 
