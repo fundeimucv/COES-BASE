@@ -18,9 +18,12 @@ class Student < ApplicationRecord
 
   DISCAPACIDADES = ['Sensorial Visual', 'Sensorial Auditiva', 'Motora Miembros Inferiores', 'Motora Medios Superiores', 'Motora Ambos Miembros']
 
+  SEDES = ['Caracas', 'Barquisimeto']
+
   enum nacionality: NACIONALIDAD
   enum disability: DISCAPACIDADES
   enum marital_status: ESTADOS_CIVILES
+  enum sede: SEDES
 
   # HISTORY:
   has_paper_trail on: [:create, :destroy, :update]
@@ -169,7 +172,7 @@ class Student < ApplicationRecord
         inline_add false
       end
 
-      fields :nacionality, :origin_country, :origin_city, :birth_date, :marital_status, :grade_title, :grade_university, :graduate_year
+      fields :sede, :nacionality, :origin_country, :origin_city, :birth_date, :marital_status, :grade_title, :grade_university, :graduate_year
 
     end
 
@@ -178,7 +181,7 @@ class Student < ApplicationRecord
 
       field :grades
 
-      fields :nacionality, :origin_country, :origin_city, :birth_date, :marital_status, :grade_title, :grade_university, :graduate_year
+      fields :sede, :nacionality, :origin_country, :origin_city, :birth_date, :marital_status, :grade_title, :grade_university, :graduate_year
 
     end
 
@@ -214,26 +217,49 @@ class Student < ApplicationRecord
 
       end
 
+
       field :user_ci do
-        label 'Cédula'
-        # sortable "users.ci"
-        # queryable "users.ci"
-        # searchable ['users.ci']
+        label 'CI'
+        pretty_value do
+          bindings[:object].user.ci
+        end
       end
+
+      # field :user_ci do
+      #   label 'Cédula'
+
+      #   sortable do
+      #     Proc.new { |scope|
+      #       scope = scope.joins(:user).where("users.ci ILIKE '%#{bindings[:object].user_ci}%'").limit(30)
+      #     }
+      #   end
+      #   # sortable "users.ci"
+      #   # queryable "users.ci"
+      #   # searchable ['users.ci']
+      # end
 
       field :user_last_name do
         label 'Apellidos'
-        # searchable [{:users => :last_name}]
       end
       field :user_first_name do
         label 'Nombres'
       end
-      field :address_short do
+      field :sede
+
+      field :address do
         label 'Ciudad'
+        # associated_collection_cache_all false
+        # associated_collection_scope do
+        #   Proc.new { |scope|
+        #     scope = scope.joins(:address).limit(30)
+        #   }
+        # end
+
       end
 
-      field :grade_admission_type do
+      field :admission_types do
         label 'Ingreso'
+        # filterable true
       end
 
       field :user_phone do
@@ -247,7 +273,7 @@ class Student < ApplicationRecord
     end
 
     export do
-      fields :user, :nacionality, :origin_country, :origin_city, :birth_date, :marital_status, :address, :created_at
+      fields :user, :nacionality, :origin_country, :sede, :origin_city, :birth_date, :marital_status, :address, :created_at
     end
 
     import do
@@ -262,10 +288,6 @@ class Student < ApplicationRecord
       # mapping_key_list ['ci', 'email', 'first_name','last_name']
     end
 
-  end
-
-  def user_ci
-    user.ci if user
   end
 
   def user_last_name

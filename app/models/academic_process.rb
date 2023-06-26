@@ -12,6 +12,8 @@ class AcademicProcess < ApplicationRecord
   # HISTORY:
   has_paper_trail on: [:create, :destroy, :update]
 
+  has_rich_text :enroll_instructions
+
   before_create :paper_trail_create
   before_destroy :paper_trail_destroy
   before_update :paper_trail_update
@@ -246,6 +248,10 @@ class AcademicProcess < ApplicationRecord
       field :max_subjects do
         label 'Máximo de asignaturas permitidas a inscribir'
       end
+
+      field :enroll_instructions do
+        help 'Si desea agregar imágenes tome en cuenta el tamaño de misma y su ajuste a la pantalla dónde se desplegará'
+      end
     end
 
     show do
@@ -255,6 +261,7 @@ class AcademicProcess < ApplicationRecord
           bindings[:view].render(partial: "/academic_processes/desc_table", locals: {academic_process: bindings[:object]})
         end
       end
+      field :enroll_instructions
 
       # field :courses do
       #   visible do

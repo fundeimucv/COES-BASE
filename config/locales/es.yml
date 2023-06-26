@@ -456,6 +456,7 @@ es:
         modality: 'Tipo'
         process_before: Período Anterior
         enrollment_days: Jornadas de Inscripción por Cita Horaria
+        enroll_instructions: Instrucciones Para la Inscripción
       academic_record:
         section: 'Sección'
         enroll_academic_process: 'Inscripción en Período'
@@ -522,7 +523,7 @@ es:
         account_type: 'Tipo de Cuenta'
         school: 'Escuela'
       billboard:
-        active: 'Activa'
+        active: 'Publicar'
         created_at: 'Fecha de Creación'
         updated_at: 'Fecha de Edición'
         content: 'Contenido de Cartelera'

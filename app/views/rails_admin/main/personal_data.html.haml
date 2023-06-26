@@ -39,6 +39,9 @@
                 %td.col-4 Sexo:
                 %td.fw-bold= user&.sex
               %tr
+                %td.col-4 Sede:
+                %td.fw-bold= @object.sede&.titleize
+              %tr
                 %td.col-4 Dirección:
                 %td.fw-bold{title: @object.address&.full_address}= @object.address&.full_address
               %tr
