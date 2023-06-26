@@ -75,12 +75,22 @@ class Student < ApplicationRecord
 
 
   # FUNCTIONS:
+  def university_degree
+    [grade_title&.titleize, grade_university&.titleize, graduate_year].join(" - ")
+    
+  end
+
+
   def complete_info?
     !(empty_info? or (user and user.empty_info?) or (address and address.empty_info?))
   end
 
   def empty_info?
     nacionality.blank? or marital_status.blank? or origin_country.blank? or origin_city.blank? or birth_date.blank?
+  end
+
+  def origin_location
+    [origin_city, origin_country].join(" - ")
   end
 
   def self.countries
@@ -176,7 +186,7 @@ class Student < ApplicationRecord
       field :user_personal_data do
         label 'Datos Personales'
         formatted_value do
-          bindings[:view].render(partial: 'users/personal_data', locals: {user: bindings[:object].user})
+          bindings[:view].render(partial: 'users/personal_data', locals: {user: bindings[:object].user, student_id: bindings[:object].id})
         end
       end
       field :description_grades do
@@ -271,7 +281,7 @@ class Student < ApplicationRecord
     user.email if user
   end
   def address_short
-    address.city_and_state if address
+    address&.state_and_city if address
   end
   def grade_admission_type
     grades.map{|g| g.admission_type.name if g.admission_type}.to_sentence

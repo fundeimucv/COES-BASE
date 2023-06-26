@@ -61,6 +61,11 @@ es:
         menu: "Programación"
         breadcrumb: "Programación"
         link: "Programación"
+      personal_data: 
+        title: "Datos Personales"
+        menu: "Datos Personales"
+        breadcrumb: "Datos Personales"
+        link: "Datos Personales"
       index:
         title: 'Listado'
     flash:

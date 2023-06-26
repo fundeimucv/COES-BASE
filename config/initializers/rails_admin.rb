@@ -80,6 +80,13 @@ RailsAdmin.config do |config|
       end
     end
 
+    member :personal_data do 
+      only [Student]
+      link_icon do
+          'fa-solid fa-id-card'
+      end
+    end
+
     new do
       except [School, Faculty, EnrollAcademicProcess, AcademicRecord]
     end
