@@ -30,8 +30,7 @@ class Admin < ApplicationRecord
   # VALIDATIONS:
   validates :user, presence: true, uniqueness: true
   # validates :env_authorizable, presence: true
-  # validates :user, presence: true
-  # validates :role, presence: true
+  validates :role, presence: true
 
   # validates :env_authorizable_type, presence: true
 
@@ -53,6 +52,23 @@ class Admin < ApplicationRecord
     user_aux = User.find self.user_id
     user_aux.delete if user_aux.without_rol?
   end 
+
+  def authorized_create? clazz
+    if yo? or desarrollador? or jefe_control_estudio?
+      return true
+    else
+      
+      if authorizable = Authorizable.where(klazz: clazz).first
+        if authorized = authorizeds.where(authorizable_id: authorizable.id).first
+          return authorized.can_create?
+        else
+          return false
+        end
+      else
+        return false
+      end
+    end
+  end
 
   def authorized_manage? clazz
     if yo? or desarrollador? or jefe_control_estudio?
@@ -137,7 +153,10 @@ class Admin < ApplicationRecord
       field :pare do
         label 'PARE (Procesos de Acceso Restringido)'
         formatted_value do
-          bindings[:view].render(partial: 'authorizeds/form', locals: {user: bindings[:object].user})
+          if bindings[:object].asistente?
+
+            bindings[:view].render(partial: 'authorizeds/form', locals: {user: bindings[:object].user})
+          end
         end
       end
 
@@ -156,7 +175,7 @@ class Admin < ApplicationRecord
       field :role do
         visible do
           user = bindings[:view]._current_user
-          (user and user.admin and user.admin.yo? )
+          (user and user.admin and user.admin.desarrollador? )
         end
         pretty_value do
           value.titleize

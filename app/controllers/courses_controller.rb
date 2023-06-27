@@ -1,68 +1,44 @@
 class CoursesController < ApplicationController
-  before_action :set_course, only: %i[ show edit update destroy ]
 
-  # GET /courses or /courses.json
-  def index
-    @courses = Course.all
-  end
-
-  # GET /courses/1 or /courses/1.json
-  def show
-  end
-
-  # GET /courses/new
-  def new
-    @course = Course.new
-  end
-
-  # GET /courses/1/edit
-  def edit
-  end
-
-  # POST /courses or /courses.json
   def create
-    @course = Course.new(course_params)
-
-    respond_to do |format|
-      if @course.save
-        format.html { redirect_to course_url(@course), notice: "Course was successfully created." }
-        format.json { render :show, status: :created, location: @course }
-      else
-        format.html { render :new, status: :unprocessable_entity }
-        format.json { render json: @course.errors, status: :unprocessable_entity }
+    begin
+      respond_to do |format|
+        course = Course.new(course_params)
+        if course.save
+          new_section = ApplicationController.helpers.button_add_section(course.id)
+          # p "   CURSO: <#{new_section}>.   ".center(500, "#")
+          format.json {render json: {data: "¡Curso activado para el período #{course.academic_process.period_name}!", status: :success, new_section: new_section, type: :create} }
+        else
+          format.json { render json: {data: course.errors, status: :unprocessable_entity} }
+        end
       end
-    end
-  end
-
-  # PATCH/PUT /courses/1 or /courses/1.json
-  def update
-    respond_to do |format|
-      if @course.update(course_params)
-        format.html { redirect_to course_url(@course), notice: "Course was successfully updated." }
-        format.json { render :show, status: :ok, location: @course }
-      else
-        format.html { render :edit, status: :unprocessable_entity }
-        format.json { render json: @course.errors, status: :unprocessable_entity }
-      end
+      
+    rescue Exception => e
+      format.json { render json: {data: e, status: :unprocessable_entity} }
     end
   end
 
   # DELETE /courses/1 or /courses/1.json
   def destroy
-    @course.destroy
+    begin
+      course = Course.find_by(course_params)
+      period_name = course.academic_process.period_name
 
-    respond_to do |format|
-      format.html { redirect_to courses_url, notice: "Course was successfully destroyed." }
-      format.json { head :no_content }
+      respond_to do |format|
+        if course.destroy
+          format.json {render json: {data: "¡Curso desactivado para el período #{period_name}!", status: :success, type: :destroy} }
+        else
+          format.json {render json: {data: "¡Error al intentar desactivar la asignatura para el período #{period_name}!", status: :unprocessable_entity} }
+        end
+      end
+    rescue Exception => e
+      respond_to do |format|
+        format.json {render json: {data: e, status: :unprocessable_entity} }
+      end
     end
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_course
-      @course = Course.find(params[:id])
-    end
-
     # Only allow a list of trusted parameters through.
     def course_params
       params.require(:course).permit(:academic_process_id, :subject_id, :offer_as_pci)

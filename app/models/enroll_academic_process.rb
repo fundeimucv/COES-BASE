@@ -28,14 +28,14 @@ class EnrollAcademicProcess < ApplicationRecord
   # ENUMERIZE:
   # IDEA CON ESTADO DE INSCRIPCIÓN EN GRADE Y ENROLL ACADEMIC PROCESS
   enum enroll_status: [:preinscrito, :reservado, :confirmado, :retirado]
-  enum permanence_status: [:nuevo, :regular, :reincorporado, :articulo3, :articulo6, :articulo7]  
+  enum permanence_status: [:nuevo, :regular, :reincorporado, :articulo3, :articulo6, :articulo7, :intercambio, :desertor, :egresado, :egresado_doble_titulo]  
 
   # VALIDATIONS:
   validates :grade, presence: true
   validates :academic_process, presence: true
   validates :enroll_status, presence: true
 
-  validates_uniqueness_of :academic_process, scope: [:grade], message: 'Ya registrado en Proceso academico', field_name: false
+  validates_uniqueness_of :academic_process, scope: [:grade], message: 'Ya inscrito en período', field_name: false
   # validates :permanence_status, presence: true
 
   # SCOPE:
@@ -43,8 +43,9 @@ class EnrollAcademicProcess < ApplicationRecord
 
   scope :of_academic_process, -> (academic_process_id) {where(academic_process_id: academic_process_id)}
 
-  scope :sort_by_period, -> {joins(period: :period_type).order('periods.year': :desc, 'period_types.name': :asc)}
+  scope :sort_by_period, -> {joins(period: :period_type).order('periods.year': :desc, 'period_types.name': :desc)}
 
+  scope :sort_by_period_reverse, -> {joins(period: :period_type).order('periods.year': :asc, 'period_types.name': :asc)}
 
   scope :without_academic_records, -> {joins(:academic_records).group(:"enroll_academic_processes.id").having('COUNT(*) = 0').count}
 
@@ -64,6 +65,14 @@ class EnrollAcademicProcess < ApplicationRecord
   def set_default_values_by_import
     self.enroll_status = :confirmado
     self.permanence_status = :regular
+  end
+
+  def enrolling?
+    school.enroll_process_id.eql? academic_process_id  
+  end
+
+  def historical?
+    !enrolling?
   end
 
   def total_academic_records
@@ -103,10 +112,37 @@ class EnrollAcademicProcess < ApplicationRecord
   end  
 
   rails_admin do
-    navigation_label 'Gestión Periódica'
+    navigation_label 'Reportes'
     navigation_icon 'fa-solid fa-calendar-check'
     weight 0
     
+    show do
+      field :enrolling do
+        label do 
+          "INSCRIPCIÓN #{bindings[:object].period.name} de #{bindings[:object].user.reverse_name}"
+        end
+        visible do
+          current_user = bindings[:view]._current_user
+          (current_user and current_user.admin and current_user.admin.authorized_manage? 'EnrollAcademicProcess')
+        end
+        formatted_value do          
+          grade = bindings[:object].grade          
+          if bindings[:object].enrolling?
+            totalCreditsReserved = bindings[:object].total_credits
+            totalSubjectsReserved = bindings[:object].total_subjects
+
+            bindings[:view].render(partial: '/enroll_academic_processes/form', locals: {grade: grade, academic_process: bindings[:object].academic_process, totalCreditsReserved: totalCreditsReserved, totalSubjectsReserved: totalSubjectsReserved})
+          else
+            bindings[:view].render(partial: "/academic_records/making_historical", locals: {enroll: bindings[:object]})
+          end
+        end
+      end      
+    end
+
+    edit do
+      fields :grade, :academic_process, :enroll_status, :permanence_status
+    end
+
     list do
       search_by :custom_search
       # filters [:period_name, :student]
@@ -153,10 +189,6 @@ class EnrollAcademicProcess < ApplicationRecord
       field :created_at do
         label 'Fecha de Inscripción'
       end
-    end
-
-    edit do
-      fields :grade, :academic_process, :enroll_status, :permanence_status
     end
 
     export do

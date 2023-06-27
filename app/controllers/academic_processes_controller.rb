@@ -19,6 +19,11 @@ class AcademicProcessesController < ApplicationController
   def edit
   end
 
+  # def change_process_session
+  #   session[:academic_process_id] = params[:id]
+  #   redirect_back fallback_location: root_path
+  # end
+
   def clean_courses
     total = @academic_process.courses.count
     if @academic_process.courses.destroy_all
@@ -47,8 +52,15 @@ class AcademicProcessesController < ApplicationController
             course.sections.each do |section|
               nueva_seccion = section.dup
               nueva_seccion.course_id = nuevo_curso.id
-              nueva_seccion.profesor_id = nil unless params[:teachers]
+              nueva_seccion.teacher_id = nil unless params[:teachers]
               if nueva_seccion.save
+                if params[:schedules]
+                  section.schedules.each do |sh|
+                    sh_aux = sh.dup
+                    sh_aux.section_id = nueva_seccion.id
+                    sh_aux.save
+                  end
+                end
                 completed +=1
               else
                 errors += 1
@@ -61,7 +73,7 @@ class AcademicProcessesController < ApplicationController
       rescue Exception => e
         flash[:danger] = e
       end  
-      flash[:danger] = "#{errros} Cargas con errores. Vuelva a intentarlo." if errors > 0
+      flash[:danger] = "#{errors} Cargas con errores. Vuelva a intentarlo." if errors > 0
       flash[:success] = "Clonación de #{completed} secciones." if completed > 0
 
     end

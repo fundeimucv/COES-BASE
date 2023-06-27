@@ -39,7 +39,7 @@ class Period < ApplicationRecord
 	end
 
   rails_admin do
-    navigation_label 'Inscripciones'
+    navigation_label 'Config Específica'
     navigation_icon 'fa-solid fa-clock'
     visible false
 
@@ -48,7 +48,17 @@ class Period < ApplicationRecord
     end
 
     edit do
-    	fields :year, :period_type
+    	group :dato_periodo do
+    		label 'Datos del Perido'
+    		# active false
+				field :year do
+					a = Date.today.year
+					html_attributes do
+						{onInput: "$(this).val($(this).val().replace(/[^0-9]/g,''))", min: a-60, max:a+10, step: 1 }
+					end  
+				end
+				field :period_type
+			end
     end
 
     show do

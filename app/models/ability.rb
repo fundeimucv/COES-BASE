@@ -20,19 +20,25 @@ class Ability
 
       if user.admin.desarrollador?
         can :manage, :all
+
       elsif user.admin.jefe_control_estudio?
         can :import, Authorizable::IMPORTABLES
-        can :manage, [Admin, Student, Teacher, Area, Subject, Course, Grade, AcademicProcess, EnrollAcademicProcess, AcademicRecord, Section, AdmissionType, PeriodType, Address, StudyPlan, Period, Dependency, Schedule, EnrollmentDay, Billboard, User]
+        can :manage, [Admin, Student, Teacher, Area, Subject, Course, Grade, AcademicProcess, AcademicRecord, Section, AdmissionType, PeriodType, Address, StudyPlan, Period, SubjectLink, Schedule, EnrollmentDay, Billboard, User]
         can :ru, [School]
         #can :read, [Gr]
       else
+        can :manage, [User]
         user.admin.authorizeds.each do |authd|
             if authd.authorizable.klazz.eql? 'Subject' and authd.can_manage?
-                can :manage, [Dependency, Area]
+                can :manage, [SubjectLink, Area]
             end
             if authd.authorizable.klazz.eql? 'Student' and authd.can_manage?
-                can :manage, [User, Address, Grade]
+                can :manage, [Address, Grade]
                 can :read, [AdmissionType, StudyPlan]
+            end
+            if authd.authorizable.klazz.eql? 'AcademicProcess' and authd.can_read?
+                can :programation, [AcademicProcess]
+                can :enrollment_day, [AcademicProcess]
             end
             if authd.authorizable.klazz.eql? 'AcademicProcess' and authd.can_manage?
                 can :manage, [Period, PeriodType]
@@ -53,6 +59,7 @@ class Ability
             can :history, authd.authorizable_klazz_constantenize
 
         end
+
 
         # cannot :manage, [User, Admin, Student, Teacher, Area, Subject, School, Bank, BankAccount, PaymentReport, Course, Grade, AcademicProcess, EnrollAcademicProcess, AcademicRecord, Section, AdmissionType, PeriodType, Address]
       end

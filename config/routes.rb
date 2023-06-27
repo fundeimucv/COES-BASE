@@ -14,6 +14,7 @@ Rails.application.routes.draw do
       get 'constancias'
     end
   end
+  resources :subject_links, only: :destroy
   resources :page, only: :show
   resources :qualifications, only: :update
   resources :period_types
@@ -21,12 +22,19 @@ Rails.application.routes.draw do
   
   resources :sections do
     member do
-      get 'export'
-    end     
+      get :export
+    end
+    collection do
+      post :bulk_delete
+    end
+
   end
 
 
   resources :enroll_academic_processes do
+    member do
+      put :total_retire
+    end
     collection do
       post :reserve_space
       post :enroll
@@ -51,6 +59,7 @@ Rails.application.routes.draw do
       get 'clean_courses'
     end
     collection do
+      post :change_process_session
       post 'clone_sections'
     end
   end
@@ -77,7 +86,8 @@ Rails.application.routes.draw do
   resources :banks do
     resources :payment_reports
   end
-  
+  resources :schools, only: [:update]
+  resources :subjects, only: [:show]
   resources :faculties do
     resources :schools do
       resources :admission_types, :study_plans

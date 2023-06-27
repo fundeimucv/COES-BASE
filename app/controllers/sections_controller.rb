@@ -1,5 +1,5 @@
 class SectionsController < ApplicationController
-  before_action :set_section, only: %i[ show update export ]
+  before_action :set_section, only: %i[ show update export change]
 
   # GET /sections or /sections.json
   def index
@@ -12,31 +12,25 @@ class SectionsController < ApplicationController
     end
   end
 
+  def bulk_delete
+
+    if Section.where(id: params[:bulk_ids]).destroy_all
+      flash[:info] = 'Secciones Eliminadas'
+    else
+      flash[:danger] = 'Error al intentar eliminar las secciones'
+    end
+
+    redirect_back fallback_location: root_path
+  end
+
   # GET /sections/1 or /sections/1.json
   def show
     if current_admin or (current_teacher and @section.teacher and @section.teacher_id.eql? current_teacher.id)
-      @subject = @section.subject
-      @period = @section.period
-      @school = @section.school
-      @academic_records = @section.academic_records.sort_by_user_name
-
       respond_to do |format|
         format.html
         format.pdf do
-          # pdf_html = ActionController::Base.new.render_to_string(template: "sections/acta", layout: 'pdf')          
-          # pdf = WickedPdf.new.pdf_from_string(
-          #   pdf_html,
-          #   header: {content: render_to_string(partial: '/sections/acta_header'), font_size: '8'}#,
-          #   # footer: {
-          #   #   content: render_to_string(partial:
-          #   #     'sections/acta_header'
-          #   #   )
-          #   # }
-          # )
-          # send_data pdf, filename: "ACTA#{@section.number_acta}", disposition: :inline 
-          render pdf: "acta_#{@section.number_acta}", template: "sections/acta", formats: [:html], page_size: 'letter', footer: {center: "Página: [page] de [topage]", font_size: '10'},  margin: {top: 5} 
+          render pdf: "acta_#{@section.number_acta}", template: "sections/acta", locals: {section: @section}, formats: [:html], page_size: 'letter', header: {html: {template: '/sections/acta_header', formats: [:html], layout: false, locals: {school: @section.school, section: @section}}}, footer: {html: {template: '/sections/signatures', formats: [:html]}}, margin: {top: 70, bottom: 65}#, dpi: 150
         end
-
       end
     else
       flash[:warning] = 'Sección no asignada'
@@ -54,19 +48,20 @@ class SectionsController < ApplicationController
   # end
 
   # POST /sections or /sections.json
-  # def create
-  #   @section = Section.new(section_params)
+  def create
+    @section = Section.new(section_params)
 
-  #   respond_to do |format|
-  #     if @section.save
-  #       format.html { redirect_to section_url(@section), notice: "Section was successfully created." }
-  #       format.json { render :show, status: :created, location: @section }
-  #     else
-  #       format.html { render :new, status: :unprocessable_entity }
-  #       format.json { render json: @section.errors, status: :unprocessable_entity }
-  #     end
-  #   end
-  # end
+    respond_to do |format|
+      if @section.save
+        # @section.schedules.create(section_params.schedules_attributes)
+        format.html { redirect_back fallback_location: '/admin/academic_process', notice: "Sección Creada con Éxito!" }
+        format.json { render :show, status: :created, location: @section }
+      else
+        format.html { render :new, status: :unprocessable_entity }
+        format.json { render json: @section.errors, status: :unprocessable_entity }
+      end
+    end
+  end
 
   # PATCH/PUT /sections/1 or /sections/1.json
   def update
@@ -80,16 +75,6 @@ class SectionsController < ApplicationController
 
   end
 
-  # DELETE /sections/1 or /sections/1.json
-  # def destroy
-  #   @section.destroy
-
-  #   respond_to do |format|
-  #     format.html { redirect_to sections_url, notice: "Section was successfully destroyed." }
-  #     format.json { head :no_content }
-  #   end
-  # end
-
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_section
@@ -98,6 +83,10 @@ class SectionsController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def section_params
-      params.require(:section).permit(:code, :capacity, :course_id, :teacher_id, :qualified, :modality, :enabled)
+      params.require(:section).permit(:id, :code, :capacity, :course_id, :teacher_id, :qualified, :modality, :classroom, :enabled)
     end
+
+  # def schedules_params
+  #   params.require(:schedules).permit(:day, :starttime, :endtime)
+  # end
 end

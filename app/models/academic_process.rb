@@ -12,6 +12,8 @@ class AcademicProcess < ApplicationRecord
   # HISTORY:
   has_paper_trail on: [:create, :destroy, :update]
 
+  has_rich_text :enroll_instructions
+
   before_create :paper_trail_create
   before_destroy :paper_trail_destroy
   before_update :paper_trail_update
@@ -49,9 +51,19 @@ class AcademicProcess < ApplicationRecord
   # SCOPE:
   default_scope { order(name: :desc) }
 
+  scope :without_enroll_academic_processes, -> {left_joins(:enroll_academic_processes).where('enroll_academic_processes.academic_process_id': nil)}
+
   # CALLBACKS:
   before_save :set_name
 
+  def subject_active_for_this? subject_id
+    subjects.ids.include?(subject_id)
+  end
+
+
+  def period_name
+    period.name if period
+  end
 
   def exame_type
     "#{period.period_type.name.upcase} #{modality.upcase}" if (period and period.period_type and modality)
@@ -61,6 +73,10 @@ class AcademicProcess < ApplicationRecord
     max_credits = 24
     max_subject = 5
     modality = :semestral
+  end
+
+  def short_desc
+    "#{self.school.short_name} #{self.period.name}" if (self.school and self.period)
   end
 
   def get_name
@@ -108,6 +124,10 @@ class AcademicProcess < ApplicationRecord
     self.sections.without_teacher_assigned.count
   end
 
+  def enrolling?
+    self.id.eql? self.school.enroll_process_id
+  end
+
   def readys_to_enrollment_day
     # if process_before
     #   grades_before_ids = self.process_before.grades.ids
@@ -119,12 +139,21 @@ class AcademicProcess < ApplicationRecord
   end
 
   rails_admin do
-    navigation_label 'Gestión Periódica'
+    navigation_label 'Config Específica'
     navigation_icon 'fa-solid fa-calendar'
     weight -3
     list do
       sort_by 'periods.name'
+      field :school do
+        column_width 150
+
+        pretty_value do
+          value.short_name
+        end        
+        
+      end
       fields :period do
+        label 'Período'
         column_width 100
         pretty_value do
           value.name
@@ -137,6 +166,20 @@ class AcademicProcess < ApplicationRecord
           value.period.name if value
         end
       end
+
+      # field :active_enroll do
+      #   pretty_value do
+      #     current_user = bindings[:view]._current_user
+      #     admin = current_user.admin
+      #     active = admin and admin.authorized_manage? 'School'
+
+      #     if active
+      #       bindings[:view].render(partial: "/schools/form_enabled_enroll", locals: {academic_process: bindings[:object]})
+      #     else
+      #       value
+      #     end
+      #   end
+      # end
 
       field :total_sections do
         column_width 100
@@ -178,14 +221,25 @@ class AcademicProcess < ApplicationRecord
     end
 
     edit do
-      field :period
+      # group :default do
+      #   hide
+      # end      
+      field :period do
+        inline_edit false
+      end
       field :school do
+        hide
         inline_edit false
         inline_add false
       end
       field :modality
       field :process_before do
+        inline_edit false
+        inline_add false
         help 'Atención: Aún cuando este campo no es obligatorio y puede ser omitido (en caso de que se encuentre realizando migraciones de periodos anteriores) es muy importante para las Citas Horarias e Inscripciones'
+        pretty_value do
+          bindings[:object].period_name
+        end
       end
 
       field :max_credits do
@@ -193,6 +247,10 @@ class AcademicProcess < ApplicationRecord
       end
       field :max_subjects do
         label 'Máximo de asignaturas permitidas a inscribir'
+      end
+
+      field :enroll_instructions do
+        help 'Si desea agregar imágenes tome en cuenta el tamaño de misma y su ajuste a la pantalla dónde se desplegará'
       end
     end
 
@@ -203,36 +261,37 @@ class AcademicProcess < ApplicationRecord
           bindings[:view].render(partial: "/academic_processes/desc_table", locals: {academic_process: bindings[:object]})
         end
       end
+      field :enroll_instructions
 
-      field :courses do
-        visible do
-          user = bindings[:view]._current_user
-          (user and user.admin and user.admin.authorized_manage? 'AcademicProcess')
-        end
-        label 'Opciones de Oferta Docente'
-        pretty_value do
-          bindings[:view].render(partial: "/academic_processes/clonation_options", locals: {academic_process: bindings[:object]})
-        end
-      end
+      # field :courses do
+      #   visible do
+      #     user = bindings[:view]._current_user
+      #     (user and user.admin and user.admin.authorized_manage? 'AcademicProcess')
+      #   end
+      #   label "Programación"
+      #   pretty_value do
+      #     bindings[:view].render(partial: "/academic_processes/programation", locals: {academic_process: bindings[:object]})
+      #   end
+      # end
 
-      field :enrollment_days do
-        visible do
-          user = bindings[:view]._current_user
-          (user and user.admin and user.admin.authorized_manage? 'AcademicProcess')
-        end
-        pretty_value do
-          if bindings[:object].process_before
-            enrollment_days = bindings[:object].enrollment_days
-            grades_without_appointment = bindings[:object].readys_to_enrollment_day
+      # field :enrollment_days do
+      #   visible do
+      #     user = bindings[:view]._current_user
+      #     (user and user.admin and user.admin.authorized_manage? 'AcademicProcess')
+      #   end
+      #   pretty_value do
+      #     if bindings[:object].process_before
+      #       enrollment_days = bindings[:object].enrollment_days
+      #       grades_without_appointment = bindings[:object].readys_to_enrollment_day
 
-            bindings[:view].render(partial: "/enrollment_days/index", locals: {enrollment_days: enrollment_days, grades_without_appointment: grades_without_appointment, academic_process: bindings[:object]})
+      #       bindings[:view].render(partial: "/enrollment_days/index", locals: {enrollment_days: enrollment_days, grades_without_appointment: grades_without_appointment, academic_process: bindings[:object]})
 
-          else
-            bindings[:view].content_tag(:p, 'Sin proceso academico anterio vinculado. Para habilitar el sistema de Cita Horaria en este proceso académico, por favor edítelo y agregue un proceso anteriór', {class: 'alert alert-warning'})
-          end
-        end
+      #     else
+      #       bindings[:view].content_tag(:p, 'Sin proceso academico anterio vinculado. Para habilitar el sistema de Cita Horaria en este proceso académico, por favor edítelo y agregue un proceso anteriór', {class: 'alert alert-warning'})
+      #     end
+      #   end
 
-      end
+      # end
     end
 
     export do

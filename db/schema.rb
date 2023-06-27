@@ -10,7 +10,9 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_05_08_122533) do
+
+ActiveRecord::Schema[7.0].define(version: 2023_06_26_154756) do
+
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -108,6 +110,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_08_122533) do
     t.bigint "school_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "code"
     t.index ["school_id"], name: "index_admission_types_on_school_id"
   end
 
@@ -190,15 +193,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_08_122533) do
     t.string "name"
     t.index ["academic_process_id"], name: "index_courses_on_academic_process_id"
     t.index ["subject_id"], name: "index_courses_on_subject_id"
-  end
-
-  create_table "dependencies", force: :cascade do |t|
-    t.bigint "subject_parent_id", null: false
-    t.bigint "subject_dependent_id", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["subject_dependent_id"], name: "index_dependencies_on_subject_dependent_id"
-    t.index ["subject_parent_id"], name: "index_dependencies_on_subject_parent_id"
   end
 
   create_table "enroll_academic_processes", force: :cascade do |t|
@@ -319,7 +313,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_08_122533) do
     t.integer "type_entity", default: 0, null: false
     t.boolean "enable_subject_retreat"
     t.boolean "enable_change_course"
-    t.boolean "enable_dependents"
+    t.boolean "enable_dependents", default: false, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "faculty_id"
@@ -367,6 +361,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_08_122533) do
     t.string "grade_title"
     t.string "grade_university"
     t.integer "graduate_year"
+    t.integer "sede", default: 0, null: false
     t.index ["user_id"], name: "index_students_on_user_id"
   end
 
@@ -378,6 +373,16 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_08_122533) do
     t.datetime "updated_at", null: false
     t.integer "total_credits", default: 0
     t.index ["school_id"], name: "index_study_plans_on_school_id"
+  end
+
+  create_table "subject_links", force: :cascade do |t|
+    t.bigint "prelate_subject_id", null: false
+    t.bigint "depend_subject_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["depend_subject_id"], name: "index_subject_links_on_depend_subject_id"
+    t.index ["prelate_subject_id", "depend_subject_id"], name: "link_parent_depend", unique: true
+    t.index ["prelate_subject_id"], name: "index_subject_links_on_prelate_subject_id"
   end
 
   create_table "subject_types", force: :cascade do |t|
@@ -475,8 +480,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_08_122533) do
   add_foreign_key "bank_accounts", "schools"
   add_foreign_key "courses", "academic_processes"
   add_foreign_key "courses", "subjects"
-  add_foreign_key "dependencies", "subjects", column: "subject_dependent_id"
-  add_foreign_key "dependencies", "subjects", column: "subject_parent_id"
   add_foreign_key "enroll_academic_processes", "academic_processes"
   add_foreign_key "enroll_academic_processes", "grades"
   add_foreign_key "enrollment_days", "academic_processes"
@@ -495,6 +498,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_08_122533) do
   add_foreign_key "sections_teachers", "teachers", primary_key: "user_id"
   add_foreign_key "students", "users"
   add_foreign_key "study_plans", "schools"
+  add_foreign_key "subject_links", "subjects", column: "depend_subject_id"
+  add_foreign_key "subject_links", "subjects", column: "prelate_subject_id"
   add_foreign_key "subject_types", "study_plans"
   add_foreign_key "subjects", "areas"
   add_foreign_key "teachers", "areas"

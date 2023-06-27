@@ -1,4 +1,5 @@
 es:
+  js: 'Javascript'
   delete: Eliminar
   edit: Editar
   new: Nuevo
@@ -9,7 +10,7 @@ es:
   history_index: Bitácora
   history_show: Bitácora
 
-  dashboard: Escritorio
+  dashboard: Principal
   diferido: ND
   final: NF
   reparacion: NR
@@ -36,6 +37,9 @@ es:
     misc:
       more: 'Más'
       count: Total
+      root_navigation: Otro
+      down: Ver Todos
+      up: Ocultar
     table_headers:
       model_name: 'Entidad'
       last_created: 'Último Creado'
@@ -47,6 +51,21 @@ es:
       changes: 'Acción Realizada'    
 
     actions:
+      enrollment_day: 
+        title: "Cita Horaria"
+        menu: "Cita Horaria"
+        breadcrumb: "Cita Horaria"
+        link: "Cita Horaria"      
+      programation: 
+        title: "Periodo"
+        menu: "Programación"
+        breadcrumb: "Programación"
+        link: "Programación"
+      personal_data: 
+        title: "Datos Personales"
+        menu: "Datos Personales"
+        breadcrumb: "Datos Personales"
+        link: "Datos Personales"
       index:
         title: 'Listado'
     flash:
@@ -288,46 +307,55 @@ es:
           attributes:
             period:
               required: requerido
-        dependency:
+        admin:
           attributes:
-            subject_dependent:
-              required: requerido
+            env_authorizable:
+              required: 'requerido'
         grade:
           attributes:
             admission_type:
               required: requerido
-        students:
+        payment_report:
           attributes:
-            user:
-              required: requerido
-        admin:
-          attributes:
-            env_authorizable:
+            payable:
               required: 'requerido'
         school:
           attributes:
             faculty:
               required: 'requerida'
-        payment_report:
+        sections:
           attributes:
-            payable:
-              required: 'requerido'
-        subject:
+            course:
+              required: Curso
+        students:
           attributes:
-            area:
-              required: 'requerida'
+            user:
+              required: requerido
         student:
           attributes:
             user:
               required: requerido
+        subject_link:
+          attributes:
+            depend_subject:
+              required: requerido
+        subject_type:
+          attributes:
+            required_credits:
+              required: requerido
+              in: dentro
+        subject:
+          attributes:
+            area:
+              required: 'requerida'
         qualification:
           attributes:
             value:
               in: 'Valores deben estar estre 0 y 20'
     models:
       academic_process:
-        one: 'Proceso Académico'
-        other: 'Procesos Académicos'
+        one: 'Período'
+        other: 'Períodos'
       academic_record:
         one: 'Registro Académico'
         other: 'Registros Académicos'
@@ -362,8 +390,8 @@ es:
         one: 'Curso'
         other: 'Cursos'
       enroll_academic_process:
-        one: 'Inscripción en Proceso Académico'
-        other: 'Inscripciones en Proceso Académico'
+        one: 'Inscripción en Periodo'
+        other: 'Inscripciones en Periodo'
       enrollment_days:
         one: 'Jornada de Inscripción por Cita Horaria'
         other: 'Jornadas de Inscripción por Cita Horaria'
@@ -395,8 +423,8 @@ es:
         one: 'Escuela'
         other: 'Escuelas'
       section:
-        one: Oferta Docente
-        other: Oferta Docente
+        one: Sección
+        other: Secciones
       student:
         one: 'Estudiante'
         other: 'Estudiantes'
@@ -428,15 +456,16 @@ es:
         period: 'Período'
         max_credits: 'Máximo Créditos'
         max_subjects: 'Máximas Asignaturas'
-        enroll_academic_processes: 'Inscripciones en Proceso Académico'
+        enroll_academic_processes: 'Inscripciones en Período'
         grades: 'Grados'
         students: 'Estudiantes'
-        modality: 'Modalidad'
-        process_before: Proceso Anterior
+        modality: 'Tipo'
+        process_before: Período Anterior
         enrollment_days: Jornadas de Inscripción por Cita Horaria
+        enroll_instructions: Instrucciones Para la Inscripción
       academic_record:
-        section: 'Oferta Docente'
-        enroll_academic_process: 'Inscripción en Proceso Académico'
+        section: 'Sección'
+        enroll_academic_process: 'Inscripción en Período'
         first_q: 'Primera Calificación'
         second_q: 'Segunda Calificación'
         third_q: 'Tercera Calificación'
@@ -448,7 +477,7 @@ es:
         period: 'Período'
         subject: 'Asignatura'
         grade: 'Grado'
-        academic_process: 'Proceso Académico'
+        academic_process: 'Período'
         period_type: 'Tipo de Período'
         user: 'Usuario'
         status: Estado
@@ -479,6 +508,7 @@ es:
         profile: 'Perfil de Usuario' 
         created_at: 'Fecha Registro'
       admission_type:
+        code: Código
         name: 'Nombre'
         school: 'Escuela'
         total_students: 'Total Estudiantes'
@@ -499,7 +529,7 @@ es:
         account_type: 'Tipo de Cuenta'
         school: 'Escuela'
       billboard:
-        active: 'Activa'
+        active: 'Publicar'
         created_at: 'Fecha de Creación'
         updated_at: 'Fecha de Edición'
         content: 'Contenido de Cartelera'
@@ -507,13 +537,13 @@ es:
         area: 'Área'
         period: Período
         school: Escuela
-        sections: Oferta Docente
-        academic_process: 'Proceso Académico'
+        sections: Secciones
+        academic_process: 'Período'
         subject: 'Asignatura'
         offer_as_pci: 'Ofertar cómo PCI'
       enroll_academic_process:
         grade: 'Grado'
-        academic_process: 'Proceso Académico'
+        academic_process: 'Período'
         enroll_status: 'Estado de Inscripción'
         permanence_status: 'Estado de Permanencia'
         student: 'Estudiante'
@@ -580,9 +610,9 @@ es:
         type_entity: 'Tipo de Entidad'
         enable_subject_retreat: 'Activar retiro de Asignturas'
         enable_change_course: 'Activar cambio de Sección'
-        enable_dependents: 'Activar Dependencias'
-        active_process: Proceso Académico Activo
-        enroll_process: Abrir Inscripción en Proceso Académico 
+        enable_dependents: 'Activar Prelaciones'
+        active_process: Período Activo
+        enroll_process: Inscripción en Período
         faculty: 'Facultad'
         periods: 'Períodos'
         areas: 'Áreas'
@@ -598,16 +628,16 @@ es:
         area: 'Área'
         code: 'Sección'
         capacity: 'Capacidad'
-        course: 'Proceso/Asignatura'
+        course: 'Curso (Período/Asignatura)'
         teacher: 'Profesor'
         qualified: '¿Calificada?'
-        modality: 'Modalidad'
+        modality: 'Tipo'
         enabled: 'Activa'
         user: 'Profesor'
         subject: 'Asignatura'
         nota_final: 'Final'
-        academic_process: Proceso Académico
-        period: Período
+        academic_process: Período
+        period: Año
         school: Escuela
         faculty: Facultad
         academic_records: 'Registros Académicos'
@@ -636,6 +666,7 @@ es:
         grade_university: Universidad
         graduate_year: Año de Graduado
       study_plan:
+        school: 'Escuela'
         code: 'Código'
         name: 'Nombre'
         subject_types: 'Tipos de Asignatura'
@@ -648,16 +679,19 @@ es:
         unit_credits: 'Unidad de Créditos'
         ordinal: 'Orden'
         qualification_type: 'Tipo de calificación'
-        modality: 'Modalidad'
+        modality: 'Tipo'
         area: 'Área'
-        subject_parents: Asignaturas de Prelaciones
-        subject_dependents: Asignaturas de Dependencias
+        prelate_subjects: Prelada por
+        depend_subjects: Asignaturas que prela
         created_at: 'Fecha de Registro'
         updated_at: 'Fecha de Actualización'
       subject_type:
+        study_plan: Plan de Estudio
         name: Nombre
         code: Letra Identificativa
         required_credits: Créditos Requeridos 
+        created_at: Creado en
+        updated_at: Actualizado en
       teacher:
         area: 'Área'
         user: 'Usuario'

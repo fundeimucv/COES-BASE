@@ -41,7 +41,9 @@ class AcademicRecord < ApplicationRecord
   validates_uniqueness_of :enroll_academic_process, scope: [:section], message: 'Ya inscrito en la sección', field_name: false
 
   validates_with SamePeriodValidator, field_name: false  
-  validates_with SameSchoolValidator, field_name: false  
+  validates_with SameSchoolValidator, field_name: false
+  validates_with SameSubjectInPeriodValidator, field_name: false, if: :new_record?
+  validates_with ApprovedAndEnrollingValidator, field_name: false
 
   # validates :qualifications, presence: true, if: lambda{ |object| (object.subject.present? and object.subject.numerica? and (object.aprobado? or object.aplazado? or object.equivalencia? ))}
 
@@ -116,11 +118,14 @@ class AcademicRecord < ApplicationRecord
   # Esta función retorna la misma cuenta agrupadas por creditos de asignaturas
   scope :student_enrolled_by_credits2, -> { joins(:subject).group('academic_records.student_id', 'subjects.unit_credits').count} 
 
-  scope :by_subjects, -> {joins(:subject).order('subjects.code': :asc)}
+  scope :sort_by_subject_code, -> {joins(:subject).order('subjects.code': :asc)}
+  scope :sort_by_subject_name, -> {joins(:subject).order('subjects.name': :asc)}
+
+
   scope :by_subject_types, -> (tipo){joins(:subject).where('subjects.modality': tipo.downcase)}
   # scope :perdidos, -> {perdida_por_inasistencia}
 
-  scope :sort_by_user_name, -> {joins(:user).order('users.last_name desc, users.first_name')}
+  scope :sort_by_user_name, -> {joins(:user).order('users.last_name asc, users.first_name asc')}
 
 
   # FUNCTIONS:
@@ -210,6 +215,22 @@ class AcademicRecord < ApplicationRecord
 
   def name
     "#{user.ci_fullname} en #{section.name}" if (user and section)
+  end
+
+  def absolute?
+    subject&.absoluta?
+  end
+
+  def cal_alfa
+    if absolute? or pi? or rt?
+      desc_conv_absolute
+    else
+      'NF'
+    end
+  end
+
+  def rt?
+    retirado?
   end
 
   def desc_conv_absolute
@@ -380,7 +401,7 @@ class AcademicRecord < ApplicationRecord
 
   # RAILS_ADMIN
   rails_admin do
-    navigation_label 'Gestión Periódica'
+    navigation_label 'Reportes'
     navigation_icon 'fa-solid fa-signature'
     weight 1
     # visible false
@@ -499,9 +520,49 @@ class AcademicRecord < ApplicationRecord
       end
     end
 
-    edit do
+    update do
+      field :period do
+        pretty_value do
+          bindings[:view].content_tag(:b, bindings[:object].period.name)
+        end
+        read_only true
+      end 
+      field :subject do
+        pretty_value do
+          bindings[:view].content_tag(:b, bindings[:object].subject.name)
+        end
+
+        read_only true
+      end
+
       field :section do
-        inline_add false
+        label 'Sección'
+        pretty_value do
+          bindings[:view].content_tag(:b, bindings[:object].section.code)
+        end
+        read_only true
+      end 
+
+      field :status do
+        visible do
+          user = bindings[:view]._current_user
+          (user and user.admin and user.admin.authorized_manage? 'Qualification')
+        end
+      end
+      field :qualifications do
+        visible do
+          user = bindings[:view]._current_user
+          (user and user.admin and user.admin.authorized_manage? 'Qualification')
+        end
+      end
+    end
+
+    edit do
+      field :course do
+        inline_edit false
+        label 'Curso'
+      end
+      field :section do
         inline_edit false
         help 'Ingrese el código de la asignatura y SELECCIONE la correspondiente al período y código de la sección'
       end
@@ -523,6 +584,10 @@ class AcademicRecord < ApplicationRecord
           (user and user.admin and user.admin.authorized_manage? 'Qualification')
         end
       end
+    end
+
+    show do
+      
     end
 
     export do

@@ -53,9 +53,14 @@ class Grade < ApplicationRecord
 
   # ATENCIÓN: EL UNIQ DEBO HACERLO EN EL LLAMADO DEL SCOPE ANTERIOR YA QUE DE LO CONTRARIO DEVUELVE LA CANTIDAD DE REGISTROS VINCULADOS A LAS enroll_academic_processes
 
-  scope :enrolled_in_academic_process, -> (academic_process_id) { joins(:academic_processes).where('academic_processes.id': academic_process_id) }
+  scope :enrolled_in_academic_process, -> (academic_process_id) { joins(:enroll_academic_processes).where('enroll_academic_processes.academic_process_id': academic_process_id) }
 
-  scope :not_enrolled_in_academic_process, -> (academic_process_id) { joins(:enroll_academic_processes, :academic_processes).where.not("academic_processes.id": academic_process_id) }
+  # scope :not_enrolled_in_academic_process, -> (academic_process_id) { joins(:enroll_academic_processes, :academic_processes).where.not("academic_processes.id": academic_process_id) }
+
+  scope :not_enrolled_in_academic_process, -> (academic_process_id) {joins(:enroll_academic_processes).where('enroll_academic_processes.academic_process_id != ?', academic_process_id)}
+
+  scope :left_not_enrolled_in_academic_process, -> (academic_process_id) {left_joins(:enroll_academic_processes).where('enroll_academic_processes.academic_process_id != ?', academic_process_id)}
+
 
   scope :sort_by_numbers, -> () {order([efficiency: :desc, simple_average: :desc, weighted_average: :desc])}
   
@@ -75,6 +80,11 @@ class Grade < ApplicationRecord
   scope :custom_search, -> (keyword) { joins(:user, :school).where("users.ci ILIKE '%#{keyword}%' OR schools.name ILIKE '%#{keyword}%'") }
 
   # FUNCTIONS:
+
+  def academic_processes_unenrolled
+    school.academic_processes.joins(period: :period_type).order('periods.year DESC, period_types.code DESC').reject{|ap|self.academic_processes.ids.include?(ap.id)}
+  end
+
   # APPOINTMENT_TIME:
   def appointment_slot_time
     (self.appointment_time and self.duration_slot_time) ? self.appointment_time+self.duration_slot_time.minutes : nil    
@@ -113,30 +123,40 @@ class Grade < ApplicationRecord
     end
   end
 
+  def any_approved?
+    academic_records.aprobado.any?
+  end
+
   def subjects_offer_by_dependent
     # Buscamos los ids de las asignaturas aprobadas
-    aprobadas_ids = subjects_approved.ids
 
-    # Buscamos por ids de las asignaturas que dependen de las aprobadas
-    subjects_dependients_ids = Dependency.where('subject_parent_id IN (?)', aprobadas_ids).map{|dep| dep.subject_dependent_id}
+    if is_new? or !any_approved?
+      Subject.independents.where(ordinal: 1)
+    else
+      aprobadas_ids = self.subjects_approved_ids
 
-    ids_subjects_positives = []
+      # Buscamos por ids de las asignaturas que dependen de las aprobadas
+      dependent_subject_ids = SubjectLink.in_prelation(aprobadas_ids).not_in_dependency(aprobadas_ids).pluck(:depend_subject_id).uniq
 
-    # Ahora por cada asignatura habilitada miramos sus respectivas dependencias a ver si todas están aprobadas
+      # ids_subjects_positives = []
 
-    subjects_dependients_ids.each do |subj_id|
-      ids_aux = Dependency.where(subject_dependent_id: subj_id).map{|dep| dep.subject_parent_id}
-      ids_aux.reject!{|id| aprobadas_ids.include? id}
-      ids_subjects_positives << subj_id if (ids_aux.eql? []) #Si aprobó todas las dependencias
+      # Ahora por cada asignatura válida miramos sus respectivas dependencias a ver si todas están aprobadas
+
+      # OJO: REVISAR, Creo que este paso es REDUNDANTE, si tienes las dependencias de las aprovadas, no deberías mirar si aprobó las asignaturas de esas dependencias. 
+      # dependent_subject_ids.each do |subj_id|
+      #   ids_aux = SubjectLink.where(depend_subject_id: subj_id).map{|dep| dep.prelate_subject_id}
+      #   ids_aux.reject!{|id| aprobadas_ids.include? id}
+      #   ids_subjects_positives << subj_id if (ids_aux.eql? []) #Si aprobó todas las dependencias
+      # end
+
+      # Buscamos las asignaturas sin prelación
+      ids_subjects_independients = self.school.subjects.independents.not_inicial.ids
+
+      # Sumamos todas las ids ()
+      asignaturas_disponibles_ids = dependent_subject_ids + ids_subjects_independients
+
+      Subject.where(id: asignaturas_disponibles_ids)
     end
-
-    # Buscamos las asignaturas sin prelación
-    ids_subjects_independients = self.school.subjects.independents.ids
-
-    # Sumamos todas las ids ()
-    asignaturas_disponibles_ids = ids_subjects_positives + ids_subjects_independients
-
-    Subject.where(id: asignaturas_disponibles_ids)
   end
 
   def is_new?
@@ -172,7 +192,11 @@ class Grade < ApplicationRecord
   end
 
   def subjects_approved
-    self.academic_records.aprobado.joins(:subject).select('subjects.id')
+    self.academic_records.aprobado.joins(:subject)
+  end
+
+  def subjects_approved_ids
+    self.academic_records.aprobado.joins(:subject).select('subjects.id').map{|su| su.id}
   end
 
   # TOTALS CREDITS:

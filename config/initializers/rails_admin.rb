@@ -3,7 +3,7 @@ RailsAdmin.config do |config|
   config.asset_source = :webpack
 
   ### Popular gems integration
-  config.main_app_name = Proc.new { |controller| [ "Coes", "FAU - #{I18n.t(controller.params[:action]).try(:titleize)}" ] }
+  config.main_app_name = Proc.new { |controller| [ "Coes", "FAU" ] }
 
   ## == Devise ==
   config.authenticate_with do
@@ -26,9 +26,12 @@ RailsAdmin.config do |config|
   ## To disable Gravatar integration in Navigation Bar set to false
   config.show_gravatar = false
 
+  config.label_methods << :description # Default is [:name, :title]
+
+  # NO FUNCIONA
   # config.show_gravatar do |config|
   #   config.gravatar_url do
-  #     current_user.profile_picture
+  #     main_app.url_for(current_user.profile_picture_as_thumbs)
   #   end
   # end
 
@@ -47,36 +50,84 @@ RailsAdmin.config do |config|
   # config.navigation_static_label = "Opciones"
 
   config.actions do
-    dashboard                     # mandatory
-    require_relative '../../lib/rails_admin/config/actions/dashboard'
+    
+    dashboard do                     # mandatory
+      # require_relative '../../lib/rails_admin/config/actions/dashboard'
+      show_in_menu false
+      show_in_navigation false
+      visible false
+    end
+
     index do                         # mandatory
 
-      except [SectionTeacher, Profile, Address, EnrollmentDay, Qualification, Dependency, Tutorial]
+      require_relative '../../lib/rails_admin/config/actions/index'
+      except [SectionTeacher, Profile, Address, EnrollmentDay, Qualification, SubjectLink, Tutorial]
       # except [Address, SectionTeacher, Profile, User, StudyPlan, Period, Course, Faculty]
 
     end
-    new do
-      except [School, Faculty]
+
+    member :programation do 
+      # subclass Base. Accessible at /admin/<model_name>/<id>/my_member_action
+      only [AcademicProcess]
+      # i18n_key :edit # will have the same menu/title labels as the Edit action.
+      link_icon do
+          'fa-solid fa-shapes'
+      end
     end
+
+    member :enrollment_day do 
+
+      only [AcademicProcess]
+      link_icon do
+          'fa-solid fa-bell'
+      end
+    end
+
+    member :personal_data do 
+      only [Student]
+      link_icon do
+          'fa-solid fa-id-card'
+      end
+    end
+
+    new do
+      except [School, Faculty, EnrollAcademicProcess, AcademicRecord, Course]
+    end
+
     export do
+      require_relative '../../lib/rails_admin/config/actions/export'
       except [Faculty, School, StudyPlan, GroupTutorial, Tutorial]
     end
+
     bulk_delete do
-      only [AcademicRecord, Section, Course]
+      only [AcademicRecord, Section]
     end
-    show
-    edit
+
+    show do
+      except [School, StudyPlan, AcademicRecord]
+    end
+
+    edit do
+      except [EnrollAcademicProcess, AcademicRecord, Course, Section]
+    end
+
     delete do
-      except [School, StudyPlan, Faculty, EnrollAcademicProcess]
+      except [School, StudyPlan, Faculty, EnrollAcademicProcess, AcademicRecord, Course, Section]
     end
+
     import do
       only [Student, Teacher, Subject, Section, AcademicRecord]
     end
     # show_in_app
 
     ## With an audit adapter, you can add:
-    history_index
-    history_show
+    history_index do
+      except [School, StudyPlan]
+    end
+
+    history_show do
+      except [School, StudyPlan]
+    end
   end
 
   # config.model Section do

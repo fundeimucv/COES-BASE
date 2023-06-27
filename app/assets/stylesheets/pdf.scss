@@ -7,6 +7,8 @@
 .nobreak:before { clear:both; }
 .nobreak { page-break-inside: avoid; }
 
+.h-30{height:30px;}
+
 .image_profile{
   position: absolute;
   left: 20px;
@@ -57,6 +59,14 @@ text-left{
 	background-repeat: repeat;
 	opacity: 0.1;
 	transform: rotate(30deg);
+
+}
+
+#watermark_bg_acta{
+	background-image: url('logo_ucv_bg_acta.png');
+	background-position: center;
+	background-size: 600;
+	background-repeat: repeat-y;
 
 }
 
