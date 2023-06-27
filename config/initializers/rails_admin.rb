@@ -57,7 +57,7 @@ RailsAdmin.config do |config|
       visible false
     end
     index do                         # mandatory
-
+      require_relative '../../lib/rails_admin/config/actions/index'
       except [SectionTeacher, Profile, Address, EnrollmentDay, Qualification, SubjectLink]
       # except [Address, SectionTeacher, Profile, User, StudyPlan, Period, Course, Faculty]
 
@@ -88,16 +88,17 @@ RailsAdmin.config do |config|
     end
 
     new do
-      except [School, Faculty, EnrollAcademicProcess, AcademicRecord]
+      except [School, Faculty, EnrollAcademicProcess, AcademicRecord, Course]
     end
     export do
+      require_relative '../../lib/rails_admin/config/actions/export'
       except [Faculty, School, StudyPlan]
     end
     bulk_delete do
       only [AcademicRecord, Section]
     end
     show do
-      except [School, StudyPlan, AcademicRecord, Course]
+      except [School, StudyPlan, AcademicRecord]
     end
     edit do
       except [EnrollAcademicProcess, AcademicRecord, Course, Section]
