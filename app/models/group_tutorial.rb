@@ -1,6 +1,7 @@
 class GroupTutorial < ApplicationRecord
     ## Relations
-    has_many :tutorials
+    has_many :tutorials, dependent: :destroy
+    accepts_nested_attributes_for :tutorials, allow_destroy: true
 
     ## HISTORY:
     has_paper_trail on: [:create, :destroy, :update]
@@ -20,7 +21,6 @@ class GroupTutorial < ApplicationRecord
 		navigation_icon 'fa-regular fa-laptop-code'
 
 		list do
-			field :id
 			field :name_group
 			field :tutorials
 			field :description

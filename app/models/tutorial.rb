@@ -1,6 +1,6 @@
 class Tutorial < ApplicationRecord
   ## Relations
-  belongs_to :group_tutorial 
+  belongs_to :group_tutorial
 
   ## HISTORY:
   has_paper_trail on: [:create, :destroy, :update]
@@ -13,14 +13,21 @@ class Tutorial < ApplicationRecord
 
   ## Storage
   has_one_attached :video
+  attr_accessor :remove_video
+  after_save { video.purge if remove_video.eql? '1' }
+  after_destroy {video.purge}
+  
 
   ## Validations
   validates :name_function, presence: true
   validates :video, presence: true
 
+  def get_url_temp
+    (self.video&.attached?) ? Rails.application.routes.url_helpers.rails_blob_path(self.video, only_path: true) : nil
+  end
+
   rails_admin do
     list do
-      field :id
       field :group_tutorial
       field :name_function
       field :video
@@ -30,7 +37,6 @@ class Tutorial < ApplicationRecord
     end		
 
     edit do
-      field :group_tutorial
       field :name_function
       field :video
       field :description
@@ -39,7 +45,25 @@ class Tutorial < ApplicationRecord
     show do
       field :group_tutorial
       field :name_function
-      field :video
+
+      # field :video do |vid|
+      #   video_tag Rails.application.routes.url_helpers.rails_blob_url(vid.video.attachment.blob),:controls=>true, :autobuffer=>true,:size => "200x150" rescue nil
+      # end
+
+      # field :video do
+      #   pretty_value do
+      #     bindings[:view].video_tag(bindings[:object].video.attachment.blob)
+      #   end
+      # end
+
+      field :video do
+        pretty_value do
+          bindings[:view].render(partial: '/tutorials/show_video', locals: {url: bindings[:object].get_url_temp})
+        end
+
+      end
+
+
       field :description
     end		
   end
