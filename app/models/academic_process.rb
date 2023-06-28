@@ -144,6 +144,7 @@ class AcademicProcess < ApplicationRecord
     weight -3
     list do
       sort_by 'periods.name'
+
       field :school do
         column_width 150
 
@@ -181,13 +182,15 @@ class AcademicProcess < ApplicationRecord
       #   end
       # end
 
+
       field :total_sections do
+
         column_width 100
-        label 'T Sec.'
+        label 'Secciones'
         pretty_value do 
           user = bindings[:view]._current_user
           if (user and user.admin and user.admin.authorized_read? 'Section')
-            %{<a href='/admin/section?query=#{bindings[:object].period.name}'><span class='badge bg-info'>#{value}</span></a>}.html_safe
+            %{<a href='/admin/section?query=#{bindings[:object].period.name}' title='Total Secciones'><span class='badge bg-info'>#{value}</span></a>}.html_safe
           else
             %{<span class='badge bg-info'>#{value}</span>}.html_safe
           end
@@ -196,11 +199,11 @@ class AcademicProcess < ApplicationRecord
 
       field :total_enroll_academic_processes do
         column_width 100
-        label 'T Inscritos'
+        label 'Estudiantes'
         pretty_value do
           user = bindings[:view]._current_user
           if (user and user.admin and user.admin.authorized_read? 'EnrollAcademicProcess')
-            %{<a href='/admin/enroll_academic_process?query=#{bindings[:object].period.name}'><span class='badge bg-info'>#{value}</span></a>}.html_safe
+            %{<a href='/admin/enroll_academic_process?query=#{bindings[:object].period.name}' title='Total Estudiantes Inscritos'><span class='badge bg-info'>#{value}</span></a>}.html_safe
           else
             %{<span class='badge bg-info'>#{value}</span>}.html_safe
           end
@@ -208,11 +211,11 @@ class AcademicProcess < ApplicationRecord
       end
       field :total_academic_records do
         column_width 100
-        label 'T Inscripciones'
+        label 'Asignaturas'
         pretty_value do
           user = bindings[:view]._current_user
           if (user and user.admin and user.admin.authorized_read? 'AcademicRecord')          
-            %{<a href='/admin/academic_record?query=#{bindings[:object].period.name}'><span class='badge bg-info'>#{value}</span></a>}.html_safe
+            %{<a href='/admin/academic_record?query=#{bindings[:object].period.name}' title='Totas Asignaturas Inscritas'><span class='badge bg-info'>#{value}</span></a>}.html_safe
           else
             %{<span class='badge bg-info'>#{value}</span>}.html_safe
           end
