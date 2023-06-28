@@ -1,4 +1,9 @@
 class Tutorial < ApplicationRecord
+  # Shema:
+  # t.string "name_function"
+  # t.bigint "group_tutorial_id", null: false
+
+
   ## Relations
   belongs_to :group_tutorial
 
@@ -21,6 +26,10 @@ class Tutorial < ApplicationRecord
   ## Validations
   validates :name_function, presence: true
   validates :video, presence: true
+
+  def name
+    self.name_function
+  end
 
   def get_url_temp
     (self.video&.attached?) ? Rails.application.routes.url_helpers.rails_blob_path(self.video, only_path: true) : nil

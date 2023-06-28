@@ -16,22 +16,27 @@ class GroupTutorial < ApplicationRecord
     validates :name_group, presence: true
     #validates :tutorials, presence: true
 
+    def name
+    	name_group
+    end
+
     rails_admin do
 		navigation_label 'Informativos'
 		navigation_icon 'fa-regular fa-laptop-code'
 
 		list do
 			field :name_group
-			field :tutorials
 			field :description
+			field :tutorials do
+			end
 			field :created_at
 			field :updated_at
 		end		
 
 		edit do
 			field :name_group
-			field :tutorials
 			field :description
+			field :tutorials
 		end		
 
 		show do
