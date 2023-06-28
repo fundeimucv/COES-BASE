@@ -16,7 +16,7 @@ class Ability
     if user.admin?
       can :access, :rails_admin
       can :manage, :dashboard
-      can :read, [Faculty, GroupTutorial, Tutorial]
+      can :read, [Faculty, Tutorial]
 
       if user.admin.desarrollador?
         can :manage, :all

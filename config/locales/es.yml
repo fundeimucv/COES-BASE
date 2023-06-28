@@ -707,8 +707,8 @@ es:
         updated_at: 'Actualizado'
       tutorial:
         id: 'Vídeo N°'
-        group_tutorial: 'Módulo Perteneciente'
-        name_function: 'Nombre de la Función'
+        group_tutorial: 'Módulo'
+        name_function: 'Nombre'
         description: 'Descripción'
         video: 'Vídeo Demostrativo'
         created_at: 'Creado'

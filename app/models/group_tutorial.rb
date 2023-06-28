@@ -1,4 +1,8 @@
 class GroupTutorial < ApplicationRecord
+    # Schema:
+    # t.string "name_group"
+    # has_rich_text :description
+
     ## Relations
     has_many :tutorials, dependent: :destroy
     accepts_nested_attributes_for :tutorials, allow_destroy: true
@@ -10,7 +14,7 @@ class GroupTutorial < ApplicationRecord
     before_update :paper_trail_update
 
     ## Rich Text
-    has_rich_text :description    
+    has_rich_text :description
 
     ## Validations
     validates :name_group, presence: true
@@ -27,22 +31,18 @@ class GroupTutorial < ApplicationRecord
 		list do
 			field :name_group
 			field :description
-			field :tutorials do
-			end
-			field :created_at
-			field :updated_at
+			field :tutorials
 		end		
 
 		edit do
 			field :name_group
 			field :description
-			field :tutorials
 		end		
 
 		show do
 			field :name_group
-			field :tutorials
 			field :description
+			field :tutorials
 		end		
 	end
 

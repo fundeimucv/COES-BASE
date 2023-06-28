@@ -22,10 +22,16 @@ class Tutorial < ApplicationRecord
   after_save { video.purge if remove_video.eql? '1' }
   after_destroy {video.purge}
   
-
   ## Validations
   validates :name_function, presence: true
   validates :video, presence: true
+
+  # Scopes
+  GroupTutorial.all.each do |gt|
+    scope gt.name, -> {where('group_tutorial_id': gt.id)}
+  end
+  scope :todos, -> {where('0 = 0')}
+
 
   def name
     self.name_function
@@ -36,19 +42,34 @@ class Tutorial < ApplicationRecord
   end
 
   rails_admin do
+    navigation_label 'Informativos'
+    navigation_icon 'fa-regular fa-laptop-code'    
     list do
+      scopes ["todos", GroupTutorial.all.map{|gt| gt.name}].flatten
+      items_per_page 10
       field :group_tutorial
       field :name_function
-      field :video
-      field :description
-      field :created_at
-      field :updated_at
+      field :video do
+        filterable false
+        sortable false
+        pretty_value do
+          bindings[:view].render(partial: '/tutorials/show_video', locals: {url: bindings[:object].get_url_temp, height: '120'})
+        end
+
+      end
+      field :description do
+        filterable false
+        sortable false
+      end
     end		
 
     edit do
+      field :group_tutorial do
+        inline_edit false
+      end
       field :name_function
-      field :video
       field :description
+      field :video
     end		
 
     show do
