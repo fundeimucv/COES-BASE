@@ -6,10 +6,13 @@
       Limpiar Citas
 
   - if @object.process_before
+    .alert.alert-danger
+      %b Atención
+      Si está planificando una nueva jornada de inscripción por Cita Horaria, es importante que corra el reglamento en el enlace abajo para que COES actualice tanto el estado de permanecia como los valores de eficiencia y promedios de cada estudiante antes de agregar la nueva cita.
 
-    = link_to "/academic_processes/#{@object.process_before.id}/run_regulation", class: 'btn mb-3 btn-primary', title: "Actualiza de estado de permanecia de los estudiantes basado en los períodos anteriores a #{@object.period_name}. Incluye eliminación de Citas", data: {confirm: "Esta acción actualizará el Estado de Permanencia y los Promedios de Notas de cada estudiante cursado en el periodo anterior #{@object.process_before.period_name} ¿Está completamente seguro?"} do
-      %i.fa-regular.fa-gavel
-      Correr Reglamento
+      = link_to "/academic_processes/#{@object.process_before.id}/run_regulation", class: 'btn m-3 btn-primary', title: "Actualiza de estado de permanecia de los estudiantes basado en los períodos anteriores a #{@object.period_name}. Incluye eliminación de Citas", data: {confirm: "Esta acción actualizará el Estado de Permanencia y los Promedios de Notas de cada estudiante cursado en el periodo anterior #{@object.process_before.period_name} ¿Está completamente seguro?"} do
+        %i.fa-regular.fa-gavel
+        Correr Reglamento
 
     - enrollment_days = @object.enrollment_days
     - grades_without_appointment = @object.readys_to_enrollment_day
