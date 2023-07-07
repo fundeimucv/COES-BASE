@@ -173,7 +173,7 @@ class Section < ApplicationRecord
   end
 
   def qualified?
-    qualified.eql? true    
+    qualified.eql? true
   end
 
   def teacher_desc
