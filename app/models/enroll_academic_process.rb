@@ -29,7 +29,7 @@ class EnrollAcademicProcess < ApplicationRecord
 
   # ENUMERIZE:
   # IDEA CON ESTADO DE INSCRIPCIÓN EN GRADE Y ENROLL ACADEMIC PROCESS
-  enum enroll_status: [:preinscrito, :reservado, :confirmado, :retirado]
+  enum enroll_status: [:preinscrito, :reservado, :confirmado]#, :retirado]
   enum permanence_status: [:nuevo, :regular, :reincorporado, :articulo3, :articulo6, :articulo7, :intercambio, :desertor, :egresado, :egresado_doble_titulo, :permiso_para_no_cursar]  
 
   # VALIDATIONS:
@@ -64,6 +64,56 @@ class EnrollAcademicProcess < ApplicationRecord
   end
 
   # FUNCTIONS:
+
+  def self.url_by_enroll_type type, period_name
+    # [:preinscrito, :reservado, :confirmado, :retirado]
+
+    link = "/admin/enroll_academic_process?query=#{period_name}"
+    
+    case type
+    when :preinscrito 
+      link+'&scope=preinscrito'
+    when :reservado 
+      link+'&scope=preinscrito'
+      'warning'
+    when :confirmado 
+      'success'
+    else
+      ''
+    end
+
+
+    link_pre = "/admin/enroll_academic_process?query=#{bindings[:object].period.name}&scope=preinscrito"
+
+    link_confirm = "/admin/enroll_academic_process?query=#{bindings[:object].period.name}&scope=confimado"
+
+
+    case type
+    when :preinscrito 
+      'secondary'
+    when :reservado 
+      'warning'
+    when :confirmado 
+      'success'
+    else
+      ''
+    end
+  end
+
+  def self.type_label_by_enroll type
+    # [:preinscrito, :reservado, :confirmado, :retirado]
+    case type
+    when 'preinscrito' 
+      'info'
+    when 'reservado' 
+      'warning'
+    when 'confirmado' 
+      'success'
+    else
+      ''
+    end
+  end
+
   def get_regulation
     reglamento_aux = :nuevo
     if total_retire?

@@ -54,7 +54,9 @@ class Area < ApplicationRecord
   end
 
   rails_admin do
-    # visible false
+    visible do
+      bindings[:controller].current_user&.admin?
+    end
     navigation_label 'Config General'
     navigation_icon 'fa-regular fa-brain'
 
