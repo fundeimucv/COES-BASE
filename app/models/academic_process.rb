@@ -215,7 +215,7 @@ class AcademicProcess < ApplicationRecord
 
       field :total_sections do
 
-        column_width 130
+        column_width 150
         label 'Secciones'
         pretty_value do 
           user = bindings[:view]._current_user
@@ -228,7 +228,7 @@ class AcademicProcess < ApplicationRecord
       end
 
       field :numbers_enrolled do
-        column_width 200
+        column_width 240
         label 'Estudiantes'
         formatted_value do
           if (bindings[:view]._current_user&.admin&.authorized_read? 'EnrollAcademicProcess')

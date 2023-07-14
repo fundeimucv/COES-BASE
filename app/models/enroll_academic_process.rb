@@ -29,7 +29,7 @@ class EnrollAcademicProcess < ApplicationRecord
 
   # ENUMERIZE:
   # IDEA CON ESTADO DE INSCRIPCIÓN EN GRADE Y ENROLL ACADEMIC PROCESS
-  enum enroll_status: [:preinscrito, :reservado, :confirmado]#, :retirado]
+  enum enroll_status: [:preinscrito, :reservado, :confirmado]
   enum permanence_status: [:nuevo, :regular, :reincorporado, :articulo3, :articulo6, :articulo7, :intercambio, :desertor, :egresado, :egresado_doble_titulo, :permiso_para_no_cursar]  
 
   # VALIDATIONS:
@@ -44,6 +44,8 @@ class EnrollAcademicProcess < ApplicationRecord
   scope :todos, -> {where('0 = 0')}
 
   scope :of_academic_process, -> (academic_process_id) {where(academic_process_id: academic_process_id)}
+
+  # scope :preinscrito_or_reservado, -> (){where(enroll_status: [:preinscrito, :reservado])}
 
   scope :sort_by_period, -> {joins(period: :period_type).order('periods.year': :desc, 'period_types.name': :desc)}
 
@@ -64,41 +66,6 @@ class EnrollAcademicProcess < ApplicationRecord
   end
 
   # FUNCTIONS:
-
-  def self.url_by_enroll_type type, period_name
-    # [:preinscrito, :reservado, :confirmado, :retirado]
-
-    link = "/admin/enroll_academic_process?query=#{period_name}"
-    
-    case type
-    when :preinscrito 
-      link+'&scope=preinscrito'
-    when :reservado 
-      link+'&scope=preinscrito'
-      'warning'
-    when :confirmado 
-      'success'
-    else
-      ''
-    end
-
-
-    link_pre = "/admin/enroll_academic_process?query=#{bindings[:object].period.name}&scope=preinscrito"
-
-    link_confirm = "/admin/enroll_academic_process?query=#{bindings[:object].period.name}&scope=confimado"
-
-
-    case type
-    when :preinscrito 
-      'secondary'
-    when :reservado 
-      'warning'
-    when :confirmado 
-      'success'
-    else
-      ''
-    end
-  end
 
   def self.type_label_by_enroll type
     # [:preinscrito, :reservado, :confirmado, :retirado]
@@ -306,10 +273,15 @@ class EnrollAcademicProcess < ApplicationRecord
     end
   end
 
+  def is_the_last_enroll_of_grade?
+    self.grade.last_enrolled.eql? self
+  end
+
   private
 
     def update_current_permanence_status_on_grade
-      grade.update(current_permanence_status: self.permanence_status) if grade.last_enroll&.id.eql? self.id
+      grade.update(current_permanence_status: self.permanence_status) if self.is_the_last_enroll_of_grade?
+      
     end
 
     def paper_trail_update
