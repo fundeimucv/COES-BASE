@@ -136,7 +136,9 @@ class EnrollAcademicProcess < ApplicationRecord
     !enrolling?
   end
 
-
+  def resume_sections
+    self.academic_records.includes(:section).map{|ar| ar.section.desc_subj_code}
+  end
 
   def total_academic_records
     self.subjects.count
@@ -270,6 +272,16 @@ class EnrollAcademicProcess < ApplicationRecord
 
     export do
       fields :enroll_status, :permanence_status, :grade, :period, :student, :user
+
+      field :resume_sections do
+        label 'Resumen Asignaturas'
+      end
+      field :total_subjects do
+        label 'Total Asignaturas'
+      end
+      field :total_credits do
+        label 'Total Créditos'
+      end
     end
   end
 
