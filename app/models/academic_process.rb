@@ -343,6 +343,21 @@ class AcademicProcess < ApplicationRecord
     end
   end
 
+  def redundant_subjects
+    subj = self.courses.group(:subject_id).having('count(*) > 1').count
+    sub_ids = subj.keys
+    self.subjects.where(id: sub_ids) 
+  end
+
+  def remove_redundant_courses
+    aux = redundant_subjects
+    if aux.any?
+      aux.each{|su| su.remove_redundant_courses_of self.id}
+    else
+      '            Sin cursos Redundates        '.center(500, '-')
+    end
+  end
+
   private
 
     def set_name

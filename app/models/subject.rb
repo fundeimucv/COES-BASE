@@ -83,6 +83,29 @@ class Subject < ApplicationRecord
   end
 
   # GENERALS FUNCTIONS: 
+
+  def remove_redundant_courses_of academic_process_id
+    redundance_courses = self.courses.where(academic_process_id: academic_process_id)
+    if redundance_courses.count > 1
+      pivote_id = redundance_courses&.first&.id
+
+      sections = Section.where(course_id: redundance_courses.ids)
+      (p '           Actualizando secciones           '.center(2000, 'A')) if sections.update_all(course_id: pivote_id)
+      redundance_courses.each do |c| 
+        unless c.sections.any?
+          aux = "#{c.id} #{c.subject.name}"
+          if c.destroy
+            p "        Sección destruida #{aux}        ".center(500, ';) ') 
+          else
+            p "        No se pudo destruir #{aux}      ".center(500, ':/ ') 
+          end
+        end
+      end
+    else
+      'Sin redundancia'
+    end
+  end
+
   def section_codes
     sections.select(:code).distinct.map{|s| s.code}
   end
