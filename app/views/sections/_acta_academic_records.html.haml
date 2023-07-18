@@ -19,7 +19,7 @@
         %tr.h-30
           %td.text-center= i+1
           %td.text-center= ar.user.ci
-          %td.padding-x= ar.user.reverse_name
+          %td.padding-x{style: 'max-width: 70px'}= ar.user.reverse_name
           %td.text-center= ar.study_plan.code
           %td.text-center= ar.desc_conv_absolute
           - unless section.subject.as_absolute?
@@ -30,7 +30,7 @@
           %tr.h-30
             %td.text-center= i+1
             %td.text-center= ar.user.ci
-            %td.padding-x= ar.user.reverse_name
+            %td.padding-x{style: 'max-width: 70px'}= ar.user.reverse_name
             %td.text-center= ar.study_plan.code
             %td.text-center= ar.desc_conv_absolute
             %td.text-center= q.desc_conv
