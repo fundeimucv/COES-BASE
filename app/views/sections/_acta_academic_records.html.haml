@@ -7,7 +7,8 @@
       %th CÉDULA
       %th APELLIDOS Y NOMBRES
       %th PLAN
-      %th DESC
+      %th CALIF. DESCR.
+      %th TIPO
       - unless section.subject.as_absolute?
         %th NUM
       %th LETRAS
@@ -31,6 +32,7 @@
             %td.text-center= ar.user.ci
             %td.padding-x= ar.user.reverse_name
             %td.text-center= ar.study_plan.code
+            %td.text-center= ar.desc_conv_absolute
             %td.text-center= q.desc_conv
             %td.text-center= q.value_to_02i
             %td.padding-x= ar.num_to_s
@@ -44,6 +46,7 @@
           %td.padding-x= '***************************************************'
           %td.text-center= '****'
           - unless section.subject.as_absolute?
-            %td.text-center= '*****'
+            %td.text-center= '****'
+          %td.text-center= '**'
           %td.text-center= '**'
           %td.padding-x= '*************'
