@@ -24,6 +24,7 @@ class Subject < ApplicationRecord
   has_many :courses, dependent: :destroy
   has_many :periods, through: :courses 
   has_many :sections, through: :courses
+  has_many :academic_records, through: :sections
 
   # LINKS
     # ATENCIÓN, MUCHA ATENCIÓN: Pareciera que las foraign_keys están al revés pero no es asi.
@@ -321,6 +322,10 @@ class Subject < ApplicationRecord
         formatted_value do
           bindings[:view].render(partial: "subjects/desc_table", locals: {subject: bindings[:object]})
         end
+      end
+
+      field :sections do
+        label 'Secciones'
       end
 
       field :prelate_subjects do
