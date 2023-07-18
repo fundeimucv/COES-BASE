@@ -168,6 +168,14 @@ class AcademicProcess < ApplicationRecord
       self.enroll_academic_processes.each{|eap| eap.update(permanence_status: eap.get_regulation) if eap.finished?}
   end
 
+  def update_enroll_academic_processes_with_grade
+      self.enroll_academic_processes.each do |eap| 
+        eap.update(permanence_status: eap.get_regulation)
+        eap.grade.update(current_permanence_status: eap.get_regulation)
+      end
+  end
+
+
   rails_admin do
     navigation_label 'Config Específica'
     navigation_icon 'fa-solid fa-calendar'
