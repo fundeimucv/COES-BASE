@@ -28,7 +28,7 @@
           %td.padding-x= ar.num_to_s
       - else
         - ar.qualifications.each do |q|
-          %tr.h-30
+          %tr.h-30.font-sm
             %td.text-center= i+1
             %td.text-center= ar.user.ci
             %td.padding-x= ar.user.reverse_name
@@ -41,7 +41,7 @@
     - if rest > 0
       - loops = (total_by_page-rest)-1 
       - loops.times do
-        %tr.h-30
+        %tr.h-30.font-sm
           %td= '**'
           %td.text-center= '********'
           %td.padding-x= '***************************************************'
