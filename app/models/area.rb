@@ -14,7 +14,8 @@ class Area < ApplicationRecord
 
   # ASSOCITATIONS:
   belongs_to :school
-  belongs_to :parent_area, optional: true, class_name: 'Area', foreign_key: :parent_area_id
+  belongs_to :parent_area
+  # belongs_to :other_parent, optional: true, class_name: 'Area', foreign_key: :other_parent_id
   has_many :admins, as: :env_authorizable 
 
   has_many :subareas, class_name: 'Area', foreign_key: :parent_area_id
@@ -59,10 +60,12 @@ class Area < ApplicationRecord
     end
     navigation_label 'Config General'
     navigation_icon 'fa-regular fa-brain'
+    weight 1
 
     list do
       field :name
       field :parent_area
+      # field :other_parent
       field :total_subjects do
         label 'Total Asignaturas'
       end
@@ -74,15 +77,16 @@ class Area < ApplicationRecord
     show do
       field :name
       field :parent_area
+      # field :other_parent
       field :subjects
       field :subareas
     end 
 
     edit do
       field :name
-      field :parent_area do
-        inline_edit false
-        inline_add false
+      field :parent_area
+      field :other_parent do
+        read_only true
       end
     end 
 
