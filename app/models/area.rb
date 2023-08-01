@@ -85,9 +85,9 @@ class Area < ApplicationRecord
     edit do
       field :name
       field :parent_area
-      field :other_parent do
-        read_only true
-      end
+      # field :other_parent do
+      #   read_only true
+      # end
     end 
 
     export do
