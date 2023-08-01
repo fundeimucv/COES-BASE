@@ -4,7 +4,7 @@ class ParentArea < ApplicationRecord
 
 	belongs_to :school
 
-	has_many :areas
+	has_many :areas, dependent: :restrict_with_error
 
 	rails_admin do
 		visible do
@@ -16,7 +16,18 @@ class ParentArea < ApplicationRecord
 		weight 0
 
 		edit do
-			fields :name, :school, :areas
+
+			field :name do
+				html_attributes do
+					{:onInput => "$(this).val($(this).val().toUpperCase())"}
+				end				
+			end			
+			field :school do
+				inline_edit false 
+			end
+			field :areas do
+				inline_add false
+			end
 		end
 
 		list do
