@@ -8,7 +8,7 @@ class ParentArea < ApplicationRecord
 
 	rails_admin do
 		visible do
-			bindings[:controller].current_user&.admin&.authorized_read? Area
+			bindings[:controller].current_user&.admin&.authorized_read? 'Subject'
 		end
 
 		navigation_label 'Config General'
