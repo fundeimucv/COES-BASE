@@ -1,15 +1,26 @@
 -# frozen_string_literal: true
-= simple_form_for(@payment_report) do |f|
-  = f.error_notification
-  = f.error_notification message: f.object.errors[:base].to_sentence if f.object.errors[:base].present?
+= simple_form_for(@payment_report, url: '/payment_reports', html: { method: :post, novalidate: false }) do |f|
 
+  =# f.input :payable, as: :hidden
+  = f.input :payable_id, as: :hidden
+  = f.input :payable_type, as: :hidden
   .form-inputs
-    = f.input :amount
-    = f.input :transaction_id
-    = f.input :transaction_type
-    = f.input :transaction_date
+    = f.input :amount, disabled: true, input_html: { class: 'disabled' }
+    = f.input :amount, as: :hidden
+    = f.input :transaction_id, input_html: { class: 'required' }
+    =# f.input :transaction_type, collection: PaymentReport.transaction_types.map{|e| e}#,  as: :radio
+    =# f.collection_radio_buttons :transaction_type, PaymentReport.transaction_types.keys, nil, nil
+    = f.input :transaction_type, collection: PaymentReport.transaction_types.keys, as: :radio_buttons, html: { class: 'btn btn-primary' }
+
+
+    = f.input :transaction_date, as: :date, start_year: Date.today.year,
+                              end_year: Date.today.year,
+                              order: [:day, :month, :year]
     = f.association :origin_bank
-    = f.association :payable
+    =# f.association :payable
+
+    = f.association :receiving_bank_account
+    = f.input :voucher
 
   .form-actions
     = f.button :submit

@@ -7,6 +7,7 @@ class PaymentReport < ApplicationRecord
   # t.bigint "origin_bank_id", null: false
   # t.string "payable_type"
   # t.bigint "payable_id"  
+  # t.bigint "receiving_bank_account_id"  
 
   # HISTORY:
   has_paper_trail on: [:create, :destroy, :update]
@@ -18,6 +19,14 @@ class PaymentReport < ApplicationRecord
   # ASSOCIATIONS:
   belongs_to :origin_bank, class_name: 'Bank', foreign_key: 'origin_bank_id'
   belongs_to :payable, polymorphic: true
+  belongs_to :receiving_bank_account, class_name: 'BankAccount'
+
+  has_one_attached :voucher do |attachable|
+    attachable.variant :thumb, resize_to_limit: [100,100]
+  end
+
+  attr_accessor :remove_voucher
+  after_save { voucher.purge if remove_voucher.eql? '1' }   
 
   # VALIDATIONS:
   # validates :payable_id, presence: true
@@ -28,6 +37,7 @@ class PaymentReport < ApplicationRecord
   validates :transaction_type, presence: true
   validates :transaction_date, presence: true
   validates :origin_bank, presence: true
+  validates :receiving_bank_account, presence: true
 
   enum transaction_type: [:transferencia, :efectivo, :punto_venta]
 
