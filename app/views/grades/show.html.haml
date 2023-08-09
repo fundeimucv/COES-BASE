@@ -54,7 +54,7 @@
                 - titlePayment = "Reportar Pago inscripción #{academic_process.short_desc}"
                 %br
                 %a.btn.btn-success.btn-lg.my-3{"data-bs-target": "##{id}", "data-bs-toggle": :modal, type: :button}
-                  .fa.fa-calendar-check
+                  .fa.fa-receipt
                   = titlePayment
               - reportable = inscripcion
               - @payment_report = PaymentReport.new(payable: inscripcion, amount: academic_process.registration_amount)

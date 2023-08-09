@@ -45,8 +45,25 @@ class PaymentReport < ApplicationRecord
     navigation_label 'Administrativa'
     navigation_icon 'fa-solid fa-cash-register'
 
+    edit do
+      field :amount
+      field :transaction_id do
+        html_attributes do
+          {:length => 20, :size => 20, :onInput => "$(this).val($(this).val().toUpperCase().replace(/[^0-9]/g,''))"}
+        end
+      end
+      field :payable do
+        label 'Entidad a Pagar'
+      end
+      field :transaction_type
+      field :origin_bank do
+        inline_edit false
+        inline_add false
+      end
+    end
+
     export do
-      fields :amount, :transaction_id, :transaction_type, :transaction_date, :origin_bank_id, :origin_bank
+      fields :amount, :transaction_id, :transaction_type, :transaction_date, :origin_bank, :origin_bank
       field :payable_type do
         label 'Tipo'
       end
