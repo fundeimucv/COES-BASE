@@ -16,6 +16,7 @@ class PaymentReport < ApplicationRecord
   before_destroy :paper_trail_destroy
   before_update :paper_trail_update
 
+
   # ASSOCIATIONS:
   belongs_to :origin_bank, class_name: 'Bank', foreign_key: 'origin_bank_id'
   belongs_to :payable, polymorphic: true
@@ -24,6 +25,12 @@ class PaymentReport < ApplicationRecord
   has_one_attached :voucher do |attachable|
     attachable.variant :thumb, resize_to_limit: [100,100]
   end
+
+  scope :grades, -> {where(payable_type: 'Grade')}  
+  scope :enroll_academic_processes, -> {where(payable_type: 'EnrollAcademicProcess')}  
+
+  # scope :custom_search, -> (keyword) {joins(:user).where("users.ci ILIKE '%#{keyword}%' OR users.first_name ILIKE '%#{keyword}%' OR users.last_name ILIKE '%#{keyword}%' OR users.email ILIKE '%#{keyword}%'") }
+
 
   attr_accessor :remove_voucher
   after_save { voucher.purge if remove_voucher.eql? '1' }   
@@ -38,12 +45,33 @@ class PaymentReport < ApplicationRecord
   validates :transaction_date, presence: true
   validates :origin_bank, presence: true
   validates :receiving_bank_account, presence: true
+  validates :voucher, presence: true
 
   enum transaction_type: [:transferencia, :efectivo, :punto_venta]
 
   rails_admin do
     navigation_label 'Administrativa'
     navigation_icon 'fa-solid fa-cash-register'
+
+    list do
+      fields :amount, :transaction_id, :transaction_type, :transaction_date, :origin_bank, :receiving_bank_account
+
+      field :voucher do
+        filterable false
+
+        formatted_value do
+          if (bindings[:object].voucher&.attached? and bindings[:object].voucher&.representable?)
+            bindings[:view].render(partial: "layouts/set_image", locals: {image: bindings[:object].voucher, size: '30x30'})
+          else
+            false
+          end
+        end
+      end
+    end
+
+    show do
+      fields :amount, :transaction_id, :transaction_type, :transaction_date, :origin_bank, :receiving_bank_account, :voucher
+    end
 
     edit do
       field :amount
@@ -55,11 +83,16 @@ class PaymentReport < ApplicationRecord
       field :payable do
         label 'Entidad a Pagar'
       end
-      field :transaction_type
+      fields :transaction_type, :transaction_date
       field :origin_bank do
         inline_edit false
         inline_add false
       end
+      field :receiving_bank_account do
+        inline_edit false
+        inline_add false
+      end
+      field :voucher
     end
 
     export do

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_08_08_173820) do
+ActiveRecord::Schema[7.0].define(version: 2023_08_09_222114) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -335,6 +335,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_08_173820) do
     t.bigint "active_process_id"
     t.bigint "enroll_process_id"
     t.string "boss_name", default: ""
+    t.boolean "enable_enroll_payment_report", default: false, null: false
     t.index ["active_process_id"], name: "index_schools_on_active_process_id"
     t.index ["enroll_process_id"], name: "index_schools_on_enroll_process_id"
     t.index ["faculty_id"], name: "index_schools_on_faculty_id"
