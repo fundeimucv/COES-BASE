@@ -1,26 +1,31 @@
 -# frozen_string_literal: true
-= simple_form_for(@payment_report, url: '/payment_reports', html: { method: :post, novalidate: false }) do |f|
+= simple_form_for @payment_report, html: { class: 'form-horizontal', novalidate: false } do |f|
 
   =# f.input :payable, as: :hidden
   = f.input :payable_id, as: :hidden
   = f.input :payable_type, as: :hidden
-  .form-inputs
-    = f.input :amount, disabled: true, input_html: { class: 'disabled' }
-    = f.input :amount, as: :hidden
-    = f.input :transaction_id, input_html: { class: 'required' }
-    =# f.input :transaction_type, collection: PaymentReport.transaction_types.map{|e| e}#,  as: :radio
-    =# f.collection_radio_buttons :transaction_type, PaymentReport.transaction_types.keys, nil, nil
-    = f.input :transaction_type, collection: PaymentReport.transaction_types.keys, as: :radio_buttons, html: { class: 'btn btn-primary' }
 
+  = f.input :amount, disabled: true, input_html: { class: 'disabled' }, as: :currency
+  = f.input :amount, as: :hidden
+  = f.input :transaction_id, input_html: {aria: {required: true}, oninput: "onlyNumbers($(this))"}, required: true
+  =# f.input :transaction_type, collection: PaymentReport.transaction_types.map{|e| e}#,  as: :radio
+  =# f.collection_radio_buttons :transaction_type, PaymentReport.transaction_types.keys, nil, nil
+  = f.input :transaction_type, collection: PaymentReport.transaction_types.keys, as: :radio_buttons, required: true
 
-    = f.input :transaction_date, as: :date, start_year: Date.today.year,
-                              end_year: Date.today.year,
-                              order: [:day, :month, :year]
-    = f.association :origin_bank
-    =# f.association :payable
+  = f.input :transaction_date, as: :date, start_year: Date.today.year,
+                            end_year: Date.today.year,
+                            order: [:day, :month, :year]
+  = f.association :origin_bank, required: true
+  =# f.association :payable
 
-    = f.association :receiving_bank_account
-    = f.input :voucher
+  = f.association :receiving_bank_account, required: true
+  = f.input :voucher, required: true, input_html: {accept: "image/jpeg,image/jpg,image/png"}
 
   .form-actions
     = f.button :submit
+
+:javascript
+
+  function onlyNumbers(e){
+    e.val(e.val().replace(/[^0-9]/g, ''));
+  }
