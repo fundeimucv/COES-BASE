@@ -140,18 +140,19 @@ class Course < ApplicationRecord
 
         end
       end
-      field :total_sc do
-        label 'SC'
-        help 'Sin Calificar'
-        pretty_value do
-          ApplicationController.helpers.label_status('bg-secondary', value)
-        end
-      end
 
       field :sections do
         column_width '300'
         pretty_value do
           bindings[:object].sections.map{|sec| ApplicationController.helpers.link_to(sec.code, "/admin/section/#{sec.id}")}.to_sentence.html_safe
+        end
+      end
+
+      field :total_sc do
+        label 'SC'
+        help 'Sin Calificar'
+        pretty_value do
+          ApplicationController.helpers.label_status('bg-secondary', value)
         end
       end
 
@@ -169,7 +170,7 @@ class Course < ApplicationRecord
         end        
       end
       field :total_retirados do
-        label 'Ret'
+        label 'RT'
         pretty_value do
           ApplicationController.helpers.label_status('bg-secondary', value)
         end        
@@ -229,7 +230,7 @@ class Course < ApplicationRecord
         label 'AP'
       end
       field :total_retirados do
-        label 'Ret'
+        label 'RT'
       end 
       field :total_pi do
         label 'PI'
