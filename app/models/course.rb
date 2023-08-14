@@ -125,7 +125,9 @@ class Course < ApplicationRecord
           value.period.name
         end
       end
-      field :subject
+      field :subject do
+        filterable false
+      end
       field :total_sections do
         label "T. Sec"
         pretty_value do
