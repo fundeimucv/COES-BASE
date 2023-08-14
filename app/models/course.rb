@@ -134,6 +134,13 @@ class Course < ApplicationRecord
           ApplicationController.helpers.label_status('bg-info', value)
         end
       end
+
+      field :sections do
+        column_width '300'
+        pretty_value do
+          bindings[:object].sections.map{|sec| ApplicationController.helpers.link_to(sec.code, "/admin/section/#{sec.id}")}.to_sentence.html_safe
+        end
+      end
       field :total_academic_records do
         label 'Ins'
         pretty_value do
@@ -142,14 +149,6 @@ class Course < ApplicationRecord
 
         end
       end
-
-      field :sections do
-        column_width '300'
-        pretty_value do
-          bindings[:object].sections.map{|sec| ApplicationController.helpers.link_to(sec.code, "/admin/section/#{sec.id}")}.to_sentence.html_safe
-        end
-      end
-
       field :total_sc do
         label 'SC'
         help 'Sin Calificar'
