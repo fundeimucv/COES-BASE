@@ -40,6 +40,10 @@ class SubjectType < ApplicationRecord
     end
   end
 
+  def desc_pluralize
+    "#{self.name&.downcase&.pluralize&.titleize} (#{self.code})"
+  end  
+
   private
 
     def paper_trail_update
