@@ -164,7 +164,7 @@ class AcademicRecord < ApplicationRecord
 
     if (valor.eql? 'PI' or valor.eql? 'RT' or valor.eql? 'A' or valor.eql? 'AP' or valor.eql? 'EQ')
       self.status = I18n.t(valor)
-      if valor.eql? 'PI'
+      if valor.eql? 'PI' or (valor.eql? 'AP' and subject.numerica?)
         qua = self.qualifications.find_or_initialize_by(type_q: :final)
         qua.value = 0
         return qua.save        
