@@ -331,6 +331,9 @@ class Subject < ApplicationRecord
 
       field :sections do
         label 'Secciones'
+        pretty_value do
+          bindings[:view].render(partial: "/sections/index", locals: {sections: bindings[:object].sections.joins(:academic_process).order('academic_processes.name': :desc ), adelante: false})
+        end
       end
 
       field :prelate_subjects do
