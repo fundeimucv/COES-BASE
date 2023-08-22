@@ -14,7 +14,7 @@
 - msgDanger = "Seleccione las asignaturas que desea preinscribir. Recuerde mover el scroll para ver todas las asignaturas ofertadas. Finalmente haga clíc en 'Completar' "
 
 
-- if current_user.admin? and session[:rol].eql? 'admin'
+- if current_user&.admin? and session[:rol].eql? 'admin'
   .bg-info.text-primary.p-3.text-center
     = link_to "/admin/student/#{grade.student_id}", class: 'float-start btn btn-sm btn-primary align-middle', title: "Ir al detalle de #{user.nick_name}" do
       %i.fa-regular.fa-chevron-left
@@ -63,13 +63,13 @@
 
   =# render partial: 'schedules/index', locals: {schedules: academic_process.schedules}
 
-.modal-footer
-  / %a.btn.btn-sm.btn-outline-light{data: {dismiss: 'modal'}} Cancelar
-  - enableSubmit = (totalCreditsReserved > 0 and totalCreditsReserved <= limitCredits and totalSubjectsReserved > 0 and totalSubjectsReserved <= limitSubjects)
+  .modal-footer
+    / %a.btn.btn-sm.btn-outline-light{data: {dismiss: 'modal'}} Cancelar
+    - enableSubmit = (totalCreditsReserved > 0 and totalCreditsReserved <= limitCredits and totalSubjectsReserved > 0 and totalSubjectsReserved <= limitSubjects)
 
-  - disabledClass = enableSubmit ? '' : 'disabled'
-  .d-grid.gap-2
-    = submit_tag 'Completar', class: "#{disabledClass} btn btn-success btn-lg", id: 'submitBtn', 'data-disable-with': 'Enviando', disabled: !enableSubmit, onclick: 'completeEnroll(this);'
+    - disabledClass = enableSubmit ? '' : 'disabled'
+    .d-grid.gap-2
+      = submit_tag 'Completar', class: "#{disabledClass} btn btn-success btn-lg", id: 'submitBtn', 'data-disable-with': 'Enviando', disabled: !enableSubmit, onclick: 'completeEnroll(this);'
 
 :javascript
 
