@@ -40,7 +40,7 @@
 
         - inscripcion = grade.enroll_academic_processes.of_academic_process(academic_process.id).first
 
-        - if inscripcion.preinscrito?
+        - if inscripcion&.preinscrito?
           - if school.enable_enroll_payment_report? 
             - if inscripcion.payment_reports.any?
               = render '/enroll_academic_processes/show_planilla'
