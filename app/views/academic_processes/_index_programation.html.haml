@@ -7,7 +7,7 @@
       %a.nav-link{:href => "/admin/academic_process/#{academic_process.id}/programation?scope=#{moda}", class: active}
         = moda.titleize
 
-.p-3.border.border-top-0{style: 'overflow-y:scroll;max-height:360px'}
+#sidescroll.p-3.border.border-top-0{style: 'overflow:scroll;max-height:360px'}
   %table#programation.table.table-condensed.table-striped.table-hover
     %thead{style: "position: sticky;top: 0; background-color:#F4F4F4"}
       %tr
