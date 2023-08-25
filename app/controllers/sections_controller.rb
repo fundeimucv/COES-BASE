@@ -51,7 +51,6 @@ class SectionsController < ApplicationController
 
   # POST /sections or /sections.json
   def create
-    1/0
     @section = Section.new(section_params)
 
     respond_to do |format|

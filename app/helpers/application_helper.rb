@@ -56,8 +56,6 @@ module ApplicationHelper
 		end	
 	end	
 
-	def btn_section_show
-	end
 	def btn_link_with_tooptip(href, klazz, content, title, placement='top')
 
 		content_tag :a, href: href, rel: :tooltip, 'data-bs-toggle': :tooltip, 'data-bs-placement': placement, 'data-bs-original-title': title, class: "btn btn-sm #{klazz}" do
