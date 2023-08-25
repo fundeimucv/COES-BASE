@@ -3,18 +3,18 @@
 
 - sections.each do |sec|
   - urlSec = enabled_read ? "/admin/section/#{sec.id}" : 'javascript:void(0)'
-  - btn = ApplicationController.helpers.btn_link_with_tooptip(urlSec, 'btn-info', sec.code, sec.schedule_teacher_desc_short)
-  %td.pr-0.pl-1.m-2
+  - btn = ApplicationController.helpers.btn_link_with_tooptip(urlSec, 'btn-info xx-small', sec.code, sec.schedule_teacher_desc_short)
+  %td
     = btn.html_safe
     - if enabled_delete 
-      - if !sec.academic_records.any?
-        - url = "/sections/bulk_delete?bulk_ids%5B%5D=#{sec.id}"
-        = link_to url, class: 'btn btn-sm btn-danger ml-0 px-1', title: "Eliminar #{sec.code}", method: :post, 'data-confirm': "Está acción es irreversible, eliminará la sección" do
-          %i.fas.fa-remove
-      - else
+      - if sec.academic_records.any?
         %b{title: "Elimine las inscripciones para activar esta opción"}
-          %a.btn.btn-sm.btn-secondary.disabled.ml-0.px-1
+          %a.btn.btn-sm.btn-secondary.disabled.ml-0.px-1.xx-small
             %i.fas.fa-remove 
+      - else
+        - url = "/sections/bulk_delete?bulk_ids%5B%5D=#{sec.id}"
+        = link_to url, class: 'btn btn-sm btn-danger ml-0 px-1 xx-small', title: "Eliminar #{sec.code}", method: :post, 'data-confirm': "Está acción es irreversible, eliminará la sección" do
+          %i.fas.fa-remove
 
 - if enabled_delete
   %td.border-start.border-3.border-secondary.px-1

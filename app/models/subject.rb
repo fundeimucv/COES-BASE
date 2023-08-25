@@ -66,7 +66,7 @@ class Subject < ApplicationRecord
 
   scope :not_inicial, -> {where('ordinal != 1')}
 
-  scope :sort_by_code, -> {order(code: :desc)}
+  scope :sort_by_code, -> {order(code: :asc)}
 
   # CALLBACKS:
   before_save :clean_values
