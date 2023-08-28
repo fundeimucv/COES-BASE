@@ -1,5 +1,5 @@
 %form#new_section.main{"accept-charset": "UTF-8", action: "/admin/section/new", "data-title": "Nuevo", enctype: "multipart/form-data", method: "post"}
-  %input{:autocomplete => "off", :name => "authenticity_token", :type => "hidden", :value => "5wFuSrxjJtnaES-J8FBV4AyB1wVNuF6vCBpYPzanmPgjBZawAsZS4Jcc9EkN3LnbJoYKDTAmdLv96L9OQiy3bQ"}/
+  %input{autocomplete: "off", name: "authenticity_token", type: "hidden", value: session[:_csrf_token]}
   = hidden_field_tag '[section]course_id', nil
   %span.object-infos{"data-model-label" => "Sección", "data-object-label" => "Nuevo", :style => "display:none"}
   %fieldset
