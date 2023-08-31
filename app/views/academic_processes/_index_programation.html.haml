@@ -3,16 +3,16 @@
 - academic_process_id = academic_process.id
 
 .row
-  %ul#area_selector.nav.nav-tabs.flex-column.col-2
+  %ul#area_selector.nav.nav-tabs.flex-column.col-3.p-0
     - areas.each do |area|
 
       - active_area_tab = (area.id.eql? params[:area].to_i) ? 'active' : 'text-light'
       %li.nav-item.bg-primary
         %a.nav-link.position-relative{:href => "/admin/academic_process/#{academic_process_id}/programation?area=#{area.id}", class: active_area_tab, style: 'font-size: small;'}
-          = area.name.titleize
           = ApplicationController.helpers.total_sections_stiky area.sections.where('courses.academic_process_id': academic_process_id).count
+          = area.name.titleize
 
-  .tab-content.col-10
+  .tab-content.col-9.p-0
     - modalities = Subject.modalities
     - params[:moda] ||= modalities.first[1]
     - areas.each do |area|

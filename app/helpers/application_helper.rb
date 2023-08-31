@@ -44,7 +44,7 @@ module ApplicationHelper
 	end
 
 	def sticky_label top, right, bg_color, text_color, title, content
-		content_tag :div, title: title, class: "label position-absolute #{bg_color} #{ text_color}", style: "top: #{top}px; right: #{right};font-size: xx-small;" do
+		content_tag :div, title: title, class: "btn btn-sm #{bg_color} #{ text_color}", style: "top: #{top}px; right: #{right};font-size: xx-small;" do
 			capture_haml{"#{content}".html_safe }
 		end	
 	end
