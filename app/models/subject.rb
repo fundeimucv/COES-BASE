@@ -246,16 +246,26 @@ class Subject < ApplicationRecord
       checkboxes false
       sidescroll(num_frozen_columns: 3)
 
-      field :code do
+      field :area do
         searchable true
       end
 
-      field :school do
-        filterable true
-        pretty_value do
-          bindings[:object].school.short_name
-        end
+      field :code do
+        filterable false
+        searchable true
       end
+
+      field :name do
+        column_width 300
+        searchable false
+      end
+
+      # field :school do
+      #   filterable true
+      #   pretty_value do
+      #     bindings[:object].school.short_name
+      #   end
+      # end
 
       field :periods do
         label 'Periodos'
@@ -264,15 +274,7 @@ class Subject < ApplicationRecord
         end
       end
 
-      field :name do
-        column_width 300
-        searchable true
-      end
 
-      field :area do
-        column_width 200
-        searchable :name
-      end
       field :unit_credits do 
         label 'Crédi'
         column_width 20
@@ -290,6 +292,7 @@ class Subject < ApplicationRecord
 
       field :modality do
         column_width 20
+        filterable false
 
         pretty_value do
           bindings[:object].label_modality

@@ -60,7 +60,7 @@ class Section < ApplicationRecord
   before_save :set_code_to_02i
   
   # SCOPE:
-  default_scope {includes(:course, :subject, :period, :area)}
+  # default_scope {includes(:course, :subject, :period, :area)} # No hace falta
   scope :sort_by_period, -> {joins(:period).order('periods.name')}
   scope :sort_by_period_reverse, -> {joins(:period).order('periods.name DESC')}
 
@@ -302,8 +302,8 @@ class Section < ApplicationRecord
       field :period do
         sticky true
         label 'Período'
-        filterable false #'periods.name' # No funciona
-        sortable 'periods.name'
+        searchable :name
+        sortable :name
         # associated_collection_cache_all false
         # associated_collection_scope do
         #   # bindings[:object] & bindings[:controller] are available, but not in scope's block!
@@ -321,7 +321,8 @@ class Section < ApplicationRecord
 
       field :area do
         sticky true
-        sortable 'areas.name'
+        sortable :name
+        searchable :name
       end
 
       # field :period_name do
@@ -341,7 +342,7 @@ class Section < ApplicationRecord
         column_width 240
 
         filterable false #'subjects.code'
-        sortable 'subjects.code'
+        sortable :code
       end
 
       field :code do

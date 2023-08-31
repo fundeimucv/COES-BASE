@@ -33,6 +33,7 @@ class AcademicRecord < ApplicationRecord
   has_one :course, through: :section
   has_one :teacher, through: :section
   has_one :subject, through: :course
+  has_one :area, through: :subject
 
   # VALIDATIONS:
   validates :section, presence: true
@@ -439,12 +440,17 @@ class AcademicRecord < ApplicationRecord
           }
         end
 
-        searchable 'periods.name'
-        filterable 'periods.name'
-        sortable 'periods.name'
+        searchable :name
+        # filterable :name
+        sortable :name
         pretty_value do
           value.name
         end
+      end
+
+      field :area do
+        searchable :name
+        sortable :name
       end
 
       field :section_code do
@@ -474,7 +480,7 @@ class AcademicRecord < ApplicationRecord
         column_width 300
 
         searchable 'subjects.code'
-        filterable 'subjects.code'
+        filterable false
         sortable 'subjects.code'
 
         associated_collection_cache_all false
