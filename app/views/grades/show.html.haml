@@ -15,7 +15,15 @@
 
         - inscripcion = grade.enroll_academic_processes.of_academic_process(academic_process.id).first
 
-        - if inscripcion&.preinscrito?
+        - if inscripcion&.confirmado?
+          - msg = 'Generar Constancia de Inscripción'
+          .text-center
+            = link_to "/enroll_academic_processes/#{inscripcion.id}.pdf", class: 'btn btn-primary text-center btn-lg align-middle', target: '_blank', rel: "noopener noreferrer", 'data-bs-toggle': :tooltip, 'data-bs-placement': :top, title: msg, rel: :tooltip do
+              .fa.fa-download
+              .fa-solid.fa-graduation-cap
+              = msg
+
+        - elsif inscripcion&.preinscrito?
           - if school.enable_enroll_payment_report? 
             - if inscripcion.payment_reports.any?
               = render '/enroll_academic_processes/show_planilla'
