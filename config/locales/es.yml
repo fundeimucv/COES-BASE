@@ -316,6 +316,18 @@ es:
             base:
               restrict_dependent_destroy:
                 has_many: 'Tiene asignaturas asociadas'
+        bank_account:
+          attributes:
+            bank_id:
+              required: requerido
+            code:
+              required: requerido
+            holder:
+              required: requerido
+            school_id:
+              required: requerido
+            account_type:
+              required: requerido
         grade:
           attributes:
             admission_type:
