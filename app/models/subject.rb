@@ -108,7 +108,8 @@ class Subject < ApplicationRecord
   end
 
   def section_codes
-    sections.select(:code).distinct.map{|s| s.code}
+    # sections.select(:code).distinct.map{|s| s.code}
+    sections.order(code: :asc).map{|s| s.code}.uniq
   end
 
   # DEPENDENCIES FUNCTIONS:
