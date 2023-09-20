@@ -387,9 +387,9 @@ class Subject < ApplicationRecord
 
       field :qualification_type do
         # help 'Parcial3 equivale a asignatura con 3 calificaciones parciales'
-        formatted_value do
-          bindings[:object].label_qualification_type
-        end
+        # formatted_value do
+        #   bindings[:object].label_qualification_type
+        # end
       end
 
       # field :prelate_subjects do
