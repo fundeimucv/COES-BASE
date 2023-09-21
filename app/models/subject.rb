@@ -84,6 +84,16 @@ class Subject < ApplicationRecord
   end
 
   # GENERALS FUNCTIONS: 
+  def self.ordinal_to_cardinal numero, type_school
+
+    case numero
+    when 0
+      0
+    when 1..12
+      "#{numero}º #{type_school&.titleize}"
+    end
+
+  end
 
   def remove_redundant_courses_of academic_process_id
     redundance_courses = self.courses.where(academic_process_id: academic_process_id)
@@ -341,21 +351,31 @@ class Subject < ApplicationRecord
       end
 
       field :prelate_subjects do
+        label do
+          if bindings[:object].prelate_subjects.any?
+            "#{bindings[:object].name} es prelada por la(s) siguiente(s) asignatura(s):"
+          else
+            "#{bindings[:object].name} No tiene prelación"
+          end
+        end
         pretty_value do
           if bindings[:object].prelate_subjects.any?
             bindings[:view].render(partial: "/subject_links/index", locals: {subject: bindings[:object], adelante: false})
           else
-            "<span class='badge bg-secondary'>Sin Prelaciones</span>".html_safe
+            "<span class='alert alert-success'>Sin prelaciones: No hay otras asignaturas que sean requisito para cursar #{bindings[:object].name}.</span>".html_safe
           end
         end
       end
       field :depend_subjects do
+        label do
+          "Asignaturas que prela #{bindings[:object].name}:"
+        end        
         pretty_value do
           if bindings[:object].depend_subjects.any?
             bindings[:view].render(partial: "/subject_links/index", locals: {subject: bindings[:object], adelante: true})
 
           else
-            "<span class='badge bg-secondary'>Sin Dependencias</span>".html_safe
+            "<span class='alert alert-success'>No hay otras asignaturas que el estudiante pueda cursar una vez apruebe #{bindings[:object].name}.</span>".html_safe
           end
         end
       end
@@ -382,7 +402,7 @@ class Subject < ApplicationRecord
         html_attributes do
           {min: 0, max: 20}
         end
-        help 'Semestre o año en que se ubica la asignatura'
+        help 'Semestre o año en que se ubica la asignatura.'
       end
 
       field :qualification_type do
@@ -392,17 +412,22 @@ class Subject < ApplicationRecord
         # end
       end
 
-      # field :prelate_subjects do
-      #   inline_add false
-      #   inline_edit false
-      #   help 'Asignatura(s) que prela(n) DIRECTAMENTE esta Asignatura. El estudiante debe aprobar la(s) asignatura(s) seleccionada(s) a arriba para que esta asignatura sea ofertada.'
-      # end
-
-      field :depend_subjects do
+      field :prelate_subjects do
         inline_add false
         inline_edit false
-        help 'Asignatura(s) que depende(n) DIRECTAMENTE de esta asignatura. Si el estudiante aprueba esta asignatura, la(s) asignatura(s) seleccionada(s) arriba podrán ser ofertadas.'
+        label do
+          "Prelación(es) de #{bindings[:object].name}"
+        end
+        help do
+          "Asignatura(s) que prela(n) #{bindings[:object].name}: El estudiante debe aprobar la(s) asignatura(s) indicadas(s) arriba para poder cursar #{bindings[:object].name}."
+        end
       end
+
+      # field :depend_subjects do
+      #   inline_add false
+      #   inline_edit false
+      #   help 'Asignatura(s) que depende(n) de esta asignatura. Si el estudiante aprueba esta asignatura, la(s) asignatura(s) seleccionada(s) arriba podrán ser ofertadas.'
+      # end
     end
 
     export do

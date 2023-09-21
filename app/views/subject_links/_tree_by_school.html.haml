@@ -1,0 +1,21 @@
+%td.mouseover{mouseover: subject.id, class: subject.id, title: "#{subject.description_code} (#{subject.modality.titleize})", style: 'font-size: 11px'}
+  
+  = ApplicationController.helpers.simple_toggle "/admin/subject/#{subject.id}", nil, "Ir al detalle", :primary, 'fa-solid fa-magnifying-glass-plus'
+
+  %label.label.bg-info= subject.modality[0..1].upcase
+  = subject.code
+
+  - if subject.depend_links.any?
+    = link_to 'javascript:void(0)', onclick: "$('#arbol#{subject.id}').toggleClass('d-none'); $(this).children(':first').toggleClass('fa-rotate-90');" do
+      %i.fa.fa-chevron-right
+    %div{id: "arbol#{subject.id}", class: 'd-none arbol'}
+      %table.table.table-striped.table-hover.table-bordered.ml-2
+        %tbody
+          - subject.depend_subjects.order(:code).each do |dep|
+            -# dep_subject = dep.depend_subject
+            %tr
+              %td.mouseover{mouseover: dep.id, class: dep.id}
+
+                = ApplicationController.helpers.simple_toggle "/admin/subject/#{dep.id}", nil, "Ir al detalle", :primary, 'fa-solid fa-magnifying-glass-plus'
+                %label.label.bg-info{title: 'Orden'}= dep.ordinal
+                = dep.code

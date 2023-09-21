@@ -722,7 +722,7 @@ es:
         qualification_type: 'Tipo de calificación'
         modality: 'Tipo'
         area: 'Área'
-        prelate_subjects: Prelada por
+        prelate_subjects: Prelaciones
         depend_subjects: Asignaturas que prela
         created_at: 'Fecha de Registro'
         updated_at: 'Fecha de Actualización'
