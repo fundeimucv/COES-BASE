@@ -1,12 +1,13 @@
 
+
 .input-group.input-group-sm    
   = link_to 'javascript:void(0)', onclick: "$('.arbol').toggleClass('d-none'); $('.fa-chevron-right').toggleClass('fa-rotate-90');", class: 'btn btn-sm btn-success', style: 'margin-right: 15px' do
     Desplegar todos
     %i.fa.fa-chevron-right
-  %input.form-control{"aria-describedby": "inputGroup-sizing-sm", "aria-label": "", type: "text", placeholder: 'Buscar asignaturas por código', autofocus: true, id: 'filterTable', name: 'filterSubject'}
+  %input.form-control{"aria-label": "", type: "text", placeholder: 'Buscar asignaturas por código', id: 'filterTable', name: 'filterSubject'}
 
-.mt-3.border{style: 'overflow-x:scroll'}
-  %table.table.table-bordered.table-sm
+%div{style: 'height:540px;overflow-x:scroll'}
+  %table.table.table-bordered.table-sm.table-responsive.mt-3
     %thead
       %tr.text-center
         - orders.each do |k,v|
@@ -36,7 +37,7 @@
               - else
                 - table = ''
 
-              %table.table.table-bordered.table-sm.table
+              %table.table.table-bordered.table-sm.table.table-striped
                 %thead
                 %tbody
                   - subjects.where(ordinal: k).order(:code).each do |asig|
@@ -51,6 +52,7 @@
     $('#filterTable').on('keyup', function(e){
       $('.trFiltrable').hide().filter(":contains('" + this.value.toUpperCase() + "')").show();
 
+      // Avancing in search by title:
       // $('.trFiltrable').hide().filter("a[aria-label*='" + this.value.toUpperCase() + "']").show();
 
 

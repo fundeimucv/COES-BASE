@@ -7,7 +7,7 @@
   %span.badge.bg-info.text-dark
     = subject.code
 
-  - if false #children and subject.depend_links.any?
+  - if children and subject.depend_links.any?
     = link_to 'javascript:void(0)', onclick: "$('#arbol#{subject.id}').toggleClass('d-none'); $(this).children(':first').toggleClass('fa-rotate-90');" do
       %i.fa.fa-chevron-right
     %div{id: "arbol#{subject.id}", class: 'd-none arbol'}
