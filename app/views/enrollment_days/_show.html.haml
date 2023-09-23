@@ -16,7 +16,7 @@
         %th.col-1 Promedio
         %th.col-1 Ponderado
     %tbody
-      - grades.limit(10).each do |grade, i|
+      - grades.each do |grade, i|
         - student = grade.student
         - reverse_name = student.user.reverse_name
         %tr
