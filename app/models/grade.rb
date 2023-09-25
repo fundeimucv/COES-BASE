@@ -416,7 +416,7 @@ class Grade < ApplicationRecord
 
     aprobados = self.academic_records.total_credits_approved
     aux = self.academic_records.weighted_average_approved
-    (aprobados > 0 and aux and aux.is_a? BigDecimal) ? (aux.to_f/aprobados.to_f).round(4) : 0.0
+    ((aprobados > 0) and aux&.is_a? Integer) ? (aux.to_f/aprobados.to_f).round(4) : 0.0
     
   end
 
