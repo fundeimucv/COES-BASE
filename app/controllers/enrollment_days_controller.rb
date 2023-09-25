@@ -40,25 +40,48 @@ class EnrollmentDaysController < ApplicationController
     if @enrollment_day.save
       total_update = 0
 
-      flash[:success] = 'Jornada de Inscripción por Cita Horaria Creada con Éxito'
+      flash[:success] = 'Jornada de inscripción por cita horaria creada con éxito.'
       academic_process = @enrollment_day.academic_process
 
-      total_timeslots = @enrollment_day.total_timeslots
-      grades_by_timeslot = @enrollment_day.grades_by_timeslot
-      for a in 0..(total_timeslots-1) do
-        limitado = academic_process.readys_to_enrollment_day
+      if params[:by_before_process]
 
-        limitado[0..grades_by_timeslot-1].each do |gr| 
-          # if !(gr.enroll_academic_processes.of_academic_process(academic_process.id).any?)
-            total_update += 1 if gr.update(appointment_time: @enrollment_day.start+(a*@enrollment_day.slot_duration_minutes).minutes, duration_slot_time: @enrollment_day.slot_duration_minutes)
-          # end
+        total_timeslots = @enrollment_day.total_timeslots
+        grades_by_timeslot = @enrollment_day.grades_by_timeslot
+        for a in 0..(total_timeslots-1) do
+          enroll_academic_processes = academic_process.process_before&.enroll_academic_processes.valid_to_enroll_in.sort_by_numbers_of_this_process
+
+          enroll_academic_processes[0..grades_by_timeslot-1].each do |eap| 
+            total_update += 1 if eap.grade.update(appointment_time: @enrollment_day.start+(a*@enrollment_day.slot_duration_minutes).minutes, duration_slot_time: @enrollment_day.slot_duration_minutes)
+          end
+
+        end
+        resto = @enrollment_day.mod_to_grades
+        if resto > 0
+          enroll_academic_processes = academic_process.process_before&.enroll_academic_processes.valid_to_enroll_in.sort_by_numbers_of_this_process
+
+          enroll_academic_processes[0..resto-1].each{|eap| total_update += 1 if eap.grade.update(appointment_time: @enrollment_day.start+(total_timeslots*@enrollment_day.slot_duration_minutes).minutes, duration_slot_time: @enrollment_day.slot_duration_minutes)}
         end
 
-      end
-      resto = @enrollment_day.mod_to_grades
-      if resto > 0
-        limitado = academic_process.readys_to_enrollment_day
-        limitado[0..resto-1].each{|gr| total_update += 1 if gr.update(appointment_time: @enrollment_day.start+(total_timeslots*@enrollment_day.slot_duration_minutes).minutes, duration_slot_time: @enrollment_day.slot_duration_minutes)}
+
+      else
+
+        total_timeslots = @enrollment_day.total_timeslots
+        grades_by_timeslot = @enrollment_day.grades_by_timeslot
+        for a in 0..(total_timeslots-1) do
+          limitado = academic_process.readys_to_enrollment_day
+
+          limitado[0..grades_by_timeslot-1].each do |gr| 
+            # if !(gr.enroll_academic_processes.of_academic_process(academic_process.id).any?)
+              total_update += 1 if gr.update(appointment_time: @enrollment_day.start+(a*@enrollment_day.slot_duration_minutes).minutes, duration_slot_time: @enrollment_day.slot_duration_minutes)
+            # end
+          end
+
+        end
+        resto = @enrollment_day.mod_to_grades
+        if resto > 0
+          limitado = academic_process.readys_to_enrollment_day
+          limitado[0..resto-1].each{|gr| total_update += 1 if gr.update(appointment_time: @enrollment_day.start+(total_timeslots*@enrollment_day.slot_duration_minutes).minutes, duration_slot_time: @enrollment_day.slot_duration_minutes)}
+        end
       end
 
       flash[:success] += ". Se generaron #{total_update} citas"
