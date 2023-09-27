@@ -41,7 +41,7 @@ class EnrollAcademicProcessesController < ApplicationController
       end
 
     else
-      flash[:warning] = 'Debe estar confirmado la inscripción y activado el período o la inscripción para descargar el documento solicitado.'
+      flash[:warning] = 'Debe estar confirmada la inscripción y activado el período de inscripción para descargar el documento solicitado.'
       redirect_back fallback_location: '/admin'
     end
   end

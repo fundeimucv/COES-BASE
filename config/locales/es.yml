@@ -323,6 +323,8 @@ es:
                 has_many: 'Tiene asignaturas asociadas'
         bank_account:
           attributes:
+            bank:
+              required: requerido
             bank_id:
               required: requerido
             code:
