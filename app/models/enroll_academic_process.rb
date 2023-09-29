@@ -295,7 +295,17 @@ class EnrollAcademicProcess < ApplicationRecord
     end
 
     export do
-      fields :enroll_status, :permanence_status, :grade, :period, :student, :user
+      fields :enroll_status, :permanence_status, :grade
+
+      field :period do
+        label 'Período'
+        column_width 100
+        searchable :name
+        # filterable 'periods.name'
+        sortable :name
+      end
+
+      fields :student, :user
 
       field :resume_sections do
         label 'Resumen Asignaturas'
