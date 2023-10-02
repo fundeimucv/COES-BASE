@@ -144,7 +144,8 @@ class EnrollAcademicProcessesController < ApplicationController
       estado = 'error'
       msg = "Error: #{e}"       
     end
-    cupo = section ? section.description_with_quotes : 'Seleccione Sección'
+
+    cupo = section ? section.description_with_quotes : 'Seleccione sección o libere cupo'
     respond_to do |format|
       format.json do 
         render json: {data: msg, status: estado, cupo: cupo}
