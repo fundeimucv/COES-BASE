@@ -593,6 +593,7 @@ es:
         period: 'Período'
         user: Usuario
         academic_records: Registros Académicos
+        payment_reports: Reportes de Pago
       enrollment_day:
         start: Inicio
         total_duration_hours: Total Duración de la Jornada
