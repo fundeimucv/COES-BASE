@@ -69,7 +69,7 @@ class Area < ApplicationRecord
       field :parent_area
       field :subjects do
         pretty_value do
-          bindings[:view].render(template: '/subjects/index', locals: {subjects: bindings[:object].subjects})
+          bindings[:view].render(template: '/subjects/index', locals: {subjects: bindings[:object].subjects.order(code: :asc)})
         end
       end
     end 
