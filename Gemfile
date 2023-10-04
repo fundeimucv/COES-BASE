@@ -121,3 +121,4 @@ gem "paper_trail"
 
 # Delayed Job
 gem 'delayed_job_active_record'
+gem 'daemons'
