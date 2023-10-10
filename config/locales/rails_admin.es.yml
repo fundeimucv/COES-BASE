@@ -68,6 +68,7 @@ es:
       updated: "actualizado"
       deleted: "borrado"
       export: "generar reporte"
+      custom_export: "generar reporte personalizado"
       exported: "exportado"       
       delete: "borrar"
       delete:

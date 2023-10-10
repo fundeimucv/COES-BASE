@@ -8,6 +8,8 @@ module RailsAdmin
       class Export < RailsAdmin::Config::Actions::Base
         RailsAdmin::Config::Actions.register(self)
 
+        include ActionController::Live
+        
         register_instance_option :collection do
           true
         end
