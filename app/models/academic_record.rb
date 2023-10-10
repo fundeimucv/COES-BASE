@@ -598,7 +598,32 @@ class AcademicRecord < ApplicationRecord
     end
 
     export do
-      fields :section, :enroll_academic_process, :status, :qualifications, :period, :period_type, :student, :user, :address, :subject
+      fields :section, :enroll_academic_process
+
+      field :period do
+        label 'Período'
+        searchable :name
+        sortable :name
+      end
+
+      # field :period do
+      #   label 'Periodo'
+      #   column_width 120
+
+      #   associated_collection_cache_all false
+      #   associated_collection_scope do
+      #     # bindings[:object] & bindings[:controller] are available, but not in scope's block!
+      #     Proc.new { |scope|
+      #       # scoping all Players currently, let's limit them to the team's league
+      #       # Be sure to limit if there are a lot of Players and order them by position
+      #       scope = scope.joins(:period)
+      #       scope = scope.limit(30) # 'order' does not work here
+      #     }
+      #   end
+      # end
+
+      
+      fields :status, :qualifications, :period_type, :student, :user, :address, :subject
     end
   end  
 
