@@ -158,6 +158,13 @@ class AcademicRecord < ApplicationRecord
     return data
   end
 
+  def get_value_by_status
+    if absolute? or pi? or rt? or sin_calificar? or equivalencia?
+      desc_conv_absolute
+    else
+      self.q_value_to_02i
+    end
+  end
 
   def set_status valor
     valor.strip!
@@ -618,7 +625,9 @@ class AcademicRecord < ApplicationRecord
       #   end
       # end
 
-      
+      field :get_value_by_status do
+        label 'Calificacion Definitiva'
+      end
       fields :status, :qualifications, :period_type, :student, :user, :address, :subject
     end
   end  
