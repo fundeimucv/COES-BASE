@@ -158,6 +158,13 @@ class AcademicRecord < ApplicationRecord
     return data
   end
 
+  def get_value_by_status
+    if absolute? or pi? or rt? or sin_calificar? or equivalencia?
+      desc_conv_absolute
+    else
+      self.q_value_to_02i
+    end
+  end
 
   def set_status valor
     valor.strip!
@@ -565,19 +572,15 @@ class AcademicRecord < ApplicationRecord
     end
 
     edit do
-      field :course do
-        inline_edit false
-        label 'Curso'
-      end
       field :section do
         inline_edit false
-        help 'Ingrese el código de la asignatura y SELECCIONE la correspondiente al período y código de la sección'
+        help 'Ingrese el código de la asignatura y SELECCIONE la sección correspondiente al período requerido'
       end
 
       field :enroll_academic_process do 
         # inline_add false
         inline_edit false
-        help 'Ingrese la cédula de identidad del estudiante y SELECCIONE la correspondiente inscripción en el período'
+        help 'Ingrese la cédula de identidad del estudiante y SELECCIONE la inscripción correspondiente al período'
       end
       field :status do
         visible do
@@ -622,7 +625,9 @@ class AcademicRecord < ApplicationRecord
       #   end
       # end
 
-      
+      field :get_value_by_status do
+        label 'Calificación Definitiva'
+      end
       fields :status, :qualifications, :period_type, :student, :user, :address, :subject
     end
   end  
