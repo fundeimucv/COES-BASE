@@ -626,7 +626,7 @@ class AcademicRecord < ApplicationRecord
       # end
 
       field :get_value_by_status do
-        label 'Calificacion Definitiva'
+        label 'Calificación Definitiva'
       end
       fields :status, :qualifications, :period_type, :student, :user, :address, :subject
     end
