@@ -77,10 +77,10 @@ class School < ApplicationRecord
   def all_grades_to_csv
 
     CSV.generate do |csv|
-      csv << ['Cédula', 'Apellido y Nombre', 'Sede', 'Eficiencia', 'Promedio', 'Ponderado']
+      csv << ['Cédula', 'Apellido y Nombre', 'Sede', 'Eficiencia', 'Promedio', 'Ponderado', 'Última Calificación']
       grades.all.each do |grade|
         user = grade.user
-        csv << [user.ci, user.reverse_name, grade.student.sede, grade.efficiency, grade.simple_average, grade.weighted_average]
+        csv << [user.ci, user.reverse_name, grade.student.sede, grade.efficiency, grade.simple_average, grade.weighted_average, grade.academic_records.last&.get_value_by_status]
       end
     end
   end
