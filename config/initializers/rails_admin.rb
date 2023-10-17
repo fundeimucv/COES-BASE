@@ -55,9 +55,6 @@ RailsAdmin.config do |config|
   # config.navigation_static_label = "Opciones"
 
   config.actions do
-    collection :custom_export do
-      require_relative '../../lib/rails_admin/config/actions/custom_export'
-    end
     dashboard do                     # mandatory
       # require_relative '../../lib/rails_admin/config/actions/dashboard'
       show_in_menu false

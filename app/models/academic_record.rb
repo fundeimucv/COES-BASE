@@ -162,7 +162,7 @@ class AcademicRecord < ApplicationRecord
     if absolute? or pi? or rt? or sin_calificar? or equivalencia?
       desc_conv_absolute
     else
-      self.q_value_to_02i
+      "#{self.q_value_to_02i}"
     end
   end
 
@@ -609,6 +609,12 @@ class AcademicRecord < ApplicationRecord
         sortable :name
       end
 
+      field :area do
+        label 'Área'
+        searchable :name
+        sortable :name
+      end
+
       # field :period do
       #   label 'Periodo'
       #   column_width 120
@@ -625,7 +631,7 @@ class AcademicRecord < ApplicationRecord
       #   end
       # end
 
-      field :get_value_by_status do
+      field :get_value_by_status, :string do
         label 'Calificación Definitiva'
       end
       fields :status, :qualifications, :period_type, :student, :user, :address, :subject
