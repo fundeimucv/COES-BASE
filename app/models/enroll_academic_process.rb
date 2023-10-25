@@ -308,6 +308,7 @@ class EnrollAcademicProcess < ApplicationRecord
           }
         end        
       end
+      fields :efficiency, :simple_average, :weighted_average
     end
 
     export do
@@ -335,6 +336,8 @@ class EnrollAcademicProcess < ApplicationRecord
       field :payment_reports do
         label 'Reporte de Pago'
       end
+
+      fields :efficiency, :simple_average, :weighted_average
 
     end
   end
