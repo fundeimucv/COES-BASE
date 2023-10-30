@@ -78,7 +78,8 @@ class EnrollAcademicProcess < ApplicationRecord
   # FUNCTIONS:
 
   def overlapped? schedule2
-    self.schedules.where(day: schedule2.day).each do |sh|
+    # self.schedules.where(day: schedule2.day).each do |sh|
+    self.schedules.where.not('academic_records.status': 3).where(day: schedule2.day).each do |sh|
       if ((sh.starttime&.to_i < schedule2&.endtime&.to_i) and (schedule2&.starttime&.to_i < sh.endtime&.to_i) )
         return true 
       end
