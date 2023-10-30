@@ -58,9 +58,10 @@ class EnrollAcademicProcessesController < ApplicationController
 
   def reserve_space
     begin
-      # LIBERAR CUPO
+      # BUSCAR REGISTRO
       academic_record = AcademicRecord.joins(:course, :grade).where('courses.id': params[:course_id],'grades.id': params[:grade_id]).first
 
+      # LIBERAR CUPO
       if academic_record
         if academic_record&.destroy
           msg = "Cupo liberado"
