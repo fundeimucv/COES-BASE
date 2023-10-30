@@ -172,9 +172,17 @@ class EnrollAcademicProcess < ApplicationRecord
     subjects.count
   end
 
+  def total_subjects_not_retired
+    subjects.where.not('academic_records.status': 3).count
+  end
+
   def total_credits
     subjects.sum(:unit_credits)
   end
+
+  def total_credits_not_retired
+    subjects.where.not('academic_records.status': 3).sum(:unit_credits)
+  end  
 
   def short_name
     "#{self.school.code}_#{self.period.name_revert}_#{self.student.user_ci}"
@@ -231,8 +239,8 @@ class EnrollAcademicProcess < ApplicationRecord
         formatted_value do          
           grade = bindings[:object].grade          
           if bindings[:object].enrolling?
-            totalCreditsReserved = bindings[:object].total_credits
-            totalSubjectsReserved = bindings[:object].total_subjects
+            totalCreditsReserved = bindings[:object].total_credits_not_retired
+            totalSubjectsReserved = bindings[:object].total_subjects_not_retired
 
             bindings[:view].render(partial: '/enroll_academic_processes/form', locals: {grade: grade, academic_process: bindings[:object].academic_process, totalCreditsReserved: totalCreditsReserved, totalSubjectsReserved: totalSubjectsReserved})
           else

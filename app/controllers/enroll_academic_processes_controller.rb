@@ -92,8 +92,8 @@ class EnrollAcademicProcessesController < ApplicationController
 
         if enroll_academic_process
           # INTENTO POR TOTAL DE CREDITOS Y ASIGNATURAS: 
-          credits_attemp = enroll_academic_process.total_credits+course.subject.unit_credits
-          subjects_attemp = enroll_academic_process.total_subjects+1
+          credits_attemp = enroll_academic_process.total_credits_not_retired+course.subject.unit_credits
+          subjects_attemp = enroll_academic_process.total_subjects_not_retired+1
 
           overlapped = false
           
@@ -121,7 +121,7 @@ class EnrollAcademicProcessesController < ApplicationController
             msg = "Sin cupos disponibles para: #{sec.descripcion} en el período #{sec.periodo.id}"
             estado = 'error'
           else
-            # VALIDA PARA INSCRIBIR
+            # VÁLIDA PARA INSCRIBIR
             academic_record = AcademicRecord.new(section_id: section.id, enroll_academic_process_id: enroll_academic_process.id, status: :sin_calificar)
 
             if academic_record.save

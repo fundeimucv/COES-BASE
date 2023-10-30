@@ -211,7 +211,7 @@ class AcademicRecord < ApplicationRecord
     valor = 'secondary'
     valor = 'success' if self.aprobado?
     valor = 'danger' if (self.aplazado? || self.retirado? || self.pi?)
-    valor += ' text-muted' if self.retirado?
+    # valor += ' text-muted' if self.retirado?
     return valor    
   end
 
