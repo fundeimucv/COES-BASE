@@ -436,6 +436,9 @@ es:
       grade:
         one: 'Grado'
         other: 'Grados'
+      general_setup:
+        one: 'Configuración General'
+        other: 'Configuraciones generales'
       payment_report:
         one: 'Reporte de Pago'
         other: 'Reportes de Pago'
