@@ -344,7 +344,13 @@ class AcademicRecord < ApplicationRecord
     qualification ? qualification.value_to_02i : nil
   end
   def q_value_to_02i qualification=definitive_q
-    qualification ? qualification.value_to_02i : '--'
+    if qualification
+      qualification.value_to_02i
+    elsif equivalencia?
+      'EQ'
+    else 
+      '--'
+    end
   end
 
   def description_q force_final = false
