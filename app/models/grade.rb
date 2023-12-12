@@ -478,6 +478,12 @@ class Grade < ApplicationRecord
 
     export do
       fields :student, :study_plan, :admission_type, :registration_status, :efficiency, :weighted_average, :simple_average
+      field :total_subjects_coursed do
+        label 'Total Créditos Cursados'
+      end
+      field :total_subjects_approved do
+        label 'Total Créditos Aprobados'
+      end      
     end
   end
 
