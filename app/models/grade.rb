@@ -477,7 +477,7 @@ class Grade < ApplicationRecord
     end
 
     export do
-      fields :student, :study_plan, :admission_type, :registration_status
+      fields :student, :study_plan, :admission_type, :registration_status, :efficiency, :weighted_average, :simple_average
     end
   end
 
