@@ -609,6 +609,7 @@ es:
       faculty:
         code: 'Código'
         name: 'Nombre'
+        short_name: Nombre Corto
       grade:
         numbers: Números
         description: Descripción
@@ -663,6 +664,7 @@ es:
         contact_email: Correo de contacto
         code: 'Código'
         name: 'Nombre'
+        short_name: 'Nombre Corto'
         type_entity: 'Tipo de Entidad'
         enable_subject_retreat: 'Activar retiro de Asignturas'
         enable_change_course: 'Activar cambio de Sección'

@@ -2,6 +2,7 @@ class School < ApplicationRecord
   # SCHEMA:
   # t.string "code", null: false
   # t.string "name", null: false
+  # t.string "short_name", null: false  
   # t.integer "type_entity", default: 0, null: false
   # t.boolean "enable_subject_retreat"
   # t.boolean "enable_change_course"
@@ -90,9 +91,9 @@ class School < ApplicationRecord
     self.enroll_process ? self.enroll_process.name : 'Inscripción Cerrada'
   end
 
-  def short_name
-    self.name.split(" ")[2] if self.name
-  end
+  # def short_name
+  #   self.name.split(" ")[2] if self.name
+  # end
 
 
   def modalities
@@ -311,29 +312,32 @@ class School < ApplicationRecord
     end
 
     edit do
-      # field :faculty do
-      #   read_only true
-      # end
+      field :faculty
 
       field :code do
+        html_attributes do
+          {:length => 3, :size => 3, :onInput => "$(this).val($(this).val().toUpperCase().replace(/[^A-Za-z]/g,''))"}
+        end
+      end
+      field :name do
+        html_attributes do
+          {:onInput => "$(this).val($(this).val().toUpperCase())"}
+        end
+      end
+
+      field :bank_accounts do
+      end
+
+      fields :contact_email, :boss_name
+    end
+
+    update do
+      field :code do
         read_only true
-        # html_attributes do
-        #   {:length => 3, :size => 3, :onInput => "$(this).val($(this).val().toUpperCase().replace(/[^A-Za-z]/g,''))"}
-        # end
       end
       field :name do
         read_only true
-        # html_attributes do
-        #   {:onInput => "$(this).val($(this).val().toUpperCase())"}
-        # end
       end
-      # field :enable_dependents do
-      #   help 'Marque esta casilla para activar las prelaciones al momento de inscripción del estudiante. Caso contrario, desmásquela.'
-      # end
-      # fields :active_process, :enroll_process do
-      #   inline_add false
-      #   inline_edit false
-      # end
 
       field :bank_accounts do
       end

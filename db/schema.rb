@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_10_31_200200) do
+ActiveRecord::Schema[7.0].define(version: 2023_12_13_133607) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -239,6 +239,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_10_31_200200) do
     t.string "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "short_name"
   end
 
   create_table "general_setups", force: :cascade do |t|
@@ -363,6 +364,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_10_31_200200) do
     t.bigint "enroll_process_id"
     t.string "boss_name", default: ""
     t.boolean "enable_enroll_payment_report", default: false, null: false
+    t.string "short_name"
     t.index ["active_process_id"], name: "index_schools_on_active_process_id"
     t.index ["enroll_process_id"], name: "index_schools_on_enroll_process_id"
     t.index ["faculty_id"], name: "index_schools_on_faculty_id"

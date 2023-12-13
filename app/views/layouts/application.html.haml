@@ -21,11 +21,15 @@
             / left
             .col-12.col-lg-7.d-md-flex.align-items-center.justify-content-center.bg-primary.bg-opacity-10.vh-lg-100
               .p-3.p-lg-5
-                / Title
-                = render partial: 'layouts/main_banner', locals: {width: '96%', bg_color: ' '}
-
-                / Carousel
-                = render partial: 'layouts/carousel', locals: {billboards: Billboard.activas}
+                - @billboards = Billboard.activas
+                - if @billboards.any?
+                  / Title
+                  = render partial: 'layouts/main_banner', locals: {width: '96%', bg_color: ' '}
+                  / Carousel
+                  = render partial: 'layouts/carousel', locals: {billboards: @billboards}
+                - else
+                  / Title
+                  = render partial: 'layouts/main_banner', locals: {bg_color: ' '}
 
             / Right
             .col-12.col-lg-5.m-auto

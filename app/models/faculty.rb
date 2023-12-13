@@ -59,6 +59,13 @@ class Faculty < ApplicationRecord
 					{:length => 3, :size => 3, :onInput => "$(this).val($(this).val().toUpperCase().replace(/[^A-Za-z]/g,''))"}
 				end
 			end
+
+			field :short_name do
+				html_attributes do
+					{:onInput => "$(this).val($(this).val().toUpperCase())"}
+				end				
+			end
+
 			field :name do
 				html_attributes do
 					{:onInput => "$(this).val($(this).val().toUpperCase())"}
