@@ -108,8 +108,8 @@ class Grade < ApplicationRecord
 
   # FUNCTIONS:
   def help_msg
-    unless self.school.contact_email.blank?
-      "Puede escribir al correo: #{self.school.contact_email} para solicitar ayuda."
+    unless self.school&.faculty&.coes_boss_name.blank?
+      "Puede escribir al correo: #{self.school&.faculty&.coes_boss_name} para solicitar ayuda."
     end
   end
 

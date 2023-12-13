@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_12_13_133607) do
+ActiveRecord::Schema[7.0].define(version: 2023_12_13_212101) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -162,12 +162,10 @@ ActiveRecord::Schema[7.0].define(version: 2023_12_13_133607) do
     t.string "code", null: false
     t.string "holder", null: false
     t.bigint "bank_id", null: false
-    t.bigint "school_id", null: false
     t.integer "account_type"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["bank_id"], name: "index_bank_accounts_on_bank_id"
-    t.index ["school_id"], name: "index_bank_accounts_on_school_id"
   end
 
   create_table "banks", force: :cascade do |t|
@@ -240,6 +238,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_12_13_133607) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "short_name"
+    t.string "coes_boss_name"
+    t.string "contact_email"
   end
 
   create_table "general_setups", force: :cascade do |t|
@@ -359,10 +359,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_12_13_133607) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "faculty_id"
-    t.string "contact_email", default: "coes.fau@gmail.com", null: false
     t.bigint "active_process_id"
     t.bigint "enroll_process_id"
-    t.string "boss_name", default: ""
     t.boolean "enable_enroll_payment_report", default: false, null: false
     t.string "short_name"
     t.index ["active_process_id"], name: "index_schools_on_active_process_id"
@@ -520,7 +518,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_12_13_133607) do
   add_foreign_key "authorizeds", "admins", primary_key: "user_id", on_update: :cascade, on_delete: :cascade
   add_foreign_key "authorizeds", "authorizables", on_update: :cascade, on_delete: :cascade
   add_foreign_key "bank_accounts", "banks"
-  add_foreign_key "bank_accounts", "schools"
   add_foreign_key "courses", "academic_processes"
   add_foreign_key "courses", "subjects"
   add_foreign_key "enroll_academic_processes", "academic_processes"

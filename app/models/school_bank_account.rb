@@ -1,0 +1,2 @@
+class SchoolBankAccount < ApplicationRecord
+end

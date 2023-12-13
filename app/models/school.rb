@@ -12,7 +12,7 @@ class School < ApplicationRecord
   # t.datetime "created_at", null: false
   # t.datetime "updated_at", null: false
   # t.bigint "faculty_id"
-  # t.string "contact_email", default: "coes.fau@gmail.com", null: false
+
 
   # HISTORY:
   has_paper_trail on: [:create, :destroy, :update]
@@ -52,7 +52,6 @@ class School < ApplicationRecord
   validates :type_entity, presence: true
   validates :code, presence: true, uniqueness: {case_sensitive: false}
   validates :name, presence: true, uniqueness: {case_sensitive: false}
-  validates :contact_email, presence: true
 
   # CALLBAKCS:
   after_initialize :set_unique_faculty
@@ -308,7 +307,7 @@ class School < ApplicationRecord
 
       # end      
 
-      # fields :study_plans, :periods, :areas, :bank_accounts, :contact_email
+      # fields :study_plans, :periods, :areas, :bank_accounts
     end
 
     edit do
@@ -327,8 +326,6 @@ class School < ApplicationRecord
 
       field :bank_accounts do
       end
-
-      fields :contact_email, :boss_name
     end
 
     update do
@@ -342,7 +339,6 @@ class School < ApplicationRecord
       field :bank_accounts do
       end
 
-      fields :contact_email, :boss_name
     end
 
     export do

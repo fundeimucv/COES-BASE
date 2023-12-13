@@ -610,6 +610,8 @@ es:
         code: 'Código'
         name: 'Nombre'
         short_name: Nombre Corto
+        contact_email: Correo de Contacto
+        coes_boss_name: Nombre Jefe Control Estudio
       grade:
         numbers: Números
         description: Descripción
@@ -660,8 +662,7 @@ es:
         value: valor
         type_q: Tipo de Calificación
       school:
-        description: Descripción        
-        contact_email: Correo de contacto
+        description: Descripción
         code: 'Código'
         name: 'Nombre'
         short_name: 'Nombre Corto'
@@ -677,7 +678,6 @@ es:
         bank_accounts: Cuentas Bancarias
         study_plans: Planes de Estudio
         admission_types: Tipos de Admisión
-        boss_name: Nombre del Jefe de Control Estudios
       schedule:
         day: Día
         starttime: Hora Inicio
