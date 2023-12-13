@@ -82,7 +82,11 @@ class Faculty < ApplicationRecord
 					{:onInput => "$(this).val($(this).val().toUpperCase())"}
 				end				
 			end
-			fields :contact_email, :coes_boss_name, :logo, :coes_signature, :coes_stamp, :bank_accounts
+			fields :contact_email, :coes_boss_name, :logo, :coes_signature, :coes_stamp
+			field :bank_accounts do
+				inline_edit false
+				inline_add false
+			end
 		end
 	end
 
