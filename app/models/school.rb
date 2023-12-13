@@ -114,21 +114,20 @@ class School < ApplicationRecord
 
     list do
       checkboxes false
-      field :code do
-        sortable false
-        queryable false
-        filterable false
-        searchable false
-      end
+      # field :code do
+      #   sortable false
+      #   queryable false
+      #   filterable false
+      #   searchable false
+      # end
 
-      field :name do
+      field :short_name do
+        label 'Escuela'
         sortable false
         queryable false
         filterable false
         searchable false
-        pretty_value do
-          bindings[:object].short_name
-        end
+
       end
 
       field :enable_dependents do
@@ -308,7 +307,9 @@ class School < ApplicationRecord
     end
 
     edit do
-      field :faculty
+      field :faculty do
+        read_only true
+      end
 
       field :code do
         html_attributes do
@@ -316,6 +317,11 @@ class School < ApplicationRecord
         end
       end
       field :name do
+        html_attributes do
+          {:onInput => "$(this).val($(this).val().toUpperCase())"}
+        end
+      end
+      field :short_name do
         html_attributes do
           {:onInput => "$(this).val($(this).val().toUpperCase())"}
         end
@@ -329,7 +335,11 @@ class School < ApplicationRecord
       field :name do
         read_only true
       end
-
+      field :short_name do
+        html_attributes do
+          {:onInput => "$(this).val($(this).val().toUpperCase())"}
+        end
+      end
 
     end
 
