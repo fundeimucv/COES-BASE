@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_12_13_212101) do
+ActiveRecord::Schema[7.0].define(version: 2023_12_13_213924) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -240,6 +240,15 @@ ActiveRecord::Schema[7.0].define(version: 2023_12_13_212101) do
     t.string "short_name"
     t.string "coes_boss_name"
     t.string "contact_email"
+  end
+
+  create_table "faculty_bank_accounts", force: :cascade do |t|
+    t.bigint "faculty_id", null: false
+    t.bigint "bank_account_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["bank_account_id"], name: "index_faculty_bank_accounts_on_bank_account_id"
+    t.index ["faculty_id"], name: "index_faculty_bank_accounts_on_faculty_id"
   end
 
   create_table "general_setups", force: :cascade do |t|

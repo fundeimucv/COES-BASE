@@ -1,2 +1,0 @@
-class SchoolBankAccount < ApplicationRecord
-end

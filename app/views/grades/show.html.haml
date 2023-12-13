@@ -3,6 +3,7 @@
   .m-3.p-3= render partial: 'enroll_academic_processes/new', locals: {grade: grade}
 - else
   - school = grade.school
+  - faculty = grade.school&.faculty
   - # NUEVO SECUENCIA DE INSCRIPCIÓN:
 
   - if academic_process = school&.enroll_process
@@ -31,7 +32,7 @@
               .alert.alert-danger.text-center
                 %b ¡Atención!
                 Es necesario realizar el pago de su inscripción para posteriormente reportarlo. A Continuación los datos necesarios            
-                = render partial: '/payment_reports/show_data_bank_account', locals: {bank_accounts: school.bank_accounts, amount: academic_process.registration_amount}
+                = render partial: '/payment_reports/show_data_bank_account', locals: {bank_accounts: faculty.bank_accounts, amount: academic_process.registration_amount}
 
                 - id = "paymentReportModal#{inscripcion.id}"
                 - titlePayment = "Reportar Pago inscripción #{academic_process.short_desc}"

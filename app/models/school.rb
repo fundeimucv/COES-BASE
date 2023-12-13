@@ -27,9 +27,6 @@ class School < ApplicationRecord
 
   belongs_to :faculty
 
-  has_many :bank_accounts, dependent: :destroy
-  accepts_nested_attributes_for :bank_accounts, allow_destroy: true
-
   has_many :admission_types
   accepts_nested_attributes_for :admission_types
 
@@ -307,7 +304,7 @@ class School < ApplicationRecord
 
       # end      
 
-      # fields :study_plans, :periods, :areas, :bank_accounts
+      # fields :study_plans, :periods, :areas
     end
 
     edit do
@@ -323,9 +320,6 @@ class School < ApplicationRecord
           {:onInput => "$(this).val($(this).val().toUpperCase())"}
         end
       end
-
-      field :bank_accounts do
-      end
     end
 
     update do
@@ -336,8 +330,6 @@ class School < ApplicationRecord
         read_only true
       end
 
-      field :bank_accounts do
-      end
 
     end
 
@@ -347,7 +339,6 @@ class School < ApplicationRecord
   end
 
   private
-
 
     def paper_trail_update
       # changed_fields = self.changes.keys - ['created_at', 'updated_at']
