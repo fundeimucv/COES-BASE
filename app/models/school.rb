@@ -123,11 +123,6 @@ class School < ApplicationRecord
 
       field :short_name do
         label 'Escuela'
-        sortable false
-        queryable false
-        filterable false
-        searchable false
-
       end
 
       field :enable_dependents do
