@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_12_13_213924) do
+ActiveRecord::Schema[7.0].define(version: 2023_12_13_232824) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -348,6 +348,16 @@ ActiveRecord::Schema[7.0].define(version: 2023_12_13_213924) do
     t.index ["academic_record_id"], name: "index_qualifications_on_academic_record_id"
   end
 
+  create_table "requirement_by_subject_types", force: :cascade do |t|
+    t.bigint "study_plan_id", null: false
+    t.bigint "subject_type_id", null: false
+    t.integer "required_credits", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["study_plan_id"], name: "index_requirement_by_subject_types_on_study_plan_id"
+    t.index ["subject_type_id"], name: "index_requirement_by_subject_types_on_subject_type_id"
+  end
+
   create_table "schedules", force: :cascade do |t|
     t.bigint "section_id", null: false
     t.integer "day"
@@ -437,13 +447,10 @@ ActiveRecord::Schema[7.0].define(version: 2023_12_13_213924) do
   end
 
   create_table "subject_types", force: :cascade do |t|
-    t.bigint "study_plan_id", null: false
     t.string "name"
     t.string "code"
-    t.integer "required_credits", default: 0, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["study_plan_id"], name: "index_subject_types_on_study_plan_id"
   end
 
   create_table "subjects", force: :cascade do |t|
@@ -541,6 +548,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_12_13_213924) do
   add_foreign_key "payment_reports", "bank_accounts", column: "receiving_bank_account_id", on_update: :cascade, on_delete: :nullify
   add_foreign_key "payment_reports", "banks", column: "origin_bank_id"
   add_foreign_key "qualifications", "academic_records"
+  add_foreign_key "requirement_by_subject_types", "study_plans"
+  add_foreign_key "requirement_by_subject_types", "subject_types"
   add_foreign_key "schedules", "sections"
   add_foreign_key "schools", "academic_processes", column: "active_process_id"
   add_foreign_key "schools", "academic_processes", column: "enroll_process_id"
@@ -552,7 +561,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_12_13_213924) do
   add_foreign_key "study_plans", "schools"
   add_foreign_key "subject_links", "subjects", column: "depend_subject_id"
   add_foreign_key "subject_links", "subjects", column: "prelate_subject_id"
-  add_foreign_key "subject_types", "study_plans"
   add_foreign_key "subjects", "areas"
   add_foreign_key "teachers", "areas"
   add_foreign_key "teachers", "users"

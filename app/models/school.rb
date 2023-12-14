@@ -33,8 +33,8 @@ class School < ApplicationRecord
   has_many :academic_processes
   has_many :areas, dependent: :destroy
   has_many :study_plans, dependent: :destroy
+  accepts_nested_attributes_for :study_plans, allow_destroy: true
   has_many :grades, through: :study_plans
-  accepts_nested_attributes_for :study_plans
 
   has_many :subjects, through: :areas
   has_many :periods, through: :academic_processes
@@ -124,6 +124,8 @@ class School < ApplicationRecord
       field :short_name do
         label 'Escuela'
       end
+
+      field :study_plans
 
       field :enable_dependents do
         label '¿Prelaciones?'
@@ -304,6 +306,9 @@ class School < ApplicationRecord
     edit do
       field :faculty do
         read_only true
+        pretty_value do
+          value.short_name
+        end
       end
 
       field :code do

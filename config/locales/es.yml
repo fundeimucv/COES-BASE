@@ -358,11 +358,11 @@ es:
           attributes:
             faculty:
               required: 'requerida'
-        sections:
+        section:
           attributes:
             course:
               required: Curso
-        students:
+        student:
           attributes:
             user:
               required: requerido
@@ -374,7 +374,7 @@ es:
           attributes:
             depend_subject:
               required: requerido
-        subject_type:
+        requirement_by_subject_type:
           attributes:
             required_credits:
               required: requerido
@@ -729,6 +729,7 @@ es:
         code: 'Código'
         name: 'Nombre'
         subject_types: 'Tipos de Asignatura'
+        requirement_by_subject_types: Requerimientos por Tipo de Asignatura
       subject:
         school: Escuela
         courses: Cursos
@@ -748,9 +749,13 @@ es:
         study_plan: Plan de Estudio
         name: Nombre
         code: Letra Identificativa
-        required_credits: Créditos Requeridos 
+        
         created_at: Creado en
         updated_at: Actualizado en
+      requirement_by_subject_type:
+        subject_type: Tipo de Asignatura
+        study_plan: Plan de Estudio
+        required_credits: Créditos Requeridos 
       teacher:
         area: 'Área'
         user: 'Usuario'
