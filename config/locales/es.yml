@@ -383,6 +383,8 @@ es:
           attributes:
             area:
               required: 'requerida'
+            subject_type:
+              required: 'Requerido'
         qualification:
           attributes:
             value:
@@ -739,16 +741,15 @@ es:
         unit_credits: 'Unidad de Créditos'
         ordinal: 'Orden'
         qualification_type: 'Tipo de calificación'
-        modality: 'Tipo'
         area: 'Área'
         prelate_subjects: Prelaciones
         depend_subjects: Asignaturas que prela
         created_at: 'Fecha de Registro'
         updated_at: 'Fecha de Actualización'
+        subject_type: Tipo de Asignatura
       subject_type:
-        study_plan: Plan de Estudio
         name: Nombre
-        code: Letra Identificativa
+        code: Identificador
         
         created_at: Creado en
         updated_at: Actualizado en

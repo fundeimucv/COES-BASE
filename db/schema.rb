@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_12_13_232824) do
+ActiveRecord::Schema[7.0].define(version: 2023_12_14_170806) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -460,12 +460,13 @@ ActiveRecord::Schema[7.0].define(version: 2023_12_13_232824) do
     t.integer "unit_credits", default: 24, null: false
     t.integer "ordinal", default: 0, null: false
     t.integer "qualification_type"
-    t.integer "modality"
     t.bigint "area_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.boolean "force_absolute", default: false
+    t.bigint "subject_type_id", null: false
     t.index ["area_id"], name: "index_subjects_on_area_id"
+    t.index ["subject_type_id"], name: "index_subjects_on_subject_type_id"
   end
 
   create_table "teachers", primary_key: "user_id", force: :cascade do |t|
@@ -562,6 +563,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_12_13_232824) do
   add_foreign_key "subject_links", "subjects", column: "depend_subject_id"
   add_foreign_key "subject_links", "subjects", column: "prelate_subject_id"
   add_foreign_key "subjects", "areas"
+  add_foreign_key "subjects", "subject_types"
   add_foreign_key "teachers", "areas"
   add_foreign_key "teachers", "users"
   add_foreign_key "tutorials", "group_tutorials"

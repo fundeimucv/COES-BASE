@@ -6,9 +6,9 @@ class Subject < ApplicationRecord
   # t.integer "unit_credits", default: 24, null: false
   # t.integer "ordinal", default: 0, null: false
   # t.integer "qualification_type"
-  # t.integer "modality"
   # t.bigint "area_id", null: false  
   # t.boolean "force_absolute", default: false  
+  # t.integer "subject_type_id", null: false
 
   # HISTORY:
   has_paper_trail on: [:create, :destroy, :update]
@@ -19,6 +19,7 @@ class Subject < ApplicationRecord
 
   # ASSOCIATIONS:
   belongs_to :area
+  belongs_to :subject_type 
   has_one :school, through: :area
 
   has_many :courses, dependent: :destroy
@@ -43,13 +44,13 @@ class Subject < ApplicationRecord
 
   # ENUMS:
   enum qualification_type: [:numerica, :absoluta]
-  enum modality: [:obligatoria, :electiva, :optativa] 
+  # enum modality: [:obligatoria, :electiva, :optativa] 
 
   # VALIDATIONS:
   validates :code, presence: true, uniqueness: {case_sensitive: false}
   validates :name, presence: true, uniqueness: {case_sensitive: false}
   validates :ordinal, presence: true
-  validates :modality, presence: true
+  validates :subject_type, presence: true
   validates :qualification_type, presence: true
   validates :unit_credits, presence: true
   validates :area, presence: true
@@ -213,7 +214,7 @@ class Subject < ApplicationRecord
   end
 
   def label_modality
-    return ApplicationController.helpers.label_status("bg-info", self.modality.titleize) if self.modality
+    return ApplicationController.helpers.label_status("bg-info", self.subject_type&.name) if self.subject_type
   end
 
   def label_qualification_type
@@ -222,16 +223,7 @@ class Subject < ApplicationRecord
   
 
   def modality_initial_letter
-    case modality
-    when 'obligatoria'
-      'B'
-    when 'electiva'
-      'O'
-    when 'optativa'
-      'L'
-    when 'proyecto'
-      'P'
-    end      
+    subject_type&.code
   end
 
   def total_dependencies
@@ -301,13 +293,13 @@ class Subject < ApplicationRecord
         column_width 20
       end
 
-      field :modality do
+      field :subject_type do
         column_width 20
         filterable false
 
-        pretty_value do
-          bindings[:object].label_modality
-        end        
+        # pretty_value do
+        #   bindings[:object].label_modality
+        # end 
       end
 
       field :qualification_type do
@@ -396,7 +388,11 @@ class Subject < ApplicationRecord
           {:onInput => "$(this).val($(this).val().toUpperCase())"}
         end  
       end      
-      fields :modality, :unit_credits
+      field :subject_type do
+      inline_add false
+      inline_edit false
+      end
+      field :unit_credits      
 
       field :ordinal do
         html_attributes do
@@ -432,7 +428,7 @@ class Subject < ApplicationRecord
 
     export do
       field :code, :string 
-      fields :name, :area, :unit_credits, :ordinal, :qualification_type, :modality
+      fields :name, :area, :unit_credits, :ordinal, :qualification_type, :subject_type
     end
   end
 
@@ -473,13 +469,13 @@ class Subject < ApplicationRecord
 
     # MODALITY
     # p "     #{row[4].strip.downcase.to_sym}      ".center(500, "!")
-    modality = fields['modality']
-    if row[4]
-      aux = row[4].strip.downcase
-      modality = aux if Subject.modalities.keys.include? aux
-    end
+  
+    field['modality'].updacase!
+    field['modality'] = SubjectType.where("code = '#{field['modality']}' OR name = '#{field['modality']}'").first
+
+    field['modality'] ||= SubjectType.first
     
-    subject.modality = modality
+    subject.subject_type = field['modality']
       
     # QUALIFICATION TYPE
     qualification_type = row[5] ? row[5].strip.downcase.to_sym : fields['qualification_type']
