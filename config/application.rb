@@ -16,6 +16,8 @@ module Coesfau
     # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 7.0
 
+    # For PDFs
+    config.assets.precompile += %w(imagen.png)
 
     config.i18n.load_path += Dir[Rails.root.join('config', 'locales', '*.{rb,yml}')]
     config.i18n.default_locale = :es

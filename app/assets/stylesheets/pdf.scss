@@ -74,6 +74,14 @@ text-left{
 
 }
 
+#watermark_bg_constance{
+	background-image: url('bg_validation.png');
+	background-size: 100%;
+	// background-position: center;
+	// background-size: auto auto; ## Se repite la imagen
+	// background-repeat: repeat-y; ## No hace nada | Irrelevante
+}
+
 
 .alert-message{
 	background-color: #fdf1cc; 

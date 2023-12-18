@@ -35,6 +35,7 @@ WickedPdf.config.merge!({
   layout: "layouts/pdf",
   orientation: "Portrait", # Landscape
   page_size: "letter",
+  background: true,
   lowquality: true,
   zoom: 1
 })
