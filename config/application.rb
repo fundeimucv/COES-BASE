@@ -18,6 +18,7 @@ module Coesfau
 
     # For PDFs
     config.assets.precompile += %w(imagen.png)
+    config.assets.precompile << 'pdf.scss'
 
     config.i18n.load_path += Dir[Rails.root.join('config', 'locales', '*.{rb,yml}')]
     config.i18n.default_locale = :es
