@@ -302,6 +302,12 @@ class Section < ApplicationRecord
       #   end
       # end
 
+      field :school do
+        sticky true 
+        searchable :name
+        sortable :name               
+      end
+
       field :period do
         sticky true
         label 'Período'

@@ -271,8 +271,14 @@ class EnrollAcademicProcess < ApplicationRecord
         end
       end
 
+      field :school do
+        sticky true 
+        searchable :name
+        sortable :name               
+      end
+
       field :period do
-        label 'Período'
+        sticky true
         column_width 100
         searchable :name
         # filterable 'periods.name'
