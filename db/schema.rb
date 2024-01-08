@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_12_14_170806) do
+ActiveRecord::Schema[7.0].define(version: 2024_01_08_132507) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -230,6 +230,16 @@ ActiveRecord::Schema[7.0].define(version: 2023_12_14_170806) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["academic_process_id"], name: "index_enrollment_days_on_academic_process_id"
+  end
+
+  create_table "entity_bank_accounts", force: :cascade do |t|
+    t.string "bank_accountable_type", null: false
+    t.bigint "bank_accountable_id", null: false
+    t.bigint "bank_account_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["bank_account_id"], name: "index_entity_bank_accounts_on_bank_account_id"
+    t.index ["bank_accountable_type", "bank_accountable_id"], name: "index_entity_bank_accounts_on_bank_accountable"
   end
 
   create_table "faculties", force: :cascade do |t|

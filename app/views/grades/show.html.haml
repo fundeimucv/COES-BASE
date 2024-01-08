@@ -31,8 +31,9 @@
             - else
               .alert.alert-danger.text-center
                 %b ¡Atención!
-                Es necesario realizar el pago de su inscripción para posteriormente reportarlo. A Continuación los datos necesarios            
-                = render partial: '/payment_reports/show_data_bank_account', locals: {bank_accounts: faculty.bank_accounts, amount: academic_process.registration_amount}
+                Es necesario realizar el pago de su inscripción para posteriormente reportarlo. A Continuación los datos necesarios
+                - bank_accounts = school.bank_accounts.any? ? school.bank_accounts : faculty.bank_accounts
+                = render partial: '/payment_reports/show_data_bank_account', locals: {bank_accounts: bank_accounts, amount: academic_process.registration_amount}
 
                 - id = "paymentReportModal#{inscripcion.id}"
                 - titlePayment = "Reportar Pago inscripción #{academic_process.short_desc}"

@@ -35,8 +35,9 @@ class Faculty < ApplicationRecord
 	has_many :academic_processes, through: :schools
 	has_many :periods, through: :academic_processes
 
-	has_many :faculty_bank_accounts, dependent: :destroy
-	has_many :bank_accounts, through: :faculty_bank_accounts, dependent: :destroy
+	has_many :entity_bank_accounts, as: :bank_accountable, dependent: :destroy
+	has_many :bank_accounts, through: :entity_bank_accounts, dependent: :destroy
+
 	# accepts_nested_attributes_for :bank_accounts, allow_destroy: true
 
 	# has_many :grades, through: :schools

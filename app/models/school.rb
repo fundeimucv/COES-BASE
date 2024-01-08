@@ -40,6 +40,9 @@ class School < ApplicationRecord
   has_many :periods, through: :academic_processes
   has_many :admins, as: :env_authorizable 
 
+	has_many :entity_bank_accounts, as: :bank_accountable, dependent: :destroy
+	has_many :bank_accounts, through: :entity_bank_accounts, dependent: :destroy
+
   # accepts_nested_attributes_for :areas, :academic_processes, :admission_types
 
   # ENUMERATIONS:
@@ -326,6 +329,10 @@ class School < ApplicationRecord
           {:onInput => "$(this).val($(this).val().toUpperCase())"}
         end
       end
+			field :bank_accounts do
+				inline_edit false
+				inline_add false
+			end      
     end
 
     update do
@@ -340,7 +347,10 @@ class School < ApplicationRecord
           {:onInput => "$(this).val($(this).val().toUpperCase())"}
         end
       end
-
+			field :bank_accounts do
+				inline_edit false
+				inline_add false
+			end
     end
 
     export do
