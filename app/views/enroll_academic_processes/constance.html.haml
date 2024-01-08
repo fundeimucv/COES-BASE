@@ -48,7 +48,7 @@
   - enlace +="&study=true" if @study_contance.eql? true
 
   - imagen_qr = CodigoQr.generate_image enlace
-  - #pdf.image imagen_qr, width: 120, at: [10, (pdf.y)+40]
+  - pdf.image imagen_qr, width: 120, at: [10, (pdf.y)+40]
 
   .text-center= image_tag imagen_qr
 
@@ -56,7 +56,6 @@
     %p= "<b>ATENCIÓN:</b> Para verificar la autenticidad del presente documento escanee el código QR, haga clic en la siguiente dirección o escríbala en su navegador web:".html_safe
     %p= enlace
 
-%br
 %br
 %br
 .firma_jefe
