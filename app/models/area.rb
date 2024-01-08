@@ -54,7 +54,7 @@ class Area < ApplicationRecord
       bindings[:controller].current_user&.admin?
     end
     navigation_label 'Config General'
-    navigation_icon 'fa-regular fa-brain'
+    navigation_icon 'fa-regular fa-book-open'
     weight 1
 
     list do

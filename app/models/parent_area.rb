@@ -12,7 +12,7 @@ class ParentArea < ApplicationRecord
 		end
 
 		navigation_label 'Config General'
-		navigation_icon 'fa-regular fa-person-breastfeeding'
+		navigation_icon 'fa-regular fa-landmark-dome'
 		weight 0
 
 		edit do

@@ -351,7 +351,7 @@ es:
           attributes:
             base:
               restrict_dependent_destroy:
-                has_many: 'Tiene áreas de conocimiento asociadas'
+                has_many: 'Tiene departamentos asociadas'
             school:
               required: 'requerida'
         school:
@@ -412,8 +412,8 @@ es:
         one: 'Tipo de Admisión'  
         other: 'Tipos de Admisión'
       area:
-        one: 'Área de Conocimiento'
-        other: 'Áreas de Conocimiento'
+        one: 'Cátedra'
+        other: 'Cátedras'
       bank:
         one: 'Banco'
         other: 'Bancos'
@@ -445,8 +445,8 @@ es:
         one: 'Reporte de Pago'
         other: 'Reportes de Pago'
       parent_area:
-        one: 'Área Madre'
-        other: 'Áreas Madres'
+        one: 'Departamento'
+        other: 'Departamentos'
       period:
         one: 'Período'
         other: 'Períodos'
@@ -559,12 +559,14 @@ es:
         school: 'Escuela'
         total_students: 'Total Estudiantes'
         created_at: 'Fecha de Registro'
+      # Catedra
       area:
         name: 'Nombre'
         school: 'Escuela'
-        parent_area: 'Área Madre'
+        parent_area: 'Departamento'
         subjects: 'Asignaturas'
         subarea: 'Subáreas'
+      # Departamento
       parent_area:
         name: 'Nombre'
         school: 'Escuela'
@@ -583,7 +585,7 @@ es:
         updated_at: 'Fecha de Edición'
         content: 'Contenido de Cartelera'
       course:
-        area: 'Área'
+        area: 'Cátedra'
         period: Período
         school: Escuela
         sections: Secciones
@@ -680,7 +682,7 @@ es:
         enroll_process: Inscripción en Período
         faculty: 'Facultad'
         periods: 'Períodos'
-        areas: 'Áreas'
+        areas: 'Cátedras'
         bank_accounts: Cuentas Bancarias
         study_plans: Planes de Estudio
         admission_types: Tipos de Admisión
@@ -689,7 +691,7 @@ es:
         starttime: Hora Inicio
         endtime: Hora Final
       section:
-        area: 'Área'
+        area: 'Cátedra'
         code: 'Sección'
         capacity: 'Capacidad'
         course: 'Curso (Período/Asignatura)'
@@ -744,7 +746,7 @@ es:
         unit_credits: 'Unidad de Créditos'
         ordinal: 'Orden'
         qualification_type: 'Tipo de calificación'
-        area: 'Área'
+        area: 'Cátedra'
         prelate_subjects: Prelaciones
         depend_subjects: Asignaturas que prela
         created_at: 'Fecha de Registro'
@@ -761,7 +763,7 @@ es:
         study_plan: Plan de Estudio
         required_credits: Créditos Requeridos 
       teacher:
-        area: 'Área'
+        area: 'Cátedra'
         user: 'Usuario'
         created_at: 'Fecha de Registro'
         sections: 'Secciones'
