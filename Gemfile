@@ -113,6 +113,7 @@ group :test do
 end
 gem "cssbundling-rails"
 
+
 # Gestor de Correos
 # gem "mailersend-ruby"
 

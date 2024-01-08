@@ -26,6 +26,7 @@ class AcademicRecord < ApplicationRecord
   has_one :grade, through: :enroll_academic_process
   has_one :study_plan, through: :grade
   has_one :student, through: :grade
+  has_one :school, through: :grade
   has_one :address, through: :student
   has_one :user, through: :student
   has_one :period, through: :academic_process
@@ -440,8 +441,20 @@ class AcademicRecord < ApplicationRecord
       #   end
       # end
 
+      field :school do
+        associated_collection_cache_all false
+        associated_collection_scope do
+          Proc.new { |scope|
+            scope = scope.joins(:school)
+            scope = scope.limit(30) # 'order' does not work here
+          }
+        end
+        
+        searchable :name
+        sortable :name
+      end
+
       field :period do
-        label 'Periodo'
         column_width 120
 
         associated_collection_cache_all false

@@ -25,7 +25,8 @@
                 = render partial: 'layouts/main_banner', locals: {width: '96%', bg_color: ' '}
 
                 / Carousel
-                = render partial: 'layouts/carousel', locals: {billboards: Billboard.activas}
+                - if @billboards = Billboard.activas
+                  = render partial: 'layouts/carousel', locals: {billboards: @billboards}
 
             / Right
             .col-12.col-lg-6.m-auto

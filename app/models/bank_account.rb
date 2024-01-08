@@ -2,7 +2,6 @@ class BankAccount < ApplicationRecord
   # t.string "code", null: false
   # t.string "holder", null: false
   # t.bigint "bank_id", null: false
-  # t.bigint "school_id", null: false
   # t.integer "account_type"
 
   # ENUMERIZE:
@@ -10,9 +9,6 @@ class BankAccount < ApplicationRecord
 
   # ASSOCIATIONS:
   belongs_to :bank
-  belongs_to :school
-
-  # has_one :school
 
   validates_presence_of :code
   validates_presence_of :holder
@@ -23,9 +19,13 @@ class BankAccount < ApplicationRecord
   end
 
   rails_admin do
-    visible false
+    # visible false
     navigation_label 'Administrativa'
     navigation_icon 'fa-solid fa-piggy-bank'
+
+    list do
+      fields :code, :holder, :bank, :account_type
+    end
 
     edit do
       field :code do

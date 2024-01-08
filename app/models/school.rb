@@ -2,6 +2,7 @@ class School < ApplicationRecord
   # SCHEMA:
   # t.string "code", null: false
   # t.string "name", null: false
+  # t.string "short_name", null: false  
   # t.integer "type_entity", default: 0, null: false
   # t.boolean "enable_subject_retreat"
   # t.boolean "enable_change_course"
@@ -11,7 +12,7 @@ class School < ApplicationRecord
   # t.datetime "created_at", null: false
   # t.datetime "updated_at", null: false
   # t.bigint "faculty_id"
-  # t.string "contact_email", default: "coes.fau@gmail.com", null: false
+
 
   # HISTORY:
   has_paper_trail on: [:create, :destroy, :update]
@@ -26,21 +27,21 @@ class School < ApplicationRecord
 
   belongs_to :faculty
 
-  has_many :bank_accounts, dependent: :destroy
-  accepts_nested_attributes_for :bank_accounts, allow_destroy: true
-
   has_many :admission_types
   accepts_nested_attributes_for :admission_types
 
   has_many :academic_processes
   has_many :areas, dependent: :destroy
   has_many :study_plans, dependent: :destroy
+  accepts_nested_attributes_for :study_plans, allow_destroy: true
   has_many :grades, through: :study_plans
-  accepts_nested_attributes_for :study_plans
 
   has_many :subjects, through: :areas
   has_many :periods, through: :academic_processes
   has_many :admins, as: :env_authorizable 
+
+	has_many :entity_bank_accounts, as: :bank_accountable, dependent: :destroy
+	has_many :bank_accounts, through: :entity_bank_accounts, dependent: :destroy
 
   # accepts_nested_attributes_for :areas, :academic_processes, :admission_types
 
@@ -51,7 +52,6 @@ class School < ApplicationRecord
   validates :type_entity, presence: true
   validates :code, presence: true, uniqueness: {case_sensitive: false}
   validates :name, presence: true, uniqueness: {case_sensitive: false}
-  validates :contact_email, presence: true
 
   # CALLBAKCS:
   after_initialize :set_unique_faculty
@@ -90,9 +90,9 @@ class School < ApplicationRecord
     self.enroll_process ? self.enroll_process.name : 'Inscripción Cerrada'
   end
 
-  def short_name
-    self.name.split(" ")[2] if self.name
-  end
+  # def short_name
+  #   self.name.split(" ")[2] if self.name
+  # end
 
 
   def modalities
@@ -117,22 +117,18 @@ class School < ApplicationRecord
 
     list do
       checkboxes false
-      field :code do
-        sortable false
-        queryable false
-        filterable false
-        searchable false
+      # field :code do
+      #   sortable false
+      #   queryable false
+      #   filterable false
+      #   searchable false
+      # end
+
+      field :short_name do
+        label 'Escuela'
       end
 
-      field :name do
-        sortable false
-        queryable false
-        filterable false
-        searchable false
-        pretty_value do
-          bindings[:object].short_name
-        end
-      end
+      field :study_plans
 
       field :enable_dependents do
         label '¿Prelaciones?'
@@ -307,38 +303,54 @@ class School < ApplicationRecord
 
       # end      
 
-      # fields :study_plans, :periods, :areas, :bank_accounts, :contact_email
+      # fields :study_plans, :periods, :areas
     end
 
     edit do
-      # field :faculty do
-      #   read_only true
-      # end
+      field :faculty do
+        read_only true
+        pretty_value do
+          value.short_name
+        end
+      end
 
       field :code do
+        html_attributes do
+          {:length => 3, :size => 3, :onInput => "$(this).val($(this).val().toUpperCase().replace(/[^A-Za-z]/g,''))"}
+        end
+      end
+      field :name do
+        html_attributes do
+          {:onInput => "$(this).val($(this).val().toUpperCase())"}
+        end
+      end
+      field :short_name do
+        html_attributes do
+          {:onInput => "$(this).val($(this).val().toUpperCase())"}
+        end
+      end
+			field :bank_accounts do
+				inline_edit false
+				inline_add false
+			end      
+    end
+
+    update do
+      field :code do
         read_only true
-        # html_attributes do
-        #   {:length => 3, :size => 3, :onInput => "$(this).val($(this).val().toUpperCase().replace(/[^A-Za-z]/g,''))"}
-        # end
       end
       field :name do
         read_only true
-        # html_attributes do
-        #   {:onInput => "$(this).val($(this).val().toUpperCase())"}
-        # end
       end
-      # field :enable_dependents do
-      #   help 'Marque esta casilla para activar las prelaciones al momento de inscripción del estudiante. Caso contrario, desmásquela.'
-      # end
-      # fields :active_process, :enroll_process do
-      #   inline_add false
-      #   inline_edit false
-      # end
-
-      field :bank_accounts do
+      field :short_name do
+        html_attributes do
+          {:onInput => "$(this).val($(this).val().toUpperCase())"}
+        end
       end
-
-      fields :contact_email, :boss_name
+			field :bank_accounts do
+				inline_edit false
+				inline_add false
+			end
     end
 
     export do
@@ -347,7 +359,6 @@ class School < ApplicationRecord
   end
 
   private
-
 
     def paper_trail_update
       # changed_fields = self.changes.keys - ['created_at', 'updated_at']

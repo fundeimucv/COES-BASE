@@ -27,5 +27,5 @@
         %h4{style: "color: #555555; margin: 0px;font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif;"} UCV La casa que vence la sombra
         %h4{style: "color: #555555;margin: 0px;font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif;"} COES-FAU - UCV 
 
-    - if email = School.first&.contact_email
+    - if email = Faculty.first&.contact_email
       %h4{style: "text-align: center !important;color: #555555;font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif;"}= "IMPORTANTE: No dude en contactarnos por el correo #{email} si requiere de algún tipo de apoyo."
