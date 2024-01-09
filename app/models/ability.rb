@@ -13,7 +13,7 @@ class Ability
 
     user ||= User.new
 
-    if user.admin?
+    if user&.admin?
       can :access, :rails_admin
       can :manage, :dashboard
       can :read, [Faculty, Tutorial]
