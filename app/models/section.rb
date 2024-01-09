@@ -23,6 +23,7 @@ class Section < ApplicationRecord
 
   # has_one
   has_one :subject, through: :course
+  has_one :subject_type, through: :subject
   has_one :area, through: :subject
   # accepts_nested_attributes_for :subject
 

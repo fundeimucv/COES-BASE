@@ -37,6 +37,7 @@ class School < ApplicationRecord
   has_many :grades, through: :study_plans
 
   has_many :subjects, through: :areas
+  has_many :subject_types, through: :subjects
   has_many :periods, through: :academic_processes
   has_many :admins, as: :env_authorizable 
 
@@ -196,10 +197,8 @@ class School < ApplicationRecord
         pretty_value do
 
           current_user = bindings[:view]._current_user
-          admin = current_user.admin
-          active = admin and admin.authorized_manage? 'School'
 
-          if active
+          if current_user&.admin&.authorized_manage? 'School'
             bindings[:view].render(partial: "/schools/form_enabled_enroll", locals: {school: bindings[:object]})
           end
         end

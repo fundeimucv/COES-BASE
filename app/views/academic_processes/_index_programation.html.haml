@@ -13,8 +13,9 @@
           = area.name.titleize
 
   .tab-content.col-9.p-0
-    - modalities = Subject.modalities
-    - params[:moda] ||= modalities.first[1]
+    -# modalities = Subject.modalities
+    - modalities = SubjectType.all
+    - params[:moda] ||= modalities.first.code
     - areas.each do |area|
       - active_area = (area.id.eql? params[:area].to_i)
       - active_area_cont = active_area ? 'active' : 'text-light'
@@ -25,22 +26,21 @@
       .tab-pane.fade{class: "#{active_area_cont} #{show_area_cont}", role: :tabpanel} 
         %ul#moda_selector.nav.nav-tabs
           - modalities.each do |moda|
-            - active_moda = (moda[1].eql? params[:moda].to_i)
+            - active_moda = (moda.code.eql? params[:moda])
             - active_moda = active_moda ? 'active text-primary' : 'text-light'
             - show = active_moda ? 'show' : ''
             %li.nav-item.bg-primary
-              %a.nav-link.position-relative{:href => "/admin/academic_process/#{academic_process_id}/programation?area=#{area.id}&moda=#{moda[1]}", class: active_moda, style: 'font-size: small;'}
-
-                = ApplicationController.helpers.total_sections_stiky sections.where('subjects.modality': moda[1]).count
-                = moda[0]&.pluralize&.titleize
+              %a.nav-link.position-relative{:href => "/admin/academic_process/#{academic_process_id}/programation?area=#{area.id}&moda=#{moda.code}", class: active_moda, style: 'font-size: small;'}
+                = ApplicationController.helpers.total_sections_stiky sections.joins(:subject_type).where('subject_types.code': moda.code).count
+                = moda&.name&.downcase.pluralize.titleize
 
         .tab-content.border-bottom.border-end.border-start.p-3
           - modalities.each do |moda|
-            - if active_area and (moda[1].eql? params[:moda].to_i)
+            - if active_area and (moda.code.eql? params[:moda])
               .tab-pane.fade.active.text-primary.show{role: :tabpanel} 
                 %h6.text-primary.text-center
-                  = "#{moda[0]&.pluralize&.titleize} de #{area&.name&.titleize}"
-                - subjects = academic_process.school.subjects.where(modality: params[:moda], area_id: params[:area]).sort_by_code
+                  = "#{moda&.name&.downcase.pluralize.titleize} de #{area&.name&.titleize}"
+                - subjects = academic_process.school.subjects.joins(:subject_type).where('subject_types.code': params[:moda], area_id: params[:area]).sort_by_code
                 = render partial: '/academic_processes/table_subjects_programation', locals: {subjects: subjects, academic_process_id: academic_process_id}
 
 :javascript

@@ -313,7 +313,6 @@ class AcademicProcess < ApplicationRecord
         inline_edit false
       end
       field :school do
-        hide
         inline_edit false
         inline_add false
       end
@@ -390,11 +389,11 @@ class AcademicProcess < ApplicationRecord
     end
   end
 
-  after_initialize do
-    if new_record?
-      self.school_id ||= School.first.id
-    end
-  end
+  # after_initialize do
+  #   if new_record?
+  #     self.school_id ||= School.first.id
+  #   end
+  # end
 
   def redundant_subjects
     subj = self.courses.group(:subject_id).having('count(*) > 1').count

@@ -457,6 +457,9 @@ class Grade < ApplicationRecord
       field :study_plan do
         inline_add false
         inline_edit false
+        pretty_value do
+          "Escuela #{value}"
+        end
       end
       fields :admission_type do
         inline_add false        
@@ -487,10 +490,10 @@ class Grade < ApplicationRecord
     end
   end
 
-  after_initialize do
-    if new_record?
-      self.study_plan_id ||= StudyPlan.first.id if StudyPlan.first
-    end
-  end  
+  # after_initialize do
+  #   if new_record?
+  #     self.study_plan_id ||= StudyPlan.first.id if StudyPlan.first
+  #   end
+  # end  
 
 end

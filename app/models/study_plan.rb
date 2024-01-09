@@ -41,6 +41,10 @@ class StudyPlan < ApplicationRecord
   end
 
   # FUNTIONS:
+  def desc_with_school
+    "#{school.short_name} - #{name}"
+  end
+
   def desc
     "(#{code}) #{name}"
   end

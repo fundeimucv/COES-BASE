@@ -25,6 +25,18 @@ class ParentArea < ApplicationRecord
 			field :school do
 				inline_edit false 
 			end
+		end
+
+		update do
+
+			field :name do
+				html_attributes do
+					{:onInput => "$(this).val($(this).val().toUpperCase())"}
+				end				
+			end			
+			field :school do
+				inline_edit false 
+			end
 			field :areas do
 				inline_add false
 			end

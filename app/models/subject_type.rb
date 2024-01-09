@@ -38,7 +38,7 @@ class SubjectType < ApplicationRecord
 
   def desc_pluralize
     "#{self.name&.downcase&.pluralize&.titleize} (#{self.code})"
-  end  
+  end
 
   private
 

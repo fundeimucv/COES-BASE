@@ -34,6 +34,7 @@ class AcademicRecord < ApplicationRecord
   has_one :course, through: :section
   has_one :teacher, through: :section
   has_one :subject, through: :course
+  has_one :subject_type, through: :subject
   has_one :area, through: :subject
 
   # VALIDATIONS:
@@ -115,8 +116,6 @@ class AcademicRecord < ApplicationRecord
 
   scope :student_enrolled_by_period, lambda { |period_id| joins(:academic_process).where("academic_processes.period_id": period_id).group(:student).count } 
 
-  scope :total_by_qualification_modality?, -> {joins(:subject).group("subjects.modality").count}
-
   scope :students_enrolled, -> { group(:student_id).count } 
 
   scope :student_enrolled_by_credits, -> { joins(:subject).group(:student_id).sum('subject.unit_credits')} 
@@ -127,8 +126,9 @@ class AcademicRecord < ApplicationRecord
   scope :sort_by_subject_code, -> {joins(:subject).order('subjects.code': :asc)}
   scope :sort_by_subject_name, -> {joins(:subject).order('subjects.name': :asc)}
 
-
-  scope :by_subject_types, -> (tipo){joins(:subject).where('subjects.modality': tipo.downcase)}
+  scope :total_by_qualification_modality?, -> {joins(:subject_type).group("subject_types.code").count}
+  
+  scope :by_subject_types, -> (tipo){joins(:subject_type).where('subject_types.code': tipo)}
   # scope :perdidos, -> {perdida_por_inasistencia}
 
   scope :sort_by_user_name, -> {joins(:user).order('users.last_name asc, users.first_name asc')}
