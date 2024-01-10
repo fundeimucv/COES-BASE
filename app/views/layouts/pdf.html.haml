@@ -1,12 +1,11 @@
 !!!
 %html{ lang: "#{I18n.locale}"}
-  #background
-    %head
-      %meta{:content => "text/html; charset=UTF-8", "http-equiv" => "Content-Type"}/
-      %title Coesfau - Documento Pdf
-      %meta{:content => "width=device-width, initial-scale=1, shrink-to-fit=no", :name => "viewport"}/
-      = wicked_pdf_stylesheet_link_tag "pdf"
-      = wicked_pdf_asset_pack_path "pdf"
+  %head
+    %meta{:content => "text/html; charset=UTF-8", "http-equiv" => "Content-Type"}/
+    %title Coesfau - Documento Pdf
+    %meta{:content => "width=device-width, initial-scale=1, shrink-to-fit=no", :name => "viewport"}/
+    = wicked_pdf_stylesheet_link_tag "pdf"
+    = wicked_pdf_asset_pack_path "pdf"
 
-    %body
-      = yield
+  %body#bg_main
+    = yield
