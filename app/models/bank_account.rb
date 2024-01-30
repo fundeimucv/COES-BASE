@@ -10,8 +10,9 @@ class BankAccount < ApplicationRecord
   # ASSOCIATIONS:
   belongs_to :bank
 
-  validates_presence_of :code
-  validates_presence_of :holder
+  validates :code, presence: true
+  validates :holder, presence: true
+  validates :account_type, presence: true
 
   # FUNCTIONS:
   def name
@@ -38,7 +39,10 @@ class BankAccount < ApplicationRecord
         inline_add false
         inline_edit false
       end
-      field :account_type
+      # field :account_type
+      field :account_type do
+        partial 'bank_accounts/custom_account_type_field'
+      end
       # field :short_desc do
       #   help 'A quíen va dirigida la cuenta'
       # end
