@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_01_08_132507) do
+ActiveRecord::Schema[7.0].define(version: 2024_01_29_110536) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -123,12 +123,19 @@ ActiveRecord::Schema[7.0].define(version: 2024_01_08_132507) do
 
   create_table "areas", force: :cascade do |t|
     t.string "name", null: false
-    t.bigint "school_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.bigint "parent_area_id"
-    t.index ["parent_area_id"], name: "index_areas_on_parent_area_id"
+    t.bigint "departament_id"
+    t.bigint "school_id"
+    t.index ["departament_id"], name: "index_areas_on_departament_id"
     t.index ["school_id"], name: "index_areas_on_school_id"
+  end
+
+  create_table "areas_departaments", id: false, force: :cascade do |t|
+    t.bigint "area_id", null: false
+    t.bigint "departament_id", null: false
+    t.index ["area_id", "departament_id"], name: "index_areas_departaments_on_area_id_and_departament_id"
+    t.index ["departament_id", "area_id"], name: "index_areas_departaments_on_departament_id_and_area_id"
   end
 
   create_table "authorizables", force: :cascade do |t|
@@ -205,6 +212,14 @@ ActiveRecord::Schema[7.0].define(version: 2024_01_08_132507) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.index ["priority", "run_at"], name: "delayed_jobs_priority"
+  end
+
+  create_table "departaments", force: :cascade do |t|
+    t.string "name"
+    t.bigint "school_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["school_id"], name: "index_departaments_on_school_id"
   end
 
   create_table "enroll_academic_processes", force: :cascade do |t|
@@ -300,14 +315,6 @@ ActiveRecord::Schema[7.0].define(version: 2024_01_08_132507) do
     t.string "name_group"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-  end
-
-  create_table "parent_areas", force: :cascade do |t|
-    t.string "name"
-    t.bigint "school_id", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["school_id"], name: "index_parent_areas_on_school_id"
   end
 
   create_table "payment_reports", force: :cascade do |t|
@@ -540,13 +547,13 @@ ActiveRecord::Schema[7.0].define(version: 2024_01_08_132507) do
   add_foreign_key "addresses", "students", primary_key: "user_id", on_update: :cascade, on_delete: :cascade
   add_foreign_key "admins", "users"
   add_foreign_key "admission_types", "schools"
-  add_foreign_key "areas", "schools"
   add_foreign_key "authorizables", "area_authorizables"
   add_foreign_key "authorizeds", "admins", primary_key: "user_id", on_update: :cascade, on_delete: :cascade
   add_foreign_key "authorizeds", "authorizables", on_update: :cascade, on_delete: :cascade
   add_foreign_key "bank_accounts", "banks"
   add_foreign_key "courses", "academic_processes"
   add_foreign_key "courses", "subjects"
+  add_foreign_key "departaments", "schools"
   add_foreign_key "enroll_academic_processes", "academic_processes"
   add_foreign_key "enroll_academic_processes", "grades"
   add_foreign_key "enrollment_days", "academic_processes"
@@ -555,7 +562,6 @@ ActiveRecord::Schema[7.0].define(version: 2024_01_08_132507) do
   add_foreign_key "grades", "admission_types"
   add_foreign_key "grades", "students", primary_key: "user_id", on_update: :cascade, on_delete: :cascade
   add_foreign_key "grades", "study_plans"
-  add_foreign_key "parent_areas", "schools"
   add_foreign_key "payment_reports", "bank_accounts", column: "receiving_bank_account_id", on_update: :cascade, on_delete: :nullify
   add_foreign_key "payment_reports", "banks", column: "origin_bank_id"
   add_foreign_key "qualifications", "academic_records"

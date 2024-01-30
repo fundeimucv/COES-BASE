@@ -317,6 +317,7 @@ es:
             env_authorizable:
               required: 'requerido'
         area:
+          departaments: Departamentos
           attributes:
             base:
               restrict_dependent_destroy:
@@ -347,7 +348,7 @@ es:
               required: requerido
             payable:
               required: 'requerido'
-        parent_area:
+        departament:
           attributes:
             base:
               restrict_dependent_destroy:
@@ -444,7 +445,7 @@ es:
       payment_report:
         one: 'Reporte de Pago'
         other: 'Reportes de Pago'
-      parent_area:
+      departament:
         one: 'Departamento'
         other: 'Departamentos'
       period:
@@ -563,13 +564,14 @@ es:
       area:
         name: 'Nombre'
         school: 'Escuela'
-        parent_area: 'Departamento'
+        departaments: 'Departamentos'
         subjects: 'Asignaturas'
         subarea: 'Subáreas'
       # Departamento
-      parent_area:
+      departament:
         name: 'Nombre'
         school: 'Escuela'
+        areas: Áreas
       bank:
         code: 'Código'
         name: 'Nombre'

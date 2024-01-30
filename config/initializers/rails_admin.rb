@@ -108,7 +108,7 @@ RailsAdmin.config do |config|
 
     export do
       require_relative '../../lib/rails_admin/config/actions/export'
-      except [Faculty, School, StudyPlan, GroupTutorial, Tutorial, ParentArea]
+      except [Faculty, School, StudyPlan, GroupTutorial, Tutorial, Departament]
     end
 
     bulk_delete do
@@ -134,11 +134,11 @@ RailsAdmin.config do |config|
 
     ## With an audit adapter, you can add:
     history_index do
-      except [School, StudyPlan, ParentArea]
+      except [School, StudyPlan, Departament]
     end
 
     history_show do
-      except [School, StudyPlan, ParentArea]
+      except [School, StudyPlan, Departament]
     end
   end
 

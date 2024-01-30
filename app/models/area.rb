@@ -13,8 +13,8 @@ class Area < ApplicationRecord
 
   # ASSOCITATIONS:
   belongs_to :school
-  belongs_to :parent_area
-  belongs_to :other_parent, optional: true, class_name: 'Area', foreign_key: :other_parent_id
+  # belongs_to :departament
+  has_and_belongs_to_many :departaments
   has_many :admins, as: :env_authorizable 
 
   has_many :subjects, dependent: :restrict_with_error
@@ -26,8 +26,8 @@ class Area < ApplicationRecord
   validates :school_id, presence: true
 
   # SCOPES:
-  # scope :main, -> {where(parent_area_id: nil)}
-  # scope :catedras, -> {where.not(parent_area_id: nil)}
+  # scope :main, -> {where(departament_id: nil)}
+  # scope :catedras, -> {where.not(departament_id: nil)}
   scope :names, -> {select(:name).map{|ar| ar.name}}
 
   # CALLBACKS:
@@ -59,14 +59,14 @@ class Area < ApplicationRecord
 
     list do
       field :name
-      field :parent_area
+      field :departaments
       field :total_subjects do
         label 'Total Asignaturas'
       end
     end
     show do
       field :name
-      field :parent_area
+      field :departaments
       field :subjects do
         pretty_value do
           bindings[:view].render(template: '/subjects/index', locals: {subjects: bindings[:object].subjects.order(code: :asc)})
@@ -81,7 +81,7 @@ class Area < ApplicationRecord
         end         
       end
 
-      field :parent_area do
+      field :departaments do
         inline_edit false
       end
 
@@ -89,16 +89,12 @@ class Area < ApplicationRecord
 
     modal do
       field :name
-      exclude_fields :parent_area
+      exclude_fields :departaments
     end
 
 
     export do
-      fields :name
-    end
-
-    import do
-      fields :name, :school_id 
+      fields :name, :departaments, :school
     end
 
   end

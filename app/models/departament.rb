@@ -1,10 +1,16 @@
-class ParentArea < ApplicationRecord
-	validates :name, presence: true
+class Departament < ApplicationRecord
+	# ASSOCIATIONS:
+	belongs_to :school
+	has_and_belongs_to_many :areas
+	has_many :areas#, dependent: :restrict_with_error
+	
+	# VALIDATIONS:
+	validates :name, presence: true#, uniqueness: {case_sensitive: false}
+
+	validates_uniqueness_of :name, scope: [:school_id], message: 'Ya se tiene un departamento con ese nombre para la escuela', field_name: false, case_sensitive: false
+
 	validates :school, presence: true
 
-	belongs_to :school
-
-	has_many :areas, dependent: :restrict_with_error
 
 	rails_admin do
 		visible do

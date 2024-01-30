@@ -31,7 +31,8 @@ class School < ApplicationRecord
   accepts_nested_attributes_for :admission_types
 
   has_many :academic_processes
-  has_many :areas, dependent: :destroy
+  has_many :departaments, dependent: :destroy
+  has_many :areas, through: :departaments
   has_many :study_plans, dependent: :destroy
   accepts_nested_attributes_for :study_plans, allow_destroy: true
   has_many :grades, through: :study_plans
@@ -328,6 +329,9 @@ class School < ApplicationRecord
           {:onInput => "$(this).val($(this).val().toUpperCase())"}
         end
       end
+
+      field :departaments
+
 			field :bank_accounts do
 				inline_edit false
 				inline_add false
