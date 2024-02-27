@@ -2,8 +2,11 @@ class Departament < ApplicationRecord
 	# ASSOCIATIONS:
 	belongs_to :school
 	has_and_belongs_to_many :areas
-	has_many :areas#, dependent: :restrict_with_error
-	
+	# has_many :areas#, dependent: :restrict_with_error
+	has_many :subjects, through: :areas
+	has_many :courses, through: :subjects
+	has_many :sections, through: :courses
+	has_many :academic_records, through: :sections
 	# VALIDATIONS:
 	validates :name, presence: true#, uniqueness: {case_sensitive: false}
 
@@ -11,6 +14,13 @@ class Departament < ApplicationRecord
 
 	validates :school, presence: true
 
+	def desc
+		"#{name} (#{school&.code})"
+	end
+
+	def full_description
+		"#{name} - #{school&.name}"
+	end
 
 	rails_admin do
 		visible do
@@ -22,34 +32,47 @@ class Departament < ApplicationRecord
 		weight 0
 
 		edit do
-
+			field :school do
+				inline_edit false
+				inline_add false
+			end
 			field :name do
 				html_attributes do
 					{:onInput => "$(this).val($(this).val().toUpperCase())"}
 				end				
-			end			
-			field :school do
-				inline_edit false 
 			end
 		end
 
 		update do
 
+			field :school do
+				inline_edit false
+				inline_add false
+			end
 			field :name do
 				html_attributes do
 					{:onInput => "$(this).val($(this).val().toUpperCase())"}
 				end				
 			end			
-			field :school do
-				inline_edit false 
-			end
-			field :areas do
-				inline_add false
-			end
+			# field :areas do
+			# 	inline_add false
+			# end
 		end
 
 		list do
-			fields :name, :school, :areas
+			fields :school, :name, :areas
+		end
+
+		show do
+			field :full_description do
+				label 'Descripción'
+			end
+			
+			field :areas do
+				pretty_value do
+					bindings[:view].render(template: '/areas/index', locals: {areas: bindings[:object].areas.order(name: :asc)})
+				  end				
+			end
 		end
 	end
 

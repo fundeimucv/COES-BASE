@@ -1,7 +1,6 @@
 class Area < ApplicationRecord
   # SCHEMA:
   # t.string "name", null: false
-  # t.bigint "school_id", null: false
   
   # HISTORY:
   has_paper_trail on: [:create, :destroy, :update]
@@ -10,20 +9,19 @@ class Area < ApplicationRecord
   before_destroy :paper_trail_destroy
   before_update :paper_trail_update
 
-
   # ASSOCITATIONS:
-  belongs_to :school
-  # belongs_to :departament
   has_and_belongs_to_many :departaments
+  has_many :schools, through: :departaments
   has_many :admins, as: :env_authorizable 
 
   has_many :subjects, dependent: :restrict_with_error
   has_many :sections, through: :subjects
+  has_many :academic_records, through: :sections
   # accepts_nested_attributes_for :subjects
 
   # VALIDATIONS:
   validates :name, presence: true, uniqueness: {case_sensitive: false}
-  validates :school_id, presence: true
+  validates_with SameSchoolToAreaValidator, field_name: false
 
   # SCOPES:
   # scope :main, -> {where(departament_id: nil)}
@@ -94,15 +92,9 @@ class Area < ApplicationRecord
 
 
     export do
-      fields :name, :departaments, :school
+      fields :name, :departaments
     end
 
-  end
-
-  after_initialize do
-    if new_record?
-      self.school_id ||= School.first.id
-    end
   end
 
   private

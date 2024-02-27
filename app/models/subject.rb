@@ -19,8 +19,7 @@ class Subject < ApplicationRecord
 
   # ASSOCIATIONS:
   belongs_to :area
-  belongs_to :subject_type 
-  has_one :school, through: :area
+  belongs_to :subject_type
 
   has_many :courses, dependent: :destroy
   has_many :periods, through: :courses 
@@ -85,6 +84,10 @@ class Subject < ApplicationRecord
   end
 
   # GENERALS FUNCTIONS: 
+  def school
+    areas.first.school
+  end
+
   def self.ordinal_to_cardinal numero, type_school
 
     case numero

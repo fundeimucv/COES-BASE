@@ -32,6 +32,7 @@ class School < ApplicationRecord
 
   has_many :academic_processes
   has_many :departaments, dependent: :destroy
+  accepts_nested_attributes_for :departaments, allow_destroy: true
   has_many :areas, through: :departaments
   has_many :study_plans, dependent: :destroy
   accepts_nested_attributes_for :study_plans, allow_destroy: true
@@ -250,6 +251,11 @@ class School < ApplicationRecord
 
     show do
       field :description
+      field :departaments do
+        pretty_value do
+          bindings[:view].render(template: '/departaments/index', locals: {departaments: bindings[:object].departaments.order(name: :asc)})
+        end
+      end
 
       # field :enable_dependents do
       #   label 'Activar Prelaciones'
@@ -330,7 +336,7 @@ class School < ApplicationRecord
         end
       end
 
-      field :departaments
+      # field :departaments
 
 			field :bank_accounts do
 				inline_edit false

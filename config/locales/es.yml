@@ -571,7 +571,7 @@ es:
       departament:
         name: 'Nombre'
         school: 'Escuela'
-        areas: Áreas
+        areas: Cátedras
       bank:
         code: 'Código'
         name: 'Nombre'
@@ -684,6 +684,7 @@ es:
         enroll_process: Inscripción en Período
         faculty: 'Facultad'
         periods: 'Períodos'
+        departaments: Departamentos
         areas: 'Cátedras'
         bank_accounts: Cuentas Bancarias
         study_plans: Planes de Estudio
@@ -749,6 +750,7 @@ es:
         ordinal: 'Orden'
         qualification_type: 'Tipo de calificación'
         area: 'Cátedra'
+        modality: Modalidad
         prelate_subjects: Prelaciones
         depend_subjects: Asignaturas que prela
         created_at: 'Fecha de Registro'

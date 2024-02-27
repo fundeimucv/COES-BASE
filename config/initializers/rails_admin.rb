@@ -25,13 +25,15 @@ RailsAdmin.config do |config|
   ## == PaperTrail ==
   config.audit_with :paper_trail, 'User', 'PaperTrail::Version' # PaperTrail >= 3.0.0
 
+  
   ### More at https://github.com/railsadminteam/rails_admin/wiki/Base-configuration
-
+  
   ## == Gravatar integration ==
   ## To disable Gravatar integration in Navigation Bar set to false
   config.show_gravatar = false
-
-  config.label_methods << :description # Default is [:name, :title]
+  
+  # config.label_methods << :description # Default is [:name, :title]
+  config.label_methods = [:desc, :name]
 
   # NO FUNCIONA
   # config.show_gravatar do |config|
