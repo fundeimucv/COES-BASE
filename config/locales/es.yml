@@ -56,11 +56,8 @@ es:
         menu: "Cita Horaria"
         breadcrumb: "Cita Horaria"
         link: "Cita Horaria"
-      programation: 
-        title: "Período"
-        menu: "Programación"
-        breadcrumb: "Programación"
-        link: "Programación"
+      index:
+        title: 'Listado'
       organization_chart: 
         title: "Escuela"
         menu: "Organigrama"
@@ -71,8 +68,18 @@ es:
         menu: "Datos Personales"
         breadcrumb: "Datos Personales"
         link: "Datos Personales"
+      programation: 
+        title: "Período"
+        menu: "Programación"
+        breadcrumb: "Programación"
+        link: "Programación"
       index:
         title: 'Listado'
+      structure:
+        title: Estructura
+        menu: Estructura del Plan
+        link: Estructura
+        breadcrumb: Estructura        
     flash:
       object_not_found: 'Recurso no encontrado'
       model_not_found: 'Modelo no encontrado'
@@ -191,11 +198,11 @@ es:
       even: debe ser par
       exclusion: está reservado
       greater_than: debe ser mayor que %{count}
-      greater_than_or_equal_to: debe ser mayor que o igual a %{count}
+      greater_than_or_equal_to: debe ser mayor o igual a %{count}
       inclusion: no está incluido en la lista
       invalid: no es válido
       less_than: debe ser menor que %{count}
-      less_than_or_equal_to: debe ser menor que o igual a %{count}
+      less_than_or_equal_to: debe ser menor o igual a %{count}
       not_a_number: no es un número
       not_an_integer: debe ser un entero
       odd: debe ser impar
@@ -442,6 +449,9 @@ es:
       general_setup:
         one: 'Configuración General'
         other: 'Configuraciones generales'
+      mention:
+        one: Mención
+        other: Menciones        
       payment_report:
         one: 'Reporte de Pago'
         other: 'Reportes de Pago'
@@ -649,6 +659,11 @@ es:
         house_type: 'Tipo de Vivienda'
         house_name: 'Nombre de Vivienda'
         student: 'Estudiante'
+      mention:
+        name: Nombre
+        study_plan: Plan de Estudio
+        subjects: Asignaturas
+        total_required_subjects: Total Asignaturas Requeridas        
       payment_report:
         amount: 'Monto'
         transaction_id: 'Número de Transacción'
@@ -675,6 +690,9 @@ es:
         description: Descripción
         code: 'Código'
         name: 'Nombre'
+        modality: Modalidad
+        mentions: Menciones
+        levels: Niveles
         short_name: 'Nombre Corto'
         type_entity: 'Tipo de Entidad'
         enable_subject_retreat: 'Activar retiro de Asignturas'
@@ -747,7 +765,7 @@ es:
         name: 'Nombre'
         active: 'Activa'
         unit_credits: 'Unidad de Créditos'
-        ordinal: 'Orden'
+        ordinal: 'Nivel'
         qualification_type: 'Tipo de calificación'
         area: 'Cátedra'
         modality: Modalidad

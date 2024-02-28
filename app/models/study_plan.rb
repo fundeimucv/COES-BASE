@@ -3,6 +3,9 @@ class StudyPlan < ApplicationRecord
   # t.string "code"
   # t.string "name"
   # t.bigint "school_id", null: false 
+  # t.bigint "levels", null: false 
+  # t.bigint "modality", null: false 
+  
   
   
   # HISTORY:
@@ -19,12 +22,20 @@ class StudyPlan < ApplicationRecord
   has_many :grades, dependent: :destroy
   has_many :requirement_by_subject_types, dependent: :destroy
   accepts_nested_attributes_for :requirement_by_subject_types, allow_destroy: true  
+  
+  has_many :requirement_by_levels, dependent: :destroy
+  
+  has_many :mentions, dependent: :destroy
+  accepts_nested_attributes_for :mentions, allow_destroy: true  
 
   # VALIDATIONS:
   validates :code, presence: true
   validates :name, presence: true
   validates :requirement_by_subject_types, presence: true
   validates :school, presence: true
+
+  # ENUMS:
+  enum modality: [:Anual, :Semestral]
 
   # CALLBACKS:
   after_initialize :set_unique_school
@@ -41,6 +52,14 @@ class StudyPlan < ApplicationRecord
   end
 
   # FUNTIONS:
+  # def initialization
+  #   requirement_by_levels
+  # end
+
+  def modality_to_tipo
+    Anual? ? 'Año' : 'Semestral'
+  end
+
   def desc_with_school
     "#{school.short_name} - #{name}"
   end
@@ -59,7 +78,8 @@ class StudyPlan < ApplicationRecord
     weight -2
 
     show do
-      fields :school, :code, :name, :requirement_by_subject_types
+      fields :school, :code, :name
+      fields :school, :code, :modality, :levels, :name, :mentions, :requirement_by_subject_types
     end
 
     list do
@@ -69,7 +89,7 @@ class StudyPlan < ApplicationRecord
           bindings[:object].school&.short_name
         end
       end
-      fields :code, :name, :requirement_by_subject_types
+      fields :code, :name, :modality, :levels, :requirement_by_subject_types, :mentions
     end
 
     export do
@@ -91,7 +111,7 @@ class StudyPlan < ApplicationRecord
           {:onInput => "$(this).val($(this).val().toUpperCase())"}
         end        
       end
-      field :requirement_by_subject_types
+      fields :modality, :levels, :requirement_by_subject_types, :mentions
     end
 
   end

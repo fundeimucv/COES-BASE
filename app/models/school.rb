@@ -6,6 +6,7 @@ class School < ApplicationRecord
   # t.integer "type_entity", default: 0, null: false
   # t.boolean "enable_subject_retreat"
   # t.boolean "enable_change_course"
+  # t.boolean "enable_by_level"  
   # t.boolean "enable_dependents"
   # t.bigint "active_process_id"
   # t.bigint "enroll_process_id"
@@ -133,8 +134,30 @@ class School < ApplicationRecord
 
       field :study_plans
 
-      field :enable_dependents do
-        label '¿Prelaciones?'
+      # field :enable_dependents do
+      #   label '¿Prelaciones?'
+      #   queryable false
+      #   filterable false
+      #   searchable false
+      #   sortable false
+      #   sortable false
+      #   pretty_value do
+
+      #     current_user = bindings[:view]._current_user
+      #     admin = current_user.admin
+      #     active = admin and admin.authorized_manage? 'School'
+
+      #     if active
+      #       bindings[:view].render(partial: "/schools/form_dependents", locals: {school: bindings[:object]})
+      #     else
+      #       value
+      #     end
+      #   end
+
+      # end
+
+      field :enable_by_level do
+        label '¿Inscripciones por Nivel?'
         queryable false
         filterable false
         searchable false
@@ -142,17 +165,14 @@ class School < ApplicationRecord
         sortable false
         pretty_value do
 
-          current_user = bindings[:view]._current_user
-          admin = current_user.admin
-          active = admin and admin.authorized_manage? 'School'
+          active = bindings[:view]._current_user&.admin&.authorized_manage? 'School'
 
           if active
             bindings[:view].render(partial: "/schools/form_dependents", locals: {school: bindings[:object]})
           else
             value
           end
-        end
-
+        end        
       end
 
       field :enable_enroll_payment_report do

@@ -21,6 +21,8 @@ class Subject < ApplicationRecord
   belongs_to :area
   belongs_to :subject_type
 
+  has_and_belongs_to_many :mentions
+
   has_many :courses, dependent: :destroy
   has_many :periods, through: :courses 
   has_many :sections, through: :courses
@@ -43,7 +45,6 @@ class Subject < ApplicationRecord
 
   # ENUMS:
   enum qualification_type: [:numerica, :absoluta]
-  # enum modality: [:obligatoria, :electiva, :optativa] 
 
   # VALIDATIONS:
   validates :code, presence: true, uniqueness: {case_sensitive: false}
@@ -377,6 +378,48 @@ class Subject < ApplicationRecord
     end
 
     edit do
+      field :area do
+        inline_edit false
+        inline_add false
+      end
+      field :code do
+        html_attributes do
+          {length: 20, size: 20, onInput: "$(this).val($(this).val().toUpperCase().replace(/[^A-Za-z0-9]/g,''))"}
+        end  
+      end
+      field :name do
+        html_attributes do
+          {:onInput => "$(this).val($(this).val().toUpperCase())"}
+        end  
+      end      
+      field :subject_type do
+      inline_add false
+      inline_edit false
+      end
+      field :unit_credits      
+
+      field :ordinal do
+        html_attributes do
+          {min: 0, max: 20}
+        end
+        help 'Semestre o año en que se ubica la asignatura.'
+      end
+
+      field :qualification_type do
+        # help 'Parcial3 equivale a asignatura con 3 calificaciones parciales'
+        # formatted_value do
+        #   bindings[:object].label_qualification_type
+        # end
+      end
+
+      # field :depend_subjects do
+      #   inline_add false
+      #   inline_edit false
+      #   help 'Asignatura(s) que depende(n) de esta asignatura. Si el estudiante aprueba esta asignatura, la(s) asignatura(s) seleccionada(s) arriba podrán ser ofertadas.'
+      # end
+    end
+
+    update do
       field :area do
         inline_edit false
         inline_add false

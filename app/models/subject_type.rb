@@ -3,6 +3,8 @@ class SubjectType < ApplicationRecord
   # t.string "name"
   # t.string "code"
   
+  #ASSOCIATIONS:
+  has_many :subjects
   # HISTORY:
 	has_paper_trail on: [:create, :destroy, :update]
 

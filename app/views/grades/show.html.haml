@@ -70,10 +70,10 @@
                 - if grade.has_a_appointment_time?
                   - if grade.can_enroll_by_apponintment?
                     - if inscripcion&.reservado?
-                      - # InProgress
+                      - # INSCRIPCIÓN EN PROCESO
                       = render partial: '/enroll_academic_processes/msg_enroll_in_progress', locals: {grade: grade}
 
-                    - # It's Time!
+                    - # MOMENTO DE INSCRIBIRSE (It's Time!)
                     = render partial: '/grades/msg_its_time_to_enroll', locals: {grade: grade}
                     - # Incluir cuenta regresiva js
 

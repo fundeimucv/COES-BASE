@@ -86,6 +86,16 @@ class AcademicRecord < ApplicationRecord
 
   scope :qualified, -> {not_sin_calificar}
 
+  scope :by_level, -> (level) {joins(:subject).where('subjects.ordinal': level)}
+  
+  scope :total_credits_by_level, -> (level){by_level(level).sum('subjects.unit_credits')}
+
+  scope :total_subjects_approved_by_level, -> (level){aprobado.by_level(level).total_subjects}
+  scope :total_subjects_approved_by_level_and_type, -> (level, tipo){aprobado.by_level(level).by_subject_types(tipo).total_subjects}  
+
+  scope :total_credits_approved_by_level, -> (level) {aprobado.total_credits_by_level(level)}
+  scope :total_credits_approved_by_level_and_type, -> (level, tipo) {aprobado.by_level(level).by_subject_types(tipo).total_credits}
+
   scope :coursing, -> {where "academic_records.status != 1 and academic_records.status != 2 and academic_records.status != 3"} # Excluye retiradas también
 
   scope :total_credits_coursed_on_process, -> (periods_ids) {coursed.joins(:academic_process).where('academic_processes.id': periods_ids).joins(:subject).sum('subjects.unit_credits')}
