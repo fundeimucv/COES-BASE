@@ -1,7 +1,23 @@
+# == Schema Information
+#
+# Table name: admission_types
+#
+#  id         :bigint           not null, primary key
+#  code       :string
+#  name       :string
+#  created_at :datetime         not null
+#  updated_at :datetime         not null
+#  school_id  :bigint           not null
+#
+# Indexes
+#
+#  index_admission_types_on_school_id  (school_id)
+#
+# Foreign Keys
+#
+#  fk_rails_...  (school_id => schools.id)
+#
 class AdmissionType < ApplicationRecord
-  # SCHEMA:
-  # t.string "name"
-  # t.bigint "school_id", null: false
 
   # HISTORY:
   has_paper_trail on: [:create, :destroy, :update]

@@ -1,8 +1,25 @@
+# == Schema Information
+#
+# Table name: academic_records
+#
+#  id                         :bigint           not null, primary key
+#  status                     :integer          default("sin_calificar")
+#  created_at                 :datetime         not null
+#  updated_at                 :datetime         not null
+#  enroll_academic_process_id :bigint           not null
+#  section_id                 :bigint           not null
+#
+# Indexes
+#
+#  index_academic_records_on_enroll_academic_process_id  (enroll_academic_process_id)
+#  index_academic_records_on_section_id                  (section_id)
+#
+# Foreign Keys
+#
+#  fk_rails_...  (enroll_academic_process_id => enroll_academic_processes.id)
+#  fk_rails_...  (section_id => sections.id)
+#
 class AcademicRecord < ApplicationRecord
-  # SCHEMA:
-  # t.bigint "section_id", null: false
-  # t.bigint "enroll_academic_process_id", null: false
-  # t.integer "status"
 
   # ENUMERIZE:
   enum status: [:sin_calificar, :aprobado, :aplazado, :retirado, :perdida_por_inasistencia, :equivalencia]

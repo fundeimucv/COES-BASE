@@ -1,12 +1,26 @@
-class StudyPlan < ApplicationRecord
-  # SCHEMA:
-  # t.string "code"
-  # t.string "name"
-  # t.bigint "school_id", null: false 
-  # t.bigint "levels", null: false 
-  # t.bigint "modality", null: false 
-  
-  
+# == Schema Information
+#
+# Table name: study_plans
+#
+#  id            :bigint           not null, primary key
+#  code          :string
+#  levels        :integer          default(10), not null
+#  modality      :integer          default("Anual"), not null
+#  name          :string
+#  total_credits :integer          default(0)
+#  created_at    :datetime         not null
+#  updated_at    :datetime         not null
+#  school_id     :bigint           not null
+#
+# Indexes
+#
+#  index_study_plans_on_school_id  (school_id)
+#
+# Foreign Keys
+#
+#  fk_rails_...  (school_id => schools.id)
+#
+class StudyPlan < ApplicationRecord  
   
   # HISTORY:
   has_paper_trail on: [:create, :destroy, :update]

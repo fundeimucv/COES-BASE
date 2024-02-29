@@ -1,14 +1,31 @@
+# == Schema Information
+#
+# Table name: subjects
+#
+#  id                 :bigint           not null, primary key
+#  active             :boolean          default(TRUE)
+#  code               :string           not null
+#  force_absolute     :boolean          default(FALSE)
+#  name               :string           not null
+#  ordinal            :integer          default(0), not null
+#  qualification_type :integer
+#  unit_credits       :integer          default(5), not null
+#  created_at         :datetime         not null
+#  updated_at         :datetime         not null
+#  area_id            :bigint           not null
+#  subject_type_id    :bigint           not null
+#
+# Indexes
+#
+#  index_subjects_on_area_id          (area_id)
+#  index_subjects_on_subject_type_id  (subject_type_id)
+#
+# Foreign Keys
+#
+#  fk_rails_...  (area_id => areas.id)
+#  fk_rails_...  (subject_type_id => subject_types.id)
+#
 class Subject < ApplicationRecord
-  # SCHEMA:
-  # t.string "code", null: false
-  # t.string "name", null: false
-  # t.boolean "active", default: true
-  # t.integer "unit_credits", default: 24, null: false
-  # t.integer "ordinal", default: 0, null: false
-  # t.integer "qualification_type"
-  # t.bigint "area_id", null: false  
-  # t.boolean "force_absolute", default: false  
-  # t.integer "subject_type_id", null: false
 
   # HISTORY:
   has_paper_trail on: [:create, :destroy, :update]

@@ -77,8 +77,7 @@ group :development, :production do
   gem 'cancancan'
 
   # Administration
-  # gem 'rails_admin', '~> 3.0'
-  gem 'rails_admin', '~> 3.1', '>= 3.1.2'
+  gem 'rails_admin', '~> 3.1'#, '>= 3.1.2'
 
   gem "rails_admin_import", "~> 3.0"  
 
@@ -105,6 +104,9 @@ group :development do
 
   # Speed up commands on slow machines / big apps [https://github.com/rails/spring]
   # gem "spring"
+
+  gem 'annotate'
+
 end
 
 group :test do
@@ -124,3 +126,4 @@ gem "paper_trail"
 # Delayed Job
 gem 'delayed_job_active_record'
 gem 'daemons'
+

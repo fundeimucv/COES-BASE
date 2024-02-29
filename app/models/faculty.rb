@@ -1,9 +1,17 @@
+# == Schema Information
+#
+# Table name: faculties
+#
+#  id             :bigint           not null, primary key
+#  code           :string
+#  coes_boss_name :string
+#  contact_email  :string
+#  name           :string
+#  short_name     :string
+#  created_at     :datetime         not null
+#  updated_at     :datetime         not null
+#
 class Faculty < ApplicationRecord
-	#SCHEMA:
-	# t.string "code"
-	# t.string "name"
-	# t.string "coes_boss_name"
-	# t.string "contact_email"
 
 	validates :code, presence: true, uniqueness: {case_sensitive: false}
 	validates :name, presence: true, uniqueness: {case_sensitive: false}

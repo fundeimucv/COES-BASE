@@ -1,19 +1,35 @@
+# == Schema Information
+#
+# Table name: schools
+#
+#  id                           :bigint           not null, primary key
+#  code                         :string           not null
+#  enable_by_level              :boolean          default(FALSE)
+#  enable_change_course         :boolean
+#  enable_dependents            :boolean          default(FALSE), not null
+#  enable_enroll_payment_report :boolean          default(FALSE), not null
+#  enable_subject_retreat       :boolean
+#  name                         :string           not null
+#  short_name                   :string
+#  type_entity                  :integer          default("pregrado"), not null
+#  created_at                   :datetime         not null
+#  updated_at                   :datetime         not null
+#  active_process_id            :bigint
+#  enroll_process_id            :bigint
+#  faculty_id                   :bigint
+#
+# Indexes
+#
+#  index_schools_on_active_process_id  (active_process_id)
+#  index_schools_on_enroll_process_id  (enroll_process_id)
+#  index_schools_on_faculty_id         (faculty_id)
+#
+# Foreign Keys
+#
+#  fk_rails_...  (active_process_id => academic_processes.id)
+#  fk_rails_...  (enroll_process_id => academic_processes.id)
+#
 class School < ApplicationRecord
-  # SCHEMA:
-  # t.string "code", null: false
-  # t.string "name", null: false
-  # t.string "short_name", null: false  
-  # t.integer "type_entity", default: 0, null: false
-  # t.boolean "enable_subject_retreat"
-  # t.boolean "enable_change_course"
-  # t.boolean "enable_by_level"  
-  # t.boolean "enable_dependents"
-  # t.bigint "active_process_id"
-  # t.bigint "enroll_process_id"
-  # t.datetime "created_at", null: false
-  # t.datetime "updated_at", null: false
-  # t.bigint "faculty_id"
-
 
   # HISTORY:
   has_paper_trail on: [:create, :destroy, :update]

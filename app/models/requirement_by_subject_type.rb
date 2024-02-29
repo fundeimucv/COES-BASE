@@ -1,3 +1,24 @@
+# == Schema Information
+#
+# Table name: requirement_by_subject_types
+#
+#  id               :bigint           not null, primary key
+#  required_credits :integer          default(0), not null
+#  created_at       :datetime         not null
+#  updated_at       :datetime         not null
+#  study_plan_id    :bigint           not null
+#  subject_type_id  :bigint           not null
+#
+# Indexes
+#
+#  index_requirement_by_subject_types_on_study_plan_id    (study_plan_id)
+#  index_requirement_by_subject_types_on_subject_type_id  (subject_type_id)
+#
+# Foreign Keys
+#
+#  fk_rails_...  (study_plan_id => study_plans.id)
+#  fk_rails_...  (subject_type_id => subject_types.id)
+#
 class RequirementBySubjectType < ApplicationRecord
     belongs_to :study_plan
     belongs_to :subject_type

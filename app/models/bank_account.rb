@@ -1,8 +1,24 @@
+# == Schema Information
+#
+# Table name: bank_accounts
+#
+#  id           :bigint           not null, primary key
+#  account_type :integer
+#  code         :string           not null
+#  holder       :string           not null
+#  created_at   :datetime         not null
+#  updated_at   :datetime         not null
+#  bank_id      :bigint           not null
+#
+# Indexes
+#
+#  index_bank_accounts_on_bank_id  (bank_id)
+#
+# Foreign Keys
+#
+#  fk_rails_...  (bank_id => banks.id)
+#
 class BankAccount < ApplicationRecord
-  # t.string "code", null: false
-  # t.string "holder", null: false
-  # t.bigint "bank_id", null: false
-  # t.integer "account_type"
 
   # ENUMERIZE:
   enum account_type: [:ahorro, :corriente]

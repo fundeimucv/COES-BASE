@@ -1,3 +1,21 @@
+# == Schema Information
+#
+# Table name: departaments
+#
+#  id         :bigint           not null, primary key
+#  name       :string
+#  created_at :datetime         not null
+#  updated_at :datetime         not null
+#  school_id  :bigint           not null
+#
+# Indexes
+#
+#  index_departaments_on_school_id  (school_id)
+#
+# Foreign Keys
+#
+#  fk_rails_...  (school_id => schools.id)
+#
 class Departament < ApplicationRecord
 	# ASSOCIATIONS:
 	belongs_to :school

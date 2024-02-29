@@ -1,7 +1,14 @@
+# == Schema Information
+#
+# Table name: subject_types
+#
+#  id         :bigint           not null, primary key
+#  code       :string
+#  name       :string
+#  created_at :datetime         not null
+#  updated_at :datetime         not null
+#
 class SubjectType < ApplicationRecord
-  # SCHEMA:
-  # t.string "name"
-  # t.string "code"
   
   #ASSOCIATIONS:
   has_many :subjects

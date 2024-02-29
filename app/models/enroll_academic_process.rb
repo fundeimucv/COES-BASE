@@ -1,9 +1,29 @@
+# == Schema Information
+#
+# Table name: enroll_academic_processes
+#
+#  id                  :bigint           not null, primary key
+#  efficiency          :float            default(1.0)
+#  enroll_status       :integer
+#  permanence_status   :integer
+#  simple_average      :float            default(0.0)
+#  weighted_average    :float            default(0.0)
+#  created_at          :datetime         not null
+#  updated_at          :datetime         not null
+#  academic_process_id :bigint           not null
+#  grade_id            :bigint           not null
+#
+# Indexes
+#
+#  index_enroll_academic_processes_on_academic_process_id  (academic_process_id)
+#  index_enroll_academic_processes_on_grade_id             (grade_id)
+#
+# Foreign Keys
+#
+#  fk_rails_...  (academic_process_id => academic_processes.id)
+#  fk_rails_...  (grade_id => grades.id)
+#
 class EnrollAcademicProcess < ApplicationRecord
-  # SCHEMA:
-  # t.bigint "grade_id", null: false
-  # t.bigint "academic_process_id", null: false
-  # t.integer "enroll_status"
-  # t.integer "permanence_status"
 
   # HISTORY:
   has_paper_trail on: [:create, :destroy, :update]

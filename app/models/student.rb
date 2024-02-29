@@ -1,16 +1,31 @@
+# == Schema Information
+#
+# Table name: students
+#
+#  active           :boolean          default(TRUE)
+#  birth_date       :date
+#  disability       :integer
+#  grade_title      :string
+#  grade_university :string
+#  graduate_year    :integer
+#  marital_status   :integer
+#  nacionality      :integer
+#  origin_city      :string
+#  origin_country   :string
+#  sede             :integer          default("Caracas"), not null
+#  created_at       :datetime         not null
+#  updated_at       :datetime         not null
+#  user_id          :bigint           not null, primary key
+#
+# Indexes
+#
+#  index_students_on_user_id  (user_id)
+#
+# Foreign Keys
+#
+#  fk_rails_...  (user_id => users.id)
+#
 class Student < ApplicationRecord
-
-  # SCHEMA:
-  # t.boolean "active", default: true
-  # t.integer "disability"
-  # t.integer "nacionality"
-  # t.integer "marital_status"
-  # t.string "origin_country"
-  # t.string "origin_city"
-  # t.date "birth_date"  
-  # t.string "grade_title"
-  # t.string "grade_university"
-  # t.integer "graduate_year"
 
   # GLOBALS VARIABLES:
   ESTADOS_CIVILES = ['Soltero/a', 'Casado/a', 'Concubinato', 'Divorciado/a', 'Viudo/a']

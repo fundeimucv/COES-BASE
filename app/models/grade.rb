@@ -1,18 +1,45 @@
+# == Schema Information
+#
+# Table name: grades
+#
+#  id                        :bigint           not null, primary key
+#  appointment_time          :datetime
+#  current_permanence_status :integer          default("nuevo"), not null
+#  duration_slot_time        :integer
+#  efficiency                :float
+#  enrollment_status         :integer          default("preinscrito"), not null
+#  graduate_status           :integer
+#  registration_status       :integer
+#  simple_average            :float
+#  weighted_average          :float
+#  created_at                :datetime         not null
+#  updated_at                :datetime         not null
+#  admission_type_id         :bigint           not null
+#  enabled_enroll_process_id :bigint
+#  start_id                  :bigint
+#  start_process_id          :bigint
+#  student_id                :bigint           not null
+#  study_plan_id             :bigint           not null
+#
+# Indexes
+#
+#  index_grades_on_admission_type_id             (admission_type_id)
+#  index_grades_on_enabled_enroll_process_id     (enabled_enroll_process_id)
+#  index_grades_on_start_id                      (start_id)
+#  index_grades_on_start_process_id              (start_process_id)
+#  index_grades_on_student_id                    (student_id)
+#  index_grades_on_student_id_and_study_plan_id  (student_id,study_plan_id) UNIQUE
+#  index_grades_on_study_plan_id                 (study_plan_id)
+#
+# Foreign Keys
+#
+#  fk_rails_...  (admission_type_id => admission_types.id)
+#  fk_rails_...  (enabled_enroll_process_id => academic_processes.id)
+#  fk_rails_...  (start_process_id => academic_processes.id) ON DELETE => nullify ON UPDATE => cascade
+#  fk_rails_...  (student_id => students.user_id) ON DELETE => cascade ON UPDATE => cascade
+#  fk_rails_...  (study_plan_id => study_plans.id)
+#
 class Grade < ApplicationRecord
-  # SCHEMA:
-  # t.bigint "student_id", null: false
-  # t.bigint "study_plan_id", null: false
-  # t.integer "graduate_status"
-  # t.bigint "admission_type_id", null: false
-  # t.integer "registration_status"
-  # t.float "efficiency"
-  # t.float "weighted_average"
-  # t.float "simple_average"
-  # t.datetime "appointment_time"
-  # t.integer "duration_slot_time"
-  # t.integer "current_permanence_status"
-  # t.bigint "enabled_enroll_process_id"
-  # t.bigint "start_process_id"
 
   NORMATIVE_TITLE = "NORMAS SOBRE EL RENDIMIENTO MÍNIMO Y CONDICIONES DE PERMANENCIA DE LOS ALUMNOS EN LA U.C.V"
 

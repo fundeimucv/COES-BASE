@@ -1,13 +1,32 @@
+# == Schema Information
+#
+# Table name: sections
+#
+#  id         :bigint           not null, primary key
+#  capacity   :integer
+#  classroom  :string
+#  code       :string
+#  enabled    :boolean
+#  modality   :integer
+#  qualified  :boolean          default(FALSE), not null
+#  created_at :datetime         not null
+#  updated_at :datetime         not null
+#  course_id  :bigint           not null
+#  teacher_id :bigint
+#
+# Indexes
+#
+#  index_sections_on_code_and_course_id  (code,course_id) UNIQUE
+#  index_sections_on_course_id           (course_id)
+#  index_sections_on_teacher_id          (teacher_id)
+#
+# Foreign Keys
+#
+#  fk_rails_...  (course_id => courses.id)
+#  fk_rails_...  (teacher_id => teachers.user_id) ON DELETE => cascade ON UPDATE => cascade
+#
 class Section < ApplicationRecord
-  # SCHEMA:
-  # t.string "code"
-  # t.integer "capacity"
-  # t.bigint "course_id", null: false
-  # t.bigint "teacher_id", null: false
-  # t.boolean "qualified"
-  # t.integer "modality"
-  # t.boolean "enabled"
-
+  
   # HISTORY:
   has_paper_trail on: [:create, :destroy, :update]
 
