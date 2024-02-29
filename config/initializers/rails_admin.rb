@@ -12,7 +12,13 @@ RailsAdmin.config do |config|
 
   ## == Devise ==
   config.authenticate_with do
-    warden.authenticate! scope: :user
+    begin
+      warden.authenticate! scope: :user
+    rescue Exception => e
+      # flash[:danger] = 'Error!!!'
+      # No manda el error o resetea la session (flash)
+      redirect_to '/', notice: 'Error'
+    end
   end
   config.current_user_method(&:current_user)
 

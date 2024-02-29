@@ -77,7 +77,9 @@ group :development, :production do
   gem 'cancancan'
 
   # Administration
-  gem 'rails_admin', '~> 3.0'
+  # gem 'rails_admin', '~> 3.0'
+  gem 'rails_admin', '~> 3.1', '>= 3.1.2'
+
   gem "rails_admin_import", "~> 3.0"  
 
   gem "autoprefixer-rails"
@@ -112,7 +114,6 @@ group :test do
   gem "webdrivers"
 end
 gem "cssbundling-rails"
-
 
 # Gestor de Correos
 # gem "mailersend-ruby"
