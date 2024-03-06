@@ -180,7 +180,7 @@ class Grade < ApplicationRecord
         return true
       end
     end
-    return true
+    return false
   end
 
   # APPOINTMENT_TIME:
