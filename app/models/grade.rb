@@ -40,6 +40,11 @@
 #  fk_rails_...  (study_plan_id => study_plans.id)
 #
 class Grade < ApplicationRecord
+  has_paper_trail on: [:create, :destroy, :update], limit: nil
+
+  before_create :paper_trail_create
+  before_destroy :paper_trail_destroy
+  before_update :paper_trail_update  
 
   NORMATIVE_TITLE = "NORMAS SOBRE EL RENDIMIENTO MÍNIMO Y CONDICIONES DE PERMANENCIA DE LOS ALUMNOS EN LA U.C.V"
 
@@ -69,7 +74,7 @@ class Grade < ApplicationRecord
   # ENUMERIZE:
   enum registration_status: [:universidad, :facultad, :escuela]
   enum enrollment_status: [:preinscrito, :asignado, :confirmado]
-  enum graduate_status: [:no_graduable, :tesista, :posible_graduando, :graduando, :graduado]
+  enum graduate_status: [:cursante, :tesista, :posible_graduando, :graduando, :graduado]
   enum current_permanence_status: [:nuevo, :regular, :reincorporado, :articulo3, :articulo6, :articulo7, :intercambio, :desertor, :egresado, :egresado_doble_titulo, :permiso_para_no_cursar]
 
   # VALIDATIONS:
@@ -135,8 +140,8 @@ class Grade < ApplicationRecord
 
   # FUNCTIONS:
   def help_msg
-    unless self.school&.faculty&.coes_boss_name.blank?
-      "Puede escribir al correo: #{self.school&.faculty&.coes_boss_name} para solicitar ayuda."
+    unless self.school&.faculty&.contact_email.blank?
+      "Puede escribir al correo: #{self.school&.faculty&.contact_email} para solicitar ayuda."
     end
   end
 
@@ -175,7 +180,7 @@ class Grade < ApplicationRecord
         return true
       end
     end
-    return false
+    return true
   end
 
   # APPOINTMENT_TIME:
@@ -208,6 +213,14 @@ class Grade < ApplicationRecord
     end
   end
 
+  def appointment_from_to_short
+    if self.appointment_time and self.appointment_slot_time
+      aux = (I18n.localize(self.appointment_time, format: "%d/%m/%y %I:%M%p")) 
+      return aux
+    end
+  end
+
+  
   def appointment_passed
     if self.appointment_slot_time
       (I18n.localize(self.appointment_slot_time, format: "%A %d de %B de %Y hasta las %I:%M%p"))
@@ -242,8 +255,31 @@ class Grade < ApplicationRecord
     end
 
     ApplicationController.helpers.label_status(label, current_permanence_status.titleize)
-
   end
+
+  def label_registration_status    
+    ApplicationController.helpers.label_status('bg-info', registration_status&.titleize)
+  end
+
+  def label_graduate_status
+    ApplicationController.helpers.label_status('bg-info', graduate_status&.titleize)
+  end
+
+  def label_admission_type
+    ApplicationController.helpers.label_status('bg-info', admission_type&.name&.titleize)
+  end
+  
+  def label_start_process
+    ApplicationController.helpers.label_status('bg-info', start_process&.period_name)
+  end
+
+  def label_study_plan
+    ApplicationController.helpers.label_status('bg-info', study_plan&.code)
+  end
+
+  def label_cita_horaria
+    ApplicationController.helpers.label_status_with_tooptip('bg-info', appointment_from_to_short, appointment_from_to)
+  end  
 
   def label_status_enroll_academic_process(academic_process_id)
     if iep = self.enroll_academic_processes.of_academic_process(academic_process_id).first
@@ -524,6 +560,9 @@ class Grade < ApplicationRecord
     (aux and aux.is_a? BigDecimal) ? aux.round(4) : 0.0
   end
 
+  def get_changed_plain
+    self.versions.where("versions.event ILIKE '%Cambio de plan%'")
+  end
 
   # RAILS_ADMIN:
   rails_admin do
@@ -543,7 +582,36 @@ class Grade < ApplicationRecord
     end
 
     update do
+      # field :study_plan do
+      #   partial 'grade/custom_study_plan_id'
+      # end
+      field :school do
+
+        label 'Escuela'
+        render do
+          bindings[:view].content_tag(:p, bindings[:object].school.short_name)
+        end
+
+      end
+
+      field :study_plan do
+        render do
+          bindings[:view].render partial: '/grades/history_plans', locals: {grade: bindings[:object]}
+        end
+      end      
+      
+      field :admission_type do
+        inline_add false
+        inline_edit false
+      end
+      field :registration_status
+      field :enabled_enroll_process do
+        inline_add false
+        inline_edit false
+      end
+      field :enrollment_status
       fields :study_plan, :admission_type, :registration_status, :enabled_enroll_process, :enrollment_status
+
       field :appointment_time do
         label 'Fecha y Hora Cita Horaria'
       end
@@ -556,9 +624,6 @@ class Grade < ApplicationRecord
       field :study_plan do
         inline_add false
         inline_edit false
-        pretty_value do
-          "Escuela #{value}"
-        end
       end
       fields :admission_type do
         inline_add false        
@@ -588,6 +653,31 @@ class Grade < ApplicationRecord
       end      
     end
   end
+
+  private
+
+  def paper_trail_update
+    changed_fields = self.changes.keys - ['created_at', 'updated_at']
+    if changed_fields.include? 'study_plan_id'
+      sp_from = StudyPlan.where(id: self.changes[:study_plan_id]&.first).first
+      sp_to = StudyPlan.where(id: self.changes[:study_plan_id]&.second).first
+      self.paper_trail_event = "Cambio de plan de #{sp_from&.code} a #{sp_to&.code}"
+    else
+      object = I18n.t("activerecord.models.#{self.model_name.param_key}.one")
+      self.paper_trail_event = "¡#{object} actualizado en #{changed_fields.to_sentence}"
+    end
+    
+  end  
+
+  def paper_trail_create
+    object = I18n.t("activerecord.models.#{self.model_name.param_key}.one")
+    self.paper_trail_event = "¡Completada inscripción en oferta académica!"
+  end  
+
+  def paper_trail_destroy
+    object = I18n.t("activerecord.models.#{self.model_name.param_key}.one")
+    self.paper_trail_event = "¡Registro Académico eliminado!"
+  end  
 
   # after_initialize do
   #   if new_record?

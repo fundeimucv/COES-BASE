@@ -89,16 +89,16 @@ class AdmissionType < ApplicationRecord
       # changed_fields = self.changes.keys - ['created_at', 'updated_at']
       object = I18n.t("activerecord.models.#{self.model_name.param_key}.one")
       # self.paper_trail_event = "¡#{object} actualizado en #{changed_fields.to_sentence}"
-      self.paper_trail_event = "¡#{object} actualizado!"
+      self.paper_trail_event = "¡#{object} actualizada!"
     end  
 
     def paper_trail_create
       object = I18n.t("activerecord.models.#{self.model_name.param_key}.one")
-      self.paper_trail_event = "¡#{object} registrado!"
+      self.paper_trail_event = "¡#{object} registrada!"
     end  
 
     def paper_trail_destroy
       object = I18n.t("activerecord.models.#{self.model_name.param_key}.one")
-      self.paper_trail_event = "¡Tipo de Admisión eliminado!"
+      self.paper_trail_event = "¡Tipo de Admisión eliminada!"
     end
 end

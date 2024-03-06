@@ -65,7 +65,7 @@ class Student < ApplicationRecord
   has_many :academic_records, through: :enroll_academic_processes
 
   # VALIDATIONS:
-  validates :user, presence: true, uniqueness: true
+  validates :user, presence: true#, uniqueness: true
   validates :grades, presence: true
   validates :sede, presence: true
   # validates :nacionality, presence: true, unless: :new_record?
@@ -188,7 +188,9 @@ class Student < ApplicationRecord
         inline_add false
       end
 
-      fields :grades, :address do
+      field :grades
+
+      field :address do
         inline_add false
       end
 

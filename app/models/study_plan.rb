@@ -52,7 +52,6 @@ class StudyPlan < ApplicationRecord
   enum modality: [:Anual, :Semestral]
 
   # CALLBACKS:
-  after_initialize :set_unique_school
   before_save :clean_values
 
   # HOOKS:
@@ -78,8 +77,12 @@ class StudyPlan < ApplicationRecord
     "#{school.short_name} - #{name}"
   end
 
-  def desc
+  def code_name
     "(#{code}) #{name}"
+  end
+
+  def desc
+    "#{school.short_name} (#{code}) #{name}"
   end
 
   # def desc_credits
@@ -128,10 +131,6 @@ class StudyPlan < ApplicationRecord
       fields :modality, :levels, :requirement_by_subject_types, :mentions
     end
 
-  end
-
-  def set_unique_school
-    self.school_id = School.first.id if School.count.eql? 1
   end
 
   private

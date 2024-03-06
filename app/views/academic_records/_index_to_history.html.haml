@@ -1,6 +1,6 @@
 - admin = current_user.admin
 - logged_as_admin = (admin and session[:rol].eql? 'admin') ? true : false
-- study_plan = academic_records.fisrt&.study_plan
+- study_plan = academic_records.first&.study_plan
 - level_desc = study_plan ? study_plan.modality&[0..3] : "Año/Sem"
 %table.table.table-sm.table-striped.table-hover
   %thead

@@ -258,12 +258,11 @@ class EnrollAcademicProcess < ApplicationRecord
           (current_user and current_user.admin and current_user.admin.authorized_manage? 'EnrollAcademicProcess')
         end
         formatted_value do          
-          grade = bindings[:object].grade          
           if bindings[:object].enrolling?
             totalCreditsReserved = bindings[:object].total_credits_not_retired
             totalSubjectsReserved = bindings[:object].total_subjects_not_retired
 
-            bindings[:view].render(partial: '/enroll_academic_processes/form', locals: {grade: grade, academic_process: bindings[:object].academic_process, totalCreditsReserved: totalCreditsReserved, totalSubjectsReserved: totalSubjectsReserved})
+            bindings[:view].render(partial: '/enroll_academic_processes/form', locals: {grade: bindings[:object].grade, academic_process: bindings[:object].academic_process, totalCreditsReserved: totalCreditsReserved, totalSubjectsReserved: totalSubjectsReserved})
           else
             bindings[:view].render(partial: "/academic_records/making_historical", locals: {enroll: bindings[:object]})
           end

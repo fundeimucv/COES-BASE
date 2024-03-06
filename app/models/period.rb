@@ -21,6 +21,7 @@ class Period < ApplicationRecord
 
 	# has_many:
 	has_many :academic_processes, dependent: :destroy
+	has_many :courses, through: :academic_processes
 	has_many :schools, through: :academic_processes
 	has_many :enroll_academic_processes, through: :academic_processes
 

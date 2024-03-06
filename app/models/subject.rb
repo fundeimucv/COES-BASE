@@ -103,7 +103,7 @@ class Subject < ApplicationRecord
 
   # GENERALS FUNCTIONS: 
   def school
-    areas.first.school
+    area.schools.first
   end
 
   def self.ordinal_to_cardinal numero, type_school
@@ -209,7 +209,7 @@ class Subject < ApplicationRecord
   end
 
   def description_code_with_school
-    "#{description_code} <span class='badge badge-success'>#{self.school.code}</span>".html_safe
+    "#{description_code} <span class='badge bg-success'>#{self.school.code}</span>".html_safe
   end
 
   def description_complete
