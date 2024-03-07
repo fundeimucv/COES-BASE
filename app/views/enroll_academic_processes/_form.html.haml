@@ -146,7 +146,7 @@
 
 
   function totalizar() {
-
+    console.log('Totalizando...');
     let selecteds = $(".selectInscripcion option:selected");
 
     let totalCredSel = 0;
@@ -161,18 +161,21 @@
       }
     });
 
+    console.log("Total Créditos Seleccionados: "+totalCredSel);
+
     totalCred.text(totalCredSel);
     totalSubj.text(totalSubjSel);
 
+    console.log("Total Créditos Set: "+totalCred.text());
     $('#total_credits').val(totalCred.text());
     $('#total_subjects').val(totalSubj.text());
     let limiteCreditos = Number(#{limitCredits})
     let limiteAsignaturas = Number(#{limitSubjects})
     let submitBtn = $('#submitBtn');
 
-    let activo = ((totalSubjSel > 0) & (totalSubjSel <= limiteAsignaturas) & (totalCredSel <= limiteCreditos)),
-    tr = totalCred.closest('tr');
-    tr2 = totalSubj.closest('tr');
+    let activo = ((totalSubjSel > 0) & (totalSubjSel <= limiteAsignaturas) & (totalCredSel <= limiteCreditos));
+    let tr = totalCred.closest('tr');
+    let tr2 = totalSubj.closest('tr');
 
     submitBtn.toggleClass('disabled', !activo);
     submitBtn.prop('disabled', !activo);
