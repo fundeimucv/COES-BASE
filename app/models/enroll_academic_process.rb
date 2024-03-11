@@ -379,7 +379,7 @@ class EnrollAcademicProcess < ApplicationRecord
   def calculate_efficiency
     cursados = self.total_credits_coursed
     aprobados = self.total_credits_approved
-    (cursados > 0 and aprobados != cursados) ? (aprobados.to_f/cursados.to_f).round(4) : self.efficiency
+    (cursados > 0 and aprobados <= cursados) ? (aprobados.to_f/cursados.to_f).round(4) : self.efficiency
   end
 
   def calculate_average
