@@ -62,7 +62,7 @@ class EnrollmentDay < ApplicationRecord
         user = grade.user
         eap = grade.enroll_academic_processes.joins(:period).order(['periods.year': :desc, 'periods.period_type_id': :desc]).first
         
-        csv << [user.ci, user.reverse_name, grade.student.sede, grade.appointment_from, grade.appointment_to, eap.efficiency, eap.simple_average, eap.weighted_average]
+        csv << [user.ci, user.reverse_name, grade.student.sede, grade.appointment_from, grade.appointment_to, eap.efficiency_desc, eap.simple_average_desc, eap.weighted_average_desc]
       end
     end
   end

@@ -520,9 +520,15 @@ class Grade < ApplicationRecord
   end
 
   def calculate_efficiency periods_ids = nil 
-        cursados = self.total_credits_coursed periods_ids
-        aprobados = self.total_credits_approved periods_ids
-    (cursados > 0 and aprobados != cursados) ? (aprobados.to_f/cursados.to_f).round(4) : 1.0
+    cursados = self.total_credits_coursed periods_ids
+    aprobados = self.total_credits_approved periods_ids
+    if cursados < 0 or aprobados < 0
+      0.0
+    elsif cursados == 0 or (cursados > 0 and aprobados >= cursados)
+      1.0
+    else
+      (aprobados.to_f/cursados.to_f).round(4)
+    end    
   end
 
   def calculate_average periods_ids = nil

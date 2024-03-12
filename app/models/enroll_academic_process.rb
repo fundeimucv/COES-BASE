@@ -404,7 +404,13 @@ class EnrollAcademicProcess < ApplicationRecord
   def calculate_efficiency
     cursados = self.total_credits_coursed
     aprobados = self.total_credits_approved
-    (cursados > 0 and aprobados != cursados) ? (aprobados.to_f/cursados.to_f).round(4) : self.efficiency
+    if cursados < 0 or aprobados < 0
+      0.0
+    elsif cursados == 0 or (cursados > 0 and aprobados >= cursados)
+      1.0
+    else
+      (aprobados.to_f/cursados.to_f).round(4)
+    end
   end
 
   def calculate_average
@@ -418,35 +424,57 @@ class EnrollAcademicProcess < ApplicationRecord
     (cursados > 0 and aux) ? (aux.to_f/cursados.to_f).round(4) : self.weighted_average
   end
 
+  def efficiency_desc
+    if efficiency.nil?
+      '--'
+    else
+      (efficiency).round(2)
+    end
+  end
+
+  def simple_average_desc
+    if simple_average.nil?
+      '--'
+    else
+      (simple_average).round(2)
+    end
+  end
+
+  def weighted_average_desc
+    if weighted_average.nil?
+      '--'
+    else
+      (weighted_average).round(2)
+    end
+  end
 
   private
 
+  def update_current_permanence_status_on_grade
+    grade.update(current_permanence_status: self.permanence_status) if is_the_last_enroll_of_grade?
+    
+  end
 
-    def update_current_permanence_status_on_grade
-      grade.update(current_permanence_status: self.permanence_status) if is_the_last_enroll_of_grade?
-      
-    end
-
-    def paper_trail_update
-      changed_fields = self.changes#.keys - ['created_at', 'updated_at']
-      changed_fields = changed_fields.map do |fi|
-        if fi[0] != 'updated_at'
-          elem = I18n.t("activerecord.attributes.#{self.model_name.param_key}.#{fi[0]}").to_s
-          elem += " de #{fi[1][0]} a #{fi[1][1]}"
-        end
+  def paper_trail_update
+    changed_fields = self.changes#.keys - ['created_at', 'updated_at']
+    changed_fields = changed_fields.map do |fi|
+      if fi[0] != 'updated_at'
+        elem = I18n.t("activerecord.attributes.#{self.model_name.param_key}.#{fi[0]}").to_s
+        elem += " de #{fi[1][0]} a #{fi[1][1]}"
       end
-      object = I18n.t("activerecord.models.#{self.model_name.param_key}.one")
-      self.paper_trail_event = "¡#{object} actualizada en: #{changed_fields.to_sentence}"
-    end  
-    def paper_trail_create
-      object = I18n.t("activerecord.models.#{self.model_name.param_key}.one")
-      self.paper_trail_event = "¡#{object} registrado!"
-    end  
-
-    def paper_trail_destroy
-      object = I18n.t("activerecord.models.#{self.model_name.param_key}.one")
-      self.paper_trail_event = "¡Proceso Académico eliminado!"
     end
+    object = I18n.t("activerecord.models.#{self.model_name.param_key}.one")
+    self.paper_trail_event = "¡#{object} actualizada en: #{changed_fields.to_sentence}"
+  end  
+  def paper_trail_create
+    object = I18n.t("activerecord.models.#{self.model_name.param_key}.one")
+    self.paper_trail_event = "¡#{object} registrado!"
+  end  
+
+  def paper_trail_destroy
+    object = I18n.t("activerecord.models.#{self.model_name.param_key}.one")
+    self.paper_trail_event = "¡Proceso Académico eliminado!"
+  end
 
 
 end
