@@ -173,6 +173,14 @@ class Grade < ApplicationRecord
     (has_a_appointment_time?) ? self.appointment_time+self.duration_slot_time.minutes : nil    
   end
 
+  def appointment_time_desc_short
+    if self.appointment_time
+      (I18n.localize(self.appointment_time, format: "%d/%m/%Y %I:%M%p")) 
+    else
+      '--'
+    end
+  end
+
   def appointment_from_to
     if self.appointment_time and self.appointment_slot_time
       aux = (I18n.localize(self.appointment_time, format: "%A, %d de %B de %Y de %I:%M%p")) 
@@ -385,8 +393,8 @@ class Grade < ApplicationRecord
   end
 
   def calculate_efficiency periods_ids = nil 
-        cursados = self.total_credits_coursed periods_ids
-        aprobados = self.total_credits_approved periods_ids
+    cursados = self.total_credits_coursed periods_ids
+    aprobados = self.total_credits_approved periods_ids
     (cursados > 0 and aprobados != cursados) ? (aprobados.to_f/cursados.to_f).round(4) : 1.0
   end
 

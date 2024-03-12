@@ -12,6 +12,7 @@
 			- if grade.graduate_status
 				%td.text-center Estado de la Carrera
 			%td.text-center Estado Permanencia Actual
+			%td.text-center Cita horaria
 
 		%tr
 			%td.text-center.fw-bold= grade.study_plan.desc
@@ -24,3 +25,6 @@
 				%td.text-center
 					%strong.badge.bg-info= grade.graduate_status.titleize
 			%td.text-center.fw-bold= grade.label_current_permanence_status
+			%td.text-center.fw-bold
+				%div{title: grade.appointment_from_to}
+					=grade.appointment_time_desc_short
