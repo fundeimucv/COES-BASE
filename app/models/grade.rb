@@ -156,7 +156,6 @@ class Grade < ApplicationRecord
     (self.appointment_time.nil? or self.duration_slot_time.nil?) ? false : true
   end
 
-
   def can_enroll_by_apponintment? #puede_inscribir?
     ((has_a_appointment_time?) and (Time.zone.now > self.appointment_time) and (Time.zone.now < self.appointment_slot_time) ) ? true : false
   end
@@ -395,7 +394,13 @@ class Grade < ApplicationRecord
   def calculate_efficiency periods_ids = nil 
     cursados = self.total_credits_coursed periods_ids
     aprobados = self.total_credits_approved periods_ids
-    (cursados > 0 and aprobados != cursados) ? (aprobados.to_f/cursados.to_f).round(4) : 1.0
+    if cursados < 0 or aprobados < 0
+      0.0
+    elsif cursados == 0 or (cursados > 0 and aprobados >= cursados)
+      1.0
+    else
+      (aprobados.to_f/cursados.to_f).round(4)
+    end
   end
 
   def calculate_average periods_ids = nil
