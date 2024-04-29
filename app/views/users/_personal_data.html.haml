@@ -12,10 +12,10 @@
     %tbody
       %tr
         %td
-          - if (session[:rol]&.eql? 'admin') and user.profile_picture and user.profile_picture.attached? and user.profile_picture.representable?
+          - if (session[:rol]&.eql? 'admin') and user.profile_picture&.attached? and user.profile_picture&.representable?
             = render partial: "layouts/set_image", locals: {image: user.profile_picture_as_thumb, size: '30x30', alt: "foto perfil #{user.nick_name}"}
           - else
-            = image_tag user.profile_picture_as_thumb, size: '30'  
+            = image_tag "foto_perfil_default.png", size: '30'  
 
         %td.string_type= user.ci
         %td.string_type= user.first_name
