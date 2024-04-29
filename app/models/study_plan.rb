@@ -82,7 +82,7 @@ class StudyPlan < ApplicationRecord
   end
 
   def desc
-    "#{school.short_name} (#{code}) #{name}"
+    "#{school&.short_name} (#{code}) #{name}"
   end
 
   # def desc_credits

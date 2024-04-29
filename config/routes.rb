@@ -19,6 +19,7 @@ Rails.application.routes.draw do
   resources :subject_links, only: :destroy
   resources :page, only: :show
   resources :qualifications, only: :update
+  resources :partial_qualifications
   resources :period_types
   resources :academic_records, :periods, :profiles, :sections, :courses
   

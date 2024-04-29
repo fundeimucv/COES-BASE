@@ -37,6 +37,8 @@ class AcademicRecord < ApplicationRecord
   belongs_to :enroll_academic_process
 
   has_many :qualifications, dependent: :destroy
+  has_many :partial_qualifications, dependent: :destroy
+
   accepts_nested_attributes_for :qualifications, allow_destroy: true#, reject_if: proc { |attributes| attributes['academic_record_id'].blank? }  
 
   has_one :academic_process, through: :enroll_academic_process
@@ -162,6 +164,19 @@ class AcademicRecord < ApplicationRecord
 
 
   # FUNCTIONS:
+
+  def is_totality_partial?
+    total_partials = self.partial_qualifications.map{|pq| pq.partial}
+    if (total_partials.any? and (total_partials.count.eql? PartialQualification.partials.count))
+      total_partials.each do |pa|
+        if !(PartialQualification.partials.include? pa)
+          return false 
+        end
+      end
+      return true
+    end
+    return false
+  end
 
   def student_name_with_retired
     aux = user.reverse_name

@@ -1,8 +1,8 @@
 - @academic_records = academic_records if !academic_records.nil? and @academic_records.nil?
 
-.alert.alert-info
-  Sección Inhabilitada para calificar
-- if admin&.eql? true
+.alert.alert-info.text-center
+  Sección de solo lectura
+- if admin
   .alert.alert-warning
     Para activar las calificaciones, en el listado de escuelas primero cierre todo proceso de inscripción de la escuela respectiva y seguidamente active el periodo correspondiente a esta sección  
 

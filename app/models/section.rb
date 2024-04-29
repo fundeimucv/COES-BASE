@@ -230,6 +230,10 @@ class Section < ApplicationRecord
     self.academic_process&.id&.eql? self.school.active_process_id
   end
 
+  def is_inrolling?
+    self.academic_process&.id&.eql? self.school.enroll_process_id
+  end
+
   def number_acta
     "#{self.subject.code.upcase}#{self.code.upcase} #{self.period.name_revert}"
   end
@@ -531,7 +535,11 @@ class Section < ApplicationRecord
       field :academic_records_table do
         label 'Registros Académicos'
         formatted_value do
-          bindings[:view].render(partial: 'academic_records/qualify', locals: {section: bindings[:object]})          
+          if bindings[:object].is_in_process_active? and not bindings[:object].is_inrolling?
+            bindings[:view].render(partial: 'academic_records/qualify', locals: {section: bindings[:object]})
+          else
+            bindings[:view].render(partial: 'academic_records/list', locals: {academic_records: bindings[:object].academic_records, admin: true}) 
+          end
         end
       end
     end
@@ -709,10 +717,14 @@ class Section < ApplicationRecord
 
 
     def paper_trail_update
-      # changed_fields = self.changes.keys - ['created_at', 'updated_at']
       object = I18n.t("activerecord.models.#{self.model_name.param_key}.one")
+      msg = "#{object} actualizada."
+      if self.qualified_changed?
+        msg = self.qualified? ? "¡Sección calificada!" : "Activada para calificar nuevamente"
+      end
+      # changed_fields = self.changes.keys - ['created_at', 'updated_at']
       # self.paper_trail_event = "¡#{object} actualizado en #{changed_fields.to_sentence}"
-      self.paper_trail_event = "#{object} actualizada."
+      self.paper_trail_event = msg
     end  
 
     def paper_trail_create

@@ -10,12 +10,12 @@ module ApplicationHelper
 	def badge_toggle_section_qualified section
 
 		if section.qualified?
-			title = 'Habilitar para Calificar de Nuevo (Abrir)'
+			title = 'Habilitar al profesor para calificar de nuevo (Abrir)'
 			value = false
 			icon = 'fas fa-rotate-right'
 			type = 'bg-warning'
 		else
-			title = 'Marcar como Calificada (Cerrar)'
+			title = 'Marcar como calificada por el profesor (Cerrar)'
 			value = true
 			icon = 'fas fa-check'
 			type = 'bg-success'

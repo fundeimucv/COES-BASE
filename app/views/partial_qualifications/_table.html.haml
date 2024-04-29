@@ -1,0 +1,6 @@
+- PartialQualification.partials.map do |ord|
+    - partial = academic_record.partial_qualifications.find_by(partial: ord[0]) 
+    - id = academic_record.id
+    %td
+        =# text_field_tag "[#{id}]_#{ord[1]}_parials_qualifications", {}, {value: partial&.value, class: "form-control form-control-sm qualifiable partials partial[#{id}] type[#{ord[1]}]", onInput: 'calcularPartial(this)'}
+        = text_field_tag "parialsQualification#{ord[0].titleize}#{id}", {}, {object_id: id, object_partial: ord[0], value: partial&.value, class: "form-control form-control-sm partials", onChange: 'savePartial(this)', onInput: 'onlyDecimalNumbers(this)'}

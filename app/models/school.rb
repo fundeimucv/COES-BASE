@@ -9,6 +9,7 @@
 #  enable_dependents            :boolean          default(FALSE), not null
 #  enable_enroll_payment_report :boolean          default(FALSE), not null
 #  enable_subject_retreat       :boolean
+#  have_partial_qualification   :boolean          default(FALSE), not null
 #  name                         :string           not null
 #  short_name                   :string
 #  type_entity                  :integer          default("pregrado"), not null
@@ -125,6 +126,10 @@ class School < ApplicationRecord
 
   def enable_dependents?
     (enable_dependents.eql? true)
+  end
+
+  def have_partial_qualification?
+    self.have_partial_qualification
   end
 
 
@@ -346,6 +351,7 @@ class School < ApplicationRecord
       # end      
 
       # fields :study_plans, :periods, :areas
+
     end
 
     edit do
@@ -372,12 +378,15 @@ class School < ApplicationRecord
         end
       end
 
+
+
       # field :departaments
 
 			field :bank_accounts do
 				inline_edit false
 				inline_add false
-			end      
+			end
+      field :have_partial_qualification            
     end
 
     update do

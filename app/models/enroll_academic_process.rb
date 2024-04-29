@@ -108,6 +108,10 @@ class EnrollAcademicProcess < ApplicationRecord
     return false
   end
 
+  def not_confirmado?
+    (reservado? or preinscrito?)
+  end
+
   def self.type_label_by_enroll type
     # [:preinscrito, :reservado, :confirmado, :retirado]
     case type

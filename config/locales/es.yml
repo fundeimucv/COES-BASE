@@ -34,6 +34,7 @@ es:
   sin_calificar: SC
 
   admin:
+    js: 'js'
     misc:
       more: 'Más'
       count: Total
@@ -707,6 +708,7 @@ es:
         bank_accounts: Cuentas Bancarias
         study_plans: Planes de Estudio
         admission_types: Tipos de Admisión
+        have_partial_qualification: ¿Tiene Calificaciones Parciales?
       schedule:
         day: Día
         starttime: Hora Inicio
@@ -756,6 +758,8 @@ es:
         school: 'Escuela'
         code: 'Código'
         name: 'Nombre'
+        modality: Modalidad
+        levels: Niveles
         subject_types: 'Tipos de Asignatura'
         requirement_by_subject_types: Requerimientos por Tipo de Asignatura
       subject:

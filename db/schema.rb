@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_02_27_155352) do
+ActiveRecord::Schema[7.0].define(version: 2024_03_14_161104) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -330,6 +330,15 @@ ActiveRecord::Schema[7.0].define(version: 2024_02_27_155352) do
     t.index ["subject_id"], name: "index_mentions_subjects_on_subject_id"
   end
 
+  create_table "partial_qualifications", force: :cascade do |t|
+    t.decimal "value", precision: 4, scale: 2
+    t.integer "partial", default: 1, null: false
+    t.bigint "academic_record_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["academic_record_id"], name: "index_partial_qualifications_on_academic_record_id"
+  end
+
   create_table "payment_reports", force: :cascade do |t|
     t.float "amount"
     t.string "transaction_id"
@@ -425,6 +434,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_02_27_155352) do
     t.boolean "enable_enroll_payment_report", default: false, null: false
     t.string "short_name"
     t.boolean "enable_by_level", default: false
+    t.boolean "have_partial_qualification", default: false, null: false
     t.index ["active_process_id"], name: "index_schools_on_active_process_id"
     t.index ["enroll_process_id"], name: "index_schools_on_enroll_process_id"
     t.index ["faculty_id"], name: "index_schools_on_faculty_id"
@@ -593,6 +603,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_02_27_155352) do
   add_foreign_key "mentions", "study_plans"
   add_foreign_key "mentions_subjects", "mentions"
   add_foreign_key "mentions_subjects", "subjects"
+  add_foreign_key "partial_qualifications", "academic_records"
   add_foreign_key "payment_reports", "bank_accounts", column: "receiving_bank_account_id", on_update: :cascade, on_delete: :nullify
   add_foreign_key "payment_reports", "banks", column: "origin_bank_id"
   add_foreign_key "qualifications", "academic_records"
