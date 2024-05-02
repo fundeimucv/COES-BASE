@@ -418,8 +418,10 @@ class User < ApplicationRecord
 
     def send_welcome_email
       begin
-        UserMailer.welcome(self).deliver_now
-        # UserMailer.welcome(self).deliver_later
+        if GeneralSetup.send_wellcome_mailer_on_create_user?
+          UserMailer.welcome(self).deliver_now
+          # UserMailer.welcome(self).deliver_later
+        end
       rescue Exception => e
         
       end
