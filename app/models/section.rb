@@ -68,7 +68,7 @@ class Section < ApplicationRecord
   # has_and_belongs_to_many :secondary_teachers, class_name: 'SectionTeacher'
 
   #ENUMERIZE:
-  enum modality: [:nota_final, :equivalencia]
+  enum modality: {nota_final: 0, equivalencia_externa: 1, equivalencia_interna: 2, suficiencia: 3}
 
   # VALIDATIONS:
   validates :code, presence: true, uniqueness: { scope: :course_id, message: 'Ya existe la sesión para el curso', case_sensitive: false, field_name: false}, length: { in: 1..7, too_long: "%{count} caracteres es el máximo permitido", too_short: "%{count} caracter es el mínimo permitido"}
@@ -100,7 +100,14 @@ class Section < ApplicationRecord
 
   scope :has_academic_record, -> (academic_record_id) {joins(:academic_records).where('academic_records.id': academic_record_id)}
 
+  scope :not_equivalence, -> {where('sections.modality': [:nota_final, :suficiencia])}
+  scope :equivalence, -> {where('sections.modality': [:equivalencia_externa, :equivalencia_interna])}
+
   # FUNCTIONS:
+  def any_equivalencia?
+    self.equivalencia_externa? or  self.equivalencia_interna?
+  end
+
   def label_modality
     ApplicationController.helpers.label_status('bg-info', modality.titleize) if modality
   end
@@ -212,18 +219,20 @@ class Section < ApplicationRecord
   end
 
   def conv_type
-    "#{conv_initial_type}S#{self.period.period_type.code.upcase}"
+    "#{conv_initial_type}#{academic_process&.conv_type}"
   end
 
   def conv_initial_type
-    case modality
-    when 'nota_final'
-      'NF'
-    when 'equivalencia_interna'
-      'EQ'
-    else
-      modality.first.upcase if modality
-    end
+    # case modality
+    # when 'nota_final'
+    #   'NF'
+    # when 'equivalencia_interna'
+    #   'EQ'
+    # else
+    #   modality.first.upcase if modality
+    # end
+
+    I18n.t("activerecord.scopes.section."+self.modality)
   end
 
   def is_in_process_active?

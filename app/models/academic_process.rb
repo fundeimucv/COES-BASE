@@ -76,6 +76,10 @@ class AcademicProcess < ApplicationRecord
   # CALLBACKS:
   before_save :set_name
 
+  def conv_type
+    "#{I18n.t("activerecord.scopes.academic_process."+self.modality)}#{self.period.period_type.code.upcase}"
+  end
+
   def invalid_grades_to_csv
 
     grades_others = Grade.enrolled_in_academic_process(self.process_before_id).others_permanence_invalid_to_enroll
@@ -104,7 +108,7 @@ class AcademicProcess < ApplicationRecord
   end
 
   def exame_type
-    "#{period.period_type.name.upcase} #{modality.upcase}" if (period and period.period_type and modality)
+    "#{period.period_type.name.upcase} #{modality.upcase}" if (period&.period_type and modality)
   end
 
   def default_value_by_import
