@@ -767,6 +767,7 @@ es:
         levels: Niveles
         subject_types: 'Tipos de Asignatura'
         requirement_by_subject_types: Requerimientos por Tipo de Asignatura
+        mentions: Menciones
       subject:
         school: Escuela
         courses: Cursos
