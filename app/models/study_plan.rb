@@ -7,6 +7,7 @@
 #  levels        :integer          default(10), not null
 #  modality      :integer          default("Anual"), not null
 #  name          :string
+#  structure     :integer          default("sin_restricciones"), not null
 #  total_credits :integer          default(0)
 #  created_at    :datetime         not null
 #  updated_at    :datetime         not null
@@ -45,12 +46,15 @@ class StudyPlan < ApplicationRecord
   # VALIDATIONS:
   validates :code, presence: true
   validates :name, presence: true
+  validates :modality, presence: true
+  validates :levels, presence: true
   validates :requirement_by_subject_types, presence: true
   validates :school, presence: true
+  validates :structure, presence: true
 
   # ENUMS:
   enum modality: [:Anual, :Semestral]
-
+  enum structure: {por_dependencia: 0, por_nivel: 1, sin_restricciones: 2}
   # CALLBACKS:
   before_save :clean_values
 
@@ -85,6 +89,9 @@ class StudyPlan < ApplicationRecord
     "#{school&.short_name} (#{code}) #{name}"
   end
 
+  def label_structure_desc
+    ApplicationController.helpers.label_status('bg-info', structure&.titleize)
+  end
   # def desc_credits
   #   "(Créditos Requeridos) #{mandatory_credits}"
   # end
@@ -101,7 +108,7 @@ class StudyPlan < ApplicationRecord
 
     list do
       field :school do
-
+        sticky true
         pretty_value do
           bindings[:object].school&.short_name
         end
@@ -117,6 +124,7 @@ class StudyPlan < ApplicationRecord
       field :school do
         inline_add false
         inline_edit false 
+        partial 'study_plan/custom_school_id_field'
       end
       field :code do 
         html_attributes do
@@ -128,8 +136,26 @@ class StudyPlan < ApplicationRecord
           {:onInput => "$(this).val($(this).val().toUpperCase())"}
         end        
       end
-      fields :modality, :levels, :requirement_by_subject_types, :mentions
+      field :modality do
+        partial 'study_plan/custom_modality_field'
+        help 'Atención: la opción indicada servirá adicionalemnte para la inscripción de los estudiantes.'        
+      end
+      field :structure do
+        partial 'study_plan/custom_structure_field'
+        help 'Atención: la opción indicada servirá adicionalemnte para la inscripción de los estudiantes.'
+      end
+      fields :levels, :requirement_by_subject_types, :mentions
+
     end
+		update do
+
+			field :school do
+				inline_edit false
+				inline_add false
+				read_only true
+			end
+			field :name
+		end    
 
   end
 

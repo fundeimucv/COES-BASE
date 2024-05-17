@@ -1,0 +1,29 @@
+
+= link_to "/admin/subject/new?school_id=#{school.id}", class: "btn btn-success btn-sm float-end mb-2" do
+    Nuevo Asignatura
+
+%ul#EscuelaNav.nav.nav-tabs{role: "tablist"}
+    %li.nav-item{role: "presentation"}
+        = link_to 'General', "#", class: "nav-link active", id: "TabDesc", "aria-controls": "ContentDesc", "aria-selected": true, "data-bs-target": "#ContentDesc", "data-bs-toggle": :tab, role: :tab
+    %li.nav-item{role: "presentation"}
+        = link_to 'Departamentos', "#", class: "nav-link", id: "TabDpto", "aria-controls": "ContentDpto", "aria-selected": true, "data-bs-target": "#ContentDpto", "data-bs-toggle": :tab, role: :tab
+    %li.nav-item{role: "presentation"}
+        = link_to 'Planes de Estudio', "#", class: "nav-link", id: "TabPlan", "aria-controls": "ContentPlan", "aria-selected": true, "data-bs-target": "#ContentPlan", "data-bs-toggle": :tab, role: :tab
+#EscuelaContent.tab-content
+    - school_name = school.name
+    .tab-pane.fade.border.p-3.active.show{id: "ContentDesc", "aria-labelledby": "#TabDesc", role: "tabpanel"}
+        = render partial: 'schools/complete_description', locals: {school: school}
+
+    .tab-pane.fade.border.p-3{id: "ContentDpto", "aria-labelledby": "#TabDpto", role: "tabpanel"}
+        - total_dpts = school.departaments.count
+        - total_cat = school.areas.uniq.count
+        .text-center.bg-success.text-dark.mb-1= "#{total_cat} #{'cátedra'.pluralize(total_cat).titleize} en #{total_dpts} #{'departamemento'.pluralize(total_dpts).titleize }"
+
+        = link_to "/admin/departament/new?school_id=#{school.id}", class: "btn btn-success btn-sm float-end mb-2" do
+            Nuevo Departamento
+        = render template: '/departaments/index', locals: {school_name: school_name, departaments: school.departaments.order(name: :asc)}
+
+    .tab-pane.fade.border.p-3{id: "ContentPlan", "aria-labelledby": "#TabPlan", role: "tabpanel"}
+        = link_to "/admin/study_plan/new?school_id=#{school.id}", class: "btn btn-success btn-sm float-end mb-2" do
+            Nuevo Plan
+        = render template: '/study_plans/index', locals: {school_name: school_name, study_plans: school.study_plans.order(code: :asc)}

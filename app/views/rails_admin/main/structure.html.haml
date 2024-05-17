@@ -1,12 +1,16 @@
+
 - if (current_user&.admin&.authorized_manage? 'StudyPlan')
+  %h5.p-2.text-center.bg-success.text-dark= "Estructura: #{@object.structure.titleize}"
   - school = @object.school  
-  - subjects = school.subjects.order(:ordinal)
-  - if subjects.any?
+  - if @object.por_dependencia?
+    = render partial: '/schools/subjects_organization_by_depen', locals: {school: school}
+  - elsif @object.por_nivel?
+    - subjects = school.subjects.order(:ordinal)
     = form_tag("/study_plans/#{@object.id}/save_requirement_by_level", class: 'form-horizontal') do
-      = render(partial: "/schools/subjects_organization", locals: {subjects: subjects, orders: subjects.group(:ordinal).count})
-          
+      = render partial: "/schools/subjects_organization", locals: {subjects: subjects, orders: subjects.group(:ordinal).count}
   - else
-    %h3.alert.alert-warning Sin asignaturas
+    %h1.text-center.alert.alert-danger Sin Restricciones
+    =# render partial: "/schools/subjects_organization", locals: {subjects: subjects, orders: subjects.group(:ordinal).count, by_level: false}
 
 - else
   %h1.text-center.alert.alert-warning Acceso Restringido

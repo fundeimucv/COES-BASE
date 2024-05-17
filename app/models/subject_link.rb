@@ -30,6 +30,13 @@ class SubjectLink < ApplicationRecord
 
   validates_with NestedDependencyValidator, field_name: false
 
+  validate :check_prelate_and_depend
+
+  def check_prelate_and_depend
+    errors.add(:prelate_subject_id, "asignatura no no puede depender de sí misma") if prelate_subject_id == depend_subject_id
+  end
+
+
   scope :in_prelation, -> (aprobadas_ids) {where(prelate_subject_id: aprobadas_ids) }
   scope :not_in_dependency, -> (aprobadas_ids) {where.not(depend_subject_id: aprobadas_ids) }
 

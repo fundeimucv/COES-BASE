@@ -35,7 +35,18 @@ class SubjectType < ApplicationRecord
         html_attributes do
           {onInput: "$(this).val($(this).val().toUpperCase().replace(/[^A-Z]/g,'').substr(0, 2))"}
         end
-        help 'Una sola letra permitida'
+        help 'Hasta 2 letra permitidas'
+      end
+      field :name do
+        html_attributes do
+          {onInput: "$(this).val($(this).val().toUpperCase().replace(/[^A-Z]/g,''))"}
+        end
+      end
+    end
+
+    update do
+      field :code do
+        read_only true
       end
       field :name do
         html_attributes do

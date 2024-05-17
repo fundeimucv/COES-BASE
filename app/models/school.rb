@@ -31,8 +31,8 @@
 #  fk_rails_...  (enroll_process_id => academic_processes.id)
 #
 class School < ApplicationRecord
-
   # HISTORY:
+
   has_paper_trail on: [:create, :destroy, :update]
 
   before_create :paper_trail_create
@@ -56,6 +56,9 @@ class School < ApplicationRecord
   accepts_nested_attributes_for :study_plans, allow_destroy: true
   has_many :grades, through: :study_plans
 
+  has_many :enroll_academic_processes, through: :grades
+  has_many :academic_records, through: :enroll_academic_processes
+  
   has_many :subjects, through: :areas
   has_many :subject_types, through: :subjects
   has_many :periods, through: :academic_processes
@@ -132,6 +135,18 @@ class School < ApplicationRecord
     self.have_partial_qualification
   end
 
+  def process_label_desc process
+    aux_desc = process ? process.name : 'Sin Proceso Activo'
+    ApplicationController.helpers.label_status('bg-info', aux_desc)
+  end
+  
+  def enroll_process_label_status
+    process_label_desc enroll_process
+  end
+
+  def active_process_label_status
+    process_label_desc active_process
+  end
 
   rails_admin do
     navigation_label 'Config General'
@@ -150,10 +165,11 @@ class School < ApplicationRecord
       # end
 
       field :short_name do
+        sticky true
         label 'Escuela'
       end
 
-      field :study_plans
+      # field :study_plans
 
       # field :enable_dependents do
       #   label '¿Prelaciones?'
@@ -177,27 +193,27 @@ class School < ApplicationRecord
 
       # end
 
-      field :enable_by_level do
-        label '¿Inscripciones por Nivel?'
-        queryable false
-        filterable false
-        searchable false
-        sortable false
-        sortable false
-        pretty_value do
+      # field :enable_by_level do
+      #   label '¿Inscripciones por Nivel?'
+      #   queryable false
+      #   filterable false
+      #   searchable false
+      #   sortable false
+      #   sortable false
+      #   pretty_value do
 
-          active = bindings[:view]._current_user&.admin&.authorized_manage? 'School'
+      #     active = bindings[:view]._current_user&.admin&.authorized_manage? 'School'
 
-          if active
-            bindings[:view].render(partial: "/schools/form_dependents", locals: {school: bindings[:object]})
-          else
-            value
-          end
-        end        
-      end
+      #     if active
+      #       bindings[:view].render(partial: "/schools/form_dependents", locals: {school: bindings[:object]})
+      #     else
+      #       value
+      #     end
+      #   end
+      # end
 
       field :enable_enroll_payment_report do
-        label '¿Permitir Reportes de Pago?'
+        label '¿Reportar Pagos?'
         queryable false
         filterable false
         searchable false
@@ -277,26 +293,46 @@ class School < ApplicationRecord
         end
       end
 
-      field :download_all_grades do
-        label 'Total Estudiantes'
+      # field :download_all_grades do
+      #   label 'Total Estudiantes'
 
-        pretty_value do
-          if bindings[:view]._current_user&.admin&.yo?
-            bindings[:view].render(partial: "/schools/all_grades_link", locals: {school: bindings[:object]})
-          else
-            ApplicationController.helpers.label_status('bg-info', bindings[:object].grades.count)
-          end
-        end
-      end 
+      #   pretty_value do
+      #     if bindings[:view]._current_user&.admin&.yo?
+      #       bindings[:view].render(partial: "/schools/all_grades_link", locals: {school: bindings[:object]})
+      #     else
+      #       ApplicationController.helpers.label_status('bg-info', bindings[:object].grades.count)
+      #     end
+      #   end
+      # end 
     end
 
     show do
-      field :description
-      field :departaments do
-        pretty_value do
-          bindings[:view].render(template: '/departaments/index', locals: {departaments: bindings[:object].departaments.order(name: :asc)})
+      # field :complete_description do
+      #   label do
+      #       "#{bindings[:object].name}"
+      #   end
+      #   formatted_value do
+      #     bindings[:view].render(partial: 'schools/complete_description', locals: {school: bindings[:object]})
+      #   end
+      # end
+  
+      field :entities do
+        label 'Detalle'
+        formatted_value do
+          bindings[:view].render(partial: '/schools/entities_tabs', locals: {school: bindings[:object]})
         end
       end
+
+
+      # field :entities do
+      #   label 'Entidades'
+      #   pretty_value do
+      #     bindings[:view].render(template: '/departaments/index', locals: {departaments: bindings[:object].departaments.order(name: :asc)})
+      #   end
+      # end
+
+
+
 
       # field :enable_dependents do
       #   label 'Activar Prelaciones'
@@ -361,7 +397,7 @@ class School < ApplicationRecord
           value.short_name
         end
       end
-
+      
       field :code do
         html_attributes do
           {:length => 3, :size => 3, :onInput => "$(this).val($(this).val().toUpperCase().replace(/[^A-Za-z]/g,''))"}
@@ -377,16 +413,12 @@ class School < ApplicationRecord
           {:onInput => "$(this).val($(this).val().toUpperCase())"}
         end
       end
-
-
-
-      # field :departaments
-
+      field :have_partial_qualification
+      
 			field :bank_accounts do
 				inline_edit false
 				inline_add false
 			end
-      field :have_partial_qualification            
     end
 
     update do

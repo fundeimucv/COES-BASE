@@ -1,13 +1,23 @@
-%ul#DepsTab.nav.nav-tabs{role: "tablist"}
-    - departaments.each_with_index do |dep, i|
-        - active = (i.eql? 0) ? 'active' : ''
-        %li.nav-item{role: "presentation"}
-            = link_to dep.name.titleize, "#", class: "nav-link #{active}", id: "Tab#{dep.id}", "aria-controls": "Content#{dep.id}", "aria-selected": true, "data-bs-target": "#Content#{dep.id}", "data-bs-toggle": :tab, role: :tab
+= link_to "/admin/departament?f%5Bschool%5D%5B68395%5D%5Bo%5D=is&f%5Bschool%5D%5B68395%5D%5Bv%5D=#{school_name}&query=", class: "btn btn-info btn-sm float-end me-2" do
+    Ver en listado
+%br
+%br
+.row.p-2
+    %ul#DepsTab.nav.nav-pills.nav-fill.flex-column.col-3.px-0{role: "tablist"}
+        - departaments.each_with_index do |dep, i|
+            - active = (i.eql? 0) ? 'active' : ''
+            %li.nav-item{role: "presentation"}
+                = link_to dep.name.titleize, "#", class: "nav-link #{active}", id: "Tab#{dep.id}", "aria-controls": "Content#{dep.id}", "aria-selected": true, "data-bs-target": "#Content#{dep.id}", "data-bs-toggle": :tab, role: :tab
 
-#DepsContent.tab-content
-    - departaments.each_with_index do |dep, i|
-        - show = (i.eql? 0) ? 'active show' : ''
-        .tab-pane.fade.border.p-3{id: "Content#{dep.id}", "aria-labelledby": "#Tab#{dep.id}", role: "tabpanel", class: "#{show}"}
-            = link_to "/admin/departament/#{dep.id}", class: "btn btn-info btn-sm float-end my-2" do
-                Ir al detalle
-            = render template: '/areas/index', locals: {areas: dep.areas.order(name: :asc), departament: dep}
+    #DepsContent.tab-content.col-9.px-0
+        - departaments.each_with_index do |dep, i|
+            - show = (i.eql? 0) ? 'active show' : ''
+            .tab-pane.fade.border.p-3{id: "Content#{dep.id}", "aria-labelledby": "#Tab#{dep.id}", role: "tabpanel", class: "#{show}"}
+
+                - if false 
+                    = link_to "/admin/departament?f%5Bschool%5D%5B68395%5D%5Bo%5D=is&f%5Bschool%5D%5B68395%5D%5Bv%5D=#{school_name}&query=", class: "btn btn-success btn-sm float-end" do
+                        Ver en listado
+                
+                = link_to "/admin/departament/#{dep.id}", class: "btn btn-info btn-sm float-end my-2" do
+                    Ir al detalle
+                = render template: '/areas/index', locals: {areas: dep.areas.order(name: :asc), departament: dep}

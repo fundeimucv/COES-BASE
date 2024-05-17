@@ -1,3 +1,6 @@
+= link_to "/admin/subject/new?area_id=#{area_id}", class: "btn btn-success btn-sm mb-2" do
+  Nuevo Asignatura
+
 - if false 
   %h3.text-center.label.bg-info.text-dark= "Total asignaturas: #{subjects.count}"
 .table-responsive
@@ -11,7 +14,7 @@
         %th.col-1 UC
         %th.col-1= subjects.human_attribute_name(:ordinal)
         %th.col-1= subjects.human_attribute_name(:qualification_type)
-        %th.col-1= subjects.human_attribute_name(:modality)
+        %th.col-1= subjects.human_attribute_name(:subject_type)
 
     %tbody
       - subjects.each_with_index do |subject, i|
@@ -25,7 +28,7 @@
           %td.text-center= subject.label_credits
           %td.text-center= subject.ordinal
           %td= subject.label_qualification_type
-          %td= subject.label_modality
+          %td= subject.label_subject_type
 
 :javascript
   - if false 

@@ -1,0 +1,4 @@
+- # "prelate_subject_ids"=>["", "", "2", "5"]}
+- subjects = @object.school.subjects.reject{|x| x.id.eql? @object.id }.uniq
+
+= collection_select 'subject', 'prelate_subject_ids', subjects, :id, :desc, {include_blank: 'Seleccione...'}, {class: 'input-group form-control required', required: true, multiple: true}

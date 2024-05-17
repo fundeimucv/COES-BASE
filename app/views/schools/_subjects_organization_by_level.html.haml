@@ -1,37 +1,30 @@
-
-
-.input-group.input-group-sm    
-  = link_to 'javascript:void(0)', onclick: "$('.arbol').toggleClass('d-none'); $('.fa-chevron-right').toggleClass('fa-rotate-90');", class: 'btn btn-sm btn-info', style: 'margin-right: 15px' do
-    Desplegar Todo el Árbol de Asignaturas 
-    %i.fa.fa-chevron-right
-  %input.form-control{"aria-label": "", type: "text", placeholder: 'Buscar asignaturas por código', id: 'filterTable', name: 'filterSubject'}
-
 .table-responsive
   %table.table.table-bordered.table-sm.mt-3
     %thead
       %tr.text-center
         - orders.each do |k,v|
-          - if k.nil?
+          - if k.nil? or k < 1
             - title = "Sin Orden"
             - bg = 'bg-danger'
-          - elsif k.eql? 0
-            - title = "Optativas"
-            - bg = 'bg-info'
           - else
-            - title = "#{Subject.ordinal_to_cardinal(k, 'Año/Sem')}"
-            - bg = 'bg-success'
-            
+            - title = "#{Subject.ordinal_to_cardinal(k, @object.modality_to_tipo)}"
+            - bg = 'bg-success'            
           %td{class: bg}
             %b= title
             - if false 
               - # OJO REVISAR ESTÁ SUMANDO TODAS LAS ASIGNATURAS!!! 
               %span.badge.bg-dark{title: 'Total de Asignaturas'}= "#{v}"
-      %tr
-        - orders.each do |k,v|
-          %td= render partial: '/requirement_by_levels/card', locals: {level: k, subjects: subjects} #@object.modality_to_tipo
-      %tr
-        %td{colspan: orders.max.first}
-          .text-center.mt-1= submit_tag 'Guardar', class: 'btn btn-sm btn-info p-1', style: 'font-size: 11px'
+          - if !k.nil? and k > 0
+            %td= render partial: '/requirement_by_levels/card', locals: {level: k, subjects: subjects} #@object.modality_to_tipo
+        - SubjectType.all.reject{|el| el.code.eql? 'OB'}.each do |subType|
+          %td{class: bg}
+            %b= subType.name.titleize
+            - if false 
+              - # OJO REVISAR ESTÁ SUMANDO TODAS LAS ASIGNATURAS!!! 
+              %span.badge.bg-dark{title: 'Total de Asignaturas'}= "#{v}"
+        %tr
+          %td{colspan: (orders.max.first)+1}
+            .text-center.mt-1= submit_tag 'Guardar', class: 'btn btn-sm btn-info p-1', style: 'font-size: 11px'
     %tbody
       %tr
         - orders.each do |k,v|

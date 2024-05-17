@@ -768,6 +768,7 @@ es:
         subject_types: 'Tipos de Asignatura'
         requirement_by_subject_types: Requerimientos por Tipo de Asignatura
         mentions: Menciones
+        structure: Estructura
       subject:
         school: Escuela
         courses: Cursos

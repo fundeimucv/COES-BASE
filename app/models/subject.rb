@@ -74,22 +74,34 @@ class Subject < ApplicationRecord
 
   # SCOPES: 
 
-  scope :todos, -> {where('0 = 0')}
+  scope :todas, -> {where('0 = 0')}
 
   scope :custom_search, -> (keyword) {joins([:area]).where("subjects.name ILIKE ? or subjects.code ILIKE ? or areas.name ILIKE ?", "%#{keyword}%", "%#{keyword}%", "%#{keyword}%")} 
 
   # scope :independents, -> {joins('LEFT JOIN subject_links ON subject_links.prelate_subject_id = subjects.id').where('subject_links.prelate_subject_id IS NULL')}
 
-  scope :independents, -> {left_joins(:prelate_links).where('subject_links.prelate_subject_id': nil)}
+  # scope :independents, -> {left_joins(:prelate_links).where('subject_links.prelate_subject_id': nil)}
+
+  scope :order_by_ordinal, -> {order(ordinal: :desc)}
+  scope :without_prelations, -> {left_joins(:prelate_links).where('subject_links.depend_subject_id': nil)}
+  scope :without_prelations_but_with_dependecies, -> {left_joins(:prelate_links).where('subject_links.depend_subject_id IS NULL and subject_links.prelate_subject_id IS NOT NULL')}
+  scope :without_dependencies, -> {left_joins(:depend_links).where('subject_links.prelate_subject_id': nil)}
+
+  scope :independents, -> {left_joins(:prelate_links).where('subject_links.depend_subject_id': nil, 'subject_links.prelate_subject_id': nil).order(ordinal: :desc, code: :asc).uniq}
 
   scope :not_inicial, -> {where('ordinal != 1')}
 
   scope :sort_by_code, -> {order(code: :asc)}
 
+  scope :obligatorias, -> {joins(:subject_type).where("subject_types.code": "OB")}
+  scope :electivas, -> {joins(:subject_type).where("subject_types.code": "E")}
+  scope :proyectos, -> {joins(:subject_type).where("subject_types.code": "P")}
+  scope :optativas, -> {joins(:subject_type).where("subject_types.code": "OP")}
+  scope :not_obligatorias, -> {joins(:subject_type).where("subject_types.code != 'OB'")}
+
   # CALLBACKS:
   before_save :clean_values
 
-  
   # HOOKS:
   def clean_values
     self.name.delete! '^0-9|^A-Za-z|áÁÄäËëÉéÍÏïíÓóÖöÚúÜüñÑ.() '
@@ -234,9 +246,13 @@ class Subject < ApplicationRecord
     return ApplicationController.helpers.label_status("bg-info", self.unit_credits)
   end
 
-  def label_modality
+  def label_subject_type
     return ApplicationController.helpers.label_status("bg-info", self.subject_type&.name) if self.subject_type
   end
+
+  def label_modality
+    label_subject_type
+  end  
 
   def label_qualification_type
     return ApplicationController.helpers.label_status("bg-info", self.qualification_type.titleize) if self.qualification_type
@@ -265,23 +281,25 @@ class Subject < ApplicationRecord
     end
 
     list do
-      scopes [:todos, :obligatoria, :electiva, :optativa]
+      scopes [:todas, :obligatorias, :electivas, :optativas]
       search_by :custom_search
       checkboxes false
       sidescroll(num_frozen_columns: 3)
 
-      field :area do
-        searchable true
-      end
-
+      
       field :code do
+        sticky true
         filterable false
         searchable true
       end
-
+      
       field :name do
+        sticky true
         column_width 300
         searchable false
+      end
+      field :area do
+        searchable true
       end
 
       # field :school do
@@ -332,7 +350,7 @@ class Subject < ApplicationRecord
       end
 
       field :total_dependencies do
-        label 'Depends'
+        label 'Asig. Depend.'
         column_width 20
       end
     end
@@ -398,6 +416,7 @@ class Subject < ApplicationRecord
       field :area do
         inline_edit false
         inline_add false
+        partial 'subject/custom_area_field'
       end
       field :code do
         html_attributes do
@@ -419,7 +438,7 @@ class Subject < ApplicationRecord
         html_attributes do
           {min: 0, max: 20}
         end
-        help 'Semestre o año en que se ubica la asignatura.'
+        help 'Semestre o año en que se ubica la asignatura o partir del cual puede ser inscrita (En caso de ser optativa o electiva).'
       end
 
       field :qualification_type do
@@ -440,6 +459,10 @@ class Subject < ApplicationRecord
       field :area do
         inline_edit false
         inline_add false
+        read_only true
+        pretty_value do
+          bindings[:object].area.full_description
+        end
       end
       field :code do
         html_attributes do
@@ -459,9 +482,9 @@ class Subject < ApplicationRecord
 
       field :ordinal do
         html_attributes do
-          {min: 0, max: 20}
+          {min: 1, max: 20}
         end
-        help 'Semestre o año en que se ubica la asignatura.'
+        help 'Semestre o año en que se ubica la asignatura o partir del cual puede ser inscrita (En caso de ser optativa o electiva).'
       end
 
       field :qualification_type do
@@ -471,22 +494,30 @@ class Subject < ApplicationRecord
         # end
       end
 
-      field :prelate_subjects do
+      # field :prelate_subjects do
+      #   inline_add false
+      #   inline_edit false
+      #   label do
+      #     "Prelación(es) de #{bindings[:object].name}"
+      #   end
+      #   help do
+      #     "Asignatura(s) que prela(n) #{bindings[:object].name}: El estudiante debe aprobar la(s) asignatura(s) indicadas(s) arriba para poder cursar #{bindings[:object].name}."
+      #   end
+      #   # partial 'subject/custom_prelate_subject_ids_field'#, locals: {subjects: bindings[:object].school.subjects} 
+      # end
+
+      field :depend_subjects do
         inline_add false
         inline_edit false
         label do
-          "Prelación(es) de #{bindings[:object].name}"
+          "Asignatura(s) que dependen de #{bindings[:object].name}"
         end
+        
         help do
-          "Asignatura(s) que prela(n) #{bindings[:object].name}: El estudiante debe aprobar la(s) asignatura(s) indicadas(s) arriba para poder cursar #{bindings[:object].name}."
-        end
+          "Sí el estudiante aprueba #{bindings[:object].name} puede cursar la(s) asignatura(s) indicadas(s) arriba."
+        end        
+        
       end
-
-      # field :depend_subjects do
-      #   inline_add false
-      #   inline_edit false
-      #   help 'Asignatura(s) que depende(n) de esta asignatura. Si el estudiante aprueba esta asignatura, la(s) asignatura(s) seleccionada(s) arriba podrán ser ofertadas.'
-      # end
     end
 
     export do
@@ -532,17 +563,20 @@ class Subject < ApplicationRecord
 
     # MODALITY
     # p "     #{row[4].strip.downcase.to_sym}      ".center(500, "!")
-  
-    field['modality'].updacase!
-    field['modality'] = SubjectType.where("code = '#{field['modality']}' OR name = '#{field['modality']}'").first
-
-    field['modality'] ||= SubjectType.first
-    
-    subject.subject_type = field['modality']
+    if row[4] and !row[4].blank?
+      row[4].upcase!
+      row[4] = SubjectType.where("code = '#{row[4]}' OR name = '#{row[4]}'").first&.id
+      
+      row[4] ||= SubjectType.first.id
+      
+      subject.subject_type_id = row[4]
+    else
+      subject.subject_type_id = fields['subject_type_id']
+    end
       
     # QUALIFICATION TYPE
     qualification_type = row[5] ? row[5].strip.downcase.to_sym : fields['qualification_type']
-    qualification_type = :numerica if qualification_type.eql? :numérica
+    qualification_type = :numerica if ((qualification_type.eql? :numérica) or qualification_type.nil?)
       
     subject.qualification_type = qualification_type
 

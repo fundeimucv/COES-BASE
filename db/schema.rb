@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_03_14_161104) do
+ActiveRecord::Schema[7.0].define(version: 2024_05_14_212130) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -488,6 +488,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_03_14_161104) do
     t.integer "total_credits", default: 0
     t.integer "modality", default: 0, null: false
     t.integer "levels", default: 10, null: false
+    t.integer "structure", default: 0, null: false
     t.index ["school_id"], name: "index_study_plans_on_school_id"
   end
 

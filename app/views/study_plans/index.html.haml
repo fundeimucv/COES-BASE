@@ -1,0 +1,20 @@
+= link_to "/admin/study_plan?f%5Bschool%5D%5B68395%5D%5Bo%5D=is&f%5Bschool%5D%5B68395%5D%5Bv%5D=#{school_name}&query=", class: "btn btn-info btn-sm float-end me-2" do
+  Ver en listado
+%table.table.table-hover.border
+  %thead
+    %tr
+      %th Plan
+      %th Estructura
+      - SubjectType.all.each do |st|
+        %th= st.name.titleize
+      %th.col-1 T. Est
+
+  %tbody
+    - study_plans.each do |plan|
+      %tr
+        %th= link_to plan.code_name, "/admin/study_plan/#{plan.id}"
+        %td= plan.structure&.titleize
+        - SubjectType.all.each do |st|
+          - total = plan.requirement_by_subject_types.where(subject_type: st).first&.required_credits
+          %td.text-center= total
+        %td= plan.grades.count

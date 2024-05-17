@@ -53,6 +53,7 @@ class Departament < ApplicationRecord
 			field :school do
 				inline_edit false
 				inline_add false
+				partial 'departament/custom_school_id_field'
 			end
 			field :name do
 				html_attributes do
@@ -66,6 +67,7 @@ class Departament < ApplicationRecord
 			field :school do
 				inline_edit false
 				inline_add false
+				read_only true
 			end
 			field :name do
 				html_attributes do

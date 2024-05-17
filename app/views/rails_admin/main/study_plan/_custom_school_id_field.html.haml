@@ -1,0 +1,6 @@
+
+- if params[:school_id]
+    .form-control= School.find(params[:school_id]).short_name
+    = hidden_field 'study_plan', 'school_id', value: params[:school_id]
+- else 
+    = collection_select 'study_plan', 'school_id', School.all, :id, :name, {include_blank: 'Seleccione...'}, {class: 'input-group form-control required', required: true}
