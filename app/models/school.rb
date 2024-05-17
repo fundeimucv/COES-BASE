@@ -32,7 +32,7 @@
 #
 class School < ApplicationRecord
   # HISTORY:
-
+  include Totalizable
   has_paper_trail on: [:create, :destroy, :update]
 
   before_create :paper_trail_create
