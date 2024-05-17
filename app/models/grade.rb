@@ -278,7 +278,7 @@ class Grade < ApplicationRecord
   end
 
   def label_cita_horaria
-    ApplicationController.helpers.label_status_with_tooptip('bg-info', appointment_from_to_short, appointment_from_to)
+    ApplicationController.helpers.label_status_with_tooltip('bg-info', appointment_from_to_short, appointment_from_to)
   end  
 
   def label_status_enroll_academic_process(academic_process_id)
