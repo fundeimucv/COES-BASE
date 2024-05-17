@@ -134,37 +134,25 @@ class AcademicProcess < ApplicationRecord
     "<a href='/academic_processes/#{id}/massive_confirmation' title='Confirmar todos los preinscritos' data-confirm='Está acción confirmará todos los preinscritos. ¿Está completamente seguro?' class='label bg-info'><i class= 'fa-regular fa-list-check'></i></a>".html_safe
   end
 
-  def label_total_enrolls_by_status
-    total = []
-
-    # [:preinscrito, :reservado, :confirmado, :retirado]
-    total << ApplicationController.helpers.label_status_with_tooptip('bg-secondary', self.enroll_academic_processes.count, 'Total')
-
-    total << ApplicationController.helpers.label_status_with_tooptip('bg-secondary', self.enroll_academic_processes.total_with_payment_report, 'Con Reportes de Pago')    
-
-    EnrollAcademicProcess.enroll_statuses.map do |k,v|
-      total_aux = self.enroll_academic_processes.where(enroll_status: v).count 
-      tipo = EnrollAcademicProcess.type_label_by_enroll k
-      total << ApplicationController.helpers.label_status_with_tooptip("bg-#{tipo}", total_aux, k&.pluralize&.titleize)
+  def label_total_enrolls_by_status(linked=false)
+    # label_status_with_tooptip
+    total = []    
+    link = con_reportes = sin_reportes = ''
+    if linked
+      link = "/admin/enroll_academic_process?query=#{period_name}"
+      con_reportes = "#{link}&model_name=enroll_academic_process&scope=con_reporte_de_pago"
+      sin_reportes = "#{link}&model_name=enroll_academic_process&scope=sin_reporte_de_pago"
     end
-
-
-    return total.join
-  end
-
-  def btn_total_enrolls_by_status 
-    total = []
-    link = "/admin/enroll_academic_process?query=#{period_name}"
-    total << ApplicationController.helpers.label_link_with_tooptip(link, 'bg-secondary', self.enroll_academic_processes.count, 'Total')
-
-    total << ApplicationController.helpers.label_link_with_tooptip('javascript:void(0)', 'bg-secondary', self.enroll_academic_processes.total_with_payment_report, 'Con Reportes de Pago')    
-
+    
+    total << ApplicationController.helpers.label_link_with_tooltip(link, 'bg-secondary me-1', self.enroll_academic_processes.count, 'Total')
+    total << ApplicationController.helpers.label_link_with_tooltip(con_reportes, 'bg-success me-1', self.enroll_academic_processes.total_with_payment_report, 'Con Reportes de Pago')
+    total << ApplicationController.helpers.label_link_with_tooltip(sin_reportes, 'bg-warning me-1', self.enroll_academic_processes.total_without_payment_report, 'Sin Reportes de Pago')
 
     EnrollAcademicProcess.enroll_statuses.map do |k,v|
       total_aux = self.enroll_academic_processes.where(enroll_status: v).count 
       tipo = EnrollAcademicProcess.type_label_by_enroll k
-      url = link+"&scope=#{k}"
-      total << ApplicationController.helpers.label_link_with_tooptip(url, "bg-#{tipo}", total_aux, k&.pluralize&.titleize)
+      url = linked ? link+"&scope=#{k}" : ""
+      total << ApplicationController.helpers.label_link_with_tooltip(url, "bg-#{tipo} me-1", total_aux, k&.pluralize&.titleize)
     end
     return total.join
     
@@ -173,10 +161,10 @@ class AcademicProcess < ApplicationRecord
 
   def label_total_sections
     total = []
-    total << ApplicationController.helpers.label_status_with_tooptip('bg-info', total_sections, 'Total')
-    total << ApplicationController.helpers.label_status_with_tooptip('bg-success', total_sections_qualified, 'Calificadas')
+    total << ApplicationController.helpers.label_status_with_tooltip('bg-info', total_sections, 'Total')
+    total << ApplicationController.helpers.label_status_with_tooltip('bg-success', total_sections_qualified, 'Calificadas')
     
-    total << ApplicationController.helpers.label_status_with_tooptip('bg-danger', total_sections_without_teacher_assigned, 'Sin Profesor Asignado')
+    total << ApplicationController.helpers.label_status_with_tooltip('bg-danger', total_sections_without_teacher_assigned, 'Sin Profesor Asignado')
 
     return total
   end
@@ -305,7 +293,7 @@ class AcademicProcess < ApplicationRecord
             if bindings[:object].enroll_academic_processes.not_confirmado.any?
               link_to_massive_confirmation = bindings[:object].link_to_massive_confirmation
             end
-            "#{bindings[:object].btn_total_enrolls_by_status} #{link_to_massive_confirmation}".html_safe
+            "#{bindings[:object].label_total_enrolls_by_status(true)} #{link_to_massive_confirmation}".html_safe
 
           else
             "#{bindings[:object].label_total_enrolls_by_status}".html_safe
@@ -337,12 +325,13 @@ class AcademicProcess < ApplicationRecord
       field :school do
         inline_edit false
         inline_add false
+        partial 'academic_process/custom_school_id_field'
       end
       field :modality
       field :process_before do
         inline_edit false
         inline_add false
-        help 'Atención: Aún cuando este campo no es obligatorio y puede ser omitido (en caso de que se encuentre realizando migraciones de periodos anteriores) es muy importante para las Citas Horarias e Inscripciones'
+        help 'Atención: Aún cuando este campo no es obligatorio y puede ser omitido es muy importante para las Citas Horarias e Inscripciones'
         pretty_value do
           bindings[:object].period_name
         end

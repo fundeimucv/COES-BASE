@@ -45,6 +45,10 @@ class Area < ApplicationRecord
 
   # FUNCTIONS:
 
+  def full_description
+    "#{name}: #{departaments.map{|de| de.desc}.to_sentence}"
+  end
+
   def description
     "#{self.id}: #{self.name}"
   end
@@ -73,7 +77,7 @@ class Area < ApplicationRecord
       field :departaments
       field :subjects do
         pretty_value do
-          bindings[:view].render(template: '/subjects/index', locals: {subjects: bindings[:object].subjects.order(code: :asc)})
+          bindings[:view].render(template: '/subjects/index', locals: {area_id: bindings[:object].id, subjects: bindings[:object].subjects.order(code: :asc)})
         end
       end
     end 

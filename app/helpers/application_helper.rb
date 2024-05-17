@@ -57,22 +57,6 @@ module ApplicationHelper
 		btn_toggle classes, 'fa fa-download', href, title_tooltip, value, onclick_action
 	end
 	
-	def label_status(klazz, content)
-		if content.blank?
-			content = 'Sin Información'
-			klazz = 'bg-secondary' 
-		end
-		klazz += ' text-dark' if (klazz.eql? 'bg-info')
-		capture_haml{"<span class='text-center badge #{klazz}'>#{content}</span>".html_safe }
-	end
-
-	def label_status_with_tooptip(klazz, content, title, placement='top')
-		content_tag :b, rel: :tooltip, 'data-bs-toggle': 'tooltip', 'data-bs-placement': placement, 'data-bs-original-title': title do
-			label_status(klazz, content)
-		end	
-	end
-	
-
 	def button_add_section course_id
 		content_tag :button, 'data-bs-target': "#NewSectionModal", class: "btn btn-sm btn-success mx-1 addSection", "data-bs-toggle": :modal, course_id: course_id, onclick: "$('#_sectioncourse_id').val(this.attributes['course_id'].value);" do
 			capture_haml{"<i class='fas fa-plus'></i>".html_safe }
@@ -90,19 +74,52 @@ module ApplicationHelper
 		end	
 	end
 
-	def label_link_with_tooptip(href, klazz, content, title, placement='top')
-
-		content_tag :a, href: href, rel: :tooltip, 'data-bs-toggle': :tooltip, 'data-bs-placement': placement, 'data-bs-original-title': title do
-			capture_haml{"<span class='text-center badge #{klazz}'>#{content}</span>".html_safe }
+	# General Tooltip
+	def general_tooltip(content, title, placement='top')
+		content_tag :b, rel: :tooltip, 'data-bs-toggle': 'tooltip', 'data-bs-placement': placement, 'data-bs-original-title': title do
+			capture_haml{content}
 		end	
+	end
+
+	# General link
+	def general_link(href, content)
+		content_tag :a, href: href do
+			content
+		end
+	end
+
+	# General Label
+	def label_status(klazz, content, type='badge')
+		if content.blank?
+			content = 'Sin Información'
+			klazz = 'bg-secondary' 
+		end
+		klazz += ' text-dark' if (klazz.eql? 'bg-info')
+		capture_haml{"<span class='text-center #{type} #{klazz}'>#{content}</span>".html_safe }
+	end
+
+	def link_with_tooltip(href, klazz, content, title, placement='top', label=nil)
+		 
+		aux = general_link(href, label_status(klazz, content, label) )
+		general_tooltip(aux, title, placement)		
+	end
+
+	def label_status_with_tooltip(klazz, content, title, placement='top')
+		general_tooltip(label_status(klazz, content), title, placement)
+	end
+
+	def label_link_with_tooltip(href, klazz, content, title, placement='top')
+		if href.blank?
+			label_status_with_tooltip(klazz, content, title, placement)
+		else
+			link_with_tooltip(href, klazz, content, title, placement, 'badge')
+		end
 	end	
 
 	def btn_link_with_tooptip(href, klazz, content, title, placement='top')
-
-		content_tag :a, href: href, rel: :tooltip, 'data-bs-toggle': :tooltip, 'data-bs-placement': placement, 'data-bs-original-title': title, class: "btn btn-sm #{klazz}" do
-			capture_haml{"<span class='text-center'>#{content}</span>".html_safe }
-		end	
+		link_with_tooltip(href, klazz, content, title, placement, 'btn btn-sm')
 	end	
+	
 
 	def translate_model model
 		I18n.t("activerecord.models.#{model}.other")
