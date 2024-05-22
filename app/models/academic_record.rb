@@ -80,6 +80,8 @@ class AcademicRecord < ApplicationRecord
 
   # SCOPE:
   # default_scope { joins(:user, :course, :section, :period, :subject) }
+
+  scope :of_academic_process, -> (academic_process_id) {joins(:academic_process).where "academic_processes.id IN (?)", academic_process_id}
   scope :custom_search, -> (keyword) {joins(:user, :course, :section, :period, :subject).where("users.ci ILIKE '%#{keyword}%' OR users.first_name ILIKE '%#{keyword}%' OR users.last_name ILIKE '%#{keyword}%' OR subjects.name ILIKE '%#{keyword}%' OR subjects.code ILIKE '%#{keyword}%' OR sections.code ILIKE '%#{keyword}%' OR periods.name ILIKE '%#{keyword}%'") }
 
 
@@ -89,15 +91,15 @@ class AcademicRecord < ApplicationRecord
 
   scope :with_totals, ->(school_id, period_id) {joins(:school).where("schools.id = ?", school_id).of_period(period_id).joins(:user).joins(:subject).joins(grade: :study_plan).group(:grade_id).select('study_plans.id plan_id, study_plans.total_credits plan_creditos, grados.*, SUM(subjects.unit_credits) total_creditos, COUNT(*) subjects, SUM(IF (academic_records.status = 1, subjects.creditos, 0)) aprobados')}
 
-  scope :of_period, lambda { |period_id| joins(:academic_process).where "academic_process.period_id = ?", period_id}
-  scope :of_periods, lambda { |periods_ids| joins(:academic_process).where "academic_process.period_id IN (?)", periods_ids}
+  scope :of_period, -> (period_id) {joins(:academic_process).where "academic_processes.period_id = ?", period_id}
+  scope :of_periods, -> (period_id) {joins(:academic_process).where "academic_process.period_id IN (?)", periods_ids}
 
   scope :on_reparacion, -> {joins(:qualifications).where('qualificactions.type_q': :reparacion)}
 
-  scope :of_school, lambda {|school_id| includes(:school).where("schools.id = ?", school_id).references(:schools)}
-  scope :of_schools, lambda {|schools_ids| includes(:school).where("schools.id IN (?)", schools_ids).references(:schools)}
+  scope :of_school, -> (school_id) {includes(:school).where("schools.id = ?", school_id).references(:schools)}
+  scope :of_schools, -> (school_id) {includes(:school).where("schools.id IN (?)", schools_ids).references(:schools)}
 
-  scope :of_student, lambda {|student_id| where("student_id = ?", student_id)}
+  scope :of_student, -> (student_id) {where("student_id = ?", student_id)}
 
   scope :no_retirados, -> {not_retirado}
 
@@ -120,9 +122,9 @@ class AcademicRecord < ApplicationRecord
   scope :total_credits_coursed_on_process, -> (periods_ids) {coursed.joins(:academic_process).where('academic_processes.id': periods_ids).joins(:subject).sum('subjects.unit_credits')}
   scope :total_credits_approved_on_process, -> (periods_ids) {aprobado.joins(:academic_process).where('academic_processes.id': periods_ids).joins(:subject).sum('subjects.unit_credits')}
 
-  scope :total_credits_coursed_on_periods, lambda{|periods_ids| coursed.joins(:academic_process).where('academic_processes.period_id IN (?)', periods_ids).joins(:subject).sum('subjects.unit_credits')}
+  scope :total_credits_coursed_on_periods, -> (periods_ids) {coursed.joins(:academic_process).where('academic_processes.period_id IN (?)', periods_ids).joins(:subject).sum('subjects.unit_credits')}
 
-  scope :total_credits_approved_on_periods, lambda{|periods_ids| aprobado.joins(:academic_process).where('academic_processes.period_id IN (?)', periods_ids).joins(:subject).sum('subjects.unit_credits')}
+  scope :total_credits_approved_on_periods, -> (periods_ids){aprobado.joins(:academic_process).where('academic_processes.period_id IN (?)', periods_ids).joins(:subject).sum('subjects.unit_credits')}
 
   scope :total_credits, -> {joins(:subject).sum('subjects.unit_credits')}
   scope :total_subjects, -> {(joins(:subject).group('subjects.id').count).count}
@@ -143,7 +145,7 @@ class AcademicRecord < ApplicationRecord
   scope :promedio_approved, -> {aprobado.promedio}
   scope :weighted_average_approved, -> {aprobado.weighted_average}
 
-  scope :student_enrolled_by_period, lambda { |period_id| joins(:academic_process).where("academic_processes.period_id": period_id).group(:student).count } 
+  scope :student_enrolled_by_period, -> (period_id) {joins(:academic_process).where("academic_processes.period_id": period_id).group(:student).count } 
 
   scope :students_enrolled, -> { group(:student_id).count } 
 

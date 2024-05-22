@@ -5,11 +5,13 @@
 - courses_offer = academic_process.courses
 - user = @grade.student.user
 
+- study_plan = @grade.study_plan
+
 - if current_user.student? and (session[:rol].eql? 'student')
-  - if school.enable_by_level?
+  - if study_plan.por_nivel?
     - subjects_offer_by_dependency = @grade.subjects_offer_by_level_approved
     - courses_offer = courses_offer.where(subject_id: subjects_offer_by_dependency.ids)
-  - elsif school.enable_dependents?
+  - elsif study_plan.por_dependencia?
     - subjects_offer_by_dependency = @grade.subjects_offer_by_dependent
     - courses_offer = courses_offer.where(subject_id: subjects_offer_by_dependency.ids)
 

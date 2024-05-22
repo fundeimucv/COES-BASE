@@ -33,6 +33,10 @@ class RequirementByLevel < ApplicationRecord
     validates :required_subjects, presence: true
     validates_uniqueness_of :study_plan_id, scope: [:level, :subject_type_id], message: 'la relación ya existe', field_name: false
   
+
+    scope :of_level, -> (number){where(level: number)}
+    scope :of_subject_type, -> (st_id){where(subject_type_id: st_id)}
+
     rails_admin do
       visible false
     end

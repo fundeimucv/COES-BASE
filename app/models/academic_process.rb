@@ -72,7 +72,7 @@ class AcademicProcess < ApplicationRecord
   default_scope { order(name: :desc) }
 
   scope :without_enroll_academic_processes, -> {left_joins(:enroll_academic_processes).where('enroll_academic_processes.academic_process_id': nil)}
-
+  scope :sort_by_period, -> {unscoped.joins(:period).order('periods.year desc').second}
   # CALLBACKS:
   before_save :set_name
 

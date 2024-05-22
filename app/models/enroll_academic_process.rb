@@ -70,6 +70,8 @@ class EnrollAcademicProcess < ApplicationRecord
   # scope :preinscrito_or_reservado, -> (){where(enroll_status: [:preinscrito, :reservado])}
 
   scope :sort_by_period, -> {joins(period: :period_type).order('periods.year': :desc, 'period_types.name': :desc)}
+  
+  scope :last_enrolled, -> {sort_by_period.first}
 
   scope :sort_by_period_reverse, -> {joins(period: :period_type).order('periods.year': :asc, 'period_types.name': :asc)}
 
