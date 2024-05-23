@@ -1,9 +1,13 @@
 - has_enrolled = academic_process.enroll_academic_processes.any?
 - period_name = academic_process.period_name
 - academic_process_id = academic_process.id
+.float-start
+  = render partial: '/academic_processes/enroll_state', locals: {academic_process: academic_process}
 .float-end
 
   - if (current_user&.admin&.authorized_manage? 'Course')
+
+      
     - if has_enrolled
       - # CLONACIÓN DESACTIVADA: HAY INSCRIPCIONES
       - msg =  "Periodo con inscripciones. El proceso de clonación se realiza antes de realizar las inscripciones en un período. Elimine todas las inscripciones para activar esta opción"
@@ -39,4 +43,5 @@
 
 %br
 %br
+%hr
 = render partial: '/academic_processes/index_programation', locals: {academic_process: academic_process, has_enrolled: has_enrolled}

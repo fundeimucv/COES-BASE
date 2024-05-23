@@ -255,17 +255,12 @@ class AcademicProcess < ApplicationRecord
         end
       end
 
+      # EVALUAR SI VALE LA PENA INCLUIRLA AQUÍ
       # field :active_enroll do
+      #   label 'Inscripción'
       #   pretty_value do
       #     current_user = bindings[:view]._current_user
-      #     admin = current_user.admin
-      #     active = admin and admin.authorized_manage? 'School'
-
-      #     if active
-      #       bindings[:view].render(partial: "/schools/form_enabled_enroll", locals: {academic_process: bindings[:object]})
-      #     else
-      #       value
-      #     end
+      #     bindings[:view].render(partial: "/academic_processes/enroll_state", locals: {academic_process: bindings[:object]})
       #   end
       # end
 
@@ -362,6 +357,16 @@ class AcademicProcess < ApplicationRecord
           bindings[:view].render(partial: "/academic_processes/desc_table", locals: {academic_process: bindings[:object]})
         end
       end
+
+      # EVALUAR SI INCLUIR
+      # field :active_enroll do
+      #   label 'Inscripción'
+      #   formatted_value do
+      #     current_user = bindings[:view]._current_user
+      #     bindings[:view].render(partial: "/academic_processes/enroll_state", locals: {academic_process: bindings[:object]})
+      #   end
+      # end
+
       field :enroll_instructions
 
       # field :courses do
