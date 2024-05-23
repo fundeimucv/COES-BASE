@@ -1,64 +1,55 @@
 
-.table-responsite{style: 'max-height:400px; overflow:scroll;font-size: small;'}
+.table-responsive{style: 'max-height:400px; overflow:scroll;font-size: small;'}
   %table#programation.table.table-condensed.table-striped.table-hover
     %thead{style: "position: sticky;top: 0; background-color:#F4F4F4"}
       %tr
         %th.col-1{style: 'width:12px'} #
+        %th.col-1{style: 'width:12px'} (Año/Sem)
         %th.col-5{scope: :col}
           .input-group.input-group-sm{style: 'width: 100%;'}
             %input.form-control{"aria-describedby" => "inputGroup-sizing-sm", "aria-label" => "", type: "text", placeholder: 'Asignaturas', autofocus: true, id: 'filterSubject', name: 'filterSubject'}
 
-        %th.col-1.text-center Activa
+        %th.col-1.text-center Activar
+        %th.col-1.text-center Ofertar
         %th.col-1.text-center PCI
         - if (current_user&.admin&.authorized_read? 'Section') or (current_user&.admin&.authorized_create? 'Section')
           %th Secciones
     %tbody.table-group-divider
       - subjects.each_with_index do |subject, i|
-        - subj_id = subject.id
+        - @subj_id = subject.id
         - subj_desc = subject.desc
         -# course = academic_process.courses.where(subject_id: subject.id).first
-        - course = subject.courses.where(academic_process_id: academic_process_id).first
+        - @course = subject.courses.where(academic_process_id: academic_process_id).first
         - # course = Course.where(academic_process_id: academic_process_id, subject_id: subject.id).first
 
-        - sections = course&.sections
+        - sections = @course&.sections
         - has_sections = sections&.any?
         %tr.trFiltrable{style: 'overflow: scroll;'}
           %td= i+1
-          %td{title: subj_desc}= link_to_if (current_user&.admin&.authorized_read? 'Subject'), subj_desc, "/admin/subject/#{subject.id}"
-          - # Subject Enable 
-          %td.text-center
-            - if course
-              - if (current_user&.admin&.authorized_delete? 'Course')
-                = render partial: 'academic_processes/form_active_subject', locals: {subject_id: subject.id, course: course, has_sections: has_sections}
-              - else
-                %i.fas.fa-check
+          %td= subject.ordinal_to_cardinal_short
+          %td{title: subj_desc}= link_to_if (current_user&.admin&.authorized_read? 'Subject'), subj_desc, "/admin/subject/#{@subj_id}"
+          - # Activar
+          %td.text-center.align-middle{id: "enableSubject#{@subj_id}"}
+            = render partial: 'academic_processes/active_course_switch', locals: {tipo: 0}
+         
+          - # Ofertar
+          %td.text-center.align-middle{id: "courseOffer#{@subj_id}"}
+            - if @course
+              = render partial: 'academic_processes/active_course_switch', locals: {tipo: 1}
 
-            - else
-              - if (current_user&.admin&.authorized_create? 'Course')
-                = render partial: 'academic_processes/form_active_subject', locals: {subject_id: subject.id, course: course, has_sections: has_sections}
-              - else
-                %i.fas.fa-remove
           - # PCI 
-          %td.text-center
-            - if course
-              - if (current_user&.admin&.authorized_delete? 'Course')
-                = render partial: 'academic_processes/form_active_pci_subject', locals: {subject_id: subject.id, course: course, has_sections: has_sections}
-              - else
-                %i.fas.fa-check
+          %td.text-center.align-middle{id: "courseOfferAsPCI#{@subj_id}"}
+            - if @course
+              = render partial: 'academic_processes/active_course_switch', locals: {tipo: 2}
 
-            - else
-              - if (current_user&.admin&.authorized_create? 'Course')
-                = render partial: 'academic_processes/form_active_pci_subject', locals: {subject_id: subject.id, course: course, has_sections: has_sections}
-              - else
-                %i.fas.fa-remove
           - # Sections
-          %td.overflow-scroll
-            - if course
+          %td.overflow-scroll{id: "sections#{@subj_id}"}
+            - if @course
               %table
                 %tr
                   - if has_sections
                     - if (current_user&.admin&.authorized_read? 'Section')
-                      = render partial: 'academic_processes/sections_list_inline', locals: {sections: sections, has_enrolled: course.academic_records.any?}
+                      = render partial: 'academic_processes/sections_list_inline', locals: {sections: sections, has_enrolled: @course.academic_records.any?}
                   - if (current_user&.admin&.authorized_create? 'Section')
-                    %td.p-0= ApplicationController.helpers.button_add_section course.id
+                    %td.p-0= ApplicationController.helpers.button_add_section @course.id
 

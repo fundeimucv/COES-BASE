@@ -7,7 +7,7 @@
 #  levels        :integer          default(10), not null
 #  modality      :integer          default("Anual"), not null
 #  name          :string
-#  structure     :integer          default("sin_restricciones"), not null
+#  structure     :integer          default("por_dependencia"), not null
 #  total_credits :integer          default(0)
 #  created_at    :datetime         not null
 #  updated_at    :datetime         not null

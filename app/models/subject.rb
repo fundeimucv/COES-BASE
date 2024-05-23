@@ -118,6 +118,19 @@ class Subject < ApplicationRecord
     area.schools.first
   end
 
+  def ordinal_to_cardinal_short
+
+    case ordinal
+    when 0
+      modality[0..2]&.upcase
+    when 1..12
+      "#{ordinal}º"
+    else
+      '--'
+    end
+
+  end  
+  
   def self.ordinal_to_cardinal numero, type_school
 
     case numero
