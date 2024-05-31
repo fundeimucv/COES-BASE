@@ -39,8 +39,14 @@ es:
   sin_calificar: SC
 
   admin:
+
     js: 'js'
     misc:
+      operators:
+        like: Contiene      
+      discard: 'Seleccione'
+      chose_all: 'Agregar Todos'
+      
       more: 'Más'
       count: Total
       root_navigation: Otro
