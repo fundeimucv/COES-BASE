@@ -140,18 +140,21 @@ class Course < ApplicationRecord
       sort_by ['courses.name']
       search_by :custom_search
       field :academic_process do
+        sticky true
         queryable true
         label 'Periodo'
-        column_width 100
+        column_width 150
         pretty_value do
-          value.period.name
+          value.name
         end
       end
       field :area do
+        sticky true
         searchable :name
         sortable :name
       end
       field :subject do
+        sticky true
         filterable false
       end
       field :total_sections do
@@ -160,6 +163,8 @@ class Course < ApplicationRecord
           ApplicationController.helpers.label_status('bg-info', value)
         end
       end
+
+      field :offer
 
       field :sections do
         column_width '300'
@@ -239,7 +244,7 @@ class Course < ApplicationRecord
     end
 
     export do
-      fields :academic_process, :period, :subject, :area
+      fields :academic_process, :period, :subject, :area, :offer
       field :total_sections do
         label 'T. Sec'
       end

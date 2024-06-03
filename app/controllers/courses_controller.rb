@@ -19,7 +19,7 @@ class CoursesController < ApplicationController
           name = "course_offer_as_pci#{course.id}"
           js_action_name = 'courseOffer(this, true);'
 
-          course_offer_as_pci = view_context.render partial: 'layouts/switch_checkbox_layout', locals: {title: title, name: name, id: course.id, checked: course&.offer?, disabled: false, js_action_name: js_action_name}
+          course_offer_as_pci = view_context.render partial: 'layouts/switch_checkbox_layout', locals: {title: title, name: name, id: course.id, checked: course&.offer_as_pci?, disabled: false, js_action_name: js_action_name}
 
           format.json {render json: {data: "¡Curso activado para el período #{course.academic_process.period_name}!", status: :success, new_section: new_section, type: :create, course_offer: course_offer, course_offer_as_pci: course_offer_as_pci} }
         else

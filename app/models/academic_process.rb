@@ -392,13 +392,13 @@ class AcademicProcess < ApplicationRecord
       end
 
       # EVALUAR SI INCLUIR
-      # field :active_enroll do
-      #   label 'Inscripción'
-      #   formatted_value do
-      #     current_user = bindings[:view]._current_user
-      #     bindings[:view].render(partial: "/academic_processes/enroll_state", locals: {academic_process: bindings[:object]})
-      #   end
-      # end
+      field :active_enroll do
+        label 'Inscripción'
+        formatted_value do
+          current_user = bindings[:view]._current_user
+          bindings[:view].render(partial: "/academic_processes/enroll_state", locals: {academic_process: bindings[:object]})
+        end
+      end
 
       field :enroll_instructions
 

@@ -33,9 +33,10 @@
   %input{name: "csv_options[generator][col_sep]", type: :hidden, value: ";"}
 
   %input{name: "return_to", :type => "hidden", value: "http://localhost:3000/admin/course?f%5Bacademic_process%5D%5B52520%5D%5Bo%5D=like&f%5Bacademic_process%5D%5B52520%5D%5Bv%5D=2023-02&academic_process_id=20"}/
-
-  %button.btn.btn-info{name: "csv", type: :submit}
-    %i.fas.fa-download
-    Descarga Rápida 
   
   %input{name: "csv", type: :hidden}
+
+  %button.btn.btn-sm.btn-info{name: "csv", type: :submit, title: "Descargar listado CSV Cursos #{period_name}" }
+    %i.fas.fa-download
+    Descargar Cursos
+    
