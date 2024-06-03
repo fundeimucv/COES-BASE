@@ -97,18 +97,23 @@ class PaymentReport < ApplicationRecord
     ActionController::Base.helpers.number_to_currency(self.amount, unit: 'Bs.', separator: ",", delimiter: ".")
   end
   
-  def label_status
+  def label_status readonly=false
     case status
     when "Invalidado"
-      aux = 'danger'
+      ApplicationController.helpers.label_status("bg-danger", self.status&.titleize)
     when "Validado"
-      aux =  'success'
+      ApplicationController.helpers.label_status("bg-success", self.status&.titleize)
     else
-      aux = 'warning'
+      if readonly
+        ApplicationController.helpers.label_status("bg-warning mx-2", self.status&.titleize)
+      else
+        aux = ApplicationController.helpers.label_status("bg-warning mx-2", self.status&.titleize)
+        aux += "<a href='/payment_reports/#{self.id}/quick_validation?payment_report[status]=Validado' class='label label-sm bg-success' data-bs-placement='right' data-bs-original-title='Validación rápida' rel='tooltip' data-bs-toggle='tooltip'><i class='fa fa-check'></i></a>".html_safe
+        aux.html_safe
+      end
     end    
-    ApplicationController.helpers.label_status("bg-#{aux}", self.status&.titleize)
   end
-  
+
   # OTHERS FUNCTIONS:
 
 
@@ -121,9 +126,23 @@ class PaymentReport < ApplicationRecord
 
       search_by :custom_search
       scopes [:todos, :Pendiente, :Validado, :Invalidado]
+      field :id do
+        sticky true
+      end
+
+      field :created_at do
+        sticky true
+      end
+      field :status do
+        sticky true
+        pretty_value do
+          bindings[:object].label_status
+        end
+      end      
+
       field :amount
       field :academic_process do
-        label 'Period'
+        label 'Período'
         formatted_value do
           bindings[:object].academic_process&.name
         end
@@ -133,19 +152,14 @@ class PaymentReport < ApplicationRecord
           "<a href='/admin/student/#{bindings[:object].student&.id}'>#{bindings[:object].student&.user&.ci_fullname}</a>".html_safe
         end
       end
-      field :payable_name do
-        label 'Descripción'
-        formatted_value do
-          bindings[:object].payable.name
-        end
-      end
+      # field :payable_name do
+      #   label 'Descripción'
+      #   formatted_value do
+      #     bindings[:object].payable.name
+      #   end
+      # end
       
-      fields :transaction_id, :transaction_type, :transaction_date, :origin_bank, :receiving_bank_account
-      field :status do
-        pretty_value do
-          bindings[:object].label_status
-        end
-      end      
+      fields :transaction_id, :transaction_type, :transaction_date, :origin_bank, :receiving_bank_account     
 
       field :voucher do
         filterable false
@@ -163,7 +177,7 @@ class PaymentReport < ApplicationRecord
     end
 
     show do
-      fields :amount, :status, :transaction_id, :transaction_type, :transaction_date, :origin_bank, :receiving_bank_account, :voucher, :owner_account_ci, :owner_account_name
+      fields :id, :created_at, :amount, :status, :transaction_id, :transaction_type, :transaction_date, :origin_bank, :receiving_bank_account, :voucher, :owner_account_ci, :owner_account_name
     end
 
     edit do
