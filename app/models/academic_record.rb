@@ -166,7 +166,11 @@ class AcademicRecord < ApplicationRecord
 
 
   # FUNCTIONS:
-
+  def values_for_report
+    user_aux = user
+    [user_aux.ci, user_aux.first_name, user_aux.last_name, school.name, area.name, subject.code, subject.name, period.name, section.code, self.get_value_by_status]
+  end
+  
   def is_totality_partial?
     total_partials = self.partial_qualifications.map{|pq| pq.partial}
     if (total_partials.any? and (total_partials.count.eql? PartialQualification.partials.count))

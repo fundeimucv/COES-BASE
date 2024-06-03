@@ -104,6 +104,13 @@ class Section < ApplicationRecord
   scope :equivalence, -> {where('sections.modality': [:equivalencia_externa, :equivalencia_interna])}
 
   # FUNCTIONS:
+  def self.print_to_system_command
+    require 'benchmark'
+    memory_command = "ps -o rss= -p #{Process.pid}"
+    memory_before = %x(#{memory_command}).to_i
+    puts "Memory: #{((memory_before) / 1024.0).round(2)} MB"
+  end
+
   def any_equivalencia?
     self.equivalencia_externa? or  self.equivalencia_interna?
   end

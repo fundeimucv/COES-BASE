@@ -76,6 +76,7 @@ group :development, :production do
   # Autorization
   gem 'cancancan'
 
+  # gem 'xlsxtream'
   # Administration
   gem 'rails_admin', '~> 3.1'#, '>= 3.1.2'
 

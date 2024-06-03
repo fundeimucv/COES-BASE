@@ -10,6 +10,8 @@ Rails.application.routes.draw do
   match "/importer/academic_records" => "importer#academic_records" , :as => "importer_academic_records", :via => [:get, :post]
 
   match "/export/xls/:id" => "export#xls", via: :get
+  match "/export_csv/academic_records/:id" => "export_csv#academic_records", via: :get
+  match "/export_csv/enroll_academic_processes/:id" => "export_csv#enroll_academic_processes", via: :get
 
   resources :validar, only: :index do
     member do
