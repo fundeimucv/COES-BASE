@@ -678,6 +678,9 @@ es:
         subjects: Asignaturas
         total_required_subjects: Total Asignaturas Requeridas        
       payment_report:
+        status: Estado
+        student: Estudiante
+        payable: Pagable      
         amount: 'Monto'
         transaction_id: 'Número de Transacción'
         transaction_type: 'Tipo de Transacción'
@@ -687,6 +690,8 @@ es:
         receiving_bank_account: 'Cuenta Receptora'
         voucher: 'Imagen de Comprobante'
         created_at: 'Fecha Registro'
+        owner_account_ci: CI del Titular Cuenta
+        owner_account_name: Nombre del Titular Cuenta
       period:
         year: 'Año'
         period_type: 'Tipo de Período'

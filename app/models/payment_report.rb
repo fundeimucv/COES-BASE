@@ -4,7 +4,10 @@
 #
 #  id                        :bigint           not null, primary key
 #  amount                    :float
+#  owner_account_ci          :string
+#  owner_account_name        :string
 #  payable_type              :string
+#  status                    :integer          default("Pendiente"), not null
 #  transaction_date          :date
 #  transaction_type          :integer
 #  created_at                :datetime         not null
@@ -38,6 +41,9 @@ class PaymentReport < ApplicationRecord
   # ASSOCIATIONS:
   belongs_to :origin_bank, class_name: 'Bank', foreign_key: 'origin_bank_id'
   belongs_to :payable, polymorphic: true
+  # Atención: Esta es la mejor opción pero es posible que no funcione por el polimorfismo
+  # has_one :student, through: :payable
+  # has_one :user, through: :student
   belongs_to :receiving_bank_account, class_name: 'BankAccount'
 
   has_one_attached :voucher do |attachable|
@@ -47,7 +53,7 @@ class PaymentReport < ApplicationRecord
   scope :grades, -> {where(payable_type: 'Grade')}  
   scope :enroll_academic_processes, -> {where(payable_type: 'EnrollAcademicProcess')}  
 
-  # scope :custom_search, -> (keyword) {joins(:user).where("users.ci ILIKE '%#{keyword}%' OR users.first_name ILIKE '%#{keyword}%' OR users.last_name ILIKE '%#{keyword}%' OR users.email ILIKE '%#{keyword}%'") }
+  scope :custom_search, -> (keyword) {joins_enroll_academic_process.joins("INNER JOIN academic_processes ON enroll_academic_processes.academic_process_id = academic_processes.id").where("academic_processes.name ILIKE '%#{keyword}%'") }  
 
 
   attr_accessor :remove_voucher
@@ -65,8 +71,24 @@ class PaymentReport < ApplicationRecord
   validates :receiving_bank_account, presence: true
   validates :voucher, presence: true
 
+  # Enum:
   enum transaction_type: [:transferencia, :efectivo, :punto_venta]
+  enum status: [:Pendiente, :Validado, :Invalidado]
 
+  # SPECIALS FUNCTIONS OF POLYMORPHIC:
+  def student
+    payable&.student
+  end
+
+  def user
+    student&.user
+  end
+
+  def academic_process
+    payable&.academic_process
+  end
+
+  # BASIC FUNCTIONS:
   def name
     "#{transaction_id} - #{amount_to_bs}"
   end
@@ -74,13 +96,56 @@ class PaymentReport < ApplicationRecord
   def amount_to_bs
     ActionController::Base.helpers.number_to_currency(self.amount, unit: 'Bs.', separator: ",", delimiter: ".")
   end
+  
+  def label_status
+    case status
+    when "Invalidado"
+      aux = 'danger'
+    when "Validado"
+      aux =  'success'
+    else
+      aux = 'warning'
+    end    
+    ApplicationController.helpers.label_status("bg-#{aux}", self.status&.titleize)
+  end
+  
+  # OTHERS FUNCTIONS:
+
 
   rails_admin do
     navigation_label 'Administrativa'
     navigation_icon 'fa-solid fa-cash-register'
 
     list do
-      fields :amount, :transaction_id, :transaction_type, :transaction_date, :origin_bank, :receiving_bank_account
+      # fields :amount, :transaction_id, :transaction_type, :transaction_date, :origin_bank, :receiving_bank_account, :owner_account_ci, :owner_account_name
+
+      search_by :custom_search
+      scopes [:todos, :Pendiente, :Validado, :Invalidado]
+      field :amount
+      field :academic_process do
+        label 'Period'
+        formatted_value do
+          bindings[:object].academic_process&.name
+        end
+      end
+      field :student do
+        pretty_value do
+          "<a href='/admin/student/#{bindings[:object].student&.id}'>#{bindings[:object].student&.user&.ci_fullname}</a>".html_safe
+        end
+      end
+      field :payable_name do
+        label 'Descripción'
+        formatted_value do
+          bindings[:object].payable.name
+        end
+      end
+      
+      fields :transaction_id, :transaction_type, :transaction_date, :origin_bank, :receiving_bank_account
+      field :status do
+        pretty_value do
+          bindings[:object].label_status
+        end
+      end      
 
       field :voucher do
         filterable false
@@ -93,10 +158,12 @@ class PaymentReport < ApplicationRecord
           end
         end
       end
+
+      fields :owner_account_ci, :owner_account_name
     end
 
     show do
-      fields :amount, :transaction_id, :transaction_type, :transaction_date, :origin_bank, :receiving_bank_account, :voucher
+      fields :amount, :status, :transaction_id, :transaction_type, :transaction_date, :origin_bank, :receiving_bank_account, :voucher, :owner_account_ci, :owner_account_name
     end
 
     edit do
@@ -106,6 +173,7 @@ class PaymentReport < ApplicationRecord
           {:length => 20, :size => 20, :onInput => "$(this).val($(this).val().toUpperCase().replace(/[^0-9]/g,''))"}
         end
       end
+      field :status
       field :payable do
         label 'Entidad a Pagar'
       end
@@ -118,11 +186,11 @@ class PaymentReport < ApplicationRecord
         inline_edit false
         inline_add false
       end
-      field :voucher
+      field :voucher, :owner_account_ci, :owner_account_name
     end
 
     export do
-      fields :amount, :transaction_id, :transaction_type, :transaction_date, :origin_bank, :origin_bank
+      fields :id, :created_at, :amount, :transaction_id, :transaction_type, :transaction_date, :origin_bank, :origin_bank, :owner_account_ci, :owner_account_name
       field :payable_type do
         label 'Tipo'
       end
@@ -130,6 +198,33 @@ class PaymentReport < ApplicationRecord
         label 'Id'
       end
 
+      field :payable_name do
+        label 'Descripción'
+        formatted_value do
+          bindings[:object].payable.name
+        end
+      end
+
+      field :user_name do
+        label 'Nombre Usuario'
+        formatted_value do
+          bindings[:object].student.user.first_name
+        end
+      end
+
+      field :user_last_name do
+        label 'Apellido Usuario'
+        formatted_value do
+          bindings[:object].student.user.last_name
+        end
+      end
+      
+      field :user_ci do
+        label 'Ci Usuario'
+        formatted_value do
+          bindings[:object].student.user.ci
+        end
+      end
     end
   end  
 
@@ -137,10 +232,14 @@ class PaymentReport < ApplicationRecord
 
 
     def paper_trail_update
-      # changed_fields = self.changes.keys - ['created_at', 'updated_at']
+      changed_fields = self.changes.keys - ['created_at', 'updated_at']
       object = I18n.t("activerecord.models.#{self.model_name.param_key}.one")
-      # self.paper_trail_event = "¡#{object} actualizado en #{changed_fields.to_sentence}"
-      self.paper_trail_event = "¡#{object} actualizado!"
+      if self.status_changed?
+        self.paper_trail_event = "¡#{object} #{self.status}!"
+      else
+        self.paper_trail_event = "¡#{object} actualizado!"
+        # self.paper_trail_event = "¡#{object} actualizado en #{changed_fields.to_sentence}"
+      end      
     end  
 
     def paper_trail_create

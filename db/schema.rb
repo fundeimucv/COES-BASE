@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_05_22_162853) do
+ActiveRecord::Schema[7.0].define(version: 2024_06_03_144503) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -351,6 +351,9 @@ ActiveRecord::Schema[7.0].define(version: 2024_05_22_162853) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "receiving_bank_account_id"
+    t.string "owner_account_name"
+    t.string "owner_account_ci"
+    t.integer "status", default: 0, null: false
     t.index ["origin_bank_id"], name: "index_payment_reports_on_origin_bank_id"
     t.index ["payable_type", "payable_id"], name: "index_payment_reports_on_payable"
     t.index ["receiving_bank_account_id"], name: "index_payment_reports_on_receiving_bank_account_id"
