@@ -454,11 +454,10 @@ class Subject < ApplicationRecord
         help 'Semestre o año en que se ubica la asignatura o partir del cual puede ser inscrita (En caso de ser optativa o electiva).'
       end
 
-      field :qualification_type do
-        # help 'Parcial3 equivale a asignatura con 3 calificaciones parciales'
-        # formatted_value do
-        #   bindings[:object].label_qualification_type
-        # end
+      field :qualification_type, :enum do
+        enum do
+          {'Numérica': :numerica, 'Absoluta': :absoluta}
+        end
       end
 
       # field :depend_subjects do
