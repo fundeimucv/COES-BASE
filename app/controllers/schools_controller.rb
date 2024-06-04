@@ -71,10 +71,11 @@ class SchoolsController < ApplicationController
     respond_to do |format|
       if @school.update(school_params)
         # format.json { render json: '¡Escuela actualizada con éxito!', status: :ok}
-        # format.html { redirect_back fallback_location root_path }
         format.json {render json: {data: '¡Escuela actualizada con éxito!', status: :success} }
+        format.html { redirect_back fallback_location: root_path, notice: '¡Escuela Actualizada con Éxito!' }
       else
         format.json { render json: {data: @school.errors, status: :unprocessable_entity} }
+        format.html { redirect_back fallback_location: root_path, notice: 'No fue posible realizar la solicitud!'  }
       end
     end
   end
@@ -97,6 +98,6 @@ class SchoolsController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def school_params
-      params.require(:school).permit(:code, :name, :enable_subject_retreat, :enable_change_course, :enable_dependents, :period_id, :enroll_process_id, :active_process_id, :enable_enroll_payment_report)
+      params.require(:school).permit(:code, :name, :enable_subject_retreat, :enable_change_course, :enable_dependents, :period_id, :enroll_process_id, :active_process_id, :enable_enroll_payment_report, :enable_by_level)
     end
 end

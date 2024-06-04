@@ -1,13 +1,32 @@
+# == Schema Information
+#
+# Table name: sections
+#
+#  id         :bigint           not null, primary key
+#  capacity   :integer
+#  classroom  :string
+#  code       :string
+#  enabled    :boolean
+#  modality   :integer
+#  qualified  :boolean          default(FALSE), not null
+#  created_at :datetime         not null
+#  updated_at :datetime         not null
+#  course_id  :bigint           not null
+#  teacher_id :bigint
+#
+# Indexes
+#
+#  index_sections_on_code_and_course_id  (code,course_id) UNIQUE
+#  index_sections_on_course_id           (course_id)
+#  index_sections_on_teacher_id          (teacher_id)
+#
+# Foreign Keys
+#
+#  fk_rails_...  (course_id => courses.id)
+#  fk_rails_...  (teacher_id => teachers.user_id) ON DELETE => cascade ON UPDATE => cascade
+#
 class Section < ApplicationRecord
-  # SCHEMA:
-  # t.string "code"
-  # t.integer "capacity"
-  # t.bigint "course_id", null: false
-  # t.bigint "teacher_id", null: false
-  # t.boolean "qualified"
-  # t.integer "modality"
-  # t.boolean "enabled"
-
+  
   # HISTORY:
   has_paper_trail on: [:create, :destroy, :update]
 
@@ -23,6 +42,7 @@ class Section < ApplicationRecord
 
   # has_one
   has_one :subject, through: :course
+  has_one :subject_type, through: :subject
   has_one :area, through: :subject
   # accepts_nested_attributes_for :subject
 
@@ -48,7 +68,7 @@ class Section < ApplicationRecord
   # has_and_belongs_to_many :secondary_teachers, class_name: 'SectionTeacher'
 
   #ENUMERIZE:
-  enum modality: [:nota_final, :equivalencia]
+  enum modality: {nota_final: 0, equivalencia_externa: 1, equivalencia_interna: 2, suficiencia: 3}
 
   # VALIDATIONS:
   validates :code, presence: true, uniqueness: { scope: :course_id, message: 'Ya existe la sesión para el curso', case_sensitive: false, field_name: false}, length: { in: 1..7, too_long: "%{count} caracteres es el máximo permitido", too_short: "%{count} caracter es el mínimo permitido"}
@@ -80,7 +100,21 @@ class Section < ApplicationRecord
 
   scope :has_academic_record, -> (academic_record_id) {joins(:academic_records).where('academic_records.id': academic_record_id)}
 
+  scope :not_equivalence, -> {where('sections.modality': [:nota_final, :suficiencia])}
+  scope :equivalence, -> {where('sections.modality': [:equivalencia_externa, :equivalencia_interna])}
+
   # FUNCTIONS:
+  def self.print_to_system_command
+    require 'benchmark'
+    memory_command = "ps -o rss= -p #{Process.pid}"
+    memory_before = %x(#{memory_command}).to_i
+    puts "Memory: #{((memory_before) / 1024.0).round(2)} MB"
+  end
+
+  def any_equivalencia?
+    self.equivalencia_externa? or  self.equivalencia_interna?
+  end
+
   def label_modality
     ApplicationController.helpers.label_status('bg-info', modality.titleize) if modality
   end
@@ -192,22 +226,28 @@ class Section < ApplicationRecord
   end
 
   def conv_type
-    "#{conv_initial_type}S#{self.period.period_type.code.upcase}"
+    "#{conv_initial_type}#{academic_process&.conv_type}"
   end
 
   def conv_initial_type
-    case modality
-    when 'nota_final'
-      'NF'
-    when 'equivalencia_interna'
-      'EQ'
-    else
-      modality.first.upcase if modality
-    end
+    # case modality
+    # when 'nota_final'
+    #   'NF'
+    # when 'equivalencia_interna'
+    #   'EQ'
+    # else
+    #   modality.first.upcase if modality
+    # end
+
+    I18n.t("activerecord.scopes.section."+self.modality)
   end
 
   def is_in_process_active?
     self.academic_process&.id&.eql? self.school.active_process_id
+  end
+
+  def is_inrolling?
+    self.academic_process&.id&.eql? self.school.enroll_process_id
   end
 
   def number_acta
@@ -301,6 +341,12 @@ class Section < ApplicationRecord
       #     value.period.name
       #   end
       # end
+
+      field :school do
+        sticky true 
+        searchable :name
+        sortable :name               
+      end
 
       field :period do
         sticky true
@@ -461,15 +507,19 @@ class Section < ApplicationRecord
         column_width 20
       end
 
-      field :acta do
-        label 'Acta'
+      field :options do
+        label 'Opciones'
         pretty_value do
           current_user = bindings[:view]._current_user
+
+          display = ApplicationController.helpers.badge_toggle_section_qualified bindings[:object]
           if (current_user.admin? and bindings[:view].session[:rol] and bindings[:view].session[:rol].eql? 'admin' and current_user.admin.authorized_manage? 'Section' and bindings[:object].academic_records.any?) #and bindings[:object].qualified?
-            ApplicationController.helpers.btn_toggle_download 'btn-success', "/sections/#{bindings[:object].id}.pdf", 'Generar Acta', nil
+            display += ApplicationController.helpers.btn_toggle_download 'mx-3 btn-success', "/sections/#{bindings[:object].id}.pdf", 'Generar Acta', nil
           end
+          display
         end
-      end
+      end      
+      
     end
 
     show do
@@ -501,7 +551,11 @@ class Section < ApplicationRecord
       field :academic_records_table do
         label 'Registros Académicos'
         formatted_value do
-          bindings[:view].render(partial: 'academic_records/qualify', locals: {section: bindings[:object]})          
+          if bindings[:object].is_in_process_active? and not bindings[:object].is_inrolling?
+            bindings[:view].render(partial: 'academic_records/qualify', locals: {section: bindings[:object]})
+          else
+            bindings[:view].render(partial: 'academic_records/list', locals: {academic_records: bindings[:object].academic_records, admin: true}) 
+          end
         end
       end
     end
@@ -679,10 +733,14 @@ class Section < ApplicationRecord
 
 
     def paper_trail_update
-      # changed_fields = self.changes.keys - ['created_at', 'updated_at']
       object = I18n.t("activerecord.models.#{self.model_name.param_key}.one")
+      msg = "#{object} actualizada."
+      if self.qualified_changed?
+        msg = self.qualified? ? "¡Sección calificada!" : "Activada para calificar nuevamente"
+      end
+      # changed_fields = self.changes.keys - ['created_at', 'updated_at']
       # self.paper_trail_event = "¡#{object} actualizado en #{changed_fields.to_sentence}"
-      self.paper_trail_event = "#{object} actualizada."
+      self.paper_trail_event = msg
     end  
 
     def paper_trail_create

@@ -1,8 +1,25 @@
+# == Schema Information
+#
+# Table name: academic_records
+#
+#  id                         :bigint           not null, primary key
+#  status                     :integer          default("sin_calificar")
+#  created_at                 :datetime         not null
+#  updated_at                 :datetime         not null
+#  enroll_academic_process_id :bigint           not null
+#  section_id                 :bigint           not null
+#
+# Indexes
+#
+#  index_academic_records_on_enroll_academic_process_id  (enroll_academic_process_id)
+#  index_academic_records_on_section_id                  (section_id)
+#
+# Foreign Keys
+#
+#  fk_rails_...  (enroll_academic_process_id => enroll_academic_processes.id)
+#  fk_rails_...  (section_id => sections.id)
+#
 class AcademicRecord < ApplicationRecord
-  # SCHEMA:
-  # t.bigint "section_id", null: false
-  # t.bigint "enroll_academic_process_id", null: false
-  # t.integer "status"
 
   # ENUMERIZE:
   enum status: [:sin_calificar, :aprobado, :aplazado, :retirado, :perdida_por_inasistencia, :equivalencia]
@@ -20,12 +37,15 @@ class AcademicRecord < ApplicationRecord
   belongs_to :enroll_academic_process
 
   has_many :qualifications, dependent: :destroy
+  has_many :partial_qualifications, dependent: :destroy
+
   accepts_nested_attributes_for :qualifications, allow_destroy: true#, reject_if: proc { |attributes| attributes['academic_record_id'].blank? }  
 
   has_one :academic_process, through: :enroll_academic_process
   has_one :grade, through: :enroll_academic_process
   has_one :study_plan, through: :grade
   has_one :student, through: :grade
+  has_one :school, through: :grade
   has_one :address, through: :student
   has_one :user, through: :student
   has_one :period, through: :academic_process
@@ -33,6 +53,7 @@ class AcademicRecord < ApplicationRecord
   has_one :course, through: :section
   has_one :teacher, through: :section
   has_one :subject, through: :course
+  has_one :subject_type, through: :subject
   has_one :area, through: :subject
 
   # VALIDATIONS:
@@ -59,6 +80,8 @@ class AcademicRecord < ApplicationRecord
 
   # SCOPE:
   # default_scope { joins(:user, :course, :section, :period, :subject) }
+
+  scope :of_academic_process, -> (academic_process_id) {joins(:academic_process).where "academic_processes.id IN (?)", academic_process_id}
   scope :custom_search, -> (keyword) {joins(:user, :course, :section, :period, :subject).where("users.ci ILIKE '%#{keyword}%' OR users.first_name ILIKE '%#{keyword}%' OR users.last_name ILIKE '%#{keyword}%' OR subjects.name ILIKE '%#{keyword}%' OR subjects.code ILIKE '%#{keyword}%' OR sections.code ILIKE '%#{keyword}%' OR periods.name ILIKE '%#{keyword}%'") }
 
 
@@ -68,15 +91,15 @@ class AcademicRecord < ApplicationRecord
 
   scope :with_totals, ->(school_id, period_id) {joins(:school).where("schools.id = ?", school_id).of_period(period_id).joins(:user).joins(:subject).joins(grade: :study_plan).group(:grade_id).select('study_plans.id plan_id, study_plans.total_credits plan_creditos, grados.*, SUM(subjects.unit_credits) total_creditos, COUNT(*) subjects, SUM(IF (academic_records.status = 1, subjects.creditos, 0)) aprobados')}
 
-  scope :of_period, lambda { |period_id| joins(:academic_process).where "academic_process.period_id = ?", period_id}
-  scope :of_periods, lambda { |periods_ids| joins(:academic_process).where "academic_process.period_id IN (?)", periods_ids}
+  scope :of_period, -> (period_id) {joins(:academic_process).where "academic_processes.period_id = ?", period_id}
+  scope :of_periods, -> (period_id) {joins(:academic_process).where "academic_process.period_id IN (?)", periods_ids}
 
   scope :on_reparacion, -> {joins(:qualifications).where('qualificactions.type_q': :reparacion)}
 
-  scope :of_school, lambda {|school_id| includes(:school).where("schools.id = ?", school_id).references(:schools)}
-  scope :of_schools, lambda {|schools_ids| includes(:school).where("schools.id IN (?)", schools_ids).references(:schools)}
+  scope :of_school, -> (school_id) {includes(:school).where("schools.id = ?", school_id).references(:schools)}
+  scope :of_schools, -> (school_id) {includes(:school).where("schools.id IN (?)", schools_ids).references(:schools)}
 
-  scope :of_student, lambda {|student_id| where("student_id = ?", student_id)}
+  scope :of_student, -> (student_id) {where("student_id = ?", student_id)}
 
   scope :no_retirados, -> {not_retirado}
 
@@ -84,14 +107,24 @@ class AcademicRecord < ApplicationRecord
 
   scope :qualified, -> {not_sin_calificar}
 
+  scope :by_level, -> (level) {joins(:subject).where('subjects.ordinal': level)}
+  
+  scope :total_credits_by_level, -> (level){by_level(level).sum('subjects.unit_credits')}
+
+  scope :total_subjects_approved_by_level, -> (level){aprobado.by_level(level).total_subjects}
+  scope :total_subjects_approved_by_level_and_type, -> (level, tipo){aprobado.by_level(level).by_subject_types(tipo).total_subjects}  
+
+  scope :total_credits_approved_by_level, -> (level) {aprobado.total_credits_by_level(level)}
+  scope :total_credits_approved_by_level_and_type, -> (level, tipo) {aprobado.by_level(level).by_subject_types(tipo).total_credits}
+
   scope :coursing, -> {where "academic_records.status != 1 and academic_records.status != 2 and academic_records.status != 3"} # Excluye retiradas también
 
   scope :total_credits_coursed_on_process, -> (periods_ids) {coursed.joins(:academic_process).where('academic_processes.id': periods_ids).joins(:subject).sum('subjects.unit_credits')}
   scope :total_credits_approved_on_process, -> (periods_ids) {aprobado.joins(:academic_process).where('academic_processes.id': periods_ids).joins(:subject).sum('subjects.unit_credits')}
 
-  scope :total_credits_coursed_on_periods, lambda{|periods_ids| coursed.joins(:academic_process).where('academic_processes.period_id IN (?)', periods_ids).joins(:subject).sum('subjects.unit_credits')}
+  scope :total_credits_coursed_on_periods, -> (periods_ids) {coursed.joins(:academic_process).where('academic_processes.period_id IN (?)', periods_ids).joins(:subject).sum('subjects.unit_credits')}
 
-  scope :total_credits_approved_on_periods, lambda{|periods_ids| aprobado.joins(:academic_process).where('academic_processes.period_id IN (?)', periods_ids).joins(:subject).sum('subjects.unit_credits')}
+  scope :total_credits_approved_on_periods, -> (periods_ids){aprobado.joins(:academic_process).where('academic_processes.period_id IN (?)', periods_ids).joins(:subject).sum('subjects.unit_credits')}
 
   scope :total_credits, -> {joins(:subject).sum('subjects.unit_credits')}
   scope :total_subjects, -> {(joins(:subject).group('subjects.id').count).count}
@@ -112,9 +145,7 @@ class AcademicRecord < ApplicationRecord
   scope :promedio_approved, -> {aprobado.promedio}
   scope :weighted_average_approved, -> {aprobado.weighted_average}
 
-  scope :student_enrolled_by_period, lambda { |period_id| joins(:academic_process).where("academic_processes.period_id": period_id).group(:student).count } 
-
-  scope :total_by_qualification_modality?, -> {joins(:subject).group("subjects.modality").count}
+  scope :student_enrolled_by_period, -> (period_id) {joins(:academic_process).where("academic_processes.period_id": period_id).group(:student).count } 
 
   scope :students_enrolled, -> { group(:student_id).count } 
 
@@ -126,14 +157,32 @@ class AcademicRecord < ApplicationRecord
   scope :sort_by_subject_code, -> {joins(:subject).order('subjects.code': :asc)}
   scope :sort_by_subject_name, -> {joins(:subject).order('subjects.name': :asc)}
 
-
-  scope :by_subject_types, -> (tipo){joins(:subject).where('subjects.modality': tipo.downcase)}
+  scope :total_by_qualification_modality?, -> {joins(:subject_type).group("subject_types.code").count}
+  
+  scope :by_subject_types, -> (tipo){joins(:subject_type).where('subject_types.code': tipo)}
   # scope :perdidos, -> {perdida_por_inasistencia}
 
   scope :sort_by_user_name, -> {joins(:user).order('users.last_name asc, users.first_name asc')}
 
 
   # FUNCTIONS:
+  def values_for_report
+    user_aux = user
+    [user_aux.ci, user_aux.first_name, user_aux.last_name, school.name, area.name, subject.code, subject.name, period.name, section.code, self.get_value_by_status]
+  end
+  
+  def is_totality_partial?
+    total_partials = self.partial_qualifications.map{|pq| pq.partial}
+    if (total_partials.any? and (total_partials.count.eql? PartialQualification.partials.count))
+      total_partials.each do |pa|
+        if !(PartialQualification.partials.include? pa)
+          return false 
+        end
+      end
+      return true
+    end
+    return false
+  end
 
   def student_name_with_retired
     aux = user.reverse_name
@@ -440,8 +489,20 @@ class AcademicRecord < ApplicationRecord
       #   end
       # end
 
+      field :school do
+        associated_collection_cache_all false
+        associated_collection_scope do
+          Proc.new { |scope|
+            scope = scope.joins(:school)
+            scope = scope.limit(30) # 'order' does not work here
+          }
+        end
+        
+        searchable :name
+        sortable :name
+      end
+
       field :period do
-        label 'Periodo'
         column_width 120
 
         associated_collection_cache_all false

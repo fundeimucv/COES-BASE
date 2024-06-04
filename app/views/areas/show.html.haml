@@ -1,15 +1,17 @@
-%p#notice= notice
-
-%p
-  %b Name:
-  = @area.name
-%p
-  %b School:
-  = @area.school
-%p
-  %b Area:
-  = @area.area
-
-= link_to 'Edit', edit_area_path(@area)
-\|
-= link_to 'Back', areas_path
+.card
+  - subjects = @area.subjects.order(code: :asc)
+  .card-header.text-sm.text-center= "#{@area.name} (#{subjects.count})"
+  .card-body
+    %table.table.table-hover.table-striped.table-sm{style: 'font-size:12px;'}
+      %thead
+        - subjects.each do |asig|
+          %tr.trFiltrable
+            %th
+              = ApplicationController.helpers.subject_full_description_badges(asig).html_safe
+              - dependencies = asig.depend_links.joins(:depend_subject).order('subjects.ordinal': :asc)
+              - if dependencies.any?
+                - id = "asig#{asig.id}"
+                = link_to "##{id}", 'aria-controls': "##{id}", 'aria-expanded': false, "data-bs-toggle": :collapse, onclick: "$(this).find('i').toggleClass('fa-rotate-90');" do
+                  %i.fa.fa-chevron-right.text-success
+                .collapse.collapsable{id: id}
+                  = render partial: '/subject_links/tree', locals: {subject_links: dependencies, adelante: true}

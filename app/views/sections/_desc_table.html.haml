@@ -41,7 +41,10 @@
         .badge.bg-info= section.capacity
       %td
         - if section.qualified?
-          .fa.fa-check
+          .text-success{title: 'Calificada'}
+            .fa.fa-check
         - else
-          .fa.fa-remove
-
+          .text-danger{title: 'Por calificar'}
+            .fa.fa-remove
+        - if current_user.admin? and session[:rol].eql? 'admin'
+          = badge_toggle_section_qualified section

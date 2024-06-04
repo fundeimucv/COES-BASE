@@ -28,3 +28,26 @@
 			%td.text-center.fw-bold
 				%div{title: grade.appointment_from_to}
 					=grade.appointment_time_desc_short
+					
+- if (session[:rol].eql? 'admin' and current_user&.admin?)
+	.table-responsive
+		%table.table.table-sm.border.text-center.table-info
+			%tr
+				%td.text-center Plan
+				%td.text-center Ingreso
+				%td.text-center Admisión
+				%td.text-center Registro
+				%td.text-center Carrera
+				%td.text-center Cita horaria
+				- if (session[:rol].eql? 'admin' and  current_user&.admin?)
+					%td
+
+			%tr
+				%td.text-center= @grade.label_study_plan
+				%td.text-center= @grade.label_start_process
+				%td.text-center= @grade.label_admission_type
+				%td.text-center= @grade.label_registration_status
+				%td.text-center= @grade.label_graduate_status
+				%td.text-center= @grade.label_cita_horaria
+				- if (session[:rol].eql? 'admin' and (current_user&.admin&.authorized_update? 'Grade'))
+					%td.text-center= label_link_with_tooltip("/admin/grade/#{@grade.id}/edit", 'text-primary', "<i class='fa fa-pencil'></i>", 'Editar valores', placement='top')

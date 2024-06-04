@@ -103,17 +103,15 @@ class AcademicRecordsController < ApplicationController
 
   # PATCH/PUT /academic_records/1 or /academic_records/1.json
   def update
-    respond_to do |format|      
+    respond_to do |format|
       if @academic_record.update(academic_record_params)
         flash[:success] = '¡Actualización Exitosa!'
         format.html { redirect_back fallback_location: root_path}
         format.json { render json: {data: '¡Datos Guardados con éxito!', type: 'success'}, status: :ok }
       else
         flash[:danger] = @academic_record.errors.full_messages.to_sentence
-
         format.html { redirect_back fallback_location: root_path}
         format.json { render json: {data: "Error: #{@academic_record.errors.full_messages.to_sentence}", type: 'danger'}, status: :ok }
-        # format.json { render json: @academic_record.errors, status: :unprocessable_entity }
       end
     end
   end

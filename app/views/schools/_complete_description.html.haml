@@ -1,0 +1,13 @@
+.float-end
+    = link_to 'Nuevo Proceso Académico', "/admin/academic_process/new?school_id=#{school.id}", class: 'btn btn-success btn-sm'
+.card{style: "width: 18rem;"}
+    .card-header.text-sm.text-center= school.name
+    .card-body.text-center
+        .card-title= school&.active_process_label_status
+        .card-subtitle.mb-2.text-muted.border-bottom Periodo Activo
+        .card-title= school&.enroll_process_label_status
+        .card-subtitle.mb-2.text-muted.border-bottom Periodo de Inscripción
+        - if last_ap = school&.academic_processes.first
+            - linked = (current_user&.admin&.authorized_read? 'EnrollAcademicProcess')
+            .card-title= last_ap&.label_total_enrolls_by_status(linked).html_safe
+            .card-subtitle.mb-2.text-muted= "Última Inscripción en (#{last_ap.period.name})" 

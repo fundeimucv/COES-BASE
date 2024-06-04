@@ -1,122 +1,213 @@
-- areas = Area.all.order(name: :asc)
+- areas = academic_process.school.areas.all.order(name: :asc)
 - params[:area] ||= areas.first.id
-- academic_process_id = academic_process.id
+- @academic_process_id = academic_process.id
+- # ATENCIÓN: HAY QUE VERIFICAR ESTA VISTA YA QUE SE ESTÁ FUCIONANDO: OFFER Y PFFER_PCI
+- if !areas.any?
+  .alert.alert-danger.text-center 
+    %b Atención:
+    Primero debe registar las cátedras de la escuela.
+    = link_to '/admin/area/new', class: 'btn btn-sm btn-info' do
+      %i.fa.fa-plus
+      Nueva Cátedra
 
-.row
-  %ul#area_selector.nav.nav-tabs.flex-column.col-3.p-0
-    - areas.each do |area|
+- else
+  .row
+    %ul#area_selector.nav.nav-tabs.flex-column.col-3.p-0
+      - areas.each do |area|
+  
+        - active_area_tab = (area.id.eql? params[:area].to_i) ? 'active' : 'text-light'
+        %li.nav-item.bg-primary
+          %a.nav-link.position-relative{:href => "/admin/academic_process/#{@academic_process_id}/programation?area=#{area.id}", class: active_area_tab, style: 'font-size: small;'}
+            = ApplicationController.helpers.total_sections_stiky area.sections.where('courses.academic_process_id': @academic_process_id).count
+            = area.name.titleize
 
-      - active_area_tab = (area.id.eql? params[:area].to_i) ? 'active' : 'text-light'
-      %li.nav-item.bg-primary
-        %a.nav-link.position-relative{:href => "/admin/academic_process/#{academic_process_id}/programation?area=#{area.id}", class: active_area_tab, style: 'font-size: small;'}
-          = ApplicationController.helpers.total_sections_stiky area.sections.where('courses.academic_process_id': academic_process_id).count
-          = area.name.titleize
+    .tab-content.col-9.p-0
+      -# modalities = Subject.modalities
+      - modalities = SubjectType.all
+      - params[:moda] ||= modalities.first.code
+      - areas.each do |area|
+        - active_area = (area.id.eql? params[:area].to_i)
+        - active_area_cont = active_area ? 'active' : 'text-light'
+        - show_area_cont = active_area ? 'show' : ''
 
-  .tab-content.col-9.p-0
-    - modalities = Subject.modalities
-    - params[:moda] ||= modalities.first[1]
-    - areas.each do |area|
-      - active_area = (area.id.eql? params[:area].to_i)
-      - active_area_cont = active_area ? 'active' : 'text-light'
-      - show_area_cont = active_area ? 'show' : ''
+        - sections = area.sections.where('courses.academic_process_id': @academic_process_id)
+        - if area.subjects.any?
+          .tab-pane.fade{class: "#{active_area_cont} #{show_area_cont}", role: :tabpanel} 
+            %ul#moda_selector.nav.nav-tabs
+              - modalities.each do |moda|
+                - active_moda = (moda.code.eql? params[:moda])
+                - active_moda = active_moda ? 'active text-primary' : 'text-light'
+                - show = active_moda ? 'show' : ''
+                %li.nav-item.bg-primary
+                  %a.nav-link.position-relative{:href => "/admin/academic_process/#{@academic_process_id}/programation?area=#{area.id}&moda=#{moda.code}", class: active_moda, style: 'font-size: small;'}
+                    = ApplicationController.helpers.total_sections_stiky sections.joins(:subject_type).where('subject_types.code': moda.code).count
+                    = moda&.name&.downcase.pluralize.titleize
 
-      - sections = area.sections.where('courses.academic_process_id': academic_process_id)
+            .tab-content.border-bottom.border-end.border-start.p-3
+              - modalities.each do |moda|
+                - if active_area and (moda.code.eql? params[:moda])
+                  .tab-pane.fade.active.text-primary.show{role: :tabpanel} 
+                    %h6.text-primary.text-center
+                      = "#{moda&.name&.downcase.pluralize.titleize} de #{area&.name&.titleize}"
+                    - subjects = academic_process.school.subjects.joins(:subject_type).where('subject_types.code': params[:moda], area_id: params[:area]).sort_by_code.uniq
+                    = render partial: '/academic_processes/table_subjects_programation', locals: {subjects: subjects, academic_process_id: @academic_process_id}
+        - else
+          .alert.alert-danger.text-center 
+            %b Atención:
+            %a= "Sin asignaturas registradas para #{area.name}."
+            %p Para activar esta vista agregue Asignaturas:
 
-      .tab-pane.fade{class: "#{active_area_cont} #{show_area_cont}", role: :tabpanel} 
-        %ul#moda_selector.nav.nav-tabs
-          - modalities.each do |moda|
-            - active_moda = (moda[1].eql? params[:moda].to_i)
-            - active_moda = active_moda ? 'active text-primary' : 'text-light'
-            - show = active_moda ? 'show' : ''
-            %li.nav-item.bg-primary
-              %a.nav-link.position-relative{:href => "/admin/academic_process/#{academic_process_id}/programation?area=#{area.id}&moda=#{moda[1]}", class: active_moda, style: 'font-size: small;'}
+            = link_to "/admin/subject/new?area_id=#{area.id}", class: 'btn btn-sm btn-info' do
+              %i.fa.fa-plus
+              Nueva Asignatura
 
-                = ApplicationController.helpers.total_sections_stiky sections.where('subjects.modality': moda[1]).count
-                = moda[0]&.pluralize&.titleize
+  :javascript
 
-        .tab-content.border-bottom.border-end.border-start.p-3
-          - modalities.each do |moda|
-            - if active_area and (moda[1].eql? params[:moda].to_i)
-              .tab-pane.fade.active.text-primary.show{role: :tabpanel} 
-                %h6.text-primary.text-center
-                  = "#{moda[0]&.pluralize&.titleize} de #{area&.name&.titleize}"
-                - subjects = academic_process.school.subjects.where(modality: params[:moda], area_id: params[:area]).sort_by_code
-                = render partial: '/academic_processes/table_subjects_programation', locals: {subjects: subjects, academic_process_id: academic_process_id}
+    document.addEventListener("rails_admin.dom_ready", function() {
 
-:javascript
+      // $('.addSection').on('click', function(e){
+      //   $('#_sectioncourse_id').val(this.attributes['course_id'].value);
+      // });
 
-  document.addEventListener("rails_admin.dom_ready", function() {
+      $('#filterSubject').on('keyup', function(e){
+        filterSections(this);
+        // let fliterSubjectValue = $('#filterArea');
+        // filterSections(fliterSubjectValue, 1);
+      });
 
-    // $('.addSection').on('click', function(e){
-    //   $('#_sectioncourse_id').val(this.attributes['course_id'].value);
-    // });
-
-    $('#filterSubject').on('keyup', function(e){
-      filterSections(this);
-      // let fliterSubjectValue = $('#filterArea');
-      // filterSections(fliterSubjectValue, 1);
     });
 
-  });
+    function filterSections(ele){
+      var keyword = ele.value;
+      keyword = keyword.toUpperCase();
+      var table_1 = document.getElementById("programation");
+      var all_tr = table_1.getElementsByClassName("trFiltrable");
 
-  function updateElem(ele){
-    let url;
-    let type;
-    let  attrs = `{"course":{"academic_process_id": #{academic_process_id}, "subject_id": ${ele.value}}}`;
-    if (ele.checked == true) {
-      url = "/courses"
-      type = 'POST'
-    }else{
-      url = "/courses/1"
-      type = 'DELETE'
-    }
-    $.ajax({
-      url: url,
-      type: type,
-      data: JSON.parse(attrs),
-      dataType: 'json',
-      beforeSend: function(xhr) {
-        xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'));
-      },
-      success: function(json) {
-        let td = ele.parentElement.parentElement.nextElementSibling
-        if (json.type == `create`) {
-          td.innerHTML = json.new_section;  
-          toastr.success(json.data);
-        }else {
-          td.textContent = "";
-          toastr.info(json.data);
-        }
+      for(var i=0; i<all_tr.length; i++){
+          var name_column = all_tr[i].getElementsByTagName("td")[2]; //[col];
+          if(name_column){
+              var name_value = name_column.textContent || name_column.innerText;
+              name_value = name_value.toUpperCase();
+              // console.log(name_value);
+              if(name_value.indexOf(keyword) > -1){
 
-      },
-      error: function(json) {
-        toastr.error(json.data);
-      },
-      unprocessable_entity: function(json) {
-        toastr.error(json.data);
+                all_tr[i].style.display = ""; // show
+              }else{
+                all_tr[i].style.display = "none"; // hide
+              }
+          }
       }
-    });
-
-  }
-
-  function filterSections(ele){
-    var keyword = ele.value;
-    keyword = keyword.toUpperCase();
-    var table_1 = document.getElementById("programation");
-    var all_tr = table_1.getElementsByClassName("trFiltrable");
-
-    for(var i=0; i<all_tr.length; i++){
-        var name_column = all_tr[i].getElementsByTagName("td")[1]; //[col];
-        if(name_column){
-            var name_value = name_column.textContent || name_column.innerText;
-            name_value = name_value.toUpperCase();
-            if(name_value.indexOf(keyword) > -1){
-
-              all_tr[i].style.display = ""; // show
-            }else{
-              all_tr[i].style.display = "none"; // hide
-            }
-        }
     }
 
-  }
+    function enableSubject(ele){
+      let url;
+      let type;
+      let ele_value = ele.value
+      // console.log(ele_value);
+      let  attrs = `{"course":{"academic_process_id": #{@academic_process_id}, "subject_id": ${ele_value}}}`;
+      if (ele.checked == true) {
+        url = "/courses"
+        type = 'POST'
+      }else{
+        // El Course_id (1) es irrelevante ya que estoy pasando es academic_process_id y subject_id
+        url = "/courses/1"
+        type = 'DELETE'
+      }
+      $.ajax({
+        url: url,
+        type: type,
+        data: JSON.parse(attrs),
+        dataType: 'json',
+        beforeSend: function(xhr) {
+          xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'));
+        },
+        success: function(json) {
+          // Si todo Ok, busco: td_secciones, courseOffer y courseOfferAsPCI
+          let td_section = $(`#sections${ele_value}`)[0];
+          let courseOffer = $(`#courseOffer${ele_value}`)[0];
+          let courseOfferAsPCI = $(`#courseOfferAsPCI${ele_value}`)[0];
+
+          if (json.type == `create`) {
+            console.log('CREATE!!!');
+            console.log(json.new_section);
+            console.log(td_section);
+            td_section.innerHTML = json.new_section; 
+            courseOffer.innerHTML = json.course_offer;
+            courseOfferAsPCI.innerHTML = json.course_offer_as_pci;
+            toastr.success(json.data);
+          }else {
+            td_section.textContent = "";
+            courseOffer.innerHTML = "";  
+            courseOfferAsPCI.innerHTML = "";
+            toastr.info(json.data);
+          }
+        },
+        error: function(json) {
+          toastr.error(json.data);
+        },
+        unprocessable_entity: function(json) {
+          toastr.error(json.data);
+        }
+      });
+
+    }
+
+    function courseOffer(ele, pci=false){
+      let course_id = ele.value; //$(ele).attr('id');
+      let url = `/courses/${course_id}`;
+      let attrs;
+      if (pci == true) {
+        attrs = `{"course":{"offer_as_pci": ${ele.checked == true}}}`;
+      } else {
+        attrs = `{"course":{"offer": ${ele.checked == true}}}`;
+      }
+
+      $.ajax({
+        url: url,
+        type: 'PUT',
+        data: JSON.parse(attrs),
+        dataType: 'json',
+        beforeSend: function(xhr) {
+          xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'));
+        },
+        success: function(json) {
+          toastr.success(json.data);
+        },
+        error: function(json) {
+          toastr.error(json.data);
+        },
+        unprocessable_entity: function(json) {
+          toastr.error(json.data);
+        }
+      });
+
+    }   
+
+    /* 
+    function updateCourse(ele){
+      let  attrs = `{"course": {"academic_process_id": #{@academic_process_id}, "subject_id": ${ele.value}}, "offer_as_pci": ${ele.checked}}`;
+      $.ajax({
+        url: "/courses/1",
+        type: "PATCH",
+        data: JSON.parse(attrs),
+        dataType: 'json',
+        beforeSend: function(xhr) {
+          xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'));
+        },
+        success: function(json) {
+          if (json.type == `update`) {
+            toastr.success(json.data);
+          }else {
+            toastr.info(json.data);
+          }
+        },
+        error: function(json) {
+          toastr.error(json.data);
+        },
+        unprocessable_entity: function(json) {
+          toastr.error(json.data);
+        }
+      });
+    }
+    */
+
