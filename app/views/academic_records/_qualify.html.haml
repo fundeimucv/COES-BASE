@@ -55,7 +55,7 @@
             %td= acre.enroll_academic_process_id
             %td= acre.period.name
           %td.text-center= user.ci
-          %td.text-center= acre.enroll_academic_process.label_status
+          %td.text-center= acre.enroll_academic_process.enroll_label_status
           %td{title: user.reverse_name}
             - if enabled_to_admin and current_user&.admin&.authorized_read? 'Student'
               %a{href: "/admin/student/#{acre.student.id}"}= user.reverse_name 

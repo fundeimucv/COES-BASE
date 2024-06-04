@@ -232,7 +232,7 @@ class EnrollAcademicProcess < ApplicationRecord
     "(#{self.school.code}) #{self.period.name}:#{self.student.name}" if ( self.period and self.school and self.student)
   end
 
-  def label_status
+  def enroll_label_status
     # ["CO", "INS", "NUEVO", "PRE", "REINC", "RES", "RET", "VAL"] 
     case self.enroll_status
     when 'confirmado'
@@ -245,6 +245,14 @@ class EnrollAcademicProcess < ApplicationRecord
       label_color = 'secondary'
     end
     return ApplicationController.helpers.label_status("bg-#{label_color}", self.enroll_status&.titleize)
+  end
+
+  def enroll_label_status_to_list
+    aux = enroll_label_status
+    if not_confirmado?
+      aux += "<a href='/enroll_academic_processes/#{self.id}/update_permanece_status?enroll_academic_process[enroll_status]=confirmado' data-method='POST' class='label label-sm bg-success ms-1' data-bs-placement='right' data-bs-original-title='Confirmación rápida' rel='tooltip' data-bs-toggle='tooltip'><i class='fa fa-check'></i></a>".html_safe
+    end
+    return aux
   end
 
   def label_permanence_status
@@ -298,23 +306,13 @@ class EnrollAcademicProcess < ApplicationRecord
       # filters [:period_name, :student]
       scopes [:todos, :preinscrito, :reservado, :confirmado, :retirado, :con_reporte_de_pago, :sin_reporte_de_pago]
 
-      field :enroll_status_label do
-        label 'Estado'
-        column_width 100
-        searchable :enroll_status
-        filterable false
-        sortable false
-        formatted_value do
-          bindings[:object].label_status
-        end
-      end
-
+      
       field :school do
         sticky true 
         searchable :name
         sortable :name               
       end
-
+      
       field :period do
         sticky true
         column_width 100
@@ -322,13 +320,25 @@ class EnrollAcademicProcess < ApplicationRecord
         # filterable 'periods.name'
         sortable :name
       end
-
+      
       field :student do
         column_width 340
         # searchable ['users.ci', 'users.first_name', 'users.last_name']
         # filterable ['users.ci', 'users.first_name', 'users.last_name']
         # sortable ['users.ci', 'users.first_name', 'users.last_name']
       end
+      field :enroll_status_label do
+        label 'Estado'
+        sticky true 
+        column_width 150
+        searchable :enroll_status
+        filterable false
+        sortable false
+        formatted_value do
+          bindings[:object].enroll_label_status_to_list
+        end
+      end
+      
       field :total_subjects do
         label 'Tot Asig'
         column_width 40
@@ -366,7 +376,7 @@ class EnrollAcademicProcess < ApplicationRecord
       field :payment_report_status do
         label 'Estado Reporte Pago'
         formatted_value do
-          bindings[:object].payment_reports&.map{|pr| pr.label_status}.to_sentence.html_safe
+          bindings[:object].payment_reports&.map(&:label_status).to_sentence.html_safe
         end
       end
       

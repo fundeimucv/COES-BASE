@@ -114,6 +114,14 @@ class PaymentReport < ApplicationRecord
     end    
   end
 
+  def label_show_modal label_id, label_title 
+
+    "<button class='btn btn-sm btn-success mx-2' data-bs-target='##{label_id}' data-bs-toggle='modal' type='button' aria-label='#{label_title}' data-bs-original-title='#{label_title}'>
+    <i class='fa fa-receipt'></i>
+    </button>"
+
+  end
+
   # OTHERS FUNCTIONS:
 
 
@@ -200,7 +208,7 @@ class PaymentReport < ApplicationRecord
         inline_edit false
         inline_add false
       end
-      field :voucher, :owner_account_ci, :owner_account_name
+      fields :voucher, :owner_account_ci, :owner_account_name
     end
 
     export do

@@ -172,7 +172,7 @@ class Grade < ApplicationRecord
   # ENROLLMENT
   def valid_to_enroll_in academic_process
     
-    if self.enabled_enroll_process.eql?(academic_process)
+    if self.enabled_enroll_process.eql?(academic_process) or self.nuevo?
       return true
     else
       academic_process_before = academic_process&.process_before
@@ -411,7 +411,7 @@ class Grade < ApplicationRecord
 
     if is_new? or !any_approved?
       # Si es nuevo o no tiene asignaturas aporvadas, le ofertamos las de 1er año
-      Subject.independents.where(ordinal: 1)
+      Subject.independents#.where(ordinal: 1)
     else
       # Buscamos los ids de las asignaturas aprobadas
       asig_aprobadas_ids = self.subjects_approved_ids
@@ -657,8 +657,7 @@ class Grade < ApplicationRecord
         inline_add false
         inline_edit false
       end
-      field :enrollment_status
-      fields :study_plan, :admission_type, :registration_status, :enabled_enroll_process, :enrollment_status
+      fields :enrollment_status, :study_plan, :current_permanence_status, :admission_type, :registration_status, :enabled_enroll_process
 
       field :appointment_time do
         label 'Fecha y Hora Cita Horaria'
@@ -673,12 +672,12 @@ class Grade < ApplicationRecord
         inline_add false
         inline_edit false
       end
-      fields :admission_type do
+      field :admission_type do
         inline_add false        
         inline_edit false        
       end
-      fields :registration_status
-      field :enrollment_status
+      fields :registration_status, :enrollment_status
+
       field :start_process do
         inline_edit false
         inline_add false

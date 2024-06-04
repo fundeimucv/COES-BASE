@@ -331,6 +331,8 @@ es:
           attributes:
             period:
               required: requerido
+            school:
+              required: requerido
         admin:
           attributes:
             env_authorizable:

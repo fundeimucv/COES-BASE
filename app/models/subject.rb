@@ -87,7 +87,7 @@ class Subject < ApplicationRecord
   scope :without_prelations_but_with_dependecies, -> {left_joins(:prelate_links).where('subject_links.depend_subject_id IS NULL and subject_links.prelate_subject_id IS NOT NULL')}
   scope :without_dependencies, -> {left_joins(:depend_links).where('subject_links.prelate_subject_id': nil)}
 
-  scope :independents, -> {left_joins(:prelate_links).where('subject_links.depend_subject_id': nil, 'subject_links.prelate_subject_id': nil).order(ordinal: :desc, code: :asc).uniq}
+  scope :independents, -> {left_joins(:prelate_links).where('subject_links.depend_subject_id': nil, 'subject_links.prelate_subject_id': nil)}
 
   scope :not_inicial, -> {where('ordinal != 1')}
 

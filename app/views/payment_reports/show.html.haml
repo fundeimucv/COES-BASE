@@ -1,25 +1,26 @@
-%p
-  %b Monto:
-  - if @payment_report.amount
-    = ActionController::Base.helpers.number_to_currency(@payment_report.amount, unit: 'Bs.', separator: ",", delimiter: ".")
-  
-%p
-  %b Transaccion:
-  = @payment_report.transaction_id
-%p
-  %b Tipo:
-  = @payment_report.transaction_type
-%p
-  %b Fecha:
-  = @payment_report.transaction_date
-%p
-  %b Banco Origen:
-  = @payment_report.origin_bank.name
+.border.p-3
+  %p
+    %b Monto:
+    - if @payment_report.amount
+      = ActionController::Base.helpers.number_to_currency(@payment_report.amount, unit: 'Bs.', separator: ",", delimiter: ".")
+    
+  %p
+    %b Transaccion:
+    = @payment_report.transaction_id
+  %p
+    %b Tipo:
+    = @payment_report.transaction_type
+  %p
+    %b Fecha:
+    = @payment_report.transaction_date
+  %p
+    %b Banco Origen:
+    = @payment_report.origin_bank.name
 
-%p
-  %b Cuenta:
-  = @payment_report.receiving_bank_account&.name
+  %p
+    %b Cuenta:
+    = @payment_report.receiving_bank_account&.name
 
-%p
-  %b Comprobante de Pago:
-= render partial: "layouts/set_image", locals: {image: @payment_report.voucher, size: '', alt: 'Comprobante'}
+  %p
+    %b Comprobante de Pago:
+  = render partial: "layouts/set_image", locals: {image: @payment_report.voucher, size: '100', alt: 'Comprobante'}

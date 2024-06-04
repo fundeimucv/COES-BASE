@@ -46,9 +46,8 @@
           = render '/enroll_academic_processes/show_planilla'
 
       - else
-        - if @grade.valid_to_enroll_in academic_process
+        - if inscripcion&.reservado? or @grade.valid_to_enroll_in academic_process
           - # "REGULAR"
-
           - # ROYER RABIT
           = render partial: '/grades/regulation'
 

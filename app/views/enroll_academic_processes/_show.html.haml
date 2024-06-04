@@ -8,12 +8,11 @@
     %thead
       %tr
         %th.text-center Período
-        %th.text-center Est. Inscripción
-        %th.text-center Est. Permanencia
-        %th.text-center Asig. Insc.
-        %th.text-center Créd. Insc.
+        %th.text-center{title: 'Estado inscripción'} Inscripción
+        %th.text-center{title: 'Estado Permanencia'} Permanencia
+        %th.text-center{title: 'Total Asignaturas Inscritas'} TAI
+        %th.text-center{title: 'Total Créditos Inscritos'} TCI
         %th.text-center.w-25 Números
-        %th.text-end{style: 'width:50%'} Opciones
         - if (session[:rol].eql? 'student') or (enabled_to_admin and current_user&.admin&.authorized_read? 'PaymentReport')
           %th.text-center.w-25 Reporte Pago        
 
@@ -22,10 +21,13 @@
         %td.text-center{title: period.name}
           = period.name
         %td.text-center
-          = enroll_academic_process.label_status
+          - if (current_user&.admin&.authorized_manage? 'EnrollAcademicProcess') and enabled_to_admin
+            = enroll_academic_process.enroll_label_status_to_list
+          - else
+            = enroll_academic_process.enroll_label_status
         %td.text-center
           = enroll_academic_process.label_permanence_status
-          - if (current_user&.admin&.authorized_manage? 'EnrollAcademicProcess') and session[:rol].eql? 'admin'
+          - if (current_user&.admin&.authorized_manage? 'EnrollAcademicProcess') and enabled_to_admin
             %a{"data-bs-target": "#ChangePermanenceStatus", "data-bs-toggle": :modal, type: :button, onclick: "setValuesPermanenceStatus(#{enroll_academic_process.id}, '#{enroll_academic_process.permanence_status}');"}
               .fa.fa-pencil-alt
         %td.text-center= enroll_academic_process.total_subjects
@@ -44,16 +46,15 @@
             - if @payment_report = enroll_academic_process.payment_reports.first
               - id = "showPaymentReportModal#{enroll_academic_process.id}"
               - titlePayment = "Reporte de Pago de inscripción #{enroll_academic_process.academic_process.short_desc}"
-              = @payment_report.label_status(true)
-              %a.btn.btn-success.btn-sm.float-end.mx-2{"data-bs-target": "##{id}", "data-bs-toggle": :modal, type: :button, title: titlePayment}
-                .fa.fa-receipt
-                .fa.fa-check
+              = @payment_report.label_status(!(enabled_to_admin and current_user&.admin&.authorized_manage? 'PaymentReport'))
+              = (@payment_report.label_show_modal id, titlePayment).html_safe
               - content = render template: "/payment_reports/show"
               = render partial: '/layouts/scaffold-modal', locals: {content: content, title: titlePayment, id: id}
+              
             - else
               %b.btn.btn-secondary.btn-sm.float-end.mx-2{rel: :tooltip, 'data-bs-toggle': :tooltip, 'data-bs-original-title': 'Sin reporte de pago'}
                 .fa.fa-receipt
 
-      %tr
-        - enabled_delete = ((current_user&.admin&.authorized_delete? 'AcademicRecord') and session[:rol].eql? 'admin')
-        = render partial: 'academic_records/index_to_history', locals: {academic_records: academic_records, enabled_delete: enabled_delete, enabled_change: active_process, enabled_retire: active_process}
+      
+- enabled_delete = ((current_user&.admin&.authorized_delete? 'AcademicRecord') and session[:rol].eql? 'admin')
+= render partial: 'academic_records/index_to_history', locals: {academic_records: academic_records, enabled_delete: enabled_delete, enabled_change: active_process, enabled_retire: active_process}
