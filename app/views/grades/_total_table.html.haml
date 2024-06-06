@@ -13,12 +13,15 @@
 		%td.text-end Créditos Cursados:
 		%td.text-start.fw-bold= @grade.total_credits_coursed
 	%tr
-		%td.text-end Créditos Aprobados (Sin Equivalencias):
+		%td.text-end Créditos Aprobados:
 		%td.text-start.fw-bold= @grade.total_credits_approved
+	%tr
+		%td.text-end Créditos Aprobados (Sin Equivalencias):
+		%td.text-start.fw-bold= @grade.total_credits_approved_without_eq
 	%tr
 		%td.text-end Créditos Equivalencia:
 		%td.text-start.fw-bold= @grade.total_credits_eq
 	%tr
-		%td.text-end Total Créditos Aprobados con Equivalencias:
-		%td.text-start.fw-bold= @grade.total_credits_approved_without_eq
+		%td.text-end Créditos Aprobados con Equivalencias:
+		%td.text-start.fw-bold= @grade.total_credits_approved_eq
 

@@ -514,6 +514,10 @@ class Grade < ApplicationRecord
     self.academic_records.total_credits_equivalence
   end
 
+  def total_credits_approved_eq
+    academic_records.total_credits_equivalence
+  end
+
   def total_credits_approved_without_eq
     academic_records.aprobado.total_credits_without_equivalence
   end

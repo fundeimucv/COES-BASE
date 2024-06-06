@@ -1,17 +1,17 @@
 %h6.fw-bold.text-center Promedios
 %table.table.table-sm.border
-	%tr
+	%tr.align-middle
 		%td.text-end Eficiencia:
 		%td.text-start.fw-bold= @grade.efficiency
-	%tr
+	%tr.align-middle
 		%td.text-end Promedio Simple:
 		%td.text-start.fw-bold= @grade.simple_average
-	%tr
+	%tr.align-middle
 		%td.text-end Promedio Simple Aprobado:
 		%td.text-start.fw-bold= @grade.calculate_average_approved
-	%tr
+	%tr.align-middle
 		%td.text-end Promedio Ponderado Aprobado:
 		%td.text-start.fw-bold= @grade.calculate_weighted_average_approved
-	%tr
+	%tr.align-middle
 		%td.text-end Promedio Ponderado:
 		%td.text-start.fw-bold= @grade.weighted_average
