@@ -268,9 +268,12 @@ class Subject < ApplicationRecord
   end  
 
   def label_qualification_type
-    return ApplicationController.helpers.label_status("bg-info", self.qualification_type.titleize) if self.qualification_type
+    ApplicationController.helpers.label_status("bg-info", self.qualification_type.titleize) if self.qualification_type
   end
   
+  def label_subject_type_code
+    ApplicationController.helpers.label_status_with_tooltip('bg-info', self.subject_type&.code, self.subject_type&.name&.titleize) 
+  end
 
   def modality_initial_letter
     subject_type&.code

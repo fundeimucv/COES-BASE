@@ -14,10 +14,11 @@
         %th.text-center{style: 'width:10px;'} Créd
         %th.text-center{style: 'width:10px;'} Tipo
         %th.text-center{style: 'width:10px;'} Sec
+        %th.text-center{style: 'width:10px;'} Tipo
         %th.text-center{style: 'width:10px;'} Cal
-        %th.text-center.col-3 Estado
+        %th.text-center Estado
         - if (logged_as_admin and admin.authorized_manage? 'AcademicRecord' and ( enabled_delete or enabled_change or enabled_retire))
-          %th.text-center{style: 'width:240px;'} Opciones
+          %th.text-center{style: 'width:230px;'} Opciones
 
     %tbody
       - academic_records.sort_by_subject_name.each do |academic_record|
@@ -29,8 +30,10 @@
           %td.text-center= "#{subject.ordinal}º"
           %td{title: subject.name}= subject.name
           %td.text-center= subject.unit_credits
-          %td.text-center= subject.modality_initial_letter
-          %td.text-center{title: 'Ir al detalle de la sección'}= link_to_if (logged_as_admin and admin.authorized_manage? 'Section'), academic_record.section.code, "/admin/section/#{academic_record.section.id}"
+          %td.text-center= subject.label_subject_type_code
+          %td.text-center{title: 'Ir al detalle de la sección'}
+            = link_to_if (logged_as_admin and admin.authorized_manage? 'Section'), academic_record.section.code, "/admin/section/#{academic_record.section.id}"
+          %td.text-center= academic_record.section.label_modality true
           %td.text-center= academic_record.q_value_to_02i
           %td.text-center.align-middle= academic_record.badge_status.html_safe
           - if (logged_as_admin and admin.authorized_manage? 'AcademicRecord' and ( enabled_delete or enabled_change or enabled_retire))

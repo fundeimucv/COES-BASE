@@ -286,7 +286,7 @@ class EnrollAcademicProcess < ApplicationRecord
     show do
       field :enrolling do
         label do 
-          "INSCRIPCIÓN #{bindings[:object].period.name} de #{bindings[:object].user.reverse_name}"
+          "INSCRIPCIÓN #{bindings[:object].academic_process&.short_desc} de #{bindings[:object].user.reverse_name}"
         end
         visible do
           current_user = bindings[:view]._current_user
