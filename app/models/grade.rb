@@ -188,7 +188,6 @@ class Grade < ApplicationRecord
     (self.appointment_time.nil? or self.duration_slot_time.nil?) ? false : true
   end
 
-
   def can_enroll_by_apponintment? #puede_inscribir?
     ((has_a_appointment_time?) and (Time.zone.now > self.appointment_time) and (Time.zone.now < self.appointment_slot_time) ) ? true : false
   end
@@ -203,6 +202,14 @@ class Grade < ApplicationRecord
 
   def appointment_slot_time
     (has_a_appointment_time?) ? self.appointment_time+self.duration_slot_time.minutes : nil    
+  end
+
+  def appointment_time_desc_short
+    if self.appointment_time
+      (I18n.localize(self.appointment_time, format: "%d/%m/%Y %I:%M%p")) 
+    else
+      '--'
+    end
   end
 
   def appointment_from_to
@@ -507,8 +514,12 @@ class Grade < ApplicationRecord
     self.academic_records.total_credits_equivalence
   end
 
-  def total_credits_approved_or_eq
-    academic_records.aprobado.or(academic_records.equivalencia).total_credits
+  def total_credits_approved_eq
+    academic_records.total_credits_equivalence
+  end
+
+  def total_credits_approved_without_eq
+    academic_records.aprobado.total_credits_without_equivalence
   end
 
   def total_credits_by_type_subject tipo
@@ -570,7 +581,7 @@ class Grade < ApplicationRecord
       1.0
     else
       (aprobados.to_f/cursados.to_f).round(4)
-    end    
+    end
   end
 
   def calculate_average periods_ids = nil

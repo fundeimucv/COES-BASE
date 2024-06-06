@@ -1,3 +1,4 @@
+
 # == Schema Information
 #
 # Table name: academic_records
@@ -22,7 +23,7 @@
 class AcademicRecord < ApplicationRecord
 
   # ENUMERIZE:
-  enum status: [:sin_calificar, :aprobado, :aplazado, :retirado, :perdida_por_inasistencia, :equivalencia]
+  enum status: {sin_calificar: 0, aprobado: 1, aplazado: 2, retirado: 3, perdida_por_inasistencia: 4}
 
   # HISTORY:
   has_paper_trail on: [:create, :destroy, :update]
@@ -129,6 +130,9 @@ class AcademicRecord < ApplicationRecord
   scope :total_credits, -> {joins(:subject).sum('subjects.unit_credits')}
   scope :total_subjects, -> {(joins(:subject).group('subjects.id').count).count}
 
+  # Sections modalities: {nota_final: 0, equivalencia_externa: 1, equivalencia_interna: 2, suficiencia: 3}
+  scope :equivalencia, -> {joins(:section).where('sections.modality': [:equivalencia_interna, :equivalencia_externa])}
+  scope :without_equivalencia, -> {joins(:section).where('sections.modality': [:nota_final, :suficiencia])}
   scope :total_subjects_coursed, -> {coursed.total_subjects}
   scope :total_subjects_approved, -> {aprobado.total_subjects}
   scope :total_subjects_equivalence, -> {equivalencia.total_subjects}
@@ -136,6 +140,8 @@ class AcademicRecord < ApplicationRecord
   scope :total_credits_coursed, -> {coursed.total_credits}
   scope :total_credits_approved, -> {aprobado.total_credits}
   scope :total_credits_equivalence, -> {equivalencia.total_credits}
+  scope :total_credits_without_equivalence, -> {without_equivalencia.total_credits}
+
   
   scope :weighted_average, -> {joins(:subject).joins(:qualifications).definitives.coursed.sum('subjects.unit_credits * qualifications.value')}
 
@@ -395,8 +401,8 @@ class AcademicRecord < ApplicationRecord
   def q_value_to_02i qualification=definitive_q
     if qualification
       qualification.value_to_02i
-    elsif equivalencia?
-      'EQ'
+    elsif self.section&.any_equivalencia?
+      self.section&.conv_initial_type
     else 
       '--'
     end
@@ -410,8 +416,8 @@ class AcademicRecord < ApplicationRecord
   def num_to_s num = definitive_q_value 
     if pi?
       'CERO'
-    elsif retirado? or (subject and subject.absoluta?) or num.nil? or !(num.is_a? Integer or num.is_a? Float)
-      status.humanize.upcase
+    elsif retirado? or (subject&.absoluta?) or num.nil? or !(num.is_a? Integer or num.is_a? Float)
+      status&.humanize&.upcase
     else
       numeros = %W(CERO UNO DOS TRES CUATRO CINCO SEIS SIETE OCHO NUEVE DIEZ ONCE DOCE TRECE CATORCE QUINCE DIECISÉIS DIECISIETE DIECIOCHO DIE)
       # dieciséis, diecisiete, dieciocho y diecinueve
@@ -882,8 +888,7 @@ class AcademicRecord < ApplicationRecord
   end
 
   def set_options_q
-    self.qualifications.destroy_all if (self.pi? or self.retirado? or self.sin_calificar? or (self.subject and self.subject.absoluta?))
-
+    self.qualifications.destroy_all if (self.pi? or self.retirado? or self.sin_calificar? or (self.subject&.absoluta?))
     self.qualifications.create(type_q: :final, value: 0) if self.pi?
   end
 

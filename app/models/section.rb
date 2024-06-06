@@ -115,8 +115,14 @@ class Section < ApplicationRecord
     self.equivalencia_externa? or  self.equivalencia_interna?
   end
 
-  def label_modality
-    ApplicationController.helpers.label_status('bg-info', modality.titleize) if modality
+  def label_modality short=false
+    if modality
+      if short 
+        ApplicationController.helpers.label_status_with_tooltip('bg-info', conv_initial_type, modality.titleize)
+      else
+      ApplicationController.helpers.label_status('bg-info', modality.titleize) 
+      end
+    end
   end
 
   def label_qualified
@@ -230,15 +236,6 @@ class Section < ApplicationRecord
   end
 
   def conv_initial_type
-    # case modality
-    # when 'nota_final'
-    #   'NF'
-    # when 'equivalencia_interna'
-    #   'EQ'
-    # else
-    #   modality.first.upcase if modality
-    # end
-
     I18n.t("activerecord.scopes.section."+self.modality)
   end
 

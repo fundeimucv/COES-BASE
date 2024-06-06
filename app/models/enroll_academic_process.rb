@@ -212,6 +212,14 @@ class EnrollAcademicProcess < ApplicationRecord
     subjects.count
   end
 
+  def total_subjects_coursed
+    academic_records.total_subjects_coursed
+  end
+
+  def total_subjects_approved
+    academic_records.total_subjects_approved
+  end
+
   def total_subjects_not_retired
     subjects.where.not('academic_records.status': 3).count
   end
@@ -278,7 +286,7 @@ class EnrollAcademicProcess < ApplicationRecord
     show do
       field :enrolling do
         label do 
-          "INSCRIPCIÓN #{bindings[:object].period.name} de #{bindings[:object].user.reverse_name}"
+          "INSCRIPCIÓN #{bindings[:object].academic_process&.short_desc} de #{bindings[:object].user.reverse_name}"
         end
         visible do
           current_user = bindings[:view]._current_user
@@ -438,29 +446,6 @@ class EnrollAcademicProcess < ApplicationRecord
     academic_records.total_credits_approved
   end
 
-  def calculate_efficiency
-    cursados = self.total_credits_coursed
-    aprobados = self.total_credits_approved
-    if cursados < 0 or aprobados < 0
-      0.0
-    elsif cursados == 0 or (cursados > 0 and aprobados >= cursados)
-      1.0
-    else
-      (aprobados.to_f/cursados.to_f).round(4)
-    end
-  end
-
-  def calculate_average
-    aux = academic_records.promedio
-    (aux&.is_a? BigDecimal) ? aux.to_f.round(4) : self.simple_average
-  end
-
-  def calculate_weighted_average 
-    aux = academic_records.weighted_average
-    cursados = self.total_credits_coursed
-    (cursados > 0 and aux) ? (aux.to_f/cursados.to_f).round(4) : self.weighted_average
-  end
-
   def efficiency_desc
     if efficiency.nil?
       '--'
@@ -484,6 +469,30 @@ class EnrollAcademicProcess < ApplicationRecord
       (weighted_average).round(2)
     end
   end
+
+  def calculate_efficiency
+    cursados = self.total_subjects_coursed
+    aprobados = self.total_subjects_approved
+    if cursados < 0 or aprobados < 0
+      0.0
+    elsif cursados == 0 or (cursados > 0 and aprobados >= cursados)
+      1.0
+    else
+      (aprobados.to_f/cursados.to_f).round(4)
+    end
+  end
+
+  def calculate_average
+    aux = academic_records.promedio
+    (aux&.is_a? BigDecimal) ? aux.to_f.round(4) : self.simple_average
+  end
+
+  def calculate_weighted_average 
+    aux = academic_records.weighted_average
+    cursados = self.total_credits_coursed
+    (cursados > 0 and aux) ? (aux.to_f/cursados.to_f).round(4) : self.weighted_average
+  end
+
 
   private
 

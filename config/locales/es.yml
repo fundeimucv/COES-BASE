@@ -872,12 +872,10 @@ es:
         parcial: 'Parciales'
         par: 'Parciales'
       section:
-        nota_final: 'Final'
-        equivalencia: 'Equivalencia'
-        equivalencia: 'Equivalencia' 
-        diferido: 'Diferido' 
-        reparacion: 'Reparación'
-        suficiencia: 'Suficiencia'
+        nota_final: 'NF'
+        equivalencia_externa: 'EE'
+        equivalencia_interna: 'EI' 
+        suficiencia: 'S'
       payment_report:
         transferencia: 'Transferencia'
         efectivo: 'Efectivo'
