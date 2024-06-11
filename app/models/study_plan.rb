@@ -74,8 +74,12 @@ class StudyPlan < ApplicationRecord
   # end
 
   def modality_to_tipo
-    Anual? ? 'Año' : 'Semestral'
+    Anual? ? 'Año' : 'Semestre'
   end
+
+  def modality_to_tipo_short
+    Anual? ? 'Año' : 'Sem'
+  end  
 
   def desc_with_school
     "#{school.short_name} - #{name}"
@@ -102,7 +106,6 @@ class StudyPlan < ApplicationRecord
     weight -2
 
     show do
-      fields :school, :code, :name
       fields :school, :code, :modality, :levels, :name, :mentions, :requirement_by_subject_types
     end
 

@@ -21,6 +21,7 @@ class Area < ApplicationRecord
   has_many :admins, as: :env_authorizable 
 
   has_many :subjects, dependent: :restrict_with_error
+  has_many :teachers, dependent: :restrict_with_error
   has_many :sections, through: :subjects
   has_many :academic_records, through: :sections
   # accepts_nested_attributes_for :subjects
@@ -68,6 +69,7 @@ class Area < ApplicationRecord
     list do
       field :name
       field :departaments
+      field :teachers
       field :total_subjects do
         label 'Total Asignaturas'
       end
@@ -75,6 +77,7 @@ class Area < ApplicationRecord
     show do
       field :name
       field :departaments
+      field :teachers
       field :subjects do
         pretty_value do
           bindings[:view].render(template: '/subjects/index', locals: {area_id: bindings[:object].id, subjects: bindings[:object].subjects.order(code: :asc)})
@@ -122,7 +125,7 @@ class Area < ApplicationRecord
 
     def paper_trail_destroy
       object = I18n.t("activerecord.models.#{self.model_name.param_key}.one")
-      self.paper_trail_event = "¡Asignatura eliminada!"
+      self.paper_trail_event = "¡#{object} eliminada!"
     end  
 
 end

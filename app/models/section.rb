@@ -79,6 +79,8 @@ class Section < ApplicationRecord
 
   #CALLBACKS
   before_save :set_code_to_02i
+  after_save :update_academic_records
+
   
   # SCOPE:
   default_scope {includes(:course, :subject, :period, :area)} # No hace falta
@@ -104,6 +106,7 @@ class Section < ApplicationRecord
   scope :equivalence, -> {where('sections.modality': [:equivalencia_externa, :equivalencia_interna])}
 
   # FUNCTIONS:
+  # ATTENTION: FUNCTION TO PRINT COMMANDS BY CONSOLE 
   def self.print_to_system_command
     require 'benchmark'
     memory_command = "ps -o rss= -p #{Process.pid}"
@@ -212,7 +215,7 @@ class Section < ApplicationRecord
 
   def set_default_values_by_import
     self.capacity = 50 
-    self.modality =  (self.code.eql? 'U') ? :equivalencia : :nota_final
+    self.modality =  (self.code.eql? 'U') ? :equivalencia_externa : :nota_final
   end
 
   def totaly_qualified?
@@ -401,6 +404,12 @@ class Section < ApplicationRecord
 
         end
       end
+
+      field :modality do
+        pretty_value do
+          value&.titleize
+        end
+      end      
 
       field :classroom do
         filterable false 
@@ -726,8 +735,16 @@ class Section < ApplicationRecord
     end
   end
 
+  def update_academic_records
+    if self.any_equivalencia?
+      academic_records.each do |ar|
+        ar.update(status: :aprobado)
+        ar.qualifications.destroy_all  
+      end
+    end
+  end
+  
   private
-
 
     def paper_trail_update
       object = I18n.t("activerecord.models.#{self.model_name.param_key}.one")

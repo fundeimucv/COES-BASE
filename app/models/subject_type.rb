@@ -74,7 +74,7 @@ class SubjectType < ApplicationRecord
 
     def paper_trail_create
       object = I18n.t("activerecord.models.#{self.model_name.param_key}.one")
-      self.paper_trail_event = "¡#{object} creada!"
+      self.paper_trail_event = "¡#{object} registrada!"
     end  
 
     def paper_trail_destroy

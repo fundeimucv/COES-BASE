@@ -129,6 +129,11 @@ class User < ApplicationRecord
     p "<   #{record}   >".center(200, "-") 
   end
 
+  def false_email?
+    email&.include? "mailinator"
+  end
+
+
   def set_clean_values
     # self.password ||= self.ci 
     self.clean_names if (first_name and last_name)
@@ -172,7 +177,7 @@ class User < ApplicationRecord
   end
 
   def empty_personal_info?
-    (self.email.blank? or self.first_name.blank? or last_name.blank? or self.number_phone.blank? or self.sex.blank?)
+    (self.email.blank? or self.false_email? or self.first_name.blank? or last_name.blank? or self.number_phone.blank? or self.sex.blank?)
   end
 
   def empty_any_image?

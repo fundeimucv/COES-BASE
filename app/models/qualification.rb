@@ -40,12 +40,15 @@ class Qualification < ApplicationRecord
   validates_uniqueness_of :academic_record, scope: [:type_q], message: 'Calificación ya existente', field_name: false
 
   after_save :update_academic_record_status
+  after_destroy :update_academic_record_status
 
   def name
     "#{type_q.titleize} #{value}" if (type_q and value)
   end
 
-  after_destroy :update_academic_record_status
+  def num_to_s
+    (academic_record.num_to_s value.to_i) if value
+  end
 
   def update_academic_record_status    
     definitive_q_value = self.academic_record.definitive_q_value
@@ -72,18 +75,25 @@ class Qualification < ApplicationRecord
     end
   end
 
+  def conv_type
+    type = I18n.t(self.type_q)
+    type = type[1]
+
+    modality_process = academic_record.academic_process.modality[0]
+    modality_process ||= 'A'
+
+    "#{type.upcase}#{modality_process.upcase}#{academic_record.period.period_type.code.last}"
+  end  
+
+
   def desc_conv
-    if self.final?
-      if self.academic_record.pi?
-        'PI'
-      elsif self.academic_record.retirado?
-        'RT'
-      else
-        I18n.t(self.type_q)
-      end
-    else
-      I18n.t(self.type_q)
-    end
+    I18n.t(self.type_q)
+    # OJO
+    # if self.final? and (self.academic_record.absolute_pi_or_rt?)
+    #   I18n.t(self.academic_record.status)
+    # else
+      
+    # end
   end
 
   def is_valid_numeric_value?

@@ -1,0 +1,15 @@
+%tr.h-30.font-sm
+    %td.text-center= i+1
+    %td.text-center= ar.user.ci
+    %td.padding-x= ar.user.reverse_name
+    %td.text-center= ar.study_plan.code
+    %td.text-center= ar.desc_conv
+
+    - if q.nil? 
+        %td.text-center= ar.q_value_to_02i
+        - unless absolute 
+            %td
+    - else
+        %td.text-center= q.value_to_02i    
+        %td.text-center= q.desc_conv
+    %td.padding-x= ar.num_to_s

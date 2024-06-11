@@ -75,7 +75,9 @@ class AcademicRecord < ApplicationRecord
 
   # CALLBACK
   after_save :set_options_q
-  after_save :update_grade_numbers#, if: :will_save_change_to_status?
+  before_save :set_status_by_EQ_modality_section
+  after_save :update_status_q_and_grades
+  # after_save :update_grade_numbers#, if: :will_save_change_to_status?
 
   after_destroy :destroy_enroll_academic_process
 
@@ -131,17 +133,22 @@ class AcademicRecord < ApplicationRecord
   scope :total_subjects, -> {(joins(:subject).group('subjects.id').count).count}
 
   # Sections modalities: {nota_final: 0, equivalencia_externa: 1, equivalencia_interna: 2, suficiencia: 3}
-  scope :equivalencia, -> {joins(:section).where('sections.modality': [:equivalencia_interna, :equivalencia_externa])}
-  scope :without_equivalencia, -> {joins(:section).where('sections.modality': [:nota_final, :suficiencia])}
+  scope :section_equivalencias, -> {joins(:section).where('sections.modality': [:equivalencia_externa, :equivalencia_interna])}
+  scope :section_not_equivalencias, -> {joins(:section).where('sections.modality': [:nota_final, :suficiencia])}
+
   scope :total_subjects_coursed, -> {coursed.total_subjects}
   scope :total_subjects_approved, -> {aprobado.total_subjects}
-  scope :total_subjects_equivalence, -> {equivalencia.total_subjects}
+  scope :total_subjects_equivalence, -> {section_equivalencias.total_subjects}
+  scope :total_subjects_approved_equivalence, -> {section_equivalencias.total_subjects_approved}
+  scope :total_subjects_approved_not_equivalence, -> {section_not_equivalencias.total_subjects_approved}
 
   scope :total_credits_coursed, -> {coursed.total_credits}
   scope :total_credits_approved, -> {aprobado.total_credits}
-  scope :total_credits_equivalence, -> {equivalencia.total_credits}
-  scope :total_credits_without_equivalence, -> {without_equivalencia.total_credits}
 
+  scope :total_credits_approved_equivalence, -> {section_equivalencias.total_credits_approved}
+  scope :total_credits_approved_not_equivalence, -> {section_not_equivalencias.total_credits_approved}  
+
+  scope :total_credits_equivalence, -> {section_equivalencias.total_credits}
   
   scope :weighted_average, -> {joins(:subject).joins(:qualifications).definitives.coursed.sum('subjects.unit_credits * qualifications.value')}
 
@@ -172,9 +179,13 @@ class AcademicRecord < ApplicationRecord
 
 
   # FUNCTIONS:
+  def header_for_report
+    ['#', 'CI', 'NOMBRES', 'APELLIDOS','ESCUELA','CATEDRA','CÓDIGO ASIG', 'NOMBRE ASIG','PERIODO','SECCIÓN','ESTADO']
+  end
+
   def values_for_report
     user_aux = user
-    [user_aux.ci, user_aux.first_name, user_aux.last_name, school.name, area.name, subject.code, subject.name, period.name, section.code, self.get_value_by_status]
+    [user_aux.ci, user_aux.first_name, user_aux.last_name, school.name, grade&.level_offer, area.name, subject.code, subject.name, period.name, section.code, self.get_value_by_status]
   end
   
   def is_totality_partial?
@@ -216,7 +227,7 @@ class AcademicRecord < ApplicationRecord
   end
 
   def get_value_by_status
-    if absolute? or pi? or rt? or sin_calificar? or equivalencia?
+    if absolute? or pi? or rt? or sin_calificar? or any_equivalencia?
       desc_conv_absolute
     else
       "#{self.q_value_to_02i}"
@@ -227,12 +238,16 @@ class AcademicRecord < ApplicationRecord
     valor.strip!
     valor.upcase!
 
-    if (valor.eql? 'PI' or valor.eql? 'RT' or valor.eql? 'A' or valor.eql? 'AP' or valor.eql? 'EQ')
-      self.status = I18n.t(valor)
+    if (valor.eql? 'EQ' or valor.eql? 'EE' or valor.eql? 'EI')
+      valor = 'EE' if valor.eql? 'EQ'
+      self.status = I18n.t("activerecord.scopes.academic_record.A")
+      self.section.update!(modality: I18n.t(valor))
+    elsif (valor.eql? 'PI' or valor.eql? 'RT' or valor.eql? 'A' or valor.eql? 'AP')
+      self.status = I18n.t("activerecord.scopes.academic_record."+valor)
       if valor.eql? 'PI' or (valor.eql? 'AP' and subject.numerica?)
         qua = self.qualifications.find_or_initialize_by(type_q: :final)
         qua.value = 0
-        return qua.save        
+        return qua.save
       else
         return true
       end
@@ -261,7 +276,7 @@ class AcademicRecord < ApplicationRecord
   end
 
   def badge_status
-    "<span class= 'badge bg-#{self.badge_status_class}'> #{self.status.titleize} </span>"
+    "<span class= 'badge bg-#{self.badge_status_class}'> #{self.status&.titleize} </span>"
   end
 
   def badge_status_class
@@ -288,20 +303,28 @@ class AcademicRecord < ApplicationRecord
     subject&.absoluta?
   end
 
+  def absolute_pi_or_rt?
+    (absolute? or pi? or rt?)
+  end
+  def desc_conv
+    I18n.t("activerecord.models.academic_record.status."+self.status)
+  end  
+
   def cal_alfa
-    if absolute? or pi? or rt?
-      desc_conv_absolute
-    else
-      'NF'
-    end
+    absolute_pi_or_rt? ? I18n.t("activerecord.models.academic_record.status."+self.status) : I18n.t(qualifications.first&.type_q)
   end
 
   def rt?
     retirado?
   end
 
+  
+  def any_equivalencia?
+    self.section&.any_equivalencia? ? true : false
+  end
+  
   def desc_conv_absolute
-    I18n.t(self.status)
+    self.section&.any_equivalencia? ? self.section&.conv_initial_type : desc_conv
   end
 
   def pi?
@@ -348,7 +371,7 @@ class AcademicRecord < ApplicationRecord
   end
 
   def definitive_label
-    definitive_q ? q_value_to_02i : I18n.t(self.status)
+    definitive_q ? q_value_to_02i : desc_conv
   end
 
   def type_q_label
@@ -398,10 +421,14 @@ class AcademicRecord < ApplicationRecord
   def q_value_to_02i_to_from qualification=definitive_q
     qualification ? qualification.value_to_02i : nil
   end
+
+  def value_to_02i qualification=definitive_q
+    q_value_to_02i qualification=definitive_q
+  end
   def q_value_to_02i qualification=definitive_q
     if qualification
       qualification.value_to_02i
-    elsif self.section&.any_equivalencia?
+    elsif any_equivalencia?
       self.section&.conv_initial_type
     else 
       '--'
@@ -447,9 +474,7 @@ class AcademicRecord < ApplicationRecord
     modality_process = academic_process.modality[0]
     modality_process ||= 'S'
 
-    aux = "#{type.upcase}#{modality_process.upcase}#{period.period_type.code.last}"
-
-    aux
+    "#{type.upcase}#{modality_process.upcase}#{period.period_type.code.last}"
   end  
 
   def conv_descrip force_final = false # convocados
@@ -462,7 +487,7 @@ class AcademicRecord < ApplicationRecord
       data << self.q_value_to_02i(final_q)
       data << self.description_q(true)
     else
-      data << I18n.t(self.status)
+      data << desc_conv
       data << I18n.t(self.definitive_type_q)
       data << self.q_value_to_02i #unless self.subject.as_absolute?
       data << self.description_q
@@ -729,9 +754,13 @@ class AcademicRecord < ApplicationRecord
 
     row[3] = fields[:nombre_periodo] if row[3].blank?
 
-    # IMPRIMIR PERIODO
-    period = Period.find_by(name: row[3]) 
-
+    # ENCONTRAR O CREAR PERIODO
+    if row[3]
+      year, type = row[3].split('-')
+      period_type = PeriodType.find_by_code(type[0..1])
+      modality = type[2]
+      period = Period.find_or_create_by(year: year, period_type_id: period_type.id)
+    end
 
     if period
       # LIMPIAR CI
@@ -748,7 +777,7 @@ class AcademicRecord < ApplicationRecord
         row[1] = row[1].to_s
         row[1].strip!
       else
-        return [0,0,1]
+        return [0,0,'1b']
       end
 
       subject = Subject.find_by(code: row[1])
@@ -761,114 +790,118 @@ class AcademicRecord < ApplicationRecord
           # p "     STUDY PLAN: #{study_plan.name}    ".center(300, "P")
 
           escuela = study_plan.school
+          
           # BUSCAR O CREAR PROCESO ACADEMICO:
-          academic_process = AcademicProcess.find_or_initialize_by(period_id: period.id, school_id: escuela.id)
-          academic_process.default_value_by_import if academic_process.new_record?
+          # Buscar modalidad:
+          modality = AcademicProcess.letter_to_modality modality
+          
+          academic_process = AcademicProcess.where(period_id: period.id, modality: modality, school_id: escuela.id).first
 
-          if academic_process.save
-            # BUSCAR O CREAR EL CURSOS (PROGRAMACIÓN):
-            # p "     ACADEMIC PROCESS: #{academic_process.name}    ".center(300, "P")
+          if academic_process.nil?
+            academic_process = AcademicProcess.create(period_id: period.id, modality: modality, school_id: escuela.id, max_credits: 24, max_subjects: 5)
+          end
 
-            if curso = Course.find_or_create_by(subject_id: subject.id, academic_process_id: academic_process.id)
+          # BUSCAR O CREAR EL CURSOS (PROGRAMACIÓN):
+          # p "     ACADEMIC PROCESS: #{academic_process.name}    ".center(300, "P")
 
-              # BUSCAR O CREAR SECCIÓN
-              if row[2]
-                row[2] = row[2].to_s
-                row[2].strip!
-                row[2].upcase!
-              else
-                return [0,0,2]
-              end
+          if curso = Course.find_or_create_by(subject_id: subject.id, academic_process_id: academic_process.id)
 
-              s = Section.where(code: row[2], course_id: curso.id).first
-              s ||= Section.where(code: "0#{row[2]}", course_id: curso.id).first
-              if s.nil?
-                s = Section.new(code: row[2], course_id: curso.id)
-                s.set_default_values_by_import
-              end
+            # BUSCAR O CREAR SECCIÓN
+            if row[2]
+              row[2] = row[2].to_s
+              row[2].strip!
+              row[2].upcase!
+            else
+              return [0,0,2]
+            end
 
-              if s.save
-                # p "          SECTION: id:<#{s.id}> #{s.name}         ".center(1000, "S")
+            s = Section.where(code: row[2], course_id: curso.id).first
+            s ||= Section.where(code: "0#{row[2]}", course_id: curso.id).first
+            if s.nil?
+              s = Section.new(code: row[2], course_id: curso.id)
+              s.set_default_values_by_import
+            end
 
-                # BUSCAR USUARIO
-                user = User.find_by(ci: row[0])
-              
-                if user and user.student?
-                  if stu = user.student
-                    # p "     STUDENT: #{stu.user_ci}    ".center(300, "E")
+            if s.save
+              # p "          SECTION: id:<#{s.id}> #{s.name}         ".center(1000, "S")
 
-                    # BUSCAR O CREAR GRADO
-                    grade = Grade.find_by(study_plan_id: study_plan.id, student_id: stu.id)
-                    if !grade.nil?
-                      # p "     GRADE: #{grade.name}    ".center(300, "G")
+              # BUSCAR USUARIO
+              user = User.find_by(ci: row[0])
+            
+              if user and user.student?
+                if stu = user.student
+                  # p "     STUDENT: #{stu.user_ci}    ".center(300, "E")
 
-                      # BUSCAR O CREAR INSCRIPCIÓN PROCESO ACADEMICO:
-                      enroll_academic_process = EnrollAcademicProcess.find_or_initialize_by(academic_process_id: academic_process.id, grade_id: grade.id)
+                  # BUSCAR O CREAR GRADO
+                  grade = Grade.find_by(study_plan_id: study_plan.id, student_id: stu.id)
+                  if !grade.nil?
+                    # p "     GRADE: #{grade.name}    ".center(300, "G")
 
-                      enroll_academic_process.set_default_values_by_import if enroll_academic_process.new_record?
+                    # BUSCAR O CREAR INSCRIPCIÓN PROCESO ACADEMICO:
+                    enroll_academic_process = EnrollAcademicProcess.find_or_initialize_by(academic_process_id: academic_process.id, grade_id: grade.id)
 
-                      if enroll_academic_process.save
-                        # p "     ENROLL ACADEMIC PROCESS: #{enroll_academic_process.id} #{enroll_academic_process.name} section_id: #{s.id}   ".center(500, "E")
-                        # BUSCAR O CREAR REGISTRO ACADEMICO
-                        # academic_record = AcademicRecord.find_or_create_by(section_id: s.id, enroll_academic_process_id: enroll_academic_process.id)
-                        
-                        academic_record = AcademicRecord.where(section_id: s.id, enroll_academic_process_id: enroll_academic_process.id).first
-                        if academic_record.nil?
-                          academic_record = AcademicRecord.new(section_id: s.id, enroll_academic_process_id: enroll_academic_process.id)
-                          if academic_record.save
-                            total_newed = 1
-                            # p "     NUEVO REGISTRO ACADEMICO: #{academic_record.id}    ROW: #{row[0]} : #{row[1]} : #{row[2]}   ".center(1000, "N")
-                          else
-                            no_registred = "#{academic_record.errors.full_messages.to_sentence.truncate(15)}"
-                          end
+                    enroll_academic_process.set_default_values_by_import if enroll_academic_process.new_record?
+
+                    if enroll_academic_process.save
+                      # p "     ENROLL ACADEMIC PROCESS: #{enroll_academic_process.id} #{enroll_academic_process.name} section_id: #{s.id}   ".center(500, "E")
+                      # BUSCAR O CREAR REGISTRO ACADEMICO
+                      # academic_record = AcademicRecord.find_or_create_by(section_id: s.id, enroll_academic_process_id: enroll_academic_process.id)
+                      
+                      academic_record = AcademicRecord.where(section_id: s.id, enroll_academic_process_id: enroll_academic_process.id).first
+                      if academic_record.nil?
+                        academic_record = AcademicRecord.new(section_id: s.id, enroll_academic_process_id: enroll_academic_process.id)
+                        if academic_record.save
+                          total_newed = 1
+                          # p "     NUEVO REGISTRO ACADEMICO: #{academic_record.id}    ROW: #{row[0]} : #{row[1]} : #{row[2]}   ".center(1000, "N")
                         else
-                          total_updated = 1
-                          # p "     SIN CAMBIO REGISTRO ACADEMICO: #{academic_record.name}    ".center(1000, "A")
-                          
+                          no_registred = "#{academic_record.errors.full_messages.to_sentence.truncate(15)}"
                         end
-
-                        if row[4] and (total_newed.eql? 1 or total_updated.eql? 1)
-                          row[4] = row[4].to_s
-                          row[4].strip! 
-                          calificacion_correcta = academic_record.set_status row[4]
-                          unless (calificacion_correcta.eql? true and academic_record.save)
-                            no_registred = 'valor nota'
-                          end
-                        end
-
-                        # if academic_record.save
-                        #   p "     EXITO. GUARDADO EL REGISTRO ACADEMICO: #{academic_record.name}    ".center(500, "#")
-                        # else
-                        #   no_registred = "#{academic_record.errors.full_messages.to_sentence.truncate(15)}"
-                        # end
                       else
-                        no_registred = 'proceso academico'
+                        total_updated = 1
+                        # p "     SIN CAMBIO REGISTRO ACADEMICO: #{academic_record.name}    ".center(1000, "A")
+                        
                       end
+
+                      if row[4] and (total_newed.eql? 1 or total_updated.eql? 1)
+                        row[4] = row[4].to_s
+                        row[4].strip! 
+                        calificacion_correcta = academic_record.set_status row[4]
+                        unless (calificacion_correcta.eql? true and academic_record.save)
+                          no_registred = 'valor nota'
+                        end
+                      end
+
+                      # if academic_record.save
+                      #   p "     EXITO. GUARDADO EL REGISTRO ACADEMICO: #{academic_record.name}    ".center(500, "#")
+                      # else
+                      #   no_registred = "#{academic_record.errors.full_messages.to_sentence.truncate(15)}"
+                      # end
                     else
-                      no_registred = 'grado'
+                      no_registred = 'proceso academico'
                     end
                   else
-                    no_registred = 'estudiante'
+                    no_registred = 'grado'
                   end
-
                 else
-                  no_registred = 'error'
+                  no_registred = 'estudiante'
                 end
 
               else
-                no_registred = 2
+                no_registred = 'error'
               end
+
             else
-              no_registred = 1 
+              no_registred = 2
             end
           else
-            no_registred = 0 # Proceso Academico
+            no_registred = 1 
           end
+
         else
           no_registred = 1 # Study Plan
         end
       else
-        no_registred = 1
+        no_registred = row[1]
       end
     else
       no_registred = 3
@@ -884,7 +917,13 @@ class AcademicRecord < ApplicationRecord
     if definitive_q and (self.aprobado? or self.aplazado?)
       self.status = definitive_q.approved? ? :aprobado : :aplazado
     end
+  end
 
+  def set_status_by_EQ_modality_section
+    if any_equivalencia?
+      self.status = :aprobado
+      self.qualifications.destroy_all  
+    end
   end
 
   def set_options_q
