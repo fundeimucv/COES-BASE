@@ -172,11 +172,13 @@ class Grade < ApplicationRecord
   # ENROLLMENT
   def valid_to_enroll_in academic_process
     
-    if self.enabled_enroll_process.eql?(academic_process) or self.nuevo?
+    if self.enabled_enroll_process.eql?(academic_process)
       return true
     else
       academic_process_before = academic_process&.process_before
-      if (academic_process_before and self.enroll_academic_processes.of_academic_process(academic_process_before.id).any?) and (['regular', 'reincorporado', 'articulo3'].include? self.current_permanence_status)
+      if self.nuevo?
+        return true
+      elsif (academic_process_before and self.enroll_academic_processes.of_academic_process(academic_process_before.id).any?) and (['regular', 'reincorporado', 'articulo3'].include? self.current_permanence_status)
         return true
       end
     end
@@ -285,7 +287,15 @@ class Grade < ApplicationRecord
   end
 
   def label_cita_horaria
-    ApplicationController.helpers.label_status_with_tooltip('bg-info', appointment_from_to_short, appointment_from_to)
+    aux = 'bg-secondary'
+    if appointment_time
+      if appointment_time&.today?
+        aux = 'bg-warning'
+      elsif appointment_time > Date.today
+        aux = 'bg-success'
+      end
+    end
+    ApplicationController.helpers.label_status_with_tooltip(aux, appointment_from_to_short, appointment_from_to)
   end  
 
   def label_status_enroll_academic_process(academic_process_id)
@@ -487,7 +497,7 @@ class Grade < ApplicationRecord
   # TOTALS CREDITS:
 
   def credits_completed_by_type tipo
-    academic_records.aprobado.or(academic_records.equivalencia).by_subject_types(tipo).total_credits
+    academic_records.aprobado.by_subject_types(tipo).total_credits
   end
 
   def total_credits
@@ -510,16 +520,25 @@ class Grade < ApplicationRecord
     end
   end
 
-  def total_credits_eq
-    self.academic_records.total_credits_equivalence
+  # TOMAR EN CUENTA QUE LOS CREDITOS O ASIGNATURAS REGISTRADAS PRO EQUIVALENCIA DEBEN SER APROBADAS
+  # def total_credits_eq
+  #   self.academic_records.total_credits_equivalence
+  # end
+
+  def total_credits_approved_by_type_subject_and_level tipo, level
+    academic_records.total_credits_approved_by_level_and_type tipo, level
   end
 
+  def total_subjects_approved_by_type_subject_and_level level, tipo
+    academic_records.total_subjects_approved_by_level_and_type level, tipo 
+  end    
+
   def total_credits_approved_eq
-    academic_records.total_credits_equivalence
+    academic_records.aprobado.total_credits_equivalence
   end
 
   def total_credits_approved_without_eq
-    academic_records.aprobado.total_credits_without_equivalence
+    academic_records.total_credits_approved_not_equivalence
   end
 
   def total_credits_by_type_subject tipo
@@ -545,9 +564,9 @@ class Grade < ApplicationRecord
     academic_records.total_subjects_equivalence
   end  
 
-  def total_subjects_approved_or_eq
-    academic_records.aprobado.or(academic_records.equivalencia).total_subjects
-  end
+  def total_subjects_approved_without_eq
+    academic_records.total_subjects_approved_not_equivalence
+  end  
 
   def total_subjects_retiradas
     academic_records.retirado.total_subjects
@@ -573,8 +592,8 @@ class Grade < ApplicationRecord
   end
 
   def calculate_efficiency periods_ids = nil 
-    cursados = self.total_credits_coursed periods_ids
-    aprobados = self.total_credits_approved periods_ids
+    cursados = self.total_subjects_coursed
+    aprobados = self.total_subjects_approved
     if cursados < 0 or aprobados < 0
       0.0
     elsif cursados == 0 or (cursados > 0 and aprobados >= cursados)
@@ -737,10 +756,10 @@ class Grade < ApplicationRecord
     self.paper_trail_event = "¡Registro Académico eliminado!"
   end  
 
-  # after_initialize do
-  #   if new_record?
-  #     self.study_plan_id ||= StudyPlan.first.id if StudyPlan.first
-  #   end
-  # end  
+  after_initialize do
+    if new_record?
+      self.registration_status = :universidad
+    end
+  end  
 
 end

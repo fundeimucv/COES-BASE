@@ -73,6 +73,7 @@ class AcademicProcess < ApplicationRecord
   default_scope { order(name: :desc) }
 
   scope :without_enroll_academic_processes, -> {left_joins(:enroll_academic_processes).where('enroll_academic_processes.academic_process_id': nil)}
+  # Atention: To be commented by not use
   scope :sort_by_period, -> {unscoped.joins(:period).order('periods.year desc').second}
   # CALLBACKS:
   before_save :set_name
@@ -81,6 +82,10 @@ class AcademicProcess < ApplicationRecord
     "#{I18n.t("activerecord.scopes.academic_process."+self.modality)}#{self.period.period_type.code.upcase}"
   end
 
+  def self.letter_to_modality letter
+    I18n.t("activerecord.scopes.academic_process."+letter)
+  end
+  
   def invalid_grades_to_csv
 
     grades_others = Grade.enrolled_in_academic_process(self.process_before_id).others_permanence_invalid_to_enroll
@@ -99,10 +104,13 @@ class AcademicProcess < ApplicationRecord
 
 
   # FUNCTIONS:
+  def period_desc_and_modality
+    "#{period&.name}#{self.modality[0]&.upcase}"
+  end
+  
   def subject_active_for_this? subject_id
     subjects.ids.include?(subject_id)
   end
-
 
   def period_name
     period.name if period
@@ -119,11 +127,11 @@ class AcademicProcess < ApplicationRecord
   end
 
   def short_desc
-    "#{self.school.short_name} #{self.period.name}" if (self.school and self.period)
+    "#{self.school.short_name} #{self.period_desc_and_modality}" if (self.school and self.period)
   end
 
   def get_name
-    "#{self.school.code} | #{self.period.name}" if (self.school and self.period)
+    "#{self.school.code} | #{self.period_desc_and_modality}" if (self.school and self.period)
   end
 
 
@@ -269,14 +277,16 @@ class AcademicProcess < ApplicationRecord
         label 'Período'
         column_width 100
         pretty_value do
-          value.name
+          # value.name
+          bindings[:object]&.period_desc_and_modality
         end
       end
 
       field :process_before do
         column_width 80
         pretty_value do
-          value.period.name if value
+          # value.period.name if value
+          bindings[:object]&.process_before&.period_desc_and_modality
         end
       end
 

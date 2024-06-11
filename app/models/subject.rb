@@ -122,7 +122,7 @@ class Subject < ApplicationRecord
 
     case ordinal
     when 0
-      modality[0..2]&.upcase
+      subject_type&.code[0..2]&.upcase
     when 1..12
       "#{ordinal}º"
     else
@@ -135,7 +135,7 @@ class Subject < ApplicationRecord
 
     case numero
     when 0
-      0
+      '-'
     when 1..12
       "#{numero}º #{type_school&.titleize}"
     end

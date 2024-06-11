@@ -17,25 +17,27 @@
         %th CI
         %th Estado Insc
         %th Estudiante
-        - if section.subject.numerica?
-          - colspan += 2
-          - if section&.school&.have_partial_qualification?
-            - colspan += 3
-            - PartialQualification.partials.map do |ord|
-              %th.text-center= ord[0]&.titleize
-          - if (admin_authorized_to_qualify or teacher_authorized_to_qualify)
-            %th.text-center PI
-          %th.text-center{title: 'Calificación Final'} C. Final
-          - if GeneralSetup.enabled_post_qualification?
-            - colspan += 3
-            %th{title: 'Diferida'} Dif
-            %th{title: 'Reparación'} Rep
-            %th{title: 'Calificación Posterior'} C. Post
-        - else
-          %th.text-center{title: 'Calificación Final'} Definitva
-        %th
-          %i.fa.fa-remove{title: 'Limpiar valores'}
-        %th Descripción
+
+        - unless section.any_equivalencia?
+          - if section.subject.numerica?
+            - colspan += 2
+            - if section&.school&.have_partial_qualification?
+              - colspan += 3
+              - PartialQualification.partials.map do |ord|
+                %th.text-center= ord[0]&.titleize
+            - if (admin_authorized_to_qualify or teacher_authorized_to_qualify)
+              %th.text-center PI
+            %th.text-center{title: 'Calificación Final'} Final
+            - if GeneralSetup.enabled_post_qualification?
+              - colspan += 3
+              %th{title: 'Calificación Diferida'} Dif
+              %th{title: 'Calificación Reparación'} Rep
+              %th{title: 'Calificación Posterior'} Post
+          - else
+            %th.text-center{title: 'Calificación Final'} Definitva
+          %th
+            %i.fa.fa-remove{title: 'Limpiar valores'}
+          %th{title: 'Calificación en letras'} Calificación Descriptiva
         %th Estado
 
 
@@ -61,22 +63,23 @@
               %a{href: "/admin/student/#{acre.student.id}"}= user.reverse_name 
             - else
               = user.reverse_name
-          - if retirado or acre.enroll_academic_process&.not_confirmado?
-            %td.text-center{colspan: colspan}
-              - if retirado
-                = label_status('bg-info', acre.status.titleize)
-              - elsif acre.enroll_academic_process&.not_confirmado?
-                = label_status('bg-warning text-dark', 'Inscripción pendiente por confirmar')
-          - else
-            - if (admin_authorized_to_qualify or teacher_authorized_to_qualify)
-              - @academic_record = acre
-              = render partial: '/academic_records/form_qualify', locals: {section: section, academic_record: acre, disable_row: disable_row, status: status, id: acre_id, preinscrito: preinscrito}
+
+          - unless section.any_equivalencia?    
+            - if retirado or acre.enroll_academic_process&.not_confirmado?
+              %td.text-center{colspan: colspan}
+                - if retirado
+                  = label_status('bg-info', acre.status.titleize)
+                - elsif acre.enroll_academic_process&.not_confirmado?
+                  = label_status('bg-warning text-dark', 'Inscripción pendiente por confirmar')
             - else
-              %td= text_field_tag nil, {}, {value: acre.final_q_to_02i_to_from, class: 'form-control form-control-sm', disabled: true}          
-            %td
-              .btn
-                %i.fa.fa-broom{onclick: "reset(this);", id_obj: acre_id}
-            
+              - if (admin_authorized_to_qualify or teacher_authorized_to_qualify)
+                - @academic_record = acre
+                = render partial: '/academic_records/form_qualify', locals: {section: section, academic_record: acre, disable_row: disable_row, status: status, id: acre_id, preinscrito: preinscrito}
+              - else
+                %td= text_field_tag nil, {}, {value: acre.final_q_to_02i_to_from, class: 'form-control form-control-sm', disabled: true}          
+              %td
+                .btn
+                  %i.fa.fa-broom{onclick: "reset(this);", id_obj: acre_id}
             = render partial: '/academic_records/qualification_to_s', locals: {academic_record: acre, id: acre_id}
           %td.text-center
             .badge.bg-info{id: "labelStatus#{acre_id}"}= status.titleize

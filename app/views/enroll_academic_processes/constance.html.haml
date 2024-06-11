@@ -44,7 +44,7 @@
 
 - unless false #@school&.code.eql? 'EACRV'
 
-  - enlace = "https://coesfau.com/validar/#{@version.id}/constancias?object_id=#{@enroll_academic_process.id}"
+  - enlace = "https://plus.coesfau.com/validar/#{@version.id}/constancias?object_id=#{@enroll_academic_process.id}"
   - enlace +="&study=true" if @study_contance.eql? true
 
   - imagen_qr = CodigoQr.generate_image enlace
