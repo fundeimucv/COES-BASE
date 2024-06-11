@@ -342,7 +342,7 @@ es:
           attributes:
             base:
               restrict_dependent_destroy:
-                has_many: 'Tiene asignaturas asociadas'
+                has_many: 'Tiene asignaturas o profesores asociados'
         bank_account:
           attributes:
             bank:
@@ -418,6 +418,21 @@ es:
       academic_record:
         one: 'Registro Académico'
         other: 'Registros Académicos'
+        status:
+          SC: sin_calificar
+          sin_calificar: SC
+          
+          A: aprobado
+          aprobado: A
+          
+          AP: aplazado
+          aplazado: AP
+
+          RE: retirado
+          retirado: RE
+
+          PI: perdida_por_inasistencia
+          perdida_por_inasistencia: PI
       area_authorizable:
         one: 'Area Autorizable'
         other: 'Areas Autorizables'
@@ -590,6 +605,7 @@ es:
         school: 'Escuela'
         departaments: 'Departamentos'
         subjects: 'Asignaturas'
+        teachers: Profesores
         subarea: 'Subáreas'
       # Departamento
       departament:
@@ -617,7 +633,7 @@ es:
         sections: Secciones
         academic_process: 'Período'
         subject: 'Asignatura'
-        offer: Ofertado
+        offer: ¿Ofertada?
         offer_as_pci: 'Ofertar cómo PCI'
       enroll_academic_process:
         grade: 'Grado'
@@ -845,8 +861,21 @@ es:
       academic_process:
         Semestral: S
         Anual: A
+        Intensivo: I
+        Unico: U
+
+        S: Semestral
+        A: Anual
+        I: Intensivo
+        U: Unico        
 
       academic_record:
+        SC: sin_calificar
+        A: aprobado
+        AP: aplazado
+        RE: retirado
+        PI: perdida_por_inasistencia
+
         sin_calificar: 'Sin Calificar'
         sc: 'Sin Calificar'
         not_sin_calificar: 'Calificados'
@@ -871,11 +900,16 @@ es:
         pi: 'Pérdida por Inasistencia'
         parcial: 'Parciales'
         par: 'Parciales'
+      qualification:
+        ND: diferido
+        NF: final
+        NR: reparacion
+
       section:
         nota_final: 'NF'
         equivalencia_externa: 'EE'
         equivalencia_interna: 'EI' 
-        suficiencia: 'S'
+        suficiencia: 'NS'
       payment_report:
         transferencia: 'Transferencia'
         efectivo: 'Efectivo'
