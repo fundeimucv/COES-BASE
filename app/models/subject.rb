@@ -61,7 +61,7 @@ class Subject < ApplicationRecord
 
 
   # ENUMS:
-  enum qualification_type: [:numerica, :absoluta]
+  enum qualification_type: {numerica: 0, absoluta: 1}
 
   # VALIDATIONS:
   validates :code, presence: true, uniqueness: {case_sensitive: false}
@@ -459,9 +459,11 @@ class Subject < ApplicationRecord
 
       field :qualification_type, :enum do
         enum do
-          {'Numérica': :numerica, 'Absoluta': :absoluta}
+          {'Numérica': 0, 'Absoluta': 1}
         end
       end
+
+      # field :qualification_type
 
       # field :depend_subjects do
       #   inline_add false

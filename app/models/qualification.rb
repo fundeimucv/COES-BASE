@@ -32,7 +32,9 @@ class Qualification < ApplicationRecord
 
   scope :definitive, -> {where(definitive: true)}
 
-  enum type_q: [:final, :diferido, :reparacion]
+  default_scope {order(:type_q)}
+
+  enum type_q: {final: 0, diferido: 1, reparacion: 2}
 
   validates :academic_record, presence: true
   validates :value, presence: true, numericality: { only_integer: true, in: 0..20 }
@@ -85,8 +87,25 @@ class Qualification < ApplicationRecord
     "#{type.upcase}#{modality_process.upcase}#{academic_record.period.period_type.code.last}"
   end  
 
+  def status_of_q
+    # Attention: This Status do reference to the Qualification directy and not to AcademicRecord. 
+    # For Example: when have two qualifications and one is 'aplazado' and the other is 'aprovado' 
+    
+    if value and value > 10
+      I18n.t('activerecord.models.academic_record.status.A')
+    else
+      I18n.t('activerecord.models.academic_record.status.AP')
+    end
+  end
+
+  def cal_alfa
+    I18n.t('activerecord.models.academic_record.status.'+status_of_q)
+  end
+
 
   def desc_conv
+
+    # OJO: Hay un problema con el estado, no puede ser el mismo de la definitiva (academic_record) ya que es A y debe ser AP
     I18n.t(self.type_q)
     # OJO
     # if self.final? and (self.academic_record.absolute_pi_or_rt?)

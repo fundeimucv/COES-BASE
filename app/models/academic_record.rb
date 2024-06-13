@@ -76,7 +76,7 @@ class AcademicRecord < ApplicationRecord
   # CALLBACK
   after_save :set_options_q
   before_save :set_status_by_EQ_modality_section
-  after_save :update_status_q_and_grades
+  # after_save :update_status_q_and_grades
   # after_save :update_grade_numbers#, if: :will_save_change_to_status?
 
   after_destroy :destroy_enroll_academic_process
@@ -311,7 +311,7 @@ class AcademicRecord < ApplicationRecord
   end  
 
   def cal_alfa
-    absolute_pi_or_rt? ? I18n.t("activerecord.models.academic_record.status."+self.status) : I18n.t(qualifications.first&.type_q)
+    (absolute_pi_or_rt? and !qualifications.any?) ? I18n.t("activerecord.models.academic_record.status."+self.status) : I18n.t(qualifications.last&.type_q)
   end
 
   def rt?
@@ -482,8 +482,8 @@ class AcademicRecord < ApplicationRecord
     data = [self.user.ci, self.user.reverse_name, self.study_plan.code]
 
     if force_final
-      data << I18n.t('aplazado')
-      data << I18n.t('final')
+      data << I18n.t('activerecord.models.academic_record.status.aplazado')
+      data << I18n.t('activerecord.models.qualification.type_q.final')
       data << self.q_value_to_02i(final_q)
       data << self.description_q(true)
     else

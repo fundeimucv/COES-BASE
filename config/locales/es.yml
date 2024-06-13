@@ -11,6 +11,7 @@ es:
   history_show: Bitácora
 
   dashboard: Principal
+
   diferido: ND
   final: NF
   reparacion: NR
@@ -499,6 +500,12 @@ es:
       qualification:
         one: Calificación
         other: Calificaciones
+
+        type_q:
+          diferido: ND
+          final: NF
+          reparacion: NR
+
       schedule:
         one: Horario
         other: Horarios
