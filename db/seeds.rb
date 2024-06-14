@@ -1,10 +1,3 @@
-# This file should contain all the record creation needed to seed the database with its default values.
-# The data can then be loaded with the bin/rails db:seed command (or created alongside the database with db:setup).
-#
-# Examples:
-#
-#   movies = Movie.create([{ name: "Star Wars" }, { name: "Lord of the Rings" }])
-#   Character.create(name: "Luke", movie: movies.first)
 
 p '      Creado Primer Usuario!    '.center(200, '=') if user = User.create!(email: 'moros.daniel@gmail.com', first_name: 'Daniel Josué', last_name: 'Moros Castillo', ci: '15573230', password: 123123)
 
@@ -14,34 +7,11 @@ p '      Creado Segundo Usuario!    '.center(200, '=') if user = User.create!(em
 
 p '      Creado Primer Admin!    '.center(200, '=') if Admin.create!(user_id: user.id, role: :desarrollador)
 
-# p '      Creados Primeros Tipos de Períodos!    '.center(200, '=') if PeriodType.create([{code: 'I', name: 'Primero'}, {code: 'II', name: 'Segundo'}, {code: 'U', name: 'Único'}, {code: 'E', name: 'Especial (Intensivo)'}])
+p '      Creados Primeros Tipos de Períodos!    '.center(200, '=') if PeriodType.create([{code: 'I', name: 'Primero'}, {code: 'II', name: 'Segundo'}, {code: 'U', name: 'Único'}, {code: 'I', name: 'Intensivo'}])
 
-# p '      Creados Primeros Períodos!    '.center(200, '=') if Period.create([{year: 2022, period_type_id: 1}, {year: 2022, period_type_id: 2}])
+p '      Creados Primeros Idiomas!    '.center(200, '=') if Language.create([{name: 'Alemán'}, {name: 'Francés'}, {name: 'Inglés'}, {name: 'Italiano'}, {name: 'Portugués'}])
 
-# p '      Creado Primer Plan de Estudio!    '.center(200, '=') if StudyPlan.create(code: 'B001', name: 'Arquitecto', school_id: School.first.id)
-
-
-# area = Area.where(name: "DISEÑO ARQUITECTÓNICO").first
-
-# Area.create([{school_id: escuela.id, name: "Expresión", parent_area_id: area.id},
-# {school_id: escuela.id, name: "Teoría de la Arquitectura", parent_area_id: area.id},
-# {school_id: escuela.id, name: "Diseño Arquitectónico Sub", parent_area_id: area.id}])
-
-# area = Area.where(name: "MÉTODOS").first
-
-# Area.create([{school_id: escuela.id, name: "Matemáticas", parent_area_id: area.id},
-# {school_id: escuela.id, name: "Investigación y Creatividad", parent_area_id: area.id},
-# {school_id: escuela.id, name: "Informática", parent_area_id: area.id}])
-
-# area = Area.where(name: "TECNOLOGÍA").first
-
-# Area.create([{school_id: escuela.id, name: "Construcción", parent_area_id: area.id},
-# {school_id: escuela.id, name: "Instalaciones", parent_area_id: area.id},
-# {school_id: escuela.id, name: "Estructura", parent_area_id: area.id}])
-
-Language.create([{name: 'Alemán'}, {name: 'Francés'}, {name: 'Inglés'}, {name: 'Italiano'}, {name: 'Portugués'}])
-
-Bank.create([{code: "0006", name: "Banco de Coro"},
+p '      Creados Primeros Bancos!    '.center(200, '=') if Bank.create([{code: "0006", name: "Banco de Coro"},
 {code: "0007", name: "Banfoandes"},
 {code: "0008", name: "Banco Guayana"},
 {code: "0102", name: "Banco de Venezuela"},
@@ -82,11 +52,9 @@ Bank.create([{code: "0006", name: "Banco de Coro"},
 {code: "0191", name: "Banco Nacional de Crédito"},
 {code: "0601", name: "Instituto Municipal de Crédito Popular"}])
 
+# Agregar Código a Tipos de Admisión
 
-
-# e = School.first
-
-# e.admission_types.create([{name: 'OPSU'},
+# p '      Creados Primeros Tipos de Admisión!    '.center(200, '=') if AdmissionType.create([{name: 'OPSU'},
 # {name: 'OPSU/COLA'},
 # {name: 'SIMADI'},
 # {name: 'ACTA CONVENIO (DOCENTE)'},

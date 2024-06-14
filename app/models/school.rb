@@ -9,6 +9,7 @@
 #  enable_dependents            :boolean          default(FALSE), not null
 #  enable_enroll_payment_report :boolean          default(FALSE), not null
 #  enable_subject_retreat       :boolean
+#  have_language_combination    :boolean          default(FALSE), not null
 #  have_partial_qualification   :boolean          default(FALSE), not null
 #  name                         :string           not null
 #  short_name                   :string
