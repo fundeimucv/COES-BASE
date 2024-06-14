@@ -1,0 +1,16 @@
+
+- if params[:area_id]
+    .form-control= Area.find(params[:area_id]).name
+    = hidden_field 'teacher', 'area_id', value: params[:area_id]
+- elsif params[:school_id]
+    - school = School.find params[:school_id]
+    - areas = school.areas.uniq
+    - if areas.any?
+        = collection_select 'teacher', 'area_id', areas, :id, :full_description, {include_blank: 'Seleccione...'}, {class: 'input-group form-control required', required: true}
+
+    - else
+        .alert.alert-danger 
+            Antes de agregar un profesor debe agregar las Cátedras
+            = link_to 'Agregar Nueva Cátedra', '/admin/area/new', class: 'btn btn-sm btn-success' 
+- else
+    = grouped_collection_select :teacher, :area_id, School.all, :areas, :name, :id, :name, {prompt: "Seleccione Cátedra..."}, { class: "form-control"}

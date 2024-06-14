@@ -116,8 +116,7 @@ class Teacher < ApplicationRecord
     edit do
       fields :user
       fields :area do
-        inline_edit false
-        inline_add false
+        partial 'teacher/custom_area_field'
       end
     end
 
