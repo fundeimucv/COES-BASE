@@ -479,6 +479,9 @@ es:
       general_setup:
         one: 'Configuración General'
         other: 'Configuraciones generales'
+      language:
+        one: Idioma
+        other: Idiomas
       mention:
         one: Mención
         other: Menciones        
@@ -584,16 +587,15 @@ es:
         aplazado: 'Aplazados'
         retirado: 'Retirados'
         diferido: 'Diferidos'
-      authorizable:
-        area_authorizable_id: Área Autorizable
-        klazz: Clase
-        description: Descripción
-        icon: Ícono
-      area_authorizable:
-        name: Nombre
-        description: Descripción
-        icon: Ícono 
-        authorizables: Accesibles       
+      address:
+        state: 'Estado'
+        municipality: 'Municipio'
+        city: 'Ciudad'
+        sector: 'Sector'
+        street: 'Calle'
+        house_type: 'Tipo de Vivienda'
+        house_name: 'Nombre de Vivienda'
+        student: 'Estudiante'      
       admin:
         user: 'Usuario'
         role: 'Rol'
@@ -614,6 +616,16 @@ es:
         subjects: 'Asignaturas'
         teachers: Profesores
         subarea: 'Subáreas'
+      area_authorizable:
+        name: Nombre
+        description: Descripción
+        icon: Ícono 
+        authorizables: Accesibles       
+      authorizable:
+        area_authorizable_id: Área Autorizable
+        klazz: Clase
+        description: Descripción
+        icon: Ícono
       # Departamento
       departament:
         name: 'Nombre'
@@ -688,20 +700,16 @@ es:
         enabled_enroll_process: 'Permiso especial para inscribir en'
         enrollment_status: 'Estado de Inscripción en la Facultad'
         start_process: 'Periodo de Inicio'
-      address:
-        state: 'Estado'
-        municipality: 'Municipio'
-        city: 'Ciudad'
-        sector: 'Sector'
-        street: 'Calle'
-        house_type: 'Tipo de Vivienda'
-        house_name: 'Nombre de Vivienda'
-        student: 'Estudiante'
+        current_permanece_status: Régimen Actual de Permanencia
+        language1: Idioma 1
+        language2: Idioma 2
       mention:
         name: Nombre
         study_plan: Plan de Estudio
         subjects: Asignaturas
-        total_required_subjects: Total Asignaturas Requeridas        
+        total_required_subjects: Total Asignaturas Requeridas
+      language:
+        name: Nombre
       payment_report:
         status: Estado
         student: Estudiante
@@ -751,6 +759,8 @@ es:
         study_plans: Planes de Estudio
         admission_types: Tipos de Admisión
         have_partial_qualification: ¿Tiene Calificaciones Parciales?
+        have_language_combination: ¿Tiene Combinación de Idiomas?
+
       schedule:
         day: Día
         starttime: Hora Inicio

@@ -78,8 +78,10 @@ class Teacher < ApplicationRecord
     navigation_icon 'fa-regular fa-chalkboard-user'
 
     list do
+      checkboxes false
       search_by :custom_search
       field :user_ci do
+        sticky true
         label 'Cédula'
         # sortable 'joins(:user).users.ci'
         # queryable "course_periods_periods.name"

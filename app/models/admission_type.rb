@@ -41,6 +41,7 @@ class AdmissionType < ApplicationRecord
     weight -1
 
     list do
+      checkboxes false
       field :name
       field :code
       field :school

@@ -110,13 +110,17 @@ class StudyPlan < ApplicationRecord
     end
 
     list do
+      checkboxes false
       field :school do
         sticky true
         pretty_value do
           bindings[:object].school&.short_name
         end
       end
-      fields :code, :name, :modality, :levels, :requirement_by_subject_types, :mentions
+      field :code do
+        sticky true
+      end
+      fields :name, :modality, :levels, :requirement_by_subject_types, :mentions
     end
 
     export do

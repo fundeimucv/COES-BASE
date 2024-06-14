@@ -134,7 +134,9 @@ class School < ApplicationRecord
   def have_partial_qualification?
     self.have_partial_qualification
   end
-
+  def have_language_combination?
+    self.have_language_combination
+  end
   def process_label_desc process
     aux_desc = process ? process.name : 'Sin Proceso Activo'
     ApplicationController.helpers.label_status('bg-info', aux_desc)
@@ -414,6 +416,7 @@ class School < ApplicationRecord
         end
       end
       field :have_partial_qualification
+      field :have_language_combination
       
 			field :bank_accounts do
 				inline_edit false

@@ -198,8 +198,10 @@ class Admin < ApplicationRecord
     end
 
     list do
+      checkboxes false
       search_by :custom_search
       field :user do
+        sticky true
         pretty_value do
           value.description
         end

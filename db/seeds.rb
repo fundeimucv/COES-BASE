@@ -39,6 +39,8 @@ p '      Creado Primer Admin!    '.center(200, '=') if Admin.create!(user_id: us
 # {school_id: escuela.id, name: "Instalaciones", parent_area_id: area.id},
 # {school_id: escuela.id, name: "Estructura", parent_area_id: area.id}])
 
+Language.create([{name: 'Alemán'}, {name: 'Francés'}, {name: 'Inglés'}, {name: 'Italiano'}, {name: 'Portugués'}])
+
 Bank.create([{code: "0006", name: "Banco de Coro"},
 {code: "0007", name: "Banfoandes"},
 {code: "0008", name: "Banco Guayana"},
@@ -79,6 +81,7 @@ Bank.create([{code: "0006", name: "Banco de Coro"},
 {code: "0190", name: "Citibank"},
 {code: "0191", name: "Banco Nacional de Crédito"},
 {code: "0601", name: "Instituto Municipal de Crédito Popular"}])
+
 
 
 # e = School.first

@@ -16,6 +16,8 @@
 #  updated_at                :datetime         not null
 #  admission_type_id         :bigint           not null
 #  enabled_enroll_process_id :bigint
+#  language1_id              :bigint
+#  language2_id              :bigint
 #  start_id                  :bigint
 #  start_process_id          :bigint
 #  student_id                :bigint           not null
@@ -35,6 +37,8 @@
 #
 #  fk_rails_...  (admission_type_id => admission_types.id)
 #  fk_rails_...  (enabled_enroll_process_id => academic_processes.id)
+#  fk_rails_...  (language1_id => languages.id) ON DELETE => nullify ON UPDATE => cascade
+#  fk_rails_...  (language2_id => languages.id) ON DELETE => nullify ON UPDATE => cascade
 #  fk_rails_...  (start_process_id => academic_processes.id) ON DELETE => nullify ON UPDATE => cascade
 #  fk_rails_...  (student_id => students.user_id) ON DELETE => cascade ON UPDATE => cascade
 #  fk_rails_...  (study_plan_id => study_plans.id)
@@ -64,6 +68,9 @@ class Grade < ApplicationRecord
 
   has_one :school, through: :study_plan
   has_one :user, through: :student
+
+  belongs_to :language1, class_name: 'Language', foreign_key: 'language1_id', optional: true
+  belongs_to :language2, class_name: 'Language', foreign_key: 'language2_id', optional: true
   
   has_many :enroll_academic_processes, dependent: :destroy
   has_many :academic_processes, through: :enroll_academic_processes
@@ -264,6 +271,14 @@ class Grade < ApplicationRecord
     end
 
     ApplicationController.helpers.label_status(label, current_permanence_status.titleize)
+  end
+
+  def label_languages
+    if language1 and language2
+      ApplicationController.helpers.label_status_with_tooltip('bg-success', "#{language1&.short_name} - #{language2&.short_name}", "#{language1&.name} - #{language2&.name}")
+    else
+      ApplicationController.helpers.label_status('bg-secondary', 'Sin Información')
+    end
   end
 
   def label_registration_status    
@@ -657,6 +672,8 @@ class Grade < ApplicationRecord
       fields :student, :enroll_academic_processes, :enabled_enroll_process
       field :numbers
       field :description
+      field :language1
+      field :language2
     end
 
     update do
@@ -694,6 +711,14 @@ class Grade < ApplicationRecord
       end
       field :duration_slot_time do 
         label 'Duración Cita Horaria (minutos)'
+      end
+      field :language1 do
+        inline_edit false
+        inline_add false        
+      end
+      field :language2 do
+        inline_edit false
+        inline_add false        
       end
     end
 

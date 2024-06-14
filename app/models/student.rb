@@ -219,7 +219,7 @@ class Student < ApplicationRecord
       field :description_grades do
         label 'Registro Académico'
         formatted_value do
-          bindings[:view].render(partial: 'students/show_admin', locals: {student: bindings[:object]})
+          bindings[:view].render(template: 'students/show', locals: {student: bindings[:object]})
         end
       end
       # fields :user, :grades, :nacionality, :origin_country, :origin_city, :birth_date, :marital_status, :address, :grade_title, :grade_university, :graduate_year, :created_at
@@ -227,8 +227,9 @@ class Student < ApplicationRecord
 
     list do
       search_by :custom_search
-
+      
       field :user_image_profile do
+        sticky true
         label 'Perfil'
 
         formatted_value do
@@ -243,6 +244,7 @@ class Student < ApplicationRecord
 
 
       field :user_ci do
+        sticky true
         label 'CI'
         pretty_value do
           bindings[:object].user.ci

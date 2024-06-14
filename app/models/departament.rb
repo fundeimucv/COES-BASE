@@ -80,6 +80,7 @@ class Departament < ApplicationRecord
 		end
 
 		list do
+			checkboxes false
 			fields :school, :name, :areas
 		end
 

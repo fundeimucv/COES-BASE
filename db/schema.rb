@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_06_03_144503) do
+ActiveRecord::Schema[7.0].define(version: 2024_06_14_112201) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -299,6 +299,8 @@ ActiveRecord::Schema[7.0].define(version: 2024_06_03_144503) do
     t.integer "current_permanence_status", default: 0, null: false
     t.bigint "start_id"
     t.bigint "start_process_id"
+    t.bigint "language1_id"
+    t.bigint "language2_id"
     t.index ["admission_type_id"], name: "index_grades_on_admission_type_id"
     t.index ["enabled_enroll_process_id"], name: "index_grades_on_enabled_enroll_process_id"
     t.index ["start_id"], name: "index_grades_on_start_id"
@@ -312,6 +314,13 @@ ActiveRecord::Schema[7.0].define(version: 2024_06_03_144503) do
     t.string "name_group"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "languages", force: :cascade do |t|
+    t.string "name", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["name"], name: "index_languages_on_name", unique: true
   end
 
   create_table "mentions", force: :cascade do |t|
@@ -439,6 +448,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_06_03_144503) do
     t.string "short_name"
     t.boolean "enable_by_level", default: false
     t.boolean "have_partial_qualification", default: false, null: false
+    t.boolean "have_language_combination", default: false, null: false
     t.index ["active_process_id"], name: "index_schools_on_active_process_id"
     t.index ["enroll_process_id"], name: "index_schools_on_enroll_process_id"
     t.index ["faculty_id"], name: "index_schools_on_faculty_id"
@@ -603,6 +613,8 @@ ActiveRecord::Schema[7.0].define(version: 2024_06_03_144503) do
   add_foreign_key "grades", "academic_processes", column: "enabled_enroll_process_id"
   add_foreign_key "grades", "academic_processes", column: "start_process_id", on_update: :cascade, on_delete: :nullify
   add_foreign_key "grades", "admission_types"
+  add_foreign_key "grades", "languages", column: "language1_id", on_update: :cascade, on_delete: :nullify
+  add_foreign_key "grades", "languages", column: "language2_id", on_update: :cascade, on_delete: :nullify
   add_foreign_key "grades", "students", primary_key: "user_id", on_update: :cascade, on_delete: :cascade
   add_foreign_key "grades", "study_plans"
   add_foreign_key "mentions", "study_plans"

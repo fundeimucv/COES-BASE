@@ -65,8 +65,9 @@ class Area < ApplicationRecord
     navigation_label 'Config General'
     navigation_icon 'fa-regular fa-book-open'
     weight 1
-
+    
     list do
+      checkboxes false
       field :name
       field :departaments
       field :teachers
