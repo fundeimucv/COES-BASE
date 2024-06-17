@@ -47,6 +47,9 @@ class Address < ApplicationRecord
     return aux
   end
 
+  def name
+    state_and_city
+  end
   def state_and_city
     "#{state.titleize} - #{city.titleize}" if (state and city)
   end
