@@ -17,7 +17,8 @@
 		.col.mx-3.mb-3
 			- if logged_as_admin and current_user.admin.authorized_manage? 'AcademicRecord'
 				.row
-					%h4.bg-info.mb-0.py-2.text-center= "#{school.short_name}"
+					%h4.bg-info.mb-0.py-2.text-center
+						= link_to school.short_name, "/admin/school/#{school.id}", class: 'undecored'
 					- object = I18n.t("activerecord.models.academic_record.other")
 
 					- url = "/admin/academic_record?f%5Bschool%5D%5B81356%5D%5Bo%5D=like&f%5Bschool%5D%5B81356%5D%5Bv%5D=#{school.short_name}&#{@query}"
