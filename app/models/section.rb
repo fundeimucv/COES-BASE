@@ -65,7 +65,8 @@ class Section < ApplicationRecord
   has_many :students, through: :grades
 
   # has_and_belongs_to_namy
-  # has_and_belongs_to_many :secondary_teachers, class_name: 'SectionTeacher'
+  has_and_belongs_to_many :section_teachers, class_name: 'SectionTeacher'
+  has_and_belongs_to_many :secondary_teachers, through: :section_teachers, class_name: 'Teacher'
 
   #ENUMERIZE:
   enum modality: {nota_final: 0, equivalencia_externa: 1, equivalencia_interna: 2, suficiencia: 3}
@@ -568,44 +569,29 @@ class Section < ApplicationRecord
 
     edit do
       field :course do
-        # read_only true
-        label 'Curso'
-
+        inline_edit false
+        inline_add true
+        # partial 'course/custom_course_id_field'
       end
+
       field :code do
         html_attributes do
           {:length => 8, :size => 8, :onInput => "$(this).val($(this).val().toUpperCase().replace(/[^A-Za-z0-9]/g,''))"}
         end
       end
 
-      field :modality do
+      field :modality
 
-      end
       field :teacher do
+        label 'Profesor Principal'
         inline_edit false
         inline_add false
       end
 
-      field :qualified
-
-      # field :course_id do
-      #   formatted_value do
-      #     if bindings[:view].params[:course_id]
-      #       view_helper :hidden_field
-
-      #       # I added these next two lines to solve this
-      #       label ""
-      #       help ""
-
-      #       partial :form_field
-      #       def value
-      #         bindings[:view].params[:course_id]
-      #       end
-      #     else
-      #       bindings[:object].course
-      #     end
-      #   end
-      # end 
+      field :secondary_teachers do
+        inline_edit false
+        inline_add false
+      end
 
       field :classroom do
         html_attributes do
@@ -622,6 +608,51 @@ class Section < ApplicationRecord
       field :schedules
 
     end
+
+
+    update do
+      field :course do
+        read_only true
+      end
+      
+      field :code do
+        help 'Identificador'
+        html_attributes do
+          {:length => 8, :size => 8, :onInput => "$(this).val($(this).val().toUpperCase().replace(/[^A-Za-z0-9]/g,''))"}
+        end
+      end
+
+      field :modality
+
+      field :teacher do
+        label 'Profesor Principal'
+        inline_edit false
+        inline_add false
+      end
+
+      field :secondary_teachers do
+        inline_edit false
+        inline_add false
+      end
+
+      field :qualified
+
+      field :classroom do
+        html_attributes do
+          {:onInput => "$(this).val($(this).val().toUpperCase().replace(/[^A-Za-z0-9| ]/g,''))"}
+        end
+      end
+
+      field :capacity do
+        html_attributes do
+          {:min => 1}
+        end
+      end
+
+      field :schedules
+
+    end
+
 
     export do
       fields :period, :area, :subject, :code, :classroom, :user, :qualified, :modality, :schedules, :capacity

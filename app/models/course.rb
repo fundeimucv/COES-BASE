@@ -233,15 +233,17 @@ class Course < ApplicationRecord
     edit do
       field :academic_process do
         inline_edit false
-        inline_add false        
+        inline_add false
+        # partial 'course/custom_academic_process_id_field'
       end
 
       field :subject do
         inline_edit false
         inline_add false        
       end
-      field :sections
+
     end
+
 
     export do
       fields :academic_process, :period, :subject, :area, :offer

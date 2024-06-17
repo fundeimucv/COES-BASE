@@ -787,6 +787,7 @@ es:
         students: Estudiantes
         schedules: Horarios
         classroom: 'Aula'
+        secondary_teachers: 'Profesores secundarios'
         created_at: Fecha Creación
         updated_at: Fecha Última Actualización
       student:

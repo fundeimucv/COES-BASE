@@ -119,7 +119,7 @@ RailsAdmin.config do |config|
     end
 
     new do
-      except [EnrollAcademicProcess, Course]
+      except [EnrollAcademicProcess]
     end
 
     export do
