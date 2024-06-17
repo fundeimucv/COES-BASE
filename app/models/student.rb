@@ -194,7 +194,7 @@ class Student < ApplicationRecord
         inline_add false
       end
 
-      fields :sede, :nacionality, :origin_country, :origin_city, :birth_date, :marital_status, :grade_title, :grade_university, :graduate_year
+      fields :sede, :nacionality, :origin_country, :origin_city, :birth_date, :marital_status, :disability, :grade_title, :grade_university, :graduate_year
 
     end
 
@@ -227,6 +227,7 @@ class Student < ApplicationRecord
 
     list do
       search_by :custom_search
+      checkboxes false
       
       field :user_image_profile do
         sticky true
