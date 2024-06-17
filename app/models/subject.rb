@@ -13,16 +13,19 @@
 #  created_at         :datetime         not null
 #  updated_at         :datetime         not null
 #  area_id            :bigint           not null
+#  school_id          :bigint
 #  subject_type_id    :bigint           not null
 #
 # Indexes
 #
 #  index_subjects_on_area_id          (area_id)
+#  index_subjects_on_school_id        (school_id)
 #  index_subjects_on_subject_type_id  (subject_type_id)
 #
 # Foreign Keys
 #
 #  fk_rails_...  (area_id => areas.id)
+#  fk_rails_...  (school_id => schools.id)
 #  fk_rails_...  (subject_type_id => subject_types.id)
 #
 class Subject < ApplicationRecord
@@ -36,12 +39,14 @@ class Subject < ApplicationRecord
 
   # ASSOCIATIONS:
   belongs_to :area
+  belongs_to :school
   belongs_to :subject_type
 
   has_and_belongs_to_many :mentions
 
   has_many :courses, dependent: :destroy
-  has_many :periods, through: :courses 
+  has_many :academic_processes, through: :courses 
+  has_many :periods, through: :academic_processes 
   has_many :sections, through: :courses
   has_many :academic_records, through: :sections
 
@@ -71,12 +76,13 @@ class Subject < ApplicationRecord
   validates :qualification_type, presence: true
   validates :unit_credits, presence: true
   validates :area, presence: true
+  validates :school, presence: true
 
   # SCOPES: 
 
   scope :todas, -> {where('0 = 0')}
 
-  scope :custom_search, -> (keyword) {joins([:area]).where("subjects.name ILIKE ? or subjects.code ILIKE ? or areas.name ILIKE ?", "%#{keyword}%", "%#{keyword}%", "%#{keyword}%")} 
+  scope :custom_search, -> (keyword) {joins([:area, :school]).where("subjects.name ILIKE ? or subjects.code ILIKE ? or areas.name ILIKE ? or schools.name ILIKE ?", "%#{keyword}%", "%#{keyword}%", "%#{keyword}%", "%#{keyword}%")} 
 
   # scope :independents, -> {joins('LEFT JOIN subject_links ON subject_links.prelate_subject_id = subjects.id').where('subject_links.prelate_subject_id IS NULL')}
 
@@ -111,13 +117,11 @@ class Subject < ApplicationRecord
     self.name.upcase!
     self.code.upcase!
     self.code = "0#{self.code}" if self.code[0] != '0' 
+
+    self.school_id ||= self.area&.schools.first&.id 
   end
 
   # GENERALS FUNCTIONS: 
-  def school
-    area.schools.first
-  end
-
   def ordinal_to_cardinal_short
 
     case ordinal
@@ -302,6 +306,10 @@ class Subject < ApplicationRecord
       checkboxes false
       sidescroll(num_frozen_columns: 3)
 
+      field :school do 
+        sticky true
+        filterable true
+      end
       
       field :code do
         sticky true
@@ -314,32 +322,33 @@ class Subject < ApplicationRecord
         column_width 300
         searchable false
       end
+
       field :area do
         searchable true
       end
 
       # field :school do
       #   filterable true
+      #   searchable true
       #   pretty_value do
       #     bindings[:object].school.short_name
       #   end
       # end
 
-      field :periods do
-        label 'Periodos'
+      field :academic_processes do
+        label 'Último Periodo'
         pretty_value do
-          bindings[:object].periods.map{|pe| pe.name}.to_sentence          
+          bindings[:object].academic_processes.map(&:period_desc_and_modality).last
         end
       end
 
-
       field :unit_credits do 
-        label 'Crédi'
+        label 'Cred'
         column_width 20
       end
 
       field :ordinal do
-        label 'Orden'
+        label 'Año/Sem'
         column_width 20
       end
 
@@ -429,9 +438,15 @@ class Subject < ApplicationRecord
     end
 
     edit do
-      field :area do
-        inline_edit false
+      field :school do
+        label 'Escuela Departamento'
         inline_add false
+        inline_edit false
+        partial 'subject/custom_school_id_field'
+      end
+      field :area do
+        inline_add false
+        inline_edit false
         partial 'subject/custom_area_field'
       end
       field :code do

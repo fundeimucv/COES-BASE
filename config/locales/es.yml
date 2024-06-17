@@ -818,6 +818,7 @@ es:
         structure: Estructura
       subject:
         school: Escuela
+        schools: Escuela
         courses: Cursos
         code: 'Código'
         name: 'Nombre'

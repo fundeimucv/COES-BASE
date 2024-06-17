@@ -1,0 +1,36 @@
+
+- if params[:school_id]
+    - school = School.find(params[:school_id])
+    .form-control.mb-3= school.short_name
+    = hidden_field 'subject', 'school_id', value: params[:school_id]
+    - dpts = school.departaments
+    = collection_select 'departament_id', nil, dpts, :id, :name, {include_blank: 'Seleccione...'}, {class: 'input-group form-control required', required: true, onChange: 'set_catedras();'}
+- else 
+    = collection_select 'subject', 'school_id', School.all, :id, :short_name, {include_blank: 'Seleccione Escuela...'}, {class: 'form-control required', required: true, onChange: 'set_departaments();'}
+    =# collection_select 'departament_id', nil, Departament.all, :id, :name, {include_blank: 'Seleccione...'}, {class: 'input-group form-control required', required: true, onChange: 'set_catedras();'}
+    = grouped_collection_select :departament_id, nil, School.all, :departaments, :short_name, :id, :name, {prompt: "Seleccione Departamento..."}, { class: "form-control mt-3", disabled: true, readonly: true, required: false, onChange: 'set_catedras();'}
+:javascript
+     set_departaments = () => {
+        let school = $('#subject_school_id option:selected').text();
+        let departament_id = $('#departament_id_');
+        $('#departament_id_ optgroup').hide();
+        departament_id.attr('disabled', false);
+        departament_id.attr('readonly', false);
+        departament_id.attr('required', true);
+        departament_id.prop('selectedIndex', 0);
+        $("#departament_id_ optgroup[label='" + school + "']").show();
+     }
+
+
+     set_catedras = () => {
+        let dpt = $('#departament_id_ option:selected').text();
+        let subject_area_id = $('#subject_area_id');
+        $('#subject_area_id optgroup').hide();
+        subject_area_id.attr('disabled', false);
+        subject_area_id.attr('readonly', false);
+        subject_area_id.attr('required', true);
+        subject_area_id.prop('selectedIndex', 0);
+        console.log(dpt);
+        $("#subject_area_id optgroup[label='" + dpt + "']").show();
+     }
+    
