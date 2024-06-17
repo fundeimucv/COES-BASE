@@ -358,22 +358,22 @@ class AcademicProcess < ApplicationRecord
       # group :default do
       #   hide
       # end      
-      field :period do
-        inline_edit false
-      end
       field :school do
         inline_edit false
         inline_add false
         partial 'academic_process/custom_school_id_field'
+      end
+      field :period do
+        inline_edit false
       end
       field :modality
       field :process_before do
         inline_edit false
         inline_add false
         help 'Atención: Aún cuando este campo no es obligatorio y puede ser omitido es muy importante para las Citas Horarias e Inscripciones'
-        pretty_value do
-          bindings[:object].period_name
-        end
+        # pretty_value do
+        #   bindings[:object].name
+        # end
       end
 
       field :max_credits do
