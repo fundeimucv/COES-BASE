@@ -89,6 +89,9 @@ p '      Creados Primeros Tipos de Admisión!    '.center(200, '=') if Admission
  {code: "0119", name: "RECLAMO OPSU"}]
 )
 
+
+SubjectType.create([{code: :OP, name: :optativa}, {code: :L, name: :electiva}, {code: :OB, name: :obligatoria}, {code: :P, name: :proyecto}])
+
 p '      FINAL    '.center(400, '*')
 
 
