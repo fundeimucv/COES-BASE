@@ -1,6 +1,7 @@
-- areas = academic_process.school.areas.all.order(name: :asc)
+- areas = academic_process.school.areas.all.order(name: :asc).uniq
 - params[:area] ||= areas.first.id
 - @academic_process_id = academic_process.id
+- @academic_process = academic_process
 - # ATENCIÓN: HAY QUE VERIFICAR ESTA VISTA YA QUE SE ESTÁ FUCIONANDO: OFFER Y PFFER_PCI
 - if !areas.any?
   .alert.alert-danger.text-center 

@@ -104,6 +104,10 @@ class AcademicProcess < ApplicationRecord
 
 
   # FUNCTIONS:
+  def header_level
+    (self.Anual?) ? 'Año' : 'Sem'
+  end
+
   def period_desc_and_modality
     "#{period&.name}#{self.modality[0]&.upcase}"
   end

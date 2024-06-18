@@ -4,7 +4,7 @@
     %thead{style: "position: sticky;top: 0; background-color:#F4F4F4"}
       %tr
         %th.col-1{style: 'width:12px'} #
-        %th.col-1{style: 'width:12px'} (Año/Sem)
+        %th.col-1{style: 'width:12px'}= @academic_process.header_level
         %th.col-5{scope: :col}
           .input-group.input-group-sm{style: 'width: 100%;'}
             %input.form-control{"aria-describedby" => "inputGroup-sizing-sm", "aria-label" => "", type: "text", placeholder: 'Asignaturas', autofocus: true, id: 'filterSubject', name: 'filterSubject'}
