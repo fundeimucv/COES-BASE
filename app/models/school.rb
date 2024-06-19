@@ -166,7 +166,7 @@ class School < ApplicationRecord
       #   filterable false
       #   searchable false
       # end
-
+      field :code
       field :short_name do
         sticky true
         label 'Escuela'
@@ -397,9 +397,11 @@ class School < ApplicationRecord
       field :faculty do
         read_only true
         pretty_value do
-          value.short_name
+          value&.short_name
         end
       end
+
+      field :type_entity
       
       field :code do
         html_attributes do
@@ -427,7 +429,7 @@ class School < ApplicationRecord
 
     update do
       field :code do
-        read_only true
+        # read_only true
       end
       field :name do
         read_only true
