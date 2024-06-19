@@ -12,6 +12,7 @@
 #  last_name              :string
 #  last_sign_in_at        :datetime
 #  last_sign_in_ip        :string
+#  location_number_phone  :string
 #  number_phone           :string
 #  remember_created_at    :datetime
 #  reset_password_sent_at :datetime
