@@ -1,6 +1,6 @@
 class SameSchoolToAreaValidator < ActiveModel::Validator
     def validate(record)
-        school_ids = record.departaments.map{|dep| dep.school_id}        
-        record.errors.add "No es posible registrar una cátedra para más de una", " Escuela" unless school_ids.uniq.count.eql? 1
+        school_ids = record.departaments.map(&:school_id).uniq.count
+        record.errors.add "No es posible registrar una cátedra para más de una", " Escuela" if school_ids > 1
     end
 end
