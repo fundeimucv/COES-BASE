@@ -22,6 +22,7 @@ class Departament < ApplicationRecord
 	has_and_belongs_to_many :areas
 	# has_many :areas#, dependent: :restrict_with_error
 	has_many :subjects, through: :areas
+	has_many :teachers, dependent: :restrict_with_error
 	has_many :courses, through: :subjects
 	has_many :sections, through: :courses
 	has_many :academic_records, through: :sections
@@ -92,7 +93,13 @@ class Departament < ApplicationRecord
 			field :areas do
 				pretty_value do
 					bindings[:view].render(template: '/areas/index', locals: {areas: bindings[:object].areas.order(name: :asc)})
-				  end				
+				end
+			end
+
+			field :teachers do
+				pretty_value do
+					bindings[:view].render(template: '/teachers/index', locals: {teachers: bindings[:object].teachers})
+				end
 			end
 		end
 	end

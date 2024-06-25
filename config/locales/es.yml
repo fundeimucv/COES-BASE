@@ -631,6 +631,7 @@ es:
         name: 'Nombre'
         school: 'Escuela'
         areas: Cátedras
+        teachers: Profesores
       bank:
         code: 'Código'
         name: 'Nombre'
@@ -845,7 +846,7 @@ es:
         study_plan: Plan de Estudio
         required_credits: Créditos Requeridos 
       teacher:
-        area: 'Cátedra'
+        departament: 'Departamento'
         user: 'Usuario'
         created_at: 'Fecha de Registro'
         sections: 'Secciones'

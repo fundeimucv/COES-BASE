@@ -28,10 +28,11 @@
 class Student < ApplicationRecord
 
   # GLOBALS VARIABLES:
-  ESTADOS_CIVILES = ['Soltero/a', 'Casado/a', 'Concubinato', 'Divorciado/a', 'Viudo/a']
-  NACIONALIDAD = ['Venezolano/a', 'Venezolano/a Nacionalizado/a', 'Extranjero/a']
+  ESTADOS_CIVILES = {'Soltero/a.': 0, 'Casado/a.': 1, 'Concubinato': 2, 'Divorciado/a.': 3, 'Viudo/a.': 4}
+  NACIONALIDAD = {"Venezolano/a": 0, "Extranjero/a": 1, "Venezolano/a. Nacionalizado/a": 2}
+  
 
-  DISCAPACIDADES = ['Sensorial Visual', 'Sensorial Auditiva', 'Motora Miembros Inferiores', 'Motora Medios Superiores', 'Motora Ambos Miembros']
+  DISCAPACIDADES = {'SENSORIAL VISUAL': 0, 'SENSORIAL AUDITIVA': 1, 'MOTORA MIEMBROS INFERIORES': 2, 'MOTORA MIEMBROS SUPERIORES': 3, 'MOTORA AMBOS MIEMBROS': 4, 'OTRO': 5}
 
   SEDES = ['Caracas', 'Barquisimeto']
 
@@ -66,7 +67,7 @@ class Student < ApplicationRecord
 
   # VALIDATIONS:
   validates :user, presence: true#, uniqueness: true
-  validates :grades, presence: true
+  # validates :grades, presence: true
   validates :sede, presence: true
   # validates :nacionality, presence: true, unless: :new_record?
   # validates :marital_status, presence: true, unless: :new_record?

@@ -1,4 +1,4 @@
-require 'same_period_validator'
+# require 'same_period_validator'
 
 Dir[Rails.root.join('app', 'rails_admin', '**/*.rb')].each { |file| require file }
 

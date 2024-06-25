@@ -21,7 +21,6 @@ class Area < ApplicationRecord
   has_many :admins, as: :env_authorizable 
 
   has_many :subjects, dependent: :restrict_with_error
-  has_many :teachers, dependent: :restrict_with_error
   has_many :sections, through: :subjects
   has_many :academic_records, through: :sections
   # accepts_nested_attributes_for :subjects
@@ -70,7 +69,6 @@ class Area < ApplicationRecord
       checkboxes false
       field :name
       field :departaments
-      field :teachers
       field :total_subjects do
         label 'Total Asignaturas'
       end
@@ -78,7 +76,6 @@ class Area < ApplicationRecord
     show do
       field :name
       field :departaments
-      field :teachers
       field :subjects do
         pretty_value do
           bindings[:view].render(template: '/subjects/index', locals: {area_id: bindings[:object].id, subjects: bindings[:object].subjects.order(code: :asc)})

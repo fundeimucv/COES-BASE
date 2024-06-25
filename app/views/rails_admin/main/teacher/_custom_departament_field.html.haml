@@ -1,0 +1,16 @@
+
+- if params[:departament_id]
+    .form-control= Area.find(params[:departament_id]).name
+    = hidden_field 'teacher', 'departament_id', value: params[:departament_id]
+- elsif params[:school_id]
+    - school = School.find params[:school_id]
+    - departaments = school.departaments.uniq
+    - if departaments.any?
+        = collection_select 'teacher', 'departament_id', departaments, :id, :full_description, {include_blank: 'Seleccione...'}, {class: 'input-group form-control required', required: true}
+
+    - else
+        .alert.alert-danger 
+            Antes de agregar un profesor debe agregar un departamento
+            = link_to 'Agregar Nuevo Departamento', '/admin/departament/new', class: 'btn btn-sm btn-success' 
+- else
+    = grouped_collection_select :teacher, :departament_id, School.all, :areas, :name, :id, :name, {prompt: "Seleccione el departamento..."}, { class: "form-control"}

@@ -1,0 +1,38 @@
+.text-end
+  .row
+    .col.align-self-end.mb-3
+      = link_to "/admin/teacher/new?departament_id=#{@object.id}", class: 'btn btn-sm btn-success' do
+        %i.fa.fa-plus
+        Nuevo Profesor
+
+- if teachers.any?
+  .table-responsive
+    %table.table.table-striped.table-hover#sortTable
+      %thead.text-center
+        %tr
+          %th
+          %th
+          %th.col-2= teachers.human_attribute_name('user.name')
+          %th.col-5= teachers.human_attribute_name(:sections)
+
+
+      %tbody
+        - teachers.each_with_index do |teacher, i|
+          %tr
+            %td= i+1
+            %td
+              = link_to "/admin/teacher/#{teacher.id}", class: 'btn btn-sm' do
+                %i.fas.fa-info-circle.text-primary
+            %td= teacher.user.name
+            %td= teacher.sections.count
+- else
+  .alert.alert-warning 
+    Sin profesores. Para agregar una haga clíc
+    %a{href: "/admin/teacher/new?departament_id=#{@object.id}", class: 'link'} Aquí
+
+:javascript
+  - if false 
+    document.addEventListener("rails_admin.dom_ready", function() {
+      $('#sortTable').DataTable();
+    });
+

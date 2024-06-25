@@ -2,19 +2,19 @@
 #
 # Table name: teachers
 #
-#  created_at :datetime         not null
-#  updated_at :datetime         not null
-#  area_id    :bigint           not null
-#  user_id    :bigint           not null, primary key
+#  created_at     :datetime         not null
+#  updated_at     :datetime         not null
+#  departament_id :bigint
+#  user_id        :bigint           not null, primary key
 #
 # Indexes
 #
-#  index_teachers_on_area_id  (area_id)
-#  index_teachers_on_user_id  (user_id)
+#  index_teachers_on_departament_id  (departament_id)
+#  index_teachers_on_user_id         (user_id)
 #
 # Foreign Keys
 #
-#  fk_rails_...  (area_id => areas.id)
+#  fk_rails_...  (departament_id => departaments.id)
 #  fk_rails_...  (user_id => users.id)
 #
 class Teacher < ApplicationRecord
@@ -29,8 +29,8 @@ class Teacher < ApplicationRecord
   belongs_to :user
   # accepts_nested_attributes_for :user
 
-  belongs_to :area
-  # accepts_nested_attributes_for :area
+  belongs_to :departament
+  # accepts_nested_attributes_for :departament
   # has_and_belongs_to_many :secondary_teachers, class_name: 'SectionTeacher'
 
   has_many :sections
@@ -41,7 +41,7 @@ class Teacher < ApplicationRecord
   scope :custom_search, -> (keyword) { joins(:user).where("users.ci ILIKE '%#{keyword}%' OR users.email ILIKE '%#{keyword}%' OR users.first_name ILIKE '%#{keyword}%' OR users.last_name ILIKE '%#{keyword}%'") }  
 
   # VALIDATIONS:
-  validates :area, presence: true
+  validates :departament, presence: true
   validates :user, presence: true, uniqueness: true
 
   def desc
@@ -100,11 +100,11 @@ class Teacher < ApplicationRecord
         label 'Email'
       end 
 
-      field :area
+      field :departament
     end
 
     show do
-      fields :user, :area
+      fields :user, :departament
 
       field :sections do
         pretty_value do
@@ -114,18 +114,20 @@ class Teacher < ApplicationRecord
     end
 
     edit do
-      fields :user
-      fields :area do
-        partial 'teacher/custom_area_field'
+      fields :user do
+        inline_edit false
+      end
+      fields :departament do
+        partial 'teacher/custom_departament_field'
       end
     end
 
     export do
-      fields :user, :area, :sections, :created_at
+      fields :user, :departament, :sections, :created_at
     end
 
     import do
-      fields :user_id, :area_id
+      fields :user_id, :departament_id
     end
   end
 

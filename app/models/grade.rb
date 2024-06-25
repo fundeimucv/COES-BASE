@@ -9,6 +9,7 @@
 #  efficiency                :float
 #  enrollment_status         :integer          default("preinscrito"), not null
 #  graduate_status           :integer
+#  region                    :integer          default("no_aplica")
 #  registration_status       :integer
 #  simple_average            :float
 #  weighted_average          :float
@@ -83,6 +84,8 @@ class Grade < ApplicationRecord
   enum enrollment_status: [:preinscrito, :asignado, :confirmado]
   enum graduate_status: [:cursante, :tesista, :posible_graduando, :graduando, :graduado]
   enum current_permanence_status: [:nuevo, :regular, :reincorporado, :articulo3, :articulo6, :articulo7, :intercambio, :desertor, :egresado, :egresado_doble_titulo, :permiso_para_no_cursar]
+  enum region: [:no_aplica, :amazonas, :barcelona, :barquisimeto, :bolivar, :capital]
+
 
   # VALIDATIONS:
   # validates :student, presence: true
