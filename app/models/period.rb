@@ -14,7 +14,7 @@
 #  index_periods_on_period_type_id  (period_type_id)
 #
 class Period < ApplicationRecord
-
+	
 	#ASSOCIATIONS:
 	# belongs_to
 	belongs_to :period_type
@@ -27,7 +27,8 @@ class Period < ApplicationRecord
 
 	# VALIDATIONS:
 	validates :year, presence: true
-	validates :year, numericality: {only_integer: true, greater_than_or_equal_to: 1920, less_than_or_equal_to: 2100}
+	validates :year, numericality: {only_integer: true, greater_than_or_equal_to: 1900, less_than_or_equal_to: 2100}
+
 	validates :period_type, presence: true
 	validates_uniqueness_of :year, scope: [:period_type], message: 'Periodo existente', field_name: false
 

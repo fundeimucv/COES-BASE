@@ -68,7 +68,7 @@ class StudyPlan < ApplicationRecord
     self.code.upcase!
   end
 
-  # FUNTIONS:
+  # FUNCTIONS:
   # def initialization
   #   requirement_by_levels
   # end

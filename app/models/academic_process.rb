@@ -58,7 +58,7 @@ class AcademicProcess < ApplicationRecord
   has_many :subjects, through: :courses
 
   # ENUMERIZE:
-  enum modality: [:Semestral, :Anual, :Intensivo, :Unico]
+  enum modality: [:Semestral, :Anual, :Intensivo, :Unico, :Consecutivo]
 
   #VALIDATIONS:
   validates :school, presence: true
@@ -104,6 +104,21 @@ class AcademicProcess < ApplicationRecord
 
 
   # FUNCTIONS:
+
+  # def self.translate_modality letter
+  #   case letter
+  #   when 'I'
+  #     :Intensivo
+  #   when 'U'
+  #     :Unico
+  #   when 'S'
+  #     :Semestral
+  #   when 'C'
+  #     :Consecutivo
+  #   else
+  #     :Anual
+  #   end
+  # end
   def header_level
     (self.Anual?) ? 'Año' : 'Sem'
   end
@@ -375,9 +390,9 @@ class AcademicProcess < ApplicationRecord
         inline_edit false
         inline_add false
         help 'Atención: Aún cuando este campo no es obligatorio y puede ser omitido es muy importante para las Citas Horarias e Inscripciones'
-        # pretty_value do
-        #   bindings[:object].name
-        # end
+
+        partial 'academic_process/custom_academic_process_id_field'
+        
       end
 
       field :max_credits do
@@ -397,6 +412,49 @@ class AcademicProcess < ApplicationRecord
         # end
       end
     end
+
+    update do
+      # group :default do
+      #   hide
+      # end      
+      field :school do
+        read_only true
+      end
+      field :period do
+        read_only true
+        pretty_value do
+          value.name
+        end
+      end
+      field :modality do
+        read_only true
+      end
+      field :process_before do
+        inline_edit false
+        inline_add false
+        help 'Atención: Aún cuando este campo no es obligatorio y puede ser omitido es indispensable para las generación de Citas Horarias, Programaciones e Inscripciones'
+
+        partial 'academic_process/custom_academic_process_id_field'
+        
+      end
+
+      field :max_credits do
+        label 'Máximo de créditos permitidos a inscribir'
+      end
+      field :max_subjects do
+        label 'Máximo de asignaturas permitidas a inscribir'
+      end
+
+      field :enroll_instructions do
+        help 'Si desea agregar imágenes tome en cuenta el tamaño de misma y su ajuste a la pantalla dónde se desplegará'
+      end
+
+      field :registration_amount do
+        # pretty_value do
+        #   bindings[:view].content_tag()
+        # end
+      end
+    end    
 
     show do
       field :name do
