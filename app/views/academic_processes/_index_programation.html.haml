@@ -2,6 +2,7 @@
 - params[:area] ||= areas.first.id
 - @academic_process_id = academic_process.id
 - @academic_process = academic_process
+- @school = @academic_process.school
 - # ATENCIÓN: HAY QUE VERIFICAR ESTA VISTA YA QUE SE ESTÁ FUCIONANDO: OFFER Y PFFER_PCI
 - if !areas.any?
   .alert.alert-danger.text-center 
@@ -32,7 +33,7 @@
         - show_area_cont = active_area ? 'show' : ''
 
         - sections = area.sections.where('courses.academic_process_id': @academic_process_id)
-        - if area.subjects.any?
+        - if area.subjects.where(school_id: @school.id).any?
           .tab-pane.fade{class: "#{active_area_cont} #{show_area_cont}", role: :tabpanel} 
             %ul#moda_selector.nav.nav-tabs
               - modalities.each do |moda|
