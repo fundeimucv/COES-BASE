@@ -408,7 +408,7 @@ task :migrate_reigstros_academicos => :environment do
 	with_errors = []
 
 	# Inscripcionseccion.joins(:seccion).where.not("secciones.numero = 'R' or secciones.numero ILIKE '%(R)%'").order(:created_at).each_with_index do |ar, i|
-	Inscripcionseccion.all.order(:created_at).each_with_index do |ar, i|
+	Inscripcionseccion.limit(20000).order(created_at: :desc).each_with_index do |ar, i|
 		begin
 			
 			salida = ar.import_academic_record
@@ -436,7 +436,11 @@ task :migrate_reigstros_academicos => :environment do
 	p "      Total Existentes: #{total_exist}       ".center(400, '-')
 	p "      Total Errores: #{total_errors}       ".center(400, '-')
 
-
+	begin
+		UserMailer.general(User.first, with_errors).deliver_now
+	rescue Exception => e
+		p 'Error enviando correo'
+	end
 	with_errors
 end
 
