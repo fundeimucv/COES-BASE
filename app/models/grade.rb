@@ -82,7 +82,7 @@ class Grade < ApplicationRecord
   # ENUMERIZE:
   enum registration_status: {pendiente: 0, universidad: 1, facultad: 2, escuela: 3}
   enum enrollment_status: {preinscrito: 0, asignado: 1, confirmado: 2}
-  enum graduate_status: {cursante: 0, tesista: 1, posible_graduando: 2, graduando: 3, graduado: 4}
+  enum graduate_status: {cursante: 0, tesista: 1, posible_graduando: 2, graduando: 3, graduado: 4, postgrado: 5}
   enum current_permanence_status: {nuevo: 0, regular: 1, reincorporado: 2, articulo3: 3, articulo6: 4, articulo7: 5, intercambio: 6, desertor: 7, egresado: 8, egresado_doble_titulo: 8, permiso_para_no_cursar: 9}
   enum region: {no_aplica: 0, amazonas: 1, barcelona: 2, barquisimeto: 3, bolivar: 4, capital: 5}
 
@@ -149,6 +149,88 @@ class Grade < ApplicationRecord
   scope :custom_search, -> (keyword) { joins(:user, :school).where("users.ci ILIKE '%#{keyword}%' OR schools.name ILIKE '%#{keyword}%'") }
 
   # FUNCTIONS:
+
+
+  # Import's Functions:
+
+  def import_new_grade grado
+
+    self.current_permanence_status = grado.reglamento
+	
+    if grado.reincorporado?
+      self.current_permanence_status = :reincorporado
+      self.enrollment_status = :confirmado
+    else
+      self.enrollment_status = grado.estado_inscripcion
+    end
+    self.graduate_status = grado.estado
+    self.region = grado.region
+    
+    self.registration_status = :escuela
+    
+    self.admission_type = AdmissionType.translate_tipo_ingreso grado.tipo_ingreso
+    
+    # Periodo Inicial
+    if grado.iniciado_periodo_id
+      academic_process_start_name = "#{grado.escuela_id} | #{grado.iniciado_periodo_id}"
+      ap = AcademicProcess.where(name: academic_process_start_name).first
+      self.start_process_id = ap&.id
+    end
+
+    if self.save
+      print '+'
+      # Historial Planes
+      grado.historialplanes.order(created_at: :asc).each do |histo_plan|
+        sp = StudyPlan.where(code: histo_plan.plan_id).first
+        self.study_plan_id = sp.id
+        self.save
+      end
+      
+      # Combinacion de Idiomas
+      if grado.escuela_id.eql? 'IDIO' and combinaciones = grado.estudiante&.combinaciones	
+        combinaciones.order(created_at: :asc).each do |combinacion|
+          idiama_descrpcion = combinacion.idioma1&.descripcion
+          language = Language.where(name: idiama_descrpcion).first
+          self.language1_id = language&.id
+          idiama_descrpcion = combinacion.idioma2&.descripcion
+          language = Language.where(name: idiama_descrpcion).first								
+          self.language2_id = language&.id
+          self.save if self.changed?
+        end
+      end
+
+      # Reportepago
+      if grado.reportepago and adjunto = Adjunto.where(name: 'respaldo', record_type: 'Reportepago', record_id: grado.reportepago_id).first
+        reporte = grado.reportepago
+        
+        payment_preport = PaymentReport.new
+        payment_preport.payable_type = 'Grade'
+        payment_preport.payable_id =  self.id
+        payment_preport.amount = reporte.monto
+        payment_preport.status = :Validado
+        payment_preport.transaction_id = reporte.numero
+        payment_preport.receiving_bank_account_id = BankAccount.first.id
+        payment_preport.transaction_date = reporte.fecha_transaccion
+        payment_preport.transaction_type = reporte.tipo_transaccion
+        
+        # Buscar Banco
+        bank = Bank.find_by(code: reporte.banco_origen_id)
+        payment_preport.origin_bank_id = bank.id
+        
+        # Adjunto
+        blob_id = adjunto.adjuntoblob_id
+        blob = ActiveStorage::Blob.find blob_id							
+        payment_preport.voucher.attach blob if blob
+        print payment_preport.save ? 'R√' : 'Rx'
+      end
+      return true
+    else
+      (p "x#{grade.errors.full_messages.to_sentence} |#{grado.estudiante_id}")
+      return false
+    end
+
+  end
+
   def help_msg
     unless self.school&.faculty&.contact_email.blank?
       "Puede escribir al correo: #{self.school&.faculty&.contact_email} para solicitar ayuda."

@@ -201,6 +201,13 @@ ActiveRecord::Schema[7.0].define(version: 2024_06_24_233603) do
     t.index ["authorizable_id"], name: "index_authorizeds_on_authorizable_id"
   end
 
+  create_table "bancos", id: { type: :string, limit: 255 }, force: :cascade do |t|
+    t.string "nombre", limit: 255
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
+    t.index ["id"], name: "index_bancos_on_id"
+  end
+
   create_table "bank_accounts", force: :cascade do |t|
     t.string "code", null: false
     t.string "holder", null: false
@@ -613,6 +620,18 @@ ActiveRecord::Schema[7.0].define(version: 2024_06_24_233603) do
     t.string "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "programaciones", id: false, force: :cascade do |t|
+    t.string "asignatura_id", limit: 255
+    t.string "periodo_id", limit: 255
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
+    t.integer "pci", limit: 2, null: false
+    t.index ["asignatura_id", "periodo_id"], name: "index_programaciones_on_asignatura_id_and_periodo_id", unique: true
+    t.index ["asignatura_id"], name: "index_programaciones_on_asignatura_id"
+    t.index ["periodo_id", "asignatura_id"], name: "index_programaciones_on_periodo_id_and_asignatura_id", unique: true
+    t.index ["periodo_id"], name: "index_programaciones_on_periodo_id"
   end
 
   create_table "qualifications", force: :cascade do |t|

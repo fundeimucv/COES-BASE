@@ -70,7 +70,7 @@ class Subject < ApplicationRecord
 
   # VALIDATIONS:
   validates :code, presence: true, uniqueness: {case_sensitive: false}
-  validates :name, presence: true, uniqueness: {case_sensitive: false}
+  validates :name, presence: true
   validates :ordinal, presence: true
   validates :subject_type, presence: true
   validates :qualification_type, presence: true
@@ -116,7 +116,7 @@ class Subject < ApplicationRecord
     self.code.strip!
     self.name.upcase!
     self.code.upcase!
-    self.code = "0#{self.code}" if self.code[0] != '0' 
+    # self.code = "0#{self.code}" if self.code[0] != '0' 
 
     self.school_id ||= self.area&.schools.first&.id 
   end

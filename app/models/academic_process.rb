@@ -67,7 +67,7 @@ class AcademicProcess < ApplicationRecord
   validates :max_credits, presence: true
   validates :max_subjects, presence: true
 
-  validates_uniqueness_of :school, scope: [:period], message: 'Proceso academico ya creado', field_name: false
+  validates_uniqueness_of :school, scope: [:period, :modality], message: 'Proceso academico ya creado', field_name: false
 
   # SCOPE:
   default_scope { order(name: :desc) }
@@ -76,7 +76,17 @@ class AcademicProcess < ApplicationRecord
   # Atention: To be commented by not use
   scope :sort_by_period, -> {unscoped.joins(:period).order('periods.year desc').second}
   # CALLBACKS:
+  # before_validation :set_numbers_default
   before_save :set_name
+
+  # def set_numbers_default
+    
+  #   max_credits ||= 48
+  #   max_subjects ||= 5
+
+  #   p "max_credits: #{max_credits}"
+  #   p "max_subjects: #{max_subjects}"
+  # end
 
   def conv_type
     "#{I18n.t("activerecord.scopes.academic_process."+self.modality)}#{self.period.period_type.code.upcase}"

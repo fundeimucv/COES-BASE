@@ -928,10 +928,18 @@ es:
         NR: reparacion
 
       section:
-        nota_final: 'NF'
-        equivalencia_externa: 'EE'
-        equivalencia_interna: 'EI' 
-        suficiencia: 'NS'
+        nota_final: NF
+        equivalencia_externa: EE
+        equivalencia_interna: EI 
+        suficiencia: NS
+        reparacion: NR
+        diferido: ND
+        NF: nota_final
+        EE: equivalencia_externa
+        EI: equivalencia_interna
+        NS: suficiencia
+        NR: reparacion
+        ND: diferido
       payment_report:
         transferencia: 'Transferencia'
         efectivo: 'Efectivo'

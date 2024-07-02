@@ -32,8 +32,15 @@ class EnrollAcademicProcess < ApplicationRecord
   before_destroy :paper_trail_destroy
   before_update :paper_trail_update
 
-  after_save :update_current_permanence_status_on_grade
+  # OJO: Sólo para la migradión:
+  # Excluir la siguiente validación y agregar la que viene luego
+  # after_save :update_current_permanence_status_on_grade
+  # before_validation :set_enroll_status
 
+  # def set_enroll_status
+  #   enroll_status = :confirmado
+  # end
+  
   # ASSOCIATIONS:
   belongs_to :grade
   has_one :student, through: :grade

@@ -72,7 +72,7 @@ class PaymentReport < ApplicationRecord
   validates :voucher, presence: true
 
   # Enum:
-  enum transaction_type: [:transferencia, :efectivo, :punto_venta]
+  enum transaction_type: {transferencia: 0, deposito: 1}
   enum status: [:Pendiente, :Validado, :Invalidado]
 
   # SPECIALS FUNCTIONS OF POLYMORPHIC:

@@ -11,6 +11,30 @@ p '      Creados Primeros Tipos de Períodos!    '.center(200, '=') if PeriodTyp
 
 p '      Creados Primeros Idiomas!    '.center(200, '=') if Language.create([{name: 'Alemán'}, {name: 'Francés'}, {name: 'Inglés'}, {name: 'Italiano'}, {name: 'Portugués'}])
 
+
+p '      Creadas Primeras Config Generales!    '.center(200, '=') if GeneralSetup.create!([
+    {clave: 'ENABLED_POST_QUALIFICACION', description: 'Desactivar calificaciones posteriores', valor: 'NO'},
+    {clave: 'SEND_WELLCOME_MAILER_ON_CREATE_USER', description: 'Enviar correo de bienvenida al crear usuario', valor: 'NO'}
+])
+
+p '      Creados Tipos de Asignatura!    '.center(200, '=') if  SubjectType.create!([{code: 'OB', name: 'OBLIGATORIA'}, {code: 'L', name: 'ELECTIVA'}, {code: 'OP', name: 'OPTATIVA'}, {code: 'P', name: 'PROYECTO'}])
+
+p '      Creada Facultad!    '.center(200, '=') if Faculty.create!(code: 'FHE', coes_boss_name: 'Pedro Coronado', contact_email: 'soporte@plus.coesfhe.com', name: 'Facultad de Humanidades y Educación', short_name: 'Humanidades')
+
+p '      Creadas Escuelas!    '.center(200, '=') if Faculty.first.schools.create!([
+    {type_entity: :pregrado, short_name: "ARTES", name: "ESCUELA DE ARTES",	code: 'ARTE'},
+    {type_entity: :pregrado, short_name: "BIBLIOTECOLOGÍA", name: "ESCUELA DE BIBLIOTECOLOGÍA Y ARCHIVOLOGÍA", code: 'BIAR'},
+    {type_entity: :pregrado, short_name: "COMUNICACIÓN", name: "ESCUELA DE COMUNICACIÓN SOCIAL", code: 'COMU'},
+    {type_entity: :pregrado, short_name: "EDUCACIÓN", name: "ESCUELA DE EDUCACIÓN", code: 'EDUC'},
+    {type_entity: :pregrado, short_name: "FILOSOFÍA", name: "ESCUELA DE FILOSOFÍA", code: 'FILO'},
+    {type_entity: :pregrado, short_name: "GEOGRAFÍA", name: "ESCUELA DE GEOGRAFÍA", code: 'GEOG'},
+    {type_entity: :pregrado, short_name: "HISTORIA", name: "ESCUELA DE HISTORIA", code: 'HIST'},
+    {type_entity: :pregrado, short_name: "IDIOMAS", name: "ESCUELA DE IDIOMAS MODERNOS", code: 'IDIO'},
+    {type_entity: :pregrado, short_name: "LETRAS", name: "ESCUELA DE LETRAS", code: 'LETR'},
+    {type_entity: :pregrado, short_name: "PSICOLOGÍA", name: "ESCUELA DE PSICOLOGÍA", code: 'PSIC'},
+    {type_entity: :postgrado, short_name: "POSTGRADO", name: "POSTGRADO FHE", code: 'POST'}])
+
+
 p '      Creados Primeros Bancos!    '.center(200, '=') if Bank.create([{code: "0006", name: "Banco de Coro"},
 {code: "0007", name: "Banfoandes"},
 {code: "0008", name: "Banco Guayana"},
@@ -90,7 +114,17 @@ p '      Creados Primeros Tipos de Admisión!    '.center(200, '=') if Admission
 )
 
 
-SubjectType.create([{code: :OP, name: :optativa}, {code: :L, name: :electiva}, {code: :OB, name: :obligatoria}, {code: :P, name: :proyecto}])
+
+p '      Creados Primeros Tipos de Asignaturas!    '.center(200, '=') if SubjectType.create([{code: :OP, name: :optativa}, {code: :L, name: :electiva}, {code: :OB, name: :obligatoria}, {code: :P, name: :proyecto}])
+
+p '      Creados Primeros Grupos de Tutoriales!    '.center(200, '=')  if GroupTutorial.create([{name_group: 'Secciones'},
+{name_group: 'Profesores'},
+{name_group: 'Estudiantes'},
+{name_group: 'Periodos', description: 'Entidad Periodos'},
+{name_group: 'Asignaturas', description: 'Entidad Periodos'},
+{name_group: 'Planes de Estudio', description: 'Acceso a las Funciones de la Entidad Planes de Estudio'},
+{name_group: 'Escuela', description: 'Acceso a las Funciones de la Entidad Escuela'},
+{name_group: 'Configuración General', description: 'Ingreso al Sistema'}])
 
 p '      FINAL    '.center(400, '*')
 

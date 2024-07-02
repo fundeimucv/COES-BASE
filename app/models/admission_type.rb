@@ -63,6 +63,11 @@ class AdmissionType < ApplicationRecord
     end
   end
 
+  def self.translate_tipo_ingreso tp
+    tp = 'EGRESADOS (UCV)' if tp.eql? 'EGRESADO' 
+    AdmissionType.where(name: tp).first
+  end
+
   def total_students
     students.count
   end

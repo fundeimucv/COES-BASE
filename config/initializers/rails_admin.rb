@@ -73,7 +73,8 @@ RailsAdmin.config do |config|
     index do                         # mandatory
 
       require_relative '../../lib/rails_admin/config/actions/index'
-      except [SectionTeacher, Profile, Address, EnrollmentDay, Qualification, SubjectLink, PartialQualification]
+      # except [SectionTeacher, Profile, Address, EnrollmentDay, Qualification, SubjectLink, PartialQualification]
+      except [SectionTeacher, Profile, Address, EnrollmentDay, Qualification, SubjectLink, PartialQualification, Adjunto, Adjuntoblob, Administrador, Asignatura, Banco, Catedra, Catedradepartamento, Combinacion, Departamento, Escuela, Escuelaperiodo, Estudiante, Grado, Historialplan, Inscripcionescuelaperiodo, Inscripcionseccion, Plan, Periodo, Profesor, Programacion]
       # except [Address, SectionTeacher, Profile, User, StudyPlan, Period, Course, Faculty]
 
     end
