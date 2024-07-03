@@ -276,7 +276,7 @@ class Inscripcionseccion < ApplicationRecord
     total_mgs = ""
   
     # Inscripcionseccion.joins(:seccion).where.not("secciones.numero = 'R' or secciones.numero ILIKE '%(R)%'").order(:created_at).each_with_index do |ar, i|
-    Inscripcionseccion.all.order(created_at: :desc).each_with_index do |ar, i|
+    Inscripcionseccion.all.offset(90000).order(created_at: :desc).each_with_index do |ar, i|
       begin
         
         salida = ar.import_academic_record
