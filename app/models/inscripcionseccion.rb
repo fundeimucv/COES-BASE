@@ -298,12 +298,12 @@ class Inscripcionseccion < ApplicationRecord
           msg += "      Total Nuevos Registros: #{total_new_records}      ".center(400, '-')
           msg += "      Total Errores: #{total_errors}      ".center(400, '-')
           msg += "      Detalles IDs Errores: #{with_errors}      ".center(400, '-')
-          UserMailer.general(User.first, mgs).deliver_now
+          UserMailer.general(User.first, msg).deliver_now
         end
         
       rescue StandardError => e
         msg = "#{e} | (#{ar.id}) #{ar.general_desc}"
-        UserMailer.general(User.first, mgs).deliver_now
+        UserMailer.general(User.first, msg).deliver_now
         break
       end
     end
