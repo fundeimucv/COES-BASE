@@ -263,6 +263,73 @@ class Inscripcionseccion < ApplicationRecord
     "#{estudiante_id}, #{calificacion_final}, #{seccion.periodo_id}, #{seccion.asignatura_id}, #{seccion.numero}"
   end
   # Funciones de importación:
+
+  def self.total_import 
+
+
+    p 'iniciando migración de registros académicos... '
+    total_exist = 0
+    total_new_records = 0
+    total_errors = 0
+    with_errors = []
+  
+    total_mgs = ""
+  
+    # Inscripcionseccion.joins(:seccion).where.not("secciones.numero = 'R' or secciones.numero ILIKE '%(R)%'").order(:created_at).each_with_index do |ar, i|
+    Inscripcionsecciona.all.order(created_at: :desc).each_with_index do |ar, i|
+      begin
+        
+        salida = ar.import_academic_record
+  
+        print salida
+        if salida.eql? '+'
+          total_new_records += 1
+        elsif salida.eql? '='
+          total_exist += 1
+        else
+          p ar.general_desc
+          total_errors += 1
+          with_errors << ar.id
+        end
+
+        if i.eql? 10000
+          msg = "            Resumen hasta el registro #{i}:         ".center(400, '-')
+          msg += "      Total Existentes: #{total_exist}      ".center(400, '-')
+          msg += "      Total Nuevos Registros: #{total_new_records}      ".center(400, '-')
+          msg += "      Total Errores: #{total_errors}      ".center(400, '-')
+          msg += "      Detalles IDs Errores: #{with_errors}      ".center(400, '-')
+          UserMailer.general(User.first, mgs).deliver_now
+        end
+        
+      rescue StandardError => e
+        msg = "#{e} | (#{ar.id}) #{ar.general_desc}"
+        UserMailer.general(User.first, mgs).deliver_now
+        break
+      end
+    end
+      
+    total_mgs += "      Total Esperado: #{Inscripcionseccion.count}       ".center(400, '-')
+    total_mgs += "      Total Nuevos registros agregados: #{total_new_records}       ".center(400, '-')
+    total_mgs += "      Total Existentes: #{total_exist}       ".center(400, '-')
+    total_mgs += "      Total Errores: #{total_errors}       ".center(400, '-')
+    total_mgs += "      Identificadores de Inscripcionseccion con errores: #{with_errors}    "
+  
+    begin
+      UserMailer.general(User.first, total_mgs).deliver
+    rescue Exception => e
+      p 'Error enviando correo'
+    end
+    p with_errors
+
+    
+    
+  end
+
+
+
+
+
+
   def import_academic_record
     # AcademicRecord:
       # status: {sin_calificar: 0, aprobado: 1, aplazado: 2, retirado: 3, perdida_por_inasistencia: 4}

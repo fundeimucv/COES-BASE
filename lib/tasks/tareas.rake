@@ -359,7 +359,7 @@ task :migrate_asignaturas => :environment do
 	end
 end
 
-desc "Migrar Grados"
+desc "Migrar Programación"
 task :migrate_programacion => :environment do
 
 	p 'iniciando migración de programacion... '
@@ -399,49 +399,9 @@ task :migrate_programacion => :environment do
 end
 
 desc "Migracion de Registros Académicos"
-task :migrate_reigstros_academicos => :environment do
+task :migrate_inscripcionsecciones => :environment do
 
-	p 'iniciando migración de registros académicos... '
-	total_exist = 0
-	total_new_records = 0
-	total_errors = 0
-	with_errors = []
-
-	# Inscripcionseccion.joins(:seccion).where.not("secciones.numero = 'R' or secciones.numero ILIKE '%(R)%'").order(:created_at).each_with_index do |ar, i|
-	Inscripcionseccion.limit(20000).order(created_at: :desc).each_with_index do |ar, i|
-		begin
-			
-			salida = ar.import_academic_record
-
-			print salida
-			if salida.eql? '+'
-				total_new_records += 1
-			elsif salida.eql? '='
-				total_exist += 1
-			else
-				p ar.general_desc
-				total_errors += 1
-				with_errors << ar.id
-			end 
-			
-		rescue StandardError => e
-			print_error "#{e} | #{ar.general_desc}"
-			
-			break
-		end
-	end
-		
-	p "      Total Esperado: #{Inscripcionseccion.count}       ".center(400, '-')
-	p "      Total Nuevos registros agregados: #{total_new_records}       ".center(400, '-')
-	p "      Total Existentes: #{total_exist}       ".center(400, '-')
-	p "      Total Errores: #{total_errors}       ".center(400, '-')
-
-	begin
-		UserMailer.general(User.first, with_errors).deliver_now
-	rescue Exception => e
-		p 'Error enviando correo'
-	end
-	with_errors
+	Inscripcionseccion.delay.total_import
 end
 
 
