@@ -399,9 +399,9 @@ task :migrate_programacion => :environment do
 end
 
 desc "Migracion de Registros Académicos"
-task :migrate_inscripcionsecciones => :environment do
-
-	Inscripcionseccion.delay.total_import
+# task :migrate_inscripcionsecciones => :environment do
+task :migrate_inscripcionsecciones, [:offset] => [:environment] do |t, args|	
+	Inscripcionseccion.total_import(args[:offset])
 end
 
 

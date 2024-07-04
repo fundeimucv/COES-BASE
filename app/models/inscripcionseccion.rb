@@ -264,7 +264,7 @@ class Inscripcionseccion < ApplicationRecord
   end
   # Funciones de importación:
 
-  def self.total_import 
+  def self.total_import offset
 
 
     p 'iniciando migración de registros académicos... '
@@ -276,7 +276,7 @@ class Inscripcionseccion < ApplicationRecord
     total_mgs = ""
   
     # Inscripcionseccion.joins(:seccion).where.not("secciones.numero = 'R' or secciones.numero ILIKE '%(R)%'").order(:created_at).each_with_index do |ar, i|
-    Inscripcionseccion.all.offset(90000).order(created_at: :desc).each_with_index do |ar, i|
+    Inscripcionseccion.all.offset(offset).order(created_at: :desc).each_with_index do |ar, i|
       begin
         
         salida = ar.import_academic_record
@@ -292,14 +292,14 @@ class Inscripcionseccion < ApplicationRecord
           with_errors << ar.id
         end
 
-        if i.eql? 10000
-          msg = "            Resumen hasta el registro #{i}:         ".center(400, '-')
-          msg += "      Total Existentes: #{total_exist}      ".center(400, '-')
-          msg += "      Total Nuevos Registros: #{total_new_records}      ".center(400, '-')
-          msg += "      Total Errores: #{total_errors}      ".center(400, '-')
-          msg += "      Detalles IDs Errores: #{with_errors}      ".center(400, '-')
-          UserMailer.general(User.first, msg).deliver_now
-        end
+        # if i.eql? 10000
+        #   msg = "            Resumen hasta el registro #{i}:         ".center(400, '-')
+        #   msg += "      Total Existentes: #{total_exist}      ".center(400, '-')
+        #   msg += "      Total Nuevos Registros: #{total_new_records}      ".center(400, '-')
+        #   msg += "      Total Errores: #{total_errors}      ".center(400, '-')
+        #   msg += "      Detalles IDs Errores: #{with_errors}      ".center(400, '-')
+        #   UserMailer.general(User.first, msg).deliver_now
+        # end
         
       rescue StandardError => e
         msg = "#{e} | (#{ar.id}) #{ar.general_desc}"
