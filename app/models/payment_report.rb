@@ -50,8 +50,9 @@ class PaymentReport < ApplicationRecord
     attachable.variant :thumb, resize_to_limit: [100,100]
   end
 
-  scope :grades, -> {where(payable_type: 'Grade')}  
-  scope :enroll_academic_processes, -> {where(payable_type: 'EnrollAcademicProcess')}  
+  scope :todos, -> {where('0 = 0')}
+  scope :pagos_escuela, -> {where(payable_type: 'Grade')}  
+  scope :pagos_inscripcion, -> {where(payable_type: 'EnrollAcademicProcess')}  
 
   scope :custom_search, -> (keyword) {joins_enroll_academic_process.joins("INNER JOIN academic_processes ON enroll_academic_processes.academic_process_id = academic_processes.id").where("academic_processes.name ILIKE '%#{keyword}%'") }  
 
@@ -133,7 +134,7 @@ class PaymentReport < ApplicationRecord
       # fields :amount, :transaction_id, :transaction_type, :transaction_date, :origin_bank, :receiving_bank_account, :owner_account_ci, :owner_account_name
 
       search_by :custom_search
-      scopes [:todos, :Pendiente, :Validado, :Invalidado]
+      scopes [:todos, :pagos_escuela, :pagos_inscripcion, :Pendiente, :Validado, :Invalidado]
       field :id do
         sticky true
       end
@@ -152,7 +153,7 @@ class PaymentReport < ApplicationRecord
       field :academic_process do
         label 'Período'
         formatted_value do
-          bindings[:object].academic_process&.name
+          bindings[:object].academic_process&.name if bindings[:object].payable_type.eql? 'EnrollAcademicProcess'
         end
       end
       field :student do
