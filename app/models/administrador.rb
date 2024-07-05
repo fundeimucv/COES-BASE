@@ -36,6 +36,38 @@ class Administrador < ApplicationRecord
 
 	scope :no_maestros, -> {where('rol != 0')}
 
+	def rol_to_role
+		case rol
+		when "ninja"
+			:desarrollador
+		when "admin_departamento", "admin_escuela", "super", "taquilla"
+			:asistente
+		else
+			rol
+		end
+	end
+
+	# def find_or_create_admin
+	# 	Admin.find_or_create_by(role: rol_to_role, user_id: usuario.find_user.id)
+	# end
+
+	def self.import_admin
+
+		Administrador.all.each do |adm|
+			begin
+				aux = Admin.find_or_initialize_by(role: adm.rol_to_role, user_id: adm.usuario.find_user.id)				
+				if aux.new_record?
+					print aux.save ? '+' : "E (#{adm.id}):#{aux.errors.full_messages.to_sentence}"
+				else
+					print '='
+				end
+			rescue Exception => e
+				p "Error (#{adm.id}): #{e}"
+			end
+		end
+		
+	end
+
 	def autorizado? *args
 		usuario.autorizado? *args
 	end

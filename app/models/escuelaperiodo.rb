@@ -10,6 +10,17 @@
 #  escuela_id      :string(255)
 #  periodo_id      :string(255)
 #
+# Indexes
+#
+#  index_escuelaperiodos_on_escuela_id                 (escuela_id)
+#  index_escuelaperiodos_on_escuela_id_and_periodo_id  (escuela_id,periodo_id) UNIQUE
+#  index_escuelaperiodos_on_periodo_id                 (periodo_id)
+#  index_escuelaperiodos_on_periodo_id_and_escuela_id  (periodo_id,escuela_id) UNIQUE
+#
+# Foreign Keys
+#
+#  escuelaperiodos_escuela_id_fkey  (escuela_id => escuelas.id)
+#
 class Escuelaperiodo < ApplicationRecord
 
 	# ASOCIACIONES: 

@@ -18,7 +18,6 @@ class Area < ApplicationRecord
   # ASSOCITATIONS:
   has_and_belongs_to_many :departaments
   has_many :schools, through: :departaments
-  has_many :admins, as: :env_authorizable 
 
   has_many :subjects, dependent: :restrict_with_error
   has_many :sections, through: :subjects

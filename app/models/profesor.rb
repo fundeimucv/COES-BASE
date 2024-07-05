@@ -3,7 +3,7 @@
 # Table name: profesores
 #
 #  departamento_id :string(255)
-#  usuario_id      :string(255)      not null
+#  usuario_id      :string(255)      not null, primary key
 #
 class Profesor < ApplicationRecord
     self.table_name = 'profesores'

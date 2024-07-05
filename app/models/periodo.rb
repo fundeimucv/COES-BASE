@@ -9,6 +9,10 @@
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
 #
+# Indexes
+#
+#  index_periodos_on_id  (id)
+#
 class Periodo < ApplicationRecord
 	# ENUMERADAS CONSTANTES
 	self.table_name = 'periodos'

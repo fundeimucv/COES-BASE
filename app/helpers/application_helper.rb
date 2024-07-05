@@ -150,7 +150,7 @@ module ApplicationHelper
 	end	
 	
 
-	def translate_model model, singular=other
+	def translate_model model, singular='other'
 		I18n.t("activerecord.models.#{model}.#{singular}")
 	end
 

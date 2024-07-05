@@ -38,7 +38,6 @@ class Faculty < ApplicationRecord
 
 	# ASSOCIATIONS:
 	# has_many:
-	has_many :admins, as: :env_authorizable, dependent: :destroy
 	has_many :schools, dependent: :destroy
 	has_many :academic_processes, through: :schools
 	has_many :periods, through: :academic_processes

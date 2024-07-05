@@ -26,6 +26,9 @@ class Departament < ApplicationRecord
 	has_many :courses, through: :subjects
 	has_many :sections, through: :courses
 	has_many :academic_records, through: :sections
+	
+	has_many :env_auths, as: :env_authorizable, dependent: :destroy
+
 	# VALIDATIONS:
 	validates :name, presence: true#, uniqueness: {case_sensitive: false}
 

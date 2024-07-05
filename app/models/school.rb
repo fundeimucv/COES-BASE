@@ -63,7 +63,8 @@ class School < ApplicationRecord
   has_many :subjects, through: :areas
   has_many :subject_types, through: :subjects
   has_many :periods, through: :academic_processes
-  has_many :admins, as: :env_authorizable 
+  
+  has_many :env_auths, as: :env_authorizable, dependent: :destroy
 
 	has_many :entity_bank_accounts, as: :bank_accountable, dependent: :destroy
 	has_many :bank_accounts, through: :entity_bank_accounts, dependent: :destroy

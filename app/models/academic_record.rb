@@ -32,6 +32,12 @@ class AcademicRecord < ApplicationRecord
   before_destroy :paper_trail_destroy
   before_update :paper_trail_update
 
+  before_save :set_school_id
+
+  def set_school_id
+    school_id = school&.id
+  end
+
 
   # ASSOCIATIONS:
   belongs_to :section

@@ -68,15 +68,16 @@ class ApplicationController < ActionController::Base
     current_user&.admin? and session[:rol].eql? 'admin'
   end
 
-  def current_schools
+  def set_current_env
     if current_admin
-      env = current_admin.env_authorizable
-      if env.is_a? Faculty
-        env.schools
-      elsif env.is_a? School
-        School.where(id: env.id)
+      if current_admin.desarrollador? or current_admin.jefe_control_estudio?
+        session[:env_type] = 'School'
+        session[:env_ids] = School.ids
+      else
+        session[:env_type] = current_admin.env_auths.map(&:env_authorizable_type).first
+        session[:env_ids] = current_admin.env_auths.map(&:env_authorizable_id)
       end
-    end    
+    end
   end
 
   def set_session_id_if_multirols

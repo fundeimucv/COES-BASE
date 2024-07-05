@@ -599,6 +599,7 @@ es:
       admin:
         user: 'Usuario'
         role: 'Rol'
+        env_auths: Entornos
         env_authorizable: 'Entorno Autorizado'
         profile: 'Perfil de Usuario' 
         created_at: 'Fecha Registro'
@@ -655,6 +656,8 @@ es:
         subject: 'Asignatura'
         offer: ¿Ofertada?
         offer_as_pci: 'Ofertar cómo PCI'
+      env_ath:
+        env_authorizable: Entorno Autoridado
       enroll_academic_process:
         grade: 'Grado'
         academic_process: 'Período'

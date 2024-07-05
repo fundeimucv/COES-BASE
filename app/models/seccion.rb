@@ -14,6 +14,18 @@
 #  profesor_id     :string(255)
 #  tipo_seccion_id :string(255)
 #
+# Indexes
+#
+#  index_secciones_on_asignatura_id                            (asignatura_id)
+#  index_secciones_on_numero_and_periodo_id_and_asignatura_id  (numero,periodo_id,asignatura_id) UNIQUE
+#  index_secciones_on_periodo_id                               (periodo_id)
+#  index_secciones_on_profesor_id                              (profesor_id)
+#  index_secciones_on_tipo_seccion_id                          (tipo_seccion_id)
+#
+# Foreign Keys
+#
+#  secciones_tipo_seccion_id_fkey  (tipo_seccion_id => tipo_secciones.id)
+#
 class Seccion < ApplicationRecord
 
 	self.table_name = 'secciones'

@@ -23,7 +23,9 @@
 class Admin < ApplicationRecord
 
   # ENUMERIZE:
-  enum role: [:desarrollador, :jefe_control_estudio, :asistente]
+  # enum role: [:desarrollador, :jefe_control_estudio, :asistente]
+  enum role: {desarrollador: 0, jefe_control_estudio: 1, asistente: 3}
+  
 
   # HISTORY:
   has_paper_trail on: [:create, :destroy, :update]
@@ -36,10 +38,13 @@ class Admin < ApplicationRecord
   belongs_to :user
   # accepts_nested_attributes_for :user
   
-  belongs_to :env_authorizable, polymorphic: true, optional: true
+  
   belongs_to :profile, optional: true
 
   has_many :authorizeds
+  
+  has_many :env_auths, dependent: :destroy
+  accepts_nested_attributes_for :env_auths
 
   before_save :set_role
 
@@ -185,13 +190,14 @@ class Admin < ApplicationRecord
       field :pare do
         label 'PARE (Procesos de Acceso Restringido)'
         formatted_value do
-          if bindings[:object].asistente?
+          unless bindings[:object].jefe_control_estudio? or bindings[:object].desarrollador?
 
             bindings[:view].render(partial: 'authorizeds/form', locals: {user: bindings[:object].user})
           end
         end
       end
 
+      field :env_auths
 
       # field :env_authorizable 
       # field :created_at
@@ -236,6 +242,11 @@ class Admin < ApplicationRecord
       #     {:onChange => "alert($(this).val())"}
 
       #   end
+      # end
+
+      field :env_auths 
+      # field :env_auths do
+      #   partial 'env_auth/custom_env_auth_field'
       # end
     end
 

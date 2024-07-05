@@ -235,6 +235,10 @@ class Usuario < ApplicationRecord
 
 	end
 
+	def find_user
+		User.where(ci: id).first
+	end
+
 	def roles
 		aux = []
 		aux << "#{administrador.desc_rol}" if administrador

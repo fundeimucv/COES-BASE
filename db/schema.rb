@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_06_24_233603) do
+ActiveRecord::Schema[7.0].define(version: 2024_07_04_163711) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -343,6 +343,16 @@ ActiveRecord::Schema[7.0].define(version: 2024_06_24_233603) do
     t.index ["bank_accountable_type", "bank_accountable_id"], name: "index_entity_bank_accounts_on_bank_accountable"
   end
 
+  create_table "env_auths", force: :cascade do |t|
+    t.bigint "admin_id", null: false
+    t.string "env_authorizable_type", default: "School"
+    t.bigint "env_authorizable_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["admin_id"], name: "index_env_auths_on_admin_id"
+    t.index ["env_authorizable_type", "env_authorizable_id"], name: "index_env_auths_on_env_authorizable"
+  end
+
   create_table "escuelaperiodos", id: :bigint, default: nil, force: :cascade do |t|
     t.string "periodo_id", limit: 255
     t.string "escuela_id", limit: 255
@@ -350,6 +360,10 @@ ActiveRecord::Schema[7.0].define(version: 2024_06_24_233603) do
     t.datetime "updated_at", precision: nil, null: false
     t.integer "max_creditos"
     t.integer "max_asignaturas"
+    t.index ["escuela_id", "periodo_id"], name: "index_escuelaperiodos_on_escuela_id_and_periodo_id", unique: true
+    t.index ["escuela_id"], name: "index_escuelaperiodos_on_escuela_id"
+    t.index ["periodo_id", "escuela_id"], name: "index_escuelaperiodos_on_periodo_id_and_escuela_id", unique: true
+    t.index ["periodo_id"], name: "index_escuelaperiodos_on_periodo_id"
   end
 
   create_table "escuelas", id: { type: :string, limit: 255 }, force: :cascade do |t|
@@ -591,6 +605,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_06_24_233603) do
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
     t.integer "tipo", null: false
+    t.index ["id"], name: "index_periodos_on_id"
   end
 
   create_table "periods", force: :cascade do |t|
@@ -726,6 +741,11 @@ ActiveRecord::Schema[7.0].define(version: 2024_06_24_233603) do
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
     t.integer "abierta", limit: 2
+    t.index ["asignatura_id"], name: "index_secciones_on_asignatura_id"
+    t.index ["numero", "periodo_id", "asignatura_id"], name: "index_secciones_on_numero_and_periodo_id_and_asignatura_id", unique: true
+    t.index ["periodo_id"], name: "index_secciones_on_periodo_id"
+    t.index ["profesor_id"], name: "index_secciones_on_profesor_id"
+    t.index ["tipo_seccion_id"], name: "index_secciones_on_tipo_seccion_id"
   end
 
   create_table "sections", force: :cascade do |t|
@@ -935,6 +955,8 @@ ActiveRecord::Schema[7.0].define(version: 2024_06_24_233603) do
   add_foreign_key "enroll_academic_processes", "academic_processes"
   add_foreign_key "enroll_academic_processes", "grades"
   add_foreign_key "enrollment_days", "academic_processes"
+  add_foreign_key "env_auths", "admins", primary_key: "user_id", on_update: :cascade, on_delete: :cascade
+  add_foreign_key "escuelaperiodos", "escuelas", name: "escuelaperiodos_escuela_id_fkey"
   add_foreign_key "grades", "academic_processes", column: "enabled_enroll_process_id"
   add_foreign_key "grades", "academic_processes", column: "start_process_id", on_update: :cascade, on_delete: :nullify
   add_foreign_key "grades", "admission_types"
@@ -956,6 +978,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_06_24_233603) do
   add_foreign_key "schedules", "sections"
   add_foreign_key "schools", "academic_processes", column: "active_process_id"
   add_foreign_key "schools", "academic_processes", column: "enroll_process_id"
+  add_foreign_key "secciones", "tipo_secciones", column: "tipo_seccion_id", name: "secciones_tipo_seccion_id_fkey"
   add_foreign_key "sections", "courses"
   add_foreign_key "sections", "teachers", primary_key: "user_id", on_update: :cascade, on_delete: :cascade
   add_foreign_key "sections_teachers", "sections"
