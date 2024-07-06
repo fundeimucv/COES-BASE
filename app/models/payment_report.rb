@@ -15,18 +15,24 @@
 #  origin_bank_id            :bigint           not null
 #  payable_id                :bigint
 #  receiving_bank_account_id :bigint
+#  school_id                 :bigint
 #  transaction_id            :string
+#  user_id                   :bigint
 #
 # Indexes
 #
 #  index_payment_reports_on_origin_bank_id             (origin_bank_id)
 #  index_payment_reports_on_payable                    (payable_type,payable_id)
 #  index_payment_reports_on_receiving_bank_account_id  (receiving_bank_account_id)
+#  index_payment_reports_on_school_id                  (school_id)
+#  index_payment_reports_on_user_id                    (user_id)
 #
 # Foreign Keys
 #
 #  fk_rails_...  (origin_bank_id => banks.id)
 #  fk_rails_...  (receiving_bank_account_id => bank_accounts.id) ON DELETE => nullify ON UPDATE => cascade
+#  fk_rails_...  (school_id => schools.id)
+#  fk_rails_...  (user_id => users.id)
 #
 class PaymentReport < ApplicationRecord
 
@@ -41,6 +47,8 @@ class PaymentReport < ApplicationRecord
   # ASSOCIATIONS:
   belongs_to :origin_bank, class_name: 'Bank', foreign_key: 'origin_bank_id'
   belongs_to :payable, polymorphic: true
+  belongs_to :school
+  belongs_to :user
   # Atención: Esta es la mejor opción pero es posible que no funcione por el polimorfismo
   # has_one :student, through: :payable
   # has_one :user, through: :student
@@ -60,6 +68,13 @@ class PaymentReport < ApplicationRecord
   attr_accessor :remove_voucher
   after_save { voucher.purge if remove_voucher.eql? '1' }   
 
+  before_save :set_payable_values
+
+  def set_payable_values
+    self.school_id = self.school_by_payable.id
+    self.user_id = self.user_by_payable.id
+  end
+
   # VALIDATIONS:
   # validates :payable_id, presence: true
   # validates :payable_type, presence: true
@@ -77,12 +92,16 @@ class PaymentReport < ApplicationRecord
   enum status: [:Pendiente, :Validado, :Invalidado]
 
   # SPECIALS FUNCTIONS OF POLYMORPHIC:
-  def student
+  def student_by_payable
     payable&.student
   end
 
-  def user
-    student&.user
+  def school_by_payable
+    payable&.school
+  end  
+
+  def user_by_payable
+    student_by_payable&.user
   end
 
   def academic_process
@@ -158,7 +177,11 @@ class PaymentReport < ApplicationRecord
       end
       field :student do
         pretty_value do
-          "<a href='/admin/student/#{bindings[:object].student&.id}'>#{bindings[:object].student&.user&.ci_fullname}</a>".html_safe
+          if bindings[:view]._current_user&.admin&.authorized_read? 'Student'
+            "<a href='/admin/student/#{bindings[:object].user_id}'>#{bindings[:object].user&.ci_fullname}</a>".html_safe
+          else
+            bindings[:object].user&.ci_fullname
+          end
         end
       end
       # field :payable_name do

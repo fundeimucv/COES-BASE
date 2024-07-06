@@ -44,7 +44,7 @@ class Admin < ApplicationRecord
   has_many :authorizeds
   
   has_many :env_auths, dependent: :destroy
-  accepts_nested_attributes_for :env_auths
+  accepts_nested_attributes_for :env_auths, allow_destroy: true
 
   before_save :set_role
 
@@ -221,7 +221,7 @@ class Admin < ApplicationRecord
           value.titleize
         end        
       end
-      # field :env_authorizable
+      field :env_auths
       # field :created_at
     end
 
@@ -253,6 +253,7 @@ class Admin < ApplicationRecord
     export do
       field :role
       field :user
+      field :env_auths
     end
   end
 

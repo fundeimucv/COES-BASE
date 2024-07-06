@@ -10,47 +10,35 @@ module RailsAdmin
     before_action :set_current_env
     before_action :check_for_cancel
 
-    SchoolDirectEntities = ['Subject', 'Teacher', 'StudyPlan', 'Departament', 'AcademicProcess', 'EnrollAcademicProcecess']
-    DptDirectEntities = ['Subject', 'StudyPlan', 'AcademicProcess', 'EnrollAcademicProcecess']
-
-    SchoolIndirectEntities = ['Grade', 'Area', 'Seccion', 'Course', 'AcademicRecord', 'PaymentReport']
-    DptIndirectEntities = ['Grade', 'Seccion', 'Course', 'AcademicRecord', 'PaymentReport']
-
+    
     def bulk_action
       get_model
       process(params[:bulk_action]) if params[:bulk_action].in?(RailsAdmin::Config::Actions.all(:bulkable, controller: self, abstract_model: @abstract_model).collect(&:route_fragment))
     end
-
+    
     def list_entries(model_config = @model_config, auth_scope_key = :index, additional_scope = get_association_scope_from_params, pagination = !(params[:associated_collection] || params[:all] || params[:bulk_ids]))
       scope = model_config.scope
       auth_scope = @authorization_adapter&.query(auth_scope_key, model_config.abstract_model)
       
+      
       if !(current_admin.desarrollador? or current_admin.jefe_control_estudio?)
-        if session[:env_type]&.to_s.eql? 'Departament' 
-          if @abstract_model.to_s.eql? 'Teacher'
-              scope = scope.where(departament_id: session[:env_ids]) 
-          elsif @abstract_model.to_s.eql? 'Area'
+        schoolables = ['Subject', 'Teacher', 'StudyPlan', 'Departament', 'AcademicProcess', 'EnrollAcademicProcecess', 'PaymentReport', 'Grade', 'Area', 'Seccion', 'Course', 'AcademicRecord']
+        departamentables = ['Teacher', 'Area']
+
+        if (@abstract_model.to_s.eql? 'Departament' and session[:env_type].eql? 'Departament') or (@abstract_model.to_s.eql? 'School' and session[:env_type].eql? 'School')          
+          scope = scope.where(id: session[:env_ids]) 
+        else
+          if session[:env_type]&.to_s.eql? 'Departament'
+            if departamentables.include? @abstract_model.to_s
               scope = scope.joins(:departaments).where('departaments.id': session[:env_ids])
-          elsif @abstract_model.to_s.eql? 'Departament'
-              scope = scope.where(id: session[:env_ids])
-          else
+            else
               school_ids = Departament.where(id: session[:env_ids]).map(&:school_id).uniq
-              if @abstract_model.to_s.eql? 'School'
-                  scope = scope.where('id': school_ids)
-              elsif DptDirectEntities.include? @abstract_model.to_s
-                  scope = scope.where('school_id': school_ids)
-              elsif DptIndirectEntities.include? @abstract_model.to_s
-                  scope = scope.joins(:school).where('schools.id': school_ids)
-              end
+              scope = scope.joins(:school).where('schools.id': school_ids) if schoolables.include? @abstract_model.to_s
+            end
+          elsif schoolables.include? @abstract_model.to_s
+            scope = scope.joins(:school).where('schools.id': session[:env_ids])
           end
-        elsif session[:env_type]&.to_s.eql? 'School'
-          if @abstract_model.to_s.eql? 'School'
-              scope = scope.where('id': school_ids)
-          elsif SchoolDirectEntities.include? @abstract_model.to_s
-              scope = scope.where('school_id': school_ids)
-          elsif DptIndirectEntities.include? @abstract_model.to_s
-              scope = scope.joins(:school).where('schools.id': school_ids)
-          end
+
         end
       end
 

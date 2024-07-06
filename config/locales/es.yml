@@ -633,6 +633,9 @@ es:
         school: 'Escuela'
         areas: Cátedras
         teachers: Profesores
+      env_auth:
+        env_authorizable: Entorno Autorizable
+
       bank:
         code: 'Código'
         name: 'Nombre'

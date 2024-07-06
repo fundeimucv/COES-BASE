@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_07_04_163711) do
+ActiveRecord::Schema[7.0].define(version: 2024_07_06_134918) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -587,9 +587,13 @@ ActiveRecord::Schema[7.0].define(version: 2024_07_04_163711) do
     t.string "owner_account_name"
     t.string "owner_account_ci"
     t.integer "status", default: 0, null: false
+    t.bigint "school_id"
+    t.bigint "user_id"
     t.index ["origin_bank_id"], name: "index_payment_reports_on_origin_bank_id"
     t.index ["payable_type", "payable_id"], name: "index_payment_reports_on_payable"
     t.index ["receiving_bank_account_id"], name: "index_payment_reports_on_receiving_bank_account_id"
+    t.index ["school_id"], name: "index_payment_reports_on_school_id"
+    t.index ["user_id"], name: "index_payment_reports_on_user_id"
   end
 
   create_table "period_types", force: :cascade do |t|
@@ -970,6 +974,8 @@ ActiveRecord::Schema[7.0].define(version: 2024_07_04_163711) do
   add_foreign_key "partial_qualifications", "academic_records"
   add_foreign_key "payment_reports", "bank_accounts", column: "receiving_bank_account_id", on_update: :cascade, on_delete: :nullify
   add_foreign_key "payment_reports", "banks", column: "origin_bank_id"
+  add_foreign_key "payment_reports", "schools"
+  add_foreign_key "payment_reports", "users"
   add_foreign_key "qualifications", "academic_records"
   add_foreign_key "requirement_by_levels", "study_plans"
   add_foreign_key "requirement_by_levels", "subject_types"

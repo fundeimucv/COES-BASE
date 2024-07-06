@@ -26,6 +26,7 @@ class EnvAuth < ApplicationRecord
 
     validates :admin, presence: true
     validates :env_authorizable, presence: true
+    validates_with SameTypesValidator, field_name: false  
 
 
     def name
