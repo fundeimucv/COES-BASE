@@ -91,7 +91,7 @@ class Inscripcionescuelaperiodo < ApplicationRecord
 		
 			enroll = find_enroll_academic_process
 		
-			reprote = reportepago
+			reporte = reportepago
 			adjunto = Adjunto.where(name: 'respaldo', record_type: 'Reportepago', record_id: self.id).first
 
 			payment_preport = PaymentReport.new
