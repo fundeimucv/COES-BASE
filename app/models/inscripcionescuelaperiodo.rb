@@ -80,6 +80,57 @@ class Inscripcionescuelaperiodo < ApplicationRecord
 		Inscripcionescuelaperiodo.where(grado_id: self.grado_id, escuelaperiodo_id: escu_per_ant.id).first
 	end
 
+	def find_enroll_academic_process
+		escuelaperiodo = Escuelaperiodo.where(escuela_id: grado.escuela_id, periodo_id: periodo&.id).first
+		ap = escuelaperiodo.find_or_create_academic_process
+		grade = grado.find_grade		
+		EnrollAcademicProcess.where(grade_id: grade.id, academic_process_id: ap.id).first
+	end
+
+	def migrate_reportepago
+		
+			enroll = find_enroll_academic_process
+		
+			reprote = reportepago
+			adjunto = Adjunto.where(name: 'respaldo', record_type: 'Reportepago', record_id: self.id).first
+
+			payment_preport = PaymentReport.new
+			payment_preport.payable_type = 'EnrollAcademicProcess'
+			payment_preport.payable_id =  enroll.id
+			payment_preport.amount = reporte.monto
+		
+			payment_preport.status = (tipo_estado_inscripcion_id.eql? 'INS') ? :Validado : :Pendiente
+			payment_preport.transaction_id = reporte.numero
+
+			payment_preport.receiving_bank_account_id = BankAccount.first.id
+			payment_preport.transaction_date = reporte.fecha_transaccion
+			payment_preport.transaction_type = reporte.tipo_transaccion
+			
+			# Buscar Banco
+			bank = Bank.find_by(code: reporte.banco_origen_id)
+			payment_preport.origin_bank_id = bank.id
+			
+			# Adjunto
+			blob_id = adjunto.adjuntoblob_id
+			blob = ActiveStorage::Blob.find blob_id
+			payment_preport.voucher.attach blob if blob
+			print payment_preport.save ? '√' : "X: #{payment_preport.erros.full_messages.to_sentence}"
+
+	end
+
+	def self.import_reportepagos
+
+		Inscripcionescuelaperiodo.joins(:reportepago).each do |ins|
+			begin
+				ins.migrate_reportepago	
+			rescue Exception => e 
+				p "ERROR: #{e}: (#{ins.id})"
+			end
+			
+		end
+	
+	end
+
 
 	def label_estado_inscripcion
 		# ["CO", "INS", "NUEVO", "PRE", "REINC", "RES", "RET", "VAL"] 
