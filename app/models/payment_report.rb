@@ -68,7 +68,7 @@ class PaymentReport < ApplicationRecord
   attr_accessor :remove_voucher
   after_save { voucher.purge if remove_voucher.eql? '1' }   
 
-  before_save :set_payable_values
+  before_validation :set_payable_values
 
   def set_payable_values
     self.school_id = self.school_by_payable.id

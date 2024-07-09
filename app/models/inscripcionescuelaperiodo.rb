@@ -91,23 +91,22 @@ class Inscripcionescuelaperiodo < ApplicationRecord
 		
 			enroll = find_enroll_academic_process
 		
-			reporte = reportepago
 			adjunto = Adjunto.where(name: 'respaldo', record_type: 'Reportepago', record_id: self.id).first
 
 			payment_preport = PaymentReport.new
 			payment_preport.payable_type = 'EnrollAcademicProcess'
 			payment_preport.payable_id =  enroll.id
-			payment_preport.amount = reporte.monto
+			payment_preport.amount = reportepago.monto
 		
 			payment_preport.status = (tipo_estado_inscripcion_id.eql? 'INS') ? :Validado : :Pendiente
-			payment_preport.transaction_id = reporte.numero
+			payment_preport.transaction_id = reportepago.numero
 
 			payment_preport.receiving_bank_account_id = BankAccount.first.id
-			payment_preport.transaction_date = reporte.fecha_transaccion
-			payment_preport.transaction_type = reporte.tipo_transaccion
+			payment_preport.transaction_date = reportepago.fecha_transaccion
+			payment_preport.transaction_type = reportepago.tipo_transaccion
 			
 			# Buscar Banco
-			bank = Bank.find_by(code: reporte.banco_origen_id)
+			bank = Bank.find_by(code: reportepago.banco_origen_id)
 			payment_preport.origin_bank_id = bank.id
 			
 			# Adjunto
