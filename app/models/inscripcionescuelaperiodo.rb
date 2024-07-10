@@ -126,7 +126,7 @@ class Inscripcionescuelaperiodo < ApplicationRecord
 		total_exist = 0
 		total_new_records = 0
 		total_errors = 0
-		inscripciones_con_reporte = Inscripcionescuelaperiodo.joins(:reportepago)
+		inscripciones_con_reporte = Inscripcionescuelaperiodo.joins(:reportepago).order(:id)
 		inscripciones_con_reporte.each do |ins|
 			begin
 				salida = ins.migrate_reportepago	
