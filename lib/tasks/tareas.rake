@@ -405,6 +405,42 @@ task :migrate_inscripcionsecciones, [:offset] => [:environment] do |t, args|
 end
 
 
+desc "Migracion Reporte de Pago de Inscripciones"
+task :migrate_all_reportepagos => :environment do
+	total_exist = 0
+	total_new_records = 0
+	total_errors = 0
+	inscripciones_con_reporte = Inscripcionescuelaperiodo.joins(:reportepago).order(:id)
+	inscripciones_con_reporte.each do |ins|
+		begin
+			salida = ins.migrate_reportepago	
+			print salida
+			if salida.eql? '+'
+				total_new_records += 1
+			elsif salida.eql? '='
+				total_exist += 1
+			elsif salida.eql? '*'
+				print "No enonctrado: #{ins.id}"
+				total_errors += 1
+				break
+			else
+				p "Error en #{ins.id}"
+				total_errors += 1
+				break
+			end 				
+
+		rescue Exception => e 
+			p "ERROR: #{e}: (#{ins.id})"
+			break
+		end
+		
+	end
+	p "      Total Esperado: #{inscripciones_con_reporte.count}       ".center(300, '-')
+	p "      Total Nuevos registros agregados: #{total_new_records}       ".center(300, '-')
+	p "      Total Existentes: #{total_exist}       ".center(300, '-')
+	p "      Total Errores: #{total_errors}       ".center(300, '-')		
+
+end
 
 
 desc "Actualiza todas inscripciones segun el reglamento"

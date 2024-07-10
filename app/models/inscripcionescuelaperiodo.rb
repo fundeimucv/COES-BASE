@@ -83,15 +83,35 @@ class Inscripcionescuelaperiodo < ApplicationRecord
 	def find_enroll_academic_process
 		escuelaperiodo = Escuelaperiodo.where(escuela_id: grado.escuela_id, periodo_id: periodo&.id).first
 		ap = escuelaperiodo.find_or_create_academic_process
-		grade = grado.find_grade		
+		grade = grado.find_or_create_grade		
 		EnrollAcademicProcess.where(grade_id: grade.id, academic_process_id: ap.id).first
 	end
 
+	def find_or_create_enroll_academic_process
+		escuelaperiodo = Escuelaperiodo.where(escuela_id: grado.escuela_id, periodo_id: periodo&.id).first
+		ap = escuelaperiodo.find_or_create_academic_process
+		grade = grado.find_or_create_grade
+		
+
+		eap = EnrollAcademicProcess.where(grade_id: grade.id, academic_process_id: ap.id).first
+		if eap.nil?
+		  if tipo_estado_inscripcion_id.eql? 'NUEVO'
+			permanence_status = :nuevo 
+		  elsif tipo_estado_inscripcion_id.eql? 'REINC'
+			permanence_status = :reincorporado
+		  else
+			permanence_status = :regular
+		  end
+		  eap = EnrollAcademicProcess.create(grade_id: grade.id, academic_process_id: ap.id, permanence_status: permanence_status, enroll_status: :confirmado)
+		end
+		return eap
+	end	
+
 	def migrate_reportepago
 		
-			enroll = find_enroll_academic_process
+			enroll = find_or_create_enroll_academic_process
 
-			have_report = enroll&.payment_reports.any?
+			have_report = enroll and enroll.payment_reports.any?
 			if enroll and have_report
 				adjunto = Adjunto.where(name: 'respaldo', record_type: 'Reportepago', record_id: self.id).first
 
@@ -114,49 +134,13 @@ class Inscripcionescuelaperiodo < ApplicationRecord
 				# Adjunto
 				blob_id = adjunto.adjuntoblob_id
 				blob = ActiveStorage::Blob.find blob_id
-				payment_preport.voucher.attach blob if blob
-				print payment_preport.save ? '+' : "X: #{payment_preport.errors.full_messages.to_sentence}"
+				payment_preport.voucher.attach blob_id if blob_id
+				return payment_preport.save ? '+' : "X: #{payment_preport.errors.full_messages.to_sentence}"
 			else
-				print enroll.nil? ? "*" : '='
+				return enroll.nil? ? "*" : '='
 			end
 
 	end
-
-	def self.migrate_all_reportepagos
-		total_exist = 0
-		total_new_records = 0
-		total_errors = 0
-		inscripciones_con_reporte = Inscripcionescuelaperiodo.joins(:reportepago).order(:id)
-		inscripciones_con_reporte.each do |ins|
-			begin
-				salida = ins.migrate_reportepago	
-				print salida
-				if salida.eql? '+'
-					total_new_records += 1
-				elsif salida.eql? '='
-					total_exist += 1
-				elsif salida.eql? '*'
-					print "No enonctrado: #{ins.id}"
-					total_errors += 1
-					break
-				else
-					total_errors += 1
-					break
-				end 				
-
-			rescue Exception => e 
-				p "ERROR: #{e}: (#{ins.id})"
-				break
-			end
-			
-		end
-		p "      Total Esperado: #{inscripciones_con_reporte.count}       ".center(300, '-')
-		p "      Total Nuevos registros agregados: #{total_new_records}       ".center(300, '-')
-		p "      Total Existentes: #{total_exist}       ".center(300, '-')
-		p "      Total Errores: #{total_errors}       ".center(300, '-')		
-	
-	end
-
 
 	def label_estado_inscripcion
 		# ["CO", "INS", "NUEVO", "PRE", "REINC", "RES", "RET", "VAL"] 

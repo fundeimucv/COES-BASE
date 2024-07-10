@@ -157,7 +157,7 @@ class Grado < ApplicationRecord
 		# 	plan_id = escuela.planes.first&.id
 		# end
 		if (!stud.nil? and !self.plan_id.nil?)
-			Grade.find_by(student_id: stud.id, study_plan_id: StudyPlan.where(code: plan_id).first.id)
+			Grade.find_by(student_id: stud.id, study_plan_id: StudyPlan.where(code: plan_id))
 		end
 	end
 
@@ -175,14 +175,13 @@ class Grado < ApplicationRecord
 
 	def	find_or_create_grade
 		stud = Student.joins(:user).where('users.ci': self.estudiante_id.gsub(/[^0-9]/, '')).first
-		if self.plan
-			aux_plan_id = self.plan_id
-		else
-			aux_plan_id = escuela.planes.first&.id
-		end
+
+		aux_plan_id = self.plan_id,nil? ? escuela.planes.first&.id : self.plan_id
+
 		if (!stud.nil? and !aux_plan_id.nil?)
 			aux_grade = Grade.where(student_id: stud.id, study_plan_id: StudyPlan.where(code: aux_plan_id).first.id).first
-			aux_grade ||= Grade.create(student_id: stud.id, study_plan_id: StudyPlan.where(code: aux_plan_id).first.id, current_permanence_status: :regular )
+			admission_type = AdmissionType.where(name: self.tipo_ingreso).first
+			aux_grade ||= Grade.create!(student_id: stud.id, study_plan_id: StudyPlan.where(code: aux_plan_id).first.id, current_permanence_status: :regular, admission_type: admission_type )
 		end
 	end
 
