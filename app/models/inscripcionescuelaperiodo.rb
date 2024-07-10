@@ -132,9 +132,11 @@ class Inscripcionescuelaperiodo < ApplicationRecord
 				payment_preport.origin_bank_id = bank.id
 				
 				# Adjunto
-				blob_id = adjunto.adjuntoblob_id
-				blob = ActiveStorage::Blob.find blob_id
-				payment_preport.voucher.attach blob if blob
+				if adjunto
+					blob_id = adjunto.adjuntoblob_id
+					blob = ActiveStorage::Blob.find blob_id
+					payment_preport.voucher.attach blob if blob
+				end
 				return payment_preport.save ? '+' : "X: #{payment_preport.errors.full_messages.to_sentence}"
 			else
 				return enroll.nil? ? "*" : '='
