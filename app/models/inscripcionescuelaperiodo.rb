@@ -135,7 +135,7 @@ class Inscripcionescuelaperiodo < ApplicationRecord
 					total_new_records += 1
 				elsif salida.eql? '='
 					total_exist += 1
-				elsif selida.eql? '*'
+				elsif salida.eql? '*'
 					print "No enonctrado: #{ins.id}"
 					total_errors += 1
 					break
