@@ -62,7 +62,7 @@ class PaymentReport < ApplicationRecord
   scope :pagos_escuela, -> {where(payable_type: 'Grade')}  
   scope :pagos_inscripcion, -> {where(payable_type: 'EnrollAcademicProcess')}  
 
-  scope :custom_search, -> (keyword) {joins_enroll_academic_process.joins("INNER JOIN academic_processes ON enroll_academic_processes.academic_process_id = academic_processes.id").where("academic_processes.name ILIKE '%#{keyword}%'") }  
+  scope :custom_search, -> (keyword) {joins("INNER JOIN academic_processes ON enroll_academic_processes.academic_process_id = academic_processes.id").where("academic_processes.name ILIKE '%#{keyword}%'") }  
 
 
   attr_accessor :remove_voucher
