@@ -111,8 +111,8 @@ class Inscripcionescuelaperiodo < ApplicationRecord
 		
 			enroll = find_or_create_enroll_academic_process
 
-			have_report = enroll and enroll.payment_reports.any?
-			if enroll and have_report
+			have_report = enroll.payment_reports.any?
+			if enroll and !have_report
 				adjunto = Adjunto.where(name: 'respaldo', record_type: 'Reportepago', record_id: self.id).first
 
 				payment_preport = PaymentReport.new
