@@ -90,43 +90,70 @@ class Inscripcionescuelaperiodo < ApplicationRecord
 	def migrate_reportepago
 		
 			enroll = find_enroll_academic_process
-		
-			adjunto = Adjunto.where(name: 'respaldo', record_type: 'Reportepago', record_id: self.id).first
 
-			payment_preport = PaymentReport.new
-			payment_preport.payable_type = 'EnrollAcademicProcess'
-			payment_preport.payable_id =  enroll.id
-			payment_preport.amount = reportepago.monto
-		
-			payment_preport.status = (tipo_estado_inscripcion_id.eql? 'INS') ? :Validado : :Pendiente
-			payment_preport.transaction_id = reportepago.numero
+			have_report = enroll&.payment_reports.any?
+			if enroll and have_report
+				adjunto = Adjunto.where(name: 'respaldo', record_type: 'Reportepago', record_id: self.id).first
 
-			payment_preport.receiving_bank_account_id = BankAccount.first.id
-			payment_preport.transaction_date = reportepago.fecha_transaccion
-			payment_preport.transaction_type = reportepago.tipo_transaccion
+				payment_preport = PaymentReport.new
+				payment_preport.payable_type = 'EnrollAcademicProcess'
+				payment_preport.payable_id =  enroll.id
+				payment_preport.amount = reportepago.monto
 			
-			# Buscar Banco
-			bank = Bank.find_by(code: reportepago.banco_origen_id)
-			payment_preport.origin_bank_id = bank.id
-			
-			# Adjunto
-			blob_id = adjunto.adjuntoblob_id
-			blob = ActiveStorage::Blob.find blob_id
-			payment_preport.voucher.attach blob if blob
-			print payment_preport.save ? '√' : "X: #{payment_preport.errors.full_messages.to_sentence}"
+				payment_preport.status = (tipo_estado_inscripcion_id.eql? 'INS') ? :Validado : :Pendiente
+				payment_preport.transaction_id = reportepago.numero
+
+				payment_preport.receiving_bank_account_id = BankAccount.first.id
+				payment_preport.transaction_date = reportepago.fecha_transaccion
+				payment_preport.transaction_type = reportepago.tipo_transaccion
+				
+				# Buscar Banco
+				bank = Bank.find_by(code: reportepago.banco_origen_id)
+				payment_preport.origin_bank_id = bank.id
+				
+				# Adjunto
+				blob_id = adjunto.adjuntoblob_id
+				blob = ActiveStorage::Blob.find blob_id
+				payment_preport.voucher.attach blob if blob
+				print payment_preport.save ? '+' : "X: #{payment_preport.errors.full_messages.to_sentence}"
+			else
+				print enroll.nil? ? "*" : '='
+			end
 
 	end
 
-	def self.import_reportepagos
-
-		Inscripcionescuelaperiodo.joins(:reportepago).each do |ins|
+	def self.migrate_all_reportepagos
+		total_exist = 0
+		total_new_records = 0
+		total_errors = 0
+		inscripciones_con_reporte = Inscripcionescuelaperiodo.joins(:reportepago)
+		inscripciones_con_reporte.each do |ins|
 			begin
-				ins.migrate_reportepago	
+				salida = ins.migrate_reportepago	
+				print salida
+				if salida.eql? '+'
+					total_new_records += 1
+				elsif salida.eql? '='
+					total_exist += 1
+				elsif selida.eql? '*'
+					print "No enonctrado: #{ins.id}"
+					total_errors += 1
+					break
+				else
+					total_errors += 1
+					break
+				end 				
+
 			rescue Exception => e 
 				p "ERROR: #{e}: (#{ins.id})"
+				break
 			end
 			
 		end
+		p "      Total Esperado: #{inscripciones_con_reporte.count}       ".center(300, '-')
+		p "      Total Nuevos registros agregados: #{total_new_records}       ".center(300, '-')
+		p "      Total Existentes: #{total_exist}       ".center(300, '-')
+		p "      Total Errores: #{total_errors}       ".center(300, '-')		
 	
 	end
 
