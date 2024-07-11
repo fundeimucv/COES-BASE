@@ -43,9 +43,9 @@ class Ability
             if authd.authorizable.klazz.eql? 'School' and authd.can_read?
                can :organization_chart, [School] 
             end
-            if authd.authorizable.klazz.eql? 'School' and authd.can_manage?
-               can :manage, [Bank, BankAccount] 
-            end
+            # if authd.authorizable.klazz.eql? 'School' and authd.can_manage?
+            #    can :manage, [Bank, BankAccount] 
+            # end
             if authd.authorizable.klazz.eql? 'AcademicProcess' and authd.can_manage?
                 can :manage, [Period, PeriodType]
             end
