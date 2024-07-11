@@ -35,11 +35,12 @@ class EnrollAcademicProcess < ApplicationRecord
   # OJO: Sólo para la migradión:
   # Excluir la siguiente validación y agregar la que viene luego
   after_save :update_current_permanence_status_on_grade
-  before_validation :set_enroll_status
   
-  def set_enroll_status
-    enroll_status = :confirmado
-  end
+  # before_validation :set_enroll_status
+  
+  # def set_enroll_status
+  #   enroll_status = :confirmado
+  # end
   
   # ASSOCIATIONS:
   belongs_to :grade
