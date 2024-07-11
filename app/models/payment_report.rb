@@ -86,7 +86,7 @@ class PaymentReport < ApplicationRecord
   validates :transaction_date, presence: true
   validates :origin_bank, presence: true
   validates :receiving_bank_account, presence: true
-  # validates :voucher, presence: true
+  validates :voucher, presence: true
 
   # Enum:
   enum transaction_type: {transferencia: 0, deposito: 1}
