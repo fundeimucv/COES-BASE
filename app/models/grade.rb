@@ -153,6 +153,10 @@ class Grade < ApplicationRecord
 
   # Import's Functions:
 
+  def grado
+    Grado.where(estudiante_id: user&.ci, escuela_id: school&.code).first
+  end
+
   def import_new_grade grado
 
     self.current_permanence_status = grado.reglamento

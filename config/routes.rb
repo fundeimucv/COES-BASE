@@ -127,7 +127,8 @@ Rails.application.routes.draw do
 
   resources :grades do
     member do
-      get 'kardex'
+      get :kardex
+      get :import_inscripciones
     end
   end
 

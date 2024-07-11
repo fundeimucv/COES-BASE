@@ -76,6 +76,11 @@ es:
         menu: "Organigrama"
         breadcrumb: "Organigrama"
         link: "Organigrama"
+      old_inscripcion_coes:
+        title: "Registros Coes v1"
+        menu: "Registros Coes v1"
+        breadcrumb: "Registros Coes v1"
+        link: "Registros Coes v1"      
       personal_data: 
         title: "Datos Personales"
         menu: "Datos Personales"
