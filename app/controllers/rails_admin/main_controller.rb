@@ -33,10 +33,19 @@ module RailsAdmin
               scope = scope.joins(:departaments).where('departaments.id': session[:env_ids])
             else
               school_ids = Departament.where(id: session[:env_ids]).map(&:school_id).uniq
-              scope = scope.joins(:school).where('schools.id': school_ids) if schoolables.include? @abstract_model.to_s
+              if @abstract_model.to_s.eql? 'Student'
+                scope = scope.joins(:schools).where('schools.id': school_ids)
+              else              
+                scope = scope.joins(:school).where('schools.id': school_ids) if schoolables.include? @abstract_model.to_s
+              end
             end
-          elsif schoolables.include? @abstract_model.to_s
-            scope = scope.joins(:school).where('schools.id': session[:env_ids])
+          else
+            if @abstract_model.to_s.eql? 'Student'
+              scope = scope.joins(:schools).where('schools.id': session[:env_ids])
+            elsif schoolables.include? @abstract_model.to_s
+              scope = scope.joins(:school).where('schools.id': session[:env_ids])
+
+            end
           end
 
         end

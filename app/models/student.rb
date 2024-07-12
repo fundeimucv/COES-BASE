@@ -61,6 +61,7 @@ class Student < ApplicationRecord
 # creates avatar_attributes=
 
   has_many :study_plans, through: :grades
+  has_many :schools, through: :study_plans
   has_many :admission_types, through: :grades
   has_many :enroll_academic_processes, through: :grades
   has_many :academic_records, through: :enroll_academic_processes

@@ -75,6 +75,24 @@ class Admin < ApplicationRecord
     user_aux.delete if user_aux.without_rol?
   end 
 
+  # FUNCTIONS:
+
+  def schools_auh
+    if (desarrollador? or jefe_control_estudio?)
+      School.all
+    elsif env_auths.any?   
+      if env_auths.pluck(:env_authorizable_type).uniq.first.to_s.eql? 'School'
+        ids = env_auths.pluck(:env_authorizable_id)
+        School.where(id: ids)
+      elsif env_auths.pluck(:env_authorizable_type).uniq.first.to_s.eql? 'Departament'
+        ids = env_auths.pluck(:env_authorizable_id)
+        school_ids = Departament.where(id: ids).pluck(:school_id)
+        School.where(id: school_ids)
+      end
+    else
+      nil
+    end
+  end
   def authorized_to action_name, clazz
     case action_name
     when 'create'
