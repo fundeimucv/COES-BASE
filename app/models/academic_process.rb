@@ -133,6 +133,10 @@ class AcademicProcess < ApplicationRecord
     (self.Anual?) ? 'Año' : 'Sem'
   end
 
+
+  def process_name
+    "#{period&.name}#{self.modality[0]&.upcase}"
+  end
   def period_desc_and_modality
     "#{period&.name}#{self.modality[0]&.upcase}"
   end

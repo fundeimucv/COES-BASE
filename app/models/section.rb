@@ -349,25 +349,34 @@ class Section < ApplicationRecord
         sortable :name               
       end
 
-      field :period do
-        sticky true
+      field :academic_process do
         label 'Período'
         searchable :name
         sortable :name
-        # associated_collection_cache_all false
-        # associated_collection_scope do
-        #   # bindings[:object] & bindings[:controller] are available, but not in scope's block!
-        #   Proc.new { |scope|
-        #     # scoping all Players currently, let's limit them to the team's league
-        #     # Be sure to limit if there are a lot of Players and order them by position
-        #     scope = scope.joins(:period)
-        #     scope = scope.limit(30) # 'order' does not work here
-        #   }
-        # end
+        sticky true
         pretty_value do
-          value.name
+          value.process_name
         end
       end
+      # field :period do
+      #   sticky true
+      #   label 'Período'
+      #   searchable :name
+      #   sortable :name
+      #   # associated_collection_cache_all false
+      #   # associated_collection_scope do
+      #   #   # bindings[:object] & bindings[:controller] are available, but not in scope's block!
+      #   #   Proc.new { |scope|
+      #   #     # scoping all Players currently, let's limit them to the team's league
+      #   #     # Be sure to limit if there are a lot of Players and order them by position
+      #   #     scope = scope.joins(:period)
+      #   #     scope = scope.limit(30) # 'order' does not work here
+      #   #   }
+      #   # end
+      #   pretty_value do
+      #     value.name
+      #   end
+      # end
 
       field :area do
         sticky true

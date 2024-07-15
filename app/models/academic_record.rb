@@ -514,7 +514,11 @@ class AcademicRecord < ApplicationRecord
 
     list do
       search_by :custom_search
-      sort_by 'periods.name'
+      # sort_by 'INNER JOIN enroll_academic_processes.academic_processes_id = academic_processes.id AS academic_processes ORDER BY academic_processes.name'
+      # sort_by 'academic_process.name'
+      sort_by :academic_process
+      
+
       # filters [:period_name, :section_code, :subject_code, :student_desc]
 
       # field :period_name do
@@ -529,6 +533,7 @@ class AcademicRecord < ApplicationRecord
       # end
 
       field :school do
+        sticky true
         associated_collection_cache_all false
         associated_collection_scope do
           Proc.new { |scope|
@@ -541,8 +546,14 @@ class AcademicRecord < ApplicationRecord
         sortable :name
       end
 
-      field :period do
+
+      field :academic_process do
+        sticky true
         column_width 120
+        searchable :name
+        sortable :name
+        filterable :name
+        sort_reverse true 
 
         associated_collection_cache_all false
         associated_collection_scope do
@@ -550,18 +561,38 @@ class AcademicRecord < ApplicationRecord
           Proc.new { |scope|
             # scoping all Players currently, let's limit them to the team's league
             # Be sure to limit if there are a lot of Players and order them by position
-            scope = scope.joins(:period)
+            scope = scope.joins(:academic_process)
             scope = scope.limit(30) # 'order' does not work here
           }
         end
-
-        searchable :name
-        # filterable :name
-        sortable :name
+        
         pretty_value do
-          value.name
+          value.process_name
         end
+
       end
+
+      # field :period do
+      #   column_width 120
+
+      #   associated_collection_cache_all false
+      #   associated_collection_scope do
+      #     # bindings[:object] & bindings[:controller] are available, but not in scope's block!
+      #     Proc.new { |scope|
+      #       # scoping all Players currently, let's limit them to the team's league
+      #       # Be sure to limit if there are a lot of Players and order them by position
+      #       scope = scope.joins(:period)
+      #       scope = scope.limit(30) # 'order' does not work here
+      #     }
+      #   end
+
+      #   searchable :name
+      #   # filterable :name
+      #   sortable :name
+      #   pretty_value do
+      #     value.name
+      #   end
+      # end
 
       field :area do
         searchable :name
