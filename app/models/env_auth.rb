@@ -26,6 +26,7 @@ class EnvAuth < ApplicationRecord
 
     validates :admin, presence: true
     validates :env_authorizable, presence: true
+    validates_uniqueness_of :env_authorizable_type, scope: :env_authorizable_id, message: 'Asociación ya creada', field_name: false
     validates_with SameTypesValidator, field_name: false  
 
 
