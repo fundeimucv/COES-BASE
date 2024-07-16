@@ -399,11 +399,14 @@ task :migrate_programacion => :environment do
 end
 
 desc "Migracion de Registros Académicos"
-# task :migrate_inscripcionsecciones => :environment do
 task :migrate_inscripcionsecciones, [:offset] => [:environment] do |t, args|	
 	Inscripcionseccion.total_import(args[:offset])
 end
 
+desc "Migracion de Direcciones"
+task :migrate_direcciones => :environment do
+	Direccion.migrate_addresses
+end
 
 desc "Migracion Reporte de Pago de Inscripciones"
 task :migrate_all_reportepagos => :environment do
