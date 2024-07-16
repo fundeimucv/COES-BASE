@@ -81,7 +81,11 @@ class Area < ApplicationRecord
     list do
       sort_by :name
       checkboxes false
-      field :school
+      field :school do
+        pretty_value do
+          value&.short_name
+        end
+      end
       field :name
       field :departaments
       field :total_subjects do
