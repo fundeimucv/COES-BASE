@@ -262,10 +262,15 @@ class Admin < ApplicationRecord
       #   end
       # end
 
-      field :env_auths 
+      field :env_auths do
+        active true
       # field :env_auths do
       #   partial 'env_auth/custom_env_auth_field'
       # end
+        pretty_value do
+          value.short_name
+        end
+      end
     end
 
     export do
