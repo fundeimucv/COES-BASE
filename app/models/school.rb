@@ -165,6 +165,7 @@ class School < ApplicationRecord
 
 
     list do
+      sort_by :name
       checkboxes false
       # field :code do
       #   sortable false
