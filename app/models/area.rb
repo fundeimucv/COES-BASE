@@ -54,6 +54,9 @@ class Area < ApplicationRecord
   end
 
   # FUNCTIONS:
+  def name_with_school
+    "#{name} (#{school&.name})"
+  end
 
   def full_description
     "#{name}: #{departaments.map{|de| de.desc}.to_sentence}"
@@ -123,6 +126,12 @@ class Area < ApplicationRecord
     end
 
   end
+
+  
+    def departaments_school_id
+      departaments.pluck(:school_id).first
+    end
+  protected
 
   private
 

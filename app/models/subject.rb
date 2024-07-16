@@ -444,16 +444,11 @@ class Subject < ApplicationRecord
     end
 
     edit do
-      # field :school do
-      #   label 'Escuela Departamento'
-      #   inline_add false
-      #   inline_edit false
-      #   partial 'subject/custom_school_id_field'
-      # end
+
       field :area do
         inline_add false
         inline_edit false
-        # partial 'subject/custom_area_field'
+        partial 'subject/custom_area_field'
       end
       field :code do
         html_attributes do
@@ -497,6 +492,7 @@ class Subject < ApplicationRecord
       field :area do
         inline_edit false
         inline_add false
+        partial 'subject/custom_area_field'
         # read_only true
         # pretty_value do
         #   bindings[:object].area.full_description
