@@ -13,4 +13,4 @@
             Antes de agregar un profesor debe agregar un departamento
             = link_to 'Agregar Nuevo Departamento', '/admin/departament/new', class: 'btn btn-sm btn-success' 
 - else
-    = grouped_collection_select :teacher, :departament_id, School.all, :areas, :name, :id, :name, {prompt: "Seleccione el departamento..."}, { class: "form-control"}
+    = grouped_collection_select :teacher, :departament_id, School.all.order(name: :asc), :departaments, :name, :id, :name, {prompt: "Seleccione el departamento...", selected: @object&.departament_id}, { class: "form-control"}

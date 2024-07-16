@@ -115,7 +115,7 @@ class Teacher < ApplicationRecord
 
     edit do
       fields :user do
-        inline_edit false
+        # inline_edit false
       end
       fields :departament do
         partial 'teacher/custom_departament_field'
