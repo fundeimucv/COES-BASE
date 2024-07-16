@@ -1,3 +1,16 @@
+# == Schema Information
+#
+# Table name: direcciones
+#
+#  calle           :string(255)
+#  ciudad          :string(255)
+#  estado          :string(255)
+#  municipio       :string(255)
+#  nombre_vivienda :string(255)
+#  sector          :string(255)
+#  tipo_vivienda   :string(255)
+#  estudiante_id   :string(255)      not null, primary key
+#
 class Direccion < ApplicationRecord
 	self.table_name = 'direcciones'
 	belongs_to :estudiante, foreign_key: :estudiante_id 
