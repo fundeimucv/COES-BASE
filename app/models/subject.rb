@@ -302,13 +302,19 @@ class Subject < ApplicationRecord
 
     list do
       scopes [:todas, :obligatorias, :electivas, :optativas]
+      sort_by :code
       search_by :custom_search
       checkboxes false
       sidescroll(num_frozen_columns: 3)
 
       field :school do 
         sticky true
-        filterable true
+        filterable :name
+        sortable :name
+        sort_reverse false
+        pretty_value do
+          value.code
+        end
       end
       
       field :code do

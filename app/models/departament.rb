@@ -36,6 +36,10 @@ class Departament < ApplicationRecord
 
 	validates :school, presence: true
 
+	default_scope { order(name: :asc) }
+
+	before_save {name.strip!}
+
 	def desc
 		"#{name} (#{school&.code})"
 	end
@@ -85,7 +89,14 @@ class Departament < ApplicationRecord
 
 		list do
 			checkboxes false
-			fields :school, :name, :areas
+			sort_by :name
+			field :school do
+				pretty_value do
+					value.short_name
+				end
+			end
+
+			fields :name, :areas
 		end
 
 		show do

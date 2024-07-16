@@ -346,7 +346,10 @@ class Section < ApplicationRecord
       field :school do
         sticky true 
         searchable :name
-        sortable :name               
+        sortable :name
+        pretty_value do
+          value.code
+        end           
       end
 
       field :academic_process do
@@ -398,10 +401,13 @@ class Section < ApplicationRecord
       field :subject do
         sticky true
         label 'Asignatura'
-        column_width 240
-
-        filterable false #'subjects.code'
+        column_width 60
+        searchable :code
+        filterable :code #'subjects.code'
         sortable :code
+        pretty_value do
+          value.code
+        end
       end
 
       field :code do

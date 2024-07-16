@@ -31,6 +31,7 @@ class AdmissionType < ApplicationRecord
     weight -1
 
     list do
+      sort_by :name
       checkboxes false
       field :name
       field :code
