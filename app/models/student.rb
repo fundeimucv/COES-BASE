@@ -69,7 +69,7 @@ class Student < ApplicationRecord
   # VALIDATIONS:
   validates :user, presence: true#, uniqueness: true
   # validates :grades, presence: true
-  validates :sede, presence: true
+  # validates :sede, presence: true
   # validates :nacionality, presence: true, unless: :new_record?
   # validates :marital_status, presence: true, unless: :new_record?
   # validates :origin_country, presence: true, unless: :new_record?
@@ -190,13 +190,15 @@ class Student < ApplicationRecord
         inline_add false
       end
 
-      field :grades
+      field :grades do
+        active true
+      end
 
       field :address do
         inline_add false
       end
 
-      fields :sede, :nacionality, :origin_country, :origin_city, :birth_date, :marital_status, :disability, :grade_title, :grade_university, :graduate_year
+      fields :nacionality, :origin_country, :origin_city, :birth_date, :marital_status, :disability, :grade_title, :grade_university, :graduate_year
 
     end
 
@@ -207,7 +209,7 @@ class Student < ApplicationRecord
 
       field :grades
 
-      fields :sede, :nacionality, :origin_country, :origin_city, :birth_date, :marital_status, :grade_title, :grade_university, :graduate_year
+      fields :nacionality, :origin_country, :origin_city, :birth_date, :marital_status, :grade_title, :grade_university, :graduate_year
 
     end
 
@@ -230,7 +232,29 @@ class Student < ApplicationRecord
     list do
       search_by :custom_search
       checkboxes false
-      
+      field :schools do
+        label 'Escuelas'
+        sticky true
+        column_width 120
+        searchable :name
+        sortable :name
+        filterable :name
+        sort_reverse true 
+        associated_collection_cache_all false
+        associated_collection_scope do
+          # bindings[:object] & bindings[:controller] are available, but not in scope's block!
+          Proc.new { |scope|
+            # scoping all Players currently, let's limit them to the team's league
+            # Be sure to limit if there are a lot of Players and order them by position
+            scope = scope.joins(:schools)
+            scope = scope.limit(30) # 'order' does not work here
+          }
+        end
+        pretty_value do
+          value.map(&:short_name).to_sentence
+        end        
+      end
+
       field :user_image_profile do
         sticky true
         label 'Perfil'
@@ -273,7 +297,6 @@ class Student < ApplicationRecord
       field :user_first_name do
         label 'Nombres'
       end
-      field :sede
 
       field :address do
         label 'Ciudad'
