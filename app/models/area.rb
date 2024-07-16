@@ -36,7 +36,9 @@ class Area < ApplicationRecord
 
   # VALIDATIONS:
   validates :school, presence: true
-  validates :name, presence: true, uniqueness: {case_sensitive: false}
+  # validates :name, presence: true, uniqueness: {case_sensitive: false}
+  
+  validates_uniqueness_of :name, scope: [:school_id], message: 'de la cátedra ya creado en la Escuela', field_name: false
   validates_with SameSchoolToAreaValidator, field_name: false
 
   # SCOPES:

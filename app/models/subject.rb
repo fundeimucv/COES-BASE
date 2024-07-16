@@ -516,7 +516,7 @@ class Subject < ApplicationRecord
 
       field :ordinal do
         html_attributes do
-          {min: 1, max: 20}
+          {min: 0, max: 20}
         end
         help 'Semestre o año en que se ubica la asignatura o partir del cual puede ser inscrita (En caso de ser optativa o electiva).'
       end
