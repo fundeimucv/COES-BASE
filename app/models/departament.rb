@@ -40,6 +40,10 @@ class Departament < ApplicationRecord
 
 	before_save {name.strip!}
 
+	
+	def short_name
+		desc
+	end
 	def desc
 		"#{name} (#{school&.code})"
 	end
