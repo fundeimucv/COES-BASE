@@ -80,6 +80,46 @@ class Usuario < ApplicationRecord
 	def resize_image
 	end
 
+	def find_user
+		User.find_by(ci: us.ci)
+	end
+
+	def import_user
+		user = User.find_or_initialize_by(ci: self.ci)
+		if (self.email&.match? URI::MailTo::EMAIL_REGEXP and self.email&.length > 6)
+			user.email = self.email 
+		else
+			user.email = "actualizar-correo#{self.ci}@mailinator.com"
+		end
+
+		user.first_name = self.nombres
+		user.last_name = self.apellidos
+		user.password = self.password
+		user.location_number_phone = self.telefono_habitacion 
+		user.number_phone = self.telefono_movil
+		user.sex = self.sexo
+
+		if adjunto = Adjunto.where(name: 'imagen_ci', record_type: 'Usuario', record_id: self.ci).first
+			blob_id = adjunto.adjuntoblob_id
+			blob = ActiveStorage::Blob.find blob_id
+			user.ci_image.attach blob if blob
+		end
+
+		if adjunto = Adjunto.where(name: 'foto_perfil', record_type: 'Usuario', record_id: self.ci).first
+			blob_id = adjunto.adjuntoblob_id
+			blob = ActiveStorage::Blob.find blob_id
+			user.profile_picture.attach blob if blob
+		end
+
+		if (user.save)
+			'+'
+		else			
+			user.email = "actualizar-correo#{self.ci}@mailinator.com" if user.errors.attribute_names.include? :email
+			user.password = user.ci if user.errors.attribute_names.include? :password
+			user.save ? '√' : "< E:#{user.errors.full_messages.to_sentence}| CI: #{self.ci} >"
+		end
+	end
+
 	def correo_descripcion
 		compilado = apellidos ? "#{apellidos.titleize} " : "" 
 

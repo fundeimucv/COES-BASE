@@ -58,6 +58,8 @@ class StudyPlan < ApplicationRecord
   # CALLBACKS:
   before_save :clean_values
 
+  #SCOPE:
+
   # HOOKS:
   def clean_values
     self.name.delete! '^0-9|^A-Za-z|áÁÄäËëÉéÍÏïíÓóÖöÚúÜüñÑ '
@@ -110,6 +112,7 @@ class StudyPlan < ApplicationRecord
     end
 
     list do
+      sort_by :name
       checkboxes false
       field :school do
         sticky true

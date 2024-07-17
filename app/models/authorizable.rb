@@ -23,7 +23,7 @@ class Authorizable < ApplicationRecord
 
   IMPORTABLES = ['Student', 'Teacher', 'Subject', 'Section', 'AcademicRecord']
   UNEXPORTABLES = ['School', 'Faculty', 'StudyPlan']
-  UNDELETABLES = ['School', 'StudyPlan', 'Faculty', 'EnrollAcademicProcess']
+  UNDELETABLES = ['School', 'StudyPlan', 'Faculty']
   UNCREABLES = ['School', 'Faculty']
   # ASSOCIATIONS:
   belongs_to :area_authorizable

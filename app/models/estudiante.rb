@@ -71,6 +71,33 @@ class Estudiante < ApplicationRecord
 		Student.joins(:user).where('users.ci': self.usuario_id.gsub(/[^0-9]/, '')).first
 	end
 
+	def import_student
+		u = self.usuario.find_user
+		u ||= self.usuario.import_user
+
+		if u
+			st = Student.find_or_initialize_by(user_id: u.id)
+			if st.new_record?
+				st.active = self.activo
+				st.birth_date = usuario.fecha_nacimiento
+				
+				st.disability = self.discapacidad&.upcase
+				st.grade_title = self.titulo_universitario
+				st.grade_university = self.titulo_universidad
+				st.graduate_year = self.titulo_anno
+				st.marital_status = usuario.estado_civil
+				st.nacionality = usuario.nacionalidad
+				st.origin_city = usuario.ciudad_nacimiento
+				st.origin_country = usuario.pais_nacimiento
+				st.save ? '+' : "x #{st.errors.full_messages.to_sentence}"
+			else
+				'='
+			end			
+		else
+			"X"
+		end
+	end
+
 	def datos_incompletos?
 		self.direccion.nil? ? true : false
 	end

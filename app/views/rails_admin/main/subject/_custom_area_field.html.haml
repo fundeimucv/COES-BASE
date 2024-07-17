@@ -5,16 +5,11 @@
 - elsif params[:school_id]
     - school = School.find params[:school_id]
     - areas = school.areas.uniq
-    - departaments = school.departaments
-    - if departaments.any? and areas.any?
-        =# select "subject", "area", areas, required: true
-        = grouped_collection_select :subject, :area_id, departaments, :areas, :name, :id, :name, {prompt: "Seleccione Cátedra..."}, { class: "form-control", disabled: true, readonly: true, required: false}
-        =# collection_select 'subject', 'area_id', areas, :id, :full_description, {include_blank: 'Seleccione...'}, {class: 'input-group form-control required', required: true}
-
+    - if areas.any?
+        = collection_select 'subject', 'area_id', areas, :id, :name_with_school, {include_blank: 'Seleccione...'}, {class: 'input-group form-control required', required: true}
     - else
         .alert.alert-danger 
             Antes de agregar asignaturas debe agregar las Cátedras
             = link_to 'Agregar Nueva Cátedra', '/admin/area/new', class: 'btn btn-sm btn-success' 
 - else
-    - departaments = Departament.all
-    = grouped_collection_select :subject, :area_id, departaments, :areas, :name, :id, :name, {prompt: "Seleccione Cátedra..."}, { class: "form-control", disabled: true, readonly: true, required: false}
+    = grouped_collection_select :subject, :area_id, School.all, :areas_sort, :short_name, :id, :name, {prompt: "Seleccione Cátedra...", selected: @object&.area_id}, { class: "form-control", required: true}

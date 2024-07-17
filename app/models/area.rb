@@ -6,6 +6,15 @@
 #  name       :string           not null
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
+#  school_id  :bigint
+#
+# Indexes
+#
+#  index_areas_on_school_id  (school_id)
+#
+# Foreign Keys
+#
+#  fk_rails_...  (school_id => schools.id)
 #
 class Area < ApplicationRecord  
   # HISTORY:
@@ -16,8 +25,9 @@ class Area < ApplicationRecord
   before_update :paper_trail_update
 
   # ASSOCITATIONS:
+  belongs_to :school
   has_and_belongs_to_many :departaments
-  has_many :schools, through: :departaments
+  # has_many :schools, through: :departaments
 
   has_many :subjects, dependent: :restrict_with_error
   has_many :sections, through: :subjects
@@ -25,7 +35,10 @@ class Area < ApplicationRecord
   # accepts_nested_attributes_for :subjects
 
   # VALIDATIONS:
-  validates :name, presence: true, uniqueness: {case_sensitive: false}
+  validates :school, presence: true
+  # validates :name, presence: true, uniqueness: {case_sensitive: false}
+  
+  validates_uniqueness_of :name, scope: [:school_id], message: 'de la cátedra ya creado en la Escuela', field_name: false
   validates_with SameSchoolToAreaValidator, field_name: false
 
   # SCOPES:
@@ -43,6 +56,9 @@ class Area < ApplicationRecord
   end
 
   # FUNCTIONS:
+  def name_with_school
+    "#{name} (#{school&.name})"
+  end
 
   def full_description
     "#{name}: #{departaments.map{|de| de.desc}.to_sentence}"
@@ -65,7 +81,13 @@ class Area < ApplicationRecord
     weight 1
     
     list do
+      sort_by :name
       checkboxes false
+      field :school do
+        pretty_value do
+          value&.short_name
+        end
+      end
       field :name
       field :departaments
       field :total_subjects do
@@ -83,6 +105,10 @@ class Area < ApplicationRecord
     end 
 
     edit do
+      field :school do
+        inline_add false
+        inline_edit false
+      end
       field :name do
         html_attributes do
           {:onInput => "$(this).val($(this).val().toUpperCase())"}
@@ -106,6 +132,12 @@ class Area < ApplicationRecord
     end
 
   end
+
+  
+    def departaments_school_id
+      departaments.pluck(:school_id).first
+    end
+  protected
 
   private
 

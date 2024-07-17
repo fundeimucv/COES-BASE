@@ -302,13 +302,19 @@ class Subject < ApplicationRecord
 
     list do
       scopes [:todas, :obligatorias, :electivas, :optativas]
+      sort_by :code
       search_by :custom_search
       checkboxes false
       sidescroll(num_frozen_columns: 3)
 
       field :school do 
         sticky true
-        filterable true
+        filterable :name
+        sortable :name
+        sort_reverse false
+        pretty_value do
+          value.code
+        end
       end
       
       field :code do
@@ -438,12 +444,7 @@ class Subject < ApplicationRecord
     end
 
     edit do
-      field :school do
-        label 'Escuela Departamento'
-        inline_add false
-        inline_edit false
-        partial 'subject/custom_school_id_field'
-      end
+
       field :area do
         inline_add false
         inline_edit false
@@ -491,10 +492,11 @@ class Subject < ApplicationRecord
       field :area do
         inline_edit false
         inline_add false
-        read_only true
-        pretty_value do
-          bindings[:object].area.full_description
-        end
+        partial 'subject/custom_area_field'
+        # read_only true
+        # pretty_value do
+        #   bindings[:object].area.full_description
+        # end
       end
       field :code do
         html_attributes do
@@ -514,7 +516,7 @@ class Subject < ApplicationRecord
 
       field :ordinal do
         html_attributes do
-          {min: 1, max: 20}
+          {min: 0, max: 20}
         end
         help 'Semestre o año en que se ubica la asignatura o partir del cual puede ser inscrita (En caso de ser optativa o electiva).'
       end

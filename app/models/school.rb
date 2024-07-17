@@ -52,7 +52,8 @@ class School < ApplicationRecord
   has_many :academic_processes
   has_many :departaments, dependent: :destroy
   accepts_nested_attributes_for :departaments, allow_destroy: true
-  has_many :areas, through: :departaments
+  
+  has_many :areas
   has_many :study_plans, dependent: :destroy
   accepts_nested_attributes_for :study_plans, allow_destroy: true
   has_many :grades, through: :study_plans
@@ -100,6 +101,10 @@ class School < ApplicationRecord
   end
 
   # FUNCTIONS:
+
+  def areas_sort
+    areas.order(:name)
+  end
   def all_grades_to_csv
 
     CSV.generate do |csv|
@@ -160,6 +165,7 @@ class School < ApplicationRecord
 
 
     list do
+      sort_by :name
       checkboxes false
       # field :code do
       #   sortable false
@@ -226,13 +232,11 @@ class School < ApplicationRecord
         pretty_value do
 
           current_user = bindings[:view]._current_user
-          admin = current_user.admin
-          active = admin&.authorized_manage? 'School'
 
-          if active
+          if current_user&.admin&.authorized_manage? 'School'
             bindings[:view].render(partial: "/schools/form_enroll_payment_reports", locals: {school: bindings[:object]})
           else
-            value
+            value ? 'Si' : 'No'
           end
         end
       end
@@ -245,15 +249,6 @@ class School < ApplicationRecord
         sortable false
         help ''
 
-        # pretty_value do
-
-        #   if bindings[:object].enroll_process
-        #     bindings[:view].content_tag(:b, "#{bindings[:object].enroll_process.period.name}", {class: 'bg-success badge'})
-        #   else
-        #     "<b class='label bg-warning'>Inscripción Cerrada".html_safe
-        #   end
-        # end
-
         html_attributes do
           {'data-bs-original-title': ''}
         end
@@ -262,7 +257,7 @@ class School < ApplicationRecord
           current_user = bindings[:view]._current_user
 
           if current_user&.admin&.authorized_manage? 'School'
-            bindings[:view].render(partial: "/schools/form_enabled_enroll", locals: {school: bindings[:object]})
+            bindings[:view].render(partial: "/schools/form_enabled_enroll", locals: {school: bindings[:object]})            
           end
         end
 
@@ -274,22 +269,9 @@ class School < ApplicationRecord
         searchable false
         sortable false
 
-        # pretty_value do
-
-        #   if bindings[:object].active_process
-        #     bindings[:view].content_tag(:b, "#{bindings[:object].active_process.period.name}", {class: 'bg-success badge'})
-        #   else
-        #     "<b class='label bg-warning'>Sin Período Activo".html_safe
-        #   end
-        # end
-
         pretty_value do
-
           current_user = bindings[:view]._current_user
-          admin = current_user.admin
-          active = admin and admin.authorized_manage? 'School'
-
-          if active
+          if current_user&.admin&.authorized_manage? 'School'
             bindings[:view].render(partial: "/schools/form_enabled_active", locals: {school: bindings[:object]})
           else
             value

@@ -23,7 +23,7 @@ class Ability
 
       elsif user.admin.jefe_control_estudio?
         can :import, Authorizable::IMPORTABLES
-        can :manage, [Admin, Student, Teacher, Area, Departament, Subject, Course, Grade, AcademicProcess, AcademicRecord, Section, AdmissionType, PeriodType, Address, StudyPlan, Period, SubjectLink, Schedule, EnrollmentDay, Billboard, User, EnrollAcademicProcess, PaymentReport, Bank, BankAccount, Mention]
+        can :manage, [Admin, Student, Teacher, Area, Departament, Subject, Course, Grade, AcademicProcess, AcademicRecord, Section, AdmissionType, PeriodType, Address, StudyPlan, Period, SubjectLink, Schedule, EnrollmentDay, Billboard, User, EnrollAcademicProcess, PaymentReport, Bank, BankAccount, Mention, EnvAuth]
         can :ru, [School]
         can :organization_chart, [School] 
       else
@@ -43,9 +43,9 @@ class Ability
             if authd.authorizable.klazz.eql? 'School' and authd.can_read?
                can :organization_chart, [School] 
             end
-            if authd.authorizable.klazz.eql? 'School' and authd.can_manage?
-               can :manage, [Bank, BankAccount] 
-            end
+            # if authd.authorizable.klazz.eql? 'School' and authd.can_manage?
+            #    can :manage, [Bank, BankAccount] 
+            # end
             if authd.authorizable.klazz.eql? 'AcademicProcess' and authd.can_manage?
                 can :manage, [Period, PeriodType]
             end

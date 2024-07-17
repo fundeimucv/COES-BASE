@@ -1,4 +1,18 @@
+# == Schema Information
+#
+# Table name: direcciones
+#
+#  calle           :string(255)
+#  ciudad          :string(255)
+#  estado          :string(255)
+#  municipio       :string(255)
+#  nombre_vivienda :string(255)
+#  sector          :string(255)
+#  tipo_vivienda   :string(255)
+#  estudiante_id   :string(255)      not null, primary key
+#
 class Direccion < ApplicationRecord
+	self.table_name = 'direcciones'
 	belongs_to :estudiante, foreign_key: :estudiante_id 
 
 	# VALIDACIONES:
@@ -13,6 +27,48 @@ class Direccion < ApplicationRecord
 
 	def descripcion_completa
 		"#{estado} - #{municipio} - #{ciudad} - #{sector} - #{calle}, #{tipo_vivienda}: #{nombre_vivienda}"
+	end
+
+	def self.migrate_addresses
+		total_errors = total_exist = total_new = 0
+		Direccion.all.each do |dir|
+			salida = dir.import_address
+			print salida
+			case salida
+			when '='
+				total_exist += 1
+			when '+'
+				total_new += 1
+			else
+				total_errors += 1
+				p "En la dirección: #{dir.id}"
+				break
+			end
+		end
+
+		p "      Total Esperado: #{Direccion.count}       ".center(350, '-')
+		p "      Total Nuevos registros agregados: #{total_new}       ".center(350, '-')
+		p "      Total Existentes: #{total_exist}       ".center(350, '-')
+		p "      Total Errores: #{total_errors}       ".center(350, '-')		
+	end
+
+	def import_address
+		begin
+			student = estudiante.find_by_student
+			
+			if address = student.address
+				'='
+			else
+				address = Address.create(student_id: student.id, state: self.estado, municipality: self.municipio, city: ciudad, sector: self.sector, street: calle, house_type: self.tipo_vivienda&.downcase.to_sym, house_name: self.nombre_vivienda)
+				if address.errors.any?
+					"X#{address.errors.full_messaage.to_sentence}"
+				else
+					'+'
+				end
+			end
+		rescue Exception => e
+			"Excepcional: #{e}"
+		end
 	end
 
 

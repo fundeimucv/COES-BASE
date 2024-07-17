@@ -333,12 +333,15 @@ class EnrollAcademicProcess < ApplicationRecord
         sortable :name               
       end
       
-      field :period do
+      field :academic_process do
         sticky true
         column_width 100
         searchable :name
-        # filterable 'periods.name'
+        filterable :name
         sortable :name
+        pretty_value do
+          value.process_name
+        end
       end
       
       field :student do

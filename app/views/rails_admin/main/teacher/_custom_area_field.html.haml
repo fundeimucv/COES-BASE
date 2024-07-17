@@ -13,4 +13,4 @@
             Antes de agregar un profesor debe agregar las Cátedras
             = link_to 'Agregar Nueva Cátedra', '/admin/area/new', class: 'btn btn-sm btn-success' 
 - else
-    = grouped_collection_select :teacher, :area_id, School.all, :areas, :name, :id, :name, {prompt: "Seleccione Cátedra..."}, { class: "form-control"}
+    = grouped_collection_select :teacher, :area_id, School.all.order(:name), :areas, :name, :id, :name, {prompt: "Seleccione Cátedra..."}, { class: "form-control"}
