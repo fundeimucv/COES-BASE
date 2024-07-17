@@ -1,19 +1,39 @@
+# == Schema Information
+#
+# Table name: schools
+#
+#  id                           :bigint           not null, primary key
+#  code                         :string           not null
+#  enable_by_level              :boolean          default(FALSE)
+#  enable_change_course         :boolean
+#  enable_dependents            :boolean          default(FALSE), not null
+#  enable_enroll_payment_report :boolean          default(FALSE), not null
+#  enable_subject_retreat       :boolean
+#  have_language_combination    :boolean          default(FALSE), not null
+#  have_partial_qualification   :boolean          default(FALSE), not null
+#  name                         :string           not null
+#  short_name                   :string
+#  type_entity                  :integer          default("pregrado"), not null
+#  created_at                   :datetime         not null
+#  updated_at                   :datetime         not null
+#  active_process_id            :bigint
+#  enroll_process_id            :bigint
+#  faculty_id                   :bigint
+#
+# Indexes
+#
+#  index_schools_on_active_process_id  (active_process_id)
+#  index_schools_on_enroll_process_id  (enroll_process_id)
+#  index_schools_on_faculty_id         (faculty_id)
+#
+# Foreign Keys
+#
+#  fk_rails_...  (active_process_id => academic_processes.id)
+#  fk_rails_...  (enroll_process_id => academic_processes.id)
+#
 class School < ApplicationRecord
-  # SCHEMA:
-  # t.string "code", null: false
-  # t.string "name", null: false
-  # t.integer "type_entity", default: 0, null: false
-  # t.boolean "enable_subject_retreat"
-  # t.boolean "enable_change_course"
-  # t.boolean "enable_dependents"
-  # t.bigint "active_process_id"
-  # t.bigint "enroll_process_id"
-  # t.datetime "created_at", null: false
-  # t.datetime "updated_at", null: false
-  # t.bigint "faculty_id"
-  # t.string "contact_email", default: "coes.fau@gmail.com", null: false
-
   # HISTORY:
+  include Totalizable
   has_paper_trail on: [:create, :destroy, :update]
 
   before_create :paper_trail_create
@@ -26,32 +46,39 @@ class School < ApplicationRecord
 
   belongs_to :faculty
 
-  has_many :bank_accounts, dependent: :destroy
-  accepts_nested_attributes_for :bank_accounts, allow_destroy: true
-
   has_many :admission_types
   accepts_nested_attributes_for :admission_types
 
   has_many :academic_processes
-  has_many :areas, dependent: :destroy
+  has_many :departaments, dependent: :destroy
+  accepts_nested_attributes_for :departaments, allow_destroy: true
+  
+  has_many :areas
   has_many :study_plans, dependent: :destroy
+  accepts_nested_attributes_for :study_plans, allow_destroy: true
   has_many :grades, through: :study_plans
-  accepts_nested_attributes_for :study_plans
 
+  has_many :enroll_academic_processes, through: :grades
+  has_many :academic_records, through: :enroll_academic_processes
+  
   has_many :subjects, through: :areas
+  has_many :subject_types, through: :subjects
   has_many :periods, through: :academic_processes
-  has_many :admins, as: :env_authorizable 
+  
+  has_many :env_auths, as: :env_authorizable, dependent: :destroy
+
+	has_many :entity_bank_accounts, as: :bank_accountable, dependent: :destroy
+	has_many :bank_accounts, through: :entity_bank_accounts, dependent: :destroy
 
   # accepts_nested_attributes_for :areas, :academic_processes, :admission_types
 
   # ENUMERATIONS:
-  enum type_entity: [:pregrado, :postgrado, :extension, :investigacion]
+  enum type_entity: {pregrado: 0, postgrado: 1, extension: 2, investigacion: 3}
 
   # VALIDATIONS
   validates :type_entity, presence: true
   validates :code, presence: true, uniqueness: {case_sensitive: false}
   validates :name, presence: true, uniqueness: {case_sensitive: false}
-  validates :contact_email, presence: true
 
   # CALLBAKCS:
   after_initialize :set_unique_faculty
@@ -74,6 +101,10 @@ class School < ApplicationRecord
   end
 
   # FUNCTIONS:
+
+  def areas_sort
+    areas.order(:name)
+  end
   def all_grades_to_csv
 
     CSV.generate do |csv|
@@ -90,9 +121,9 @@ class School < ApplicationRecord
     self.enroll_process ? self.enroll_process.name : 'Inscripción Cerrada'
   end
 
-  def short_name
-    self.name.split(" ")[2] if self.name
-  end
+  # def short_name
+  #   self.name.split(" ")[2] if self.name
+  # end
 
 
   def modalities
@@ -107,6 +138,24 @@ class School < ApplicationRecord
     (enable_dependents.eql? true)
   end
 
+  def have_partial_qualification?
+    self.have_partial_qualification
+  end
+  def have_language_combination?
+    self.have_language_combination
+  end
+  def process_label_desc process
+    aux_desc = process ? process.name : 'Sin Proceso Activo'
+    ApplicationController.helpers.label_status('bg-info', aux_desc)
+  end
+  
+  def enroll_process_label_status
+    process_label_desc enroll_process
+  end
+
+  def active_process_label_status
+    process_label_desc active_process
+  end
 
   rails_admin do
     navigation_label 'Config General'
@@ -116,48 +165,65 @@ class School < ApplicationRecord
 
 
     list do
+      sort_by :name
       checkboxes false
-      field :code do
-        sortable false
-        queryable false
-        filterable false
-        searchable false
+      # field :code do
+      #   sortable false
+      #   queryable false
+      #   filterable false
+      #   searchable false
+      # end
+      field :code
+      field :short_name do
+        sticky true
+        label 'Escuela'
       end
 
-      field :name do
-        sortable false
-        queryable false
-        filterable false
-        searchable false
-        pretty_value do
-          bindings[:object].short_name
-        end
-      end
+      # field :study_plans
 
-      field :enable_dependents do
-        label '¿Prelaciones?'
-        queryable false
-        filterable false
-        searchable false
-        sortable false
-        sortable false
-        pretty_value do
+      # field :enable_dependents do
+      #   label '¿Prelaciones?'
+      #   queryable false
+      #   filterable false
+      #   searchable false
+      #   sortable false
+      #   sortable false
+      #   pretty_value do
 
-          current_user = bindings[:view]._current_user
-          admin = current_user.admin
-          active = admin and admin.authorized_manage? 'School'
+      #     current_user = bindings[:view]._current_user
+      #     admin = current_user.admin
+      #     active = admin and admin.authorized_manage? 'School'
 
-          if active
-            bindings[:view].render(partial: "/schools/form_dependents", locals: {school: bindings[:object]})
-          else
-            value
-          end
-        end
+      #     if active
+      #       bindings[:view].render(partial: "/schools/form_dependents", locals: {school: bindings[:object]})
+      #     else
+      #       value
+      #     end
+      #   end
 
-      end
+      # end
+
+      # field :enable_by_level do
+      #   label '¿Inscripciones por Nivel?'
+      #   queryable false
+      #   filterable false
+      #   searchable false
+      #   sortable false
+      #   sortable false
+      #   pretty_value do
+
+      #     active = bindings[:view]._current_user&.admin&.authorized_manage? 'School'
+
+      #     if active
+      #       bindings[:view].render(partial: "/schools/form_dependents", locals: {school: bindings[:object]})
+      #     else
+      #       value
+      #     end
+      #   end
+      # end
 
       field :enable_enroll_payment_report do
-        label '¿Permitir Reportes de Pago?'
+        label '¿Reportar Pagos?'
         queryable false
         filterable false
         searchable false
@@ -166,13 +232,11 @@ class School < ApplicationRecord
         pretty_value do
 
           current_user = bindings[:view]._current_user
-          admin = current_user.admin
-          active = admin&.authorized_manage? 'School'
 
-          if active
+          if current_user&.admin&.authorized_manage? 'School'
             bindings[:view].render(partial: "/schools/form_enroll_payment_reports", locals: {school: bindings[:object]})
           else
-            value
+            value ? 'Si' : 'No'
           end
         end
       end
@@ -185,26 +249,15 @@ class School < ApplicationRecord
         sortable false
         help ''
 
-        # pretty_value do
-
-        #   if bindings[:object].enroll_process
-        #     bindings[:view].content_tag(:b, "#{bindings[:object].enroll_process.period.name}", {class: 'bg-success badge'})
-        #   else
-        #     "<b class='label bg-warning'>Inscripción Cerrada".html_safe
-        #   end
-        # end
-
         html_attributes do
           {'data-bs-original-title': ''}
         end
         pretty_value do
 
           current_user = bindings[:view]._current_user
-          admin = current_user.admin
-          active = admin and admin.authorized_manage? 'School'
 
-          if active
-            bindings[:view].render(partial: "/schools/form_enabled_enroll", locals: {school: bindings[:object]})
+          if current_user&.admin&.authorized_manage? 'School'
+            bindings[:view].render(partial: "/schools/form_enabled_enroll", locals: {school: bindings[:object]})            
           end
         end
 
@@ -216,22 +269,9 @@ class School < ApplicationRecord
         searchable false
         sortable false
 
-        # pretty_value do
-
-        #   if bindings[:object].active_process
-        #     bindings[:view].content_tag(:b, "#{bindings[:object].active_process.period.name}", {class: 'bg-success badge'})
-        #   else
-        #     "<b class='label bg-warning'>Sin Período Activo".html_safe
-        #   end
-        # end
-
         pretty_value do
-
           current_user = bindings[:view]._current_user
-          admin = current_user.admin
-          active = admin and admin.authorized_manage? 'School'
-
-          if active
+          if current_user&.admin&.authorized_manage? 'School'
             bindings[:view].render(partial: "/schools/form_enabled_active", locals: {school: bindings[:object]})
           else
             value
@@ -239,21 +279,46 @@ class School < ApplicationRecord
         end
       end
 
-      field :download_all_grades do
-        label 'Total Estudiantes'
+      # field :download_all_grades do
+      #   label 'Total Estudiantes'
 
-        pretty_value do
-          if bindings[:view]._current_user&.admin&.yo?
-            bindings[:view].render(partial: "/schools/all_grades_link", locals: {school: bindings[:object]})
-          else
-            ApplicationController.helpers.label_status('bg-info', bindings[:object].grades.count)
-          end
-        end
-      end 
+      #   pretty_value do
+      #     if bindings[:view]._current_user&.admin&.yo?
+      #       bindings[:view].render(partial: "/schools/all_grades_link", locals: {school: bindings[:object]})
+      #     else
+      #       ApplicationController.helpers.label_status('bg-info', bindings[:object].grades.count)
+      #     end
+      #   end
+      # end 
     end
 
     show do
-      field :description
+      # field :complete_description do
+      #   label do
+      #       "#{bindings[:object].name}"
+      #   end
+      #   formatted_value do
+      #     bindings[:view].render(partial: 'schools/complete_description', locals: {school: bindings[:object]})
+      #   end
+      # end
+  
+      field :entities do
+        label 'Detalle'
+        formatted_value do
+          bindings[:view].render(partial: '/schools/entities_tabs', locals: {school: bindings[:object]})
+        end
+      end
+
+
+      # field :entities do
+      #   label 'Entidades'
+      #   pretty_value do
+      #     bindings[:view].render(template: '/departaments/index', locals: {departaments: bindings[:object].departaments.order(name: :asc)})
+      #   end
+      # end
+
+
+
 
       # field :enable_dependents do
       #   label 'Activar Prelaciones'
@@ -307,38 +372,60 @@ class School < ApplicationRecord
 
       # end      
 
-      # fields :study_plans, :periods, :areas, :bank_accounts, :contact_email
+      # fields :study_plans, :periods, :areas
+
     end
 
     edit do
-      # field :faculty do
-      #   read_only true
-      # end
-
-      field :code do
+      field :faculty do
         read_only true
-        # html_attributes do
-        #   {:length => 3, :size => 3, :onInput => "$(this).val($(this).val().toUpperCase().replace(/[^A-Za-z]/g,''))"}
-        # end
+        pretty_value do
+          value&.short_name
+        end
+      end
+
+      field :type_entity
+      
+      field :code do
+        html_attributes do
+          {:length => 3, :size => 3, :onInput => "$(this).val($(this).val().toUpperCase().replace(/[^A-Za-z]/g,''))"}
+        end
+      end
+      field :name do
+        html_attributes do
+          {:onInput => "$(this).val($(this).val().toUpperCase())"}
+        end
+      end
+      field :short_name do
+        html_attributes do
+          {:onInput => "$(this).val($(this).val().toUpperCase())"}
+        end
+      end
+      field :have_partial_qualification
+      field :have_language_combination
+      
+			field :bank_accounts do
+				inline_edit false
+				inline_add false
+			end
+    end
+
+    update do
+      field :code do
+        # read_only true
       end
       field :name do
         read_only true
-        # html_attributes do
-        #   {:onInput => "$(this).val($(this).val().toUpperCase())"}
-        # end
       end
-      # field :enable_dependents do
-      #   help 'Marque esta casilla para activar las prelaciones al momento de inscripción del estudiante. Caso contrario, desmásquela.'
-      # end
-      # fields :active_process, :enroll_process do
-      #   inline_add false
-      #   inline_edit false
-      # end
-
-      field :bank_accounts do
+      field :short_name do
+        html_attributes do
+          {:onInput => "$(this).val($(this).val().toUpperCase())"}
+        end
       end
-
-      fields :contact_email, :boss_name
+			field :bank_accounts do
+				inline_edit false
+				inline_add false
+			end
     end
 
     export do
@@ -348,12 +435,10 @@ class School < ApplicationRecord
 
   private
 
-
     def paper_trail_update
-      # changed_fields = self.changes.keys - ['created_at', 'updated_at']
+      changed_fields = self.changes.keys - ['created_at', 'updated_at']
       object = I18n.t("activerecord.models.#{self.model_name.param_key}.one")
-      # self.paper_trail_event = "¡#{object} actualizado en #{changed_fields.to_sentence}"
-      self.paper_trail_event = "#{object} actualizada."
+      self.paper_trail_event = "¡#{object} actualizada en #{changed_fields.to_sentence}"
     end  
 
     def paper_trail_create

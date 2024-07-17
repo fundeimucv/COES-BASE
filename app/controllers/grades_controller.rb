@@ -1,11 +1,54 @@
 class GradesController < ApplicationController
-  before_action :set_grade, only: %i[ show edit update destroy kardex ]
+  before_action :set_grade, only: %i[ show edit update destroy kardex import_inscripciones]
 
   # GET /grades or /grades.json
   def index
     @grades = Grade.all
   end
 
+
+  def import_inscripciones
+
+    total_exist = 0
+    total_new_records = 0
+    total_errors = 0
+    with_errors = []
+  
+    total_mgs = ""
+
+    if @grade.grado
+      if inscripciones = @grade.grado.inscripciones
+        inscripciones.each do |ins|
+          salida = ins.import_academic_record
+    
+          print salida
+          if salida.eql? '+'
+            total_new_records += 1
+          elsif salida.eql? '='
+            total_exist += 1
+          else
+            p ins.general_desc
+            total_errors += 1
+            with_errors << ins.id
+          end
+
+        end
+
+        total_mgs += "Total Esperado: #{inscripciones.count}"
+        total_mgs += "Total Nuevos registros agregados: #{total_new_records}"
+        total_mgs += "Total Existentes: #{total_exist}"
+        total_mgs += "Total Errores: #{total_errors}"
+        total_mgs += "Identificadores de Inscripcionseccion con errores: #{with_errors}" if with_errors.any?
+
+        flash[:info] = total_mgs
+      else 
+        # Sin inscripciones
+      end
+    else
+      # Grado no encontrado
+    end
+    redirect_back fallback_location: :root_path
+  end
   def kardex
     school = @grade.school
     user = @grade.user

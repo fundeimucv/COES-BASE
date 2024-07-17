@@ -1,5 +1,4 @@
 class UserMailer < ApplicationMailer
-  default from: 'SOPORTE COES-FAU <soporte@coesfau.com>'
   # Subject can be set in your I18n file at config/locales/en.yml
   # with the following lookup:
   #
@@ -24,7 +23,7 @@ class UserMailer < ApplicationMailer
     @periodo_name = enroll_academic_process.period.name
     @nombre = user.nick_name
     @genero = user.genero
-    mail(to: user.email_desc, subject: "¡Confirmación de inscripción en #{@escuela_name} para el Período #{@periodo_name} COES-FAU!")
+    mail(to: user.email_desc, subject: "¡Confirmación de inscripción en #{@escuela_name} para el Período #{@periodo_name} COES!")
     
   end
 

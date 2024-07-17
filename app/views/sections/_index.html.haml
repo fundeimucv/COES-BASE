@@ -1,24 +1,31 @@
-%table.table.table-striped.table-sm
-  %thead
-    %tr.text-center
-      %th Período
-      %th Número
-      %th Capacidad
-      %th.text-start Profesor
-      %th Estado
-      %th Tipo
-      %th Horario
-
-  %tbody
-    - sections.each do |section|
+.table-responsive
+  %table.table.table-striped.table-sm
+    %thead
       %tr.text-center
-        %td= section.academic_process.period_name
-        %td= link_to_if (current_user&.admin&.authorized_read? 'Section'), section.code, "/admin/section/#{section.id}"
-        %td= section.capacity
-        %td.text-start= section.teacher_desc
-        %td= section.label_qualified
-        %td= section.label_modality
-        %td= section.schedule_name
+        %th Período
+        %th Número
+        %th Capacidad
+        - if @object&.class&.name.eql? 'Subject'
+          %th Profesor
+        - else
+          %th Asignatura
+        %th Estado
+        %th Tipo
+        %th Horario
+
+    %tbody
+      - sections.each do |section|
+        %tr.text-center
+          %td= section.academic_process.period_name
+          %td= link_to_if (current_user&.admin&.authorized_read? 'Section'), section.code, "/admin/section/#{section.id}"
+          %td= section.capacity
+          - if @object&.class&.name.eql? 'Subject'
+            %th.text-start= section.teacher_desc
+          - else
+            %th.text-start= section.subject_desc
+          %td= section.label_qualified
+          %td= section.label_modality
+          %td= section.schedule_name
 
 %br
 - if false

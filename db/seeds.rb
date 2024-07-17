@@ -1,55 +1,41 @@
-# This file should contain all the record creation needed to seed the database with its default values.
-# The data can then be loaded with the bin/rails db:seed command (or created alongside the database with db:setup).
-#
-# Examples:
-#
-#   movies = Movie.create([{ name: "Star Wars" }, { name: "Lord of the Rings" }])
-#   Character.create(name: "Luke", movie: movies.first)
-
-p '      Creada Facultad!    '.center(200, '=') if fau = Faculty.create(code: 'FAU', name: 'Facultad de Arquitectura y Urbanismo')
 
 p '      Creado Primer Usuario!    '.center(200, '=') if user = User.create!(email: 'moros.daniel@gmail.com', first_name: 'Daniel Josué', last_name: 'Moros Castillo', ci: '15573230', password: 123123)
 
-p '      Creado Primer Admin!    '.center(200, '=') if Admin.create!(user_id: user.id, role: :desarrollador, env_authorizable: fau)
+p '      Creado Primer Admin!    '.center(200, '=') if Admin.create!(user_id: user.id, role: :desarrollador)
 
 p '      Creado Segundo Usuario!    '.center(200, '=') if user = User.create!(email: 'saavedraazuaje73@gmail.com', first_name: 'Carlos Alberto', last_name: 'Saavedra Azuaje', ci: '10264009', password: 123123)
 
-p '      Creado Primer Admin!    '.center(200, '=') if Admin.create!(user_id: user.id, role: :desarrollador, env_authorizable: fau)
+p '      Creado Primer Admin!    '.center(200, '=') if Admin.create!(user_id: user.id, role: :desarrollador)
 
-p '      Creada Escuela!    '.center(200, '=') if escuela = School.create(code: 'EACRV', name: 'Escuela de Arquitectura Carlos Raúl Villanueva', faculty: fau)
+p '      Creados Primeros Tipos de Períodos!    '.center(200, '=') if PeriodType.create([{code: 'I', name: 'Primero'}, {code: 'II', name: 'Segundo'}, {code: 'U', name: 'Único'}, {code: 'I', name: 'Intensivo'}])
 
-p '      Creados Primeros Tipos de Períodos!    '.center(200, '=') if PeriodType.create([{code: 'I', name: 'Primero'}, {code: 'II', name: 'Segundo'}, {code: 'U', name: 'Único'}, {code: 'E', name: 'Especial (Intensivo)'}])
+p '      Creados Primeros Idiomas!    '.center(200, '=') if Language.create([{name: 'Alemán'}, {name: 'Francés'}, {name: 'Inglés'}, {name: 'Italiano'}, {name: 'Portugués'}])
 
-p '      Creados Primeros Períodos!    '.center(200, '=') if Period.create([{year: 2022, period_type_id: 1}, {year: 2022, period_type_id: 2}])
 
-p '      Creado Primer Plan de Estudio!    '.center(200, '=') if StudyPlan.create(code: 'B001', name: 'Arquitecto', school_id: School.first.id)
+p '      Creadas Primeras Config Generales!    '.center(200, '=') if GeneralSetup.create!([
+    {clave: 'ENABLED_POST_QUALIFICACION', description: 'Desactivar calificaciones posteriores', valor: 'NO'},
+    {clave: 'SEND_WELLCOME_MAILER_ON_CREATE_USER', description: 'Enviar correo de bienvenida al crear usuario', valor: 'NO'}
+])
 
-p '      Creadas Primeras Asignturas Madres!    '.center(200, '=') if Area.create([{school_id: escuela.id, name: "Diseño Arquitectónico"},
-{school_id: escuela.id, name: "Métodos"},
-{school_id: escuela.id, name: "Tecnología"},
-{school_id: escuela.id, name: "Historia y Crítica"},
-{school_id: escuela.id, name: "Acondicionamiento Ambiental"},
-{school_id: escuela.id, name: "Estudios Urbanos"}])
+p '      Creados Tipos de Asignatura!    '.center(200, '=') if  SubjectType.create!([{code: 'OB', name: 'OBLIGATORIA'}, {code: 'L', name: 'ELECTIVA'}, {code: 'OP', name: 'OPTATIVA'}, {code: 'P', name: 'PROYECTO'}])
 
-area = Area.where(name: "DISEÑO ARQUITECTÓNICO").first
+p '      Creada Facultad!    '.center(200, '=') if Faculty.create!(code: 'FHE', coes_boss_name: 'Pedro Coronado', contact_email: 'soporte@plus.coesfhe.com', name: 'Facultad de Humanidades y Educación', short_name: 'Humanidades')
 
-Area.create([{school_id: escuela.id, name: "Expresión", parent_area_id: area.id},
-{school_id: escuela.id, name: "Teoría de la Arquitectura", parent_area_id: area.id},
-{school_id: escuela.id, name: "Diseño Arquitectónico Sub", parent_area_id: area.id}])
+p '      Creadas Escuelas!    '.center(200, '=') if Faculty.first.schools.create!([
+    {type_entity: :pregrado, short_name: "ARTES", name: "ESCUELA DE ARTES",	code: 'ARTE'},
+    {type_entity: :pregrado, short_name: "BIBLIOTECOLOGÍA", name: "ESCUELA DE BIBLIOTECOLOGÍA Y ARCHIVOLOGÍA", code: 'BIAR'},
+    {type_entity: :pregrado, short_name: "COMUNICACIÓN", name: "ESCUELA DE COMUNICACIÓN SOCIAL", code: 'COMU'},
+    {type_entity: :pregrado, short_name: "EDUCACIÓN", name: "ESCUELA DE EDUCACIÓN", code: 'EDUC'},
+    {type_entity: :pregrado, short_name: "FILOSOFÍA", name: "ESCUELA DE FILOSOFÍA", code: 'FILO'},
+    {type_entity: :pregrado, short_name: "GEOGRAFÍA", name: "ESCUELA DE GEOGRAFÍA", code: 'GEOG'},
+    {type_entity: :pregrado, short_name: "HISTORIA", name: "ESCUELA DE HISTORIA", code: 'HIST'},
+    {type_entity: :pregrado, short_name: "IDIOMAS", name: "ESCUELA DE IDIOMAS MODERNOS", code: 'IDIO'},
+    {type_entity: :pregrado, short_name: "LETRAS", name: "ESCUELA DE LETRAS", code: 'LETR'},
+    {type_entity: :pregrado, short_name: "PSICOLOGÍA", name: "ESCUELA DE PSICOLOGÍA", code: 'PSIC'},
+    {type_entity: :postgrado, short_name: "POSTGRADO", name: "POSTGRADO FHE", code: 'POST'}])
 
-area = Area.where(name: "MÉTODOS").first
 
-Area.create([{school_id: escuela.id, name: "Matemáticas", parent_area_id: area.id},
-{school_id: escuela.id, name: "Investigación y Creatividad", parent_area_id: area.id},
-{school_id: escuela.id, name: "Informática", parent_area_id: area.id}])
-
-area = Area.where(name: "TECNOLOGÍA").first
-
-Area.create([{school_id: escuela.id, name: "Construcción", parent_area_id: area.id},
-{school_id: escuela.id, name: "Instalaciones", parent_area_id: area.id},
-{school_id: escuela.id, name: "Estructura", parent_area_id: area.id}])
-
-Bank.create([{code: "0006", name: "Banco de Coro"},
+p '      Creados Primeros Bancos!    '.center(200, '=') if Bank.create([{code: "0006", name: "Banco de Coro"},
 {code: "0007", name: "Banfoandes"},
 {code: "0008", name: "Banco Guayana"},
 {code: "0102", name: "Banco de Venezuela"},
@@ -90,30 +76,55 @@ Bank.create([{code: "0006", name: "Banco de Coro"},
 {code: "0191", name: "Banco Nacional de Crédito"},
 {code: "0601", name: "Instituto Municipal de Crédito Popular"}])
 
+# Agregar Código a Tipos de Admisión
 
-e = School.first
+p '      Creados Primeros Tipos de Admisión!    '.center(200, '=') if AdmissionType.create(
+    [{code: "0600", name: "SIMULTANEOS"},
+ {code: "0131", name: "ACTA CONVENIO (DOCENTE)"},
+ {code: "0140", name: "ACTA CONVENIO (ADMIN)"},
+ {code: "0133", name: "ACTA CONVENIO (OBRERO)"},
+ {code: "0132", name: "ACTA CONVENIO (EMPLEADOS)"},
+ {code: "0102", name: "SIMADI"},
+ {code: "0111", name: "DIPLOMATICO"},
+ {code: "0105", name: "AMAZONAS"},
+ {code: "0137", name: "ART. 25 (DEPORTE)"},
+ {code: "0138", name: "ART. 25 (ARTISTAS)"},
+ {code: "0107", name: "DISCAPACIDAD"},
+ {code: "1400", name: "EGRESADOS (UCV)"},
+ {code: "1500", name: "EGRESADOS (INST. VENEZOLANAS)"},
+ {code: "0410", name: "ART. 6"},
+ {code: "0417", name: "CAMBIO: 158"},
+ {code: "0141", name: "ART. 10"},
+ {code: "0110", name: "ART. 25 (CULTURA)"},
+ {code: "0114", name: "CURSO INTRODUCTORIO"},
+ {code: "0300", name: "EQUIVALENCIA"},
+ {code: "0129", name: "SAMUEL ROBINSON"},
+ {code: "1300", name: "EQUIVALENCIA (INST. EXTRANJERAS)"},
+ {code: "1200", name: "EQUIVALENCIA (INST. VENEZOLANAS)"},
+ {code: "1100", name: "EQUIVALENCIA EN LA UCV"},
+ {code: "0118", name: "EUS"},
+ {code: "0108", name: "MPPS"},
+ {code: "0800", name: "REVALIDA"},
+ {code: "0143", name: "TRASLADO DE UNA ESCUELA A OTRA"},
+ {code: "0144", name: "PARLAMENTO INDIGENA"},
+ {code: "1000", name: "PROCECUCION DE ESTUDIOS EUS"},
+ {code: "0101", name: "OPSU"},
+ {code: "0121", name: "OPSU/COLA"},
+ {code: "0119", name: "RECLAMO OPSU"}]
+)
 
-e.admission_types.create([{name: 'OPSU'},
-{name: 'OPSU/COLA'},
-{name: 'SIMADI'},
-{name: 'ACTA CONVENIO (DOCENTE)'},
-{name: 'ACTA CONVENIO (ADMIN)'},
-{name: 'ACTA CONVENIO (OBRERO)'},
-{name: 'DISCAPACIDAD'},
-{name: 'DIPLOMATICO'},
-{name: 'COMPONENTE DOCENTE'},
-{name: 'EQUIVALENCIA'},
-{name: 'ART. 25 (CULTURA)'},
-{name: 'ART. 25 (DEPORTE)'},
-{name: 'CAMBIO: 158'},
-{name: 'ART. 6'},
-{name: 'EGRESADO'},
-{name: 'SAMUEL ROBINSON'},
-{name: 'DELTA AMACURO'},
-{name: 'AMAZONAS'},
-{name: 'PRODES'},
-{name: 'CREDENCIALES'},
-{name: 'SIMULTANEOS'}])
+
+
+p '      Creados Primeros Tipos de Asignaturas!    '.center(200, '=') if SubjectType.create([{code: :OP, name: :optativa}, {code: :L, name: :electiva}, {code: :OB, name: :obligatoria}, {code: :P, name: :proyecto}])
+
+p '      Creados Primeros Grupos de Tutoriales!    '.center(200, '=')  if GroupTutorial.create([{name_group: 'Secciones'},
+{name_group: 'Profesores'},
+{name_group: 'Estudiantes'},
+{name_group: 'Periodos', description: 'Entidad Periodos'},
+{name_group: 'Asignaturas', description: 'Entidad Periodos'},
+{name_group: 'Planes de Estudio', description: 'Acceso a las Funciones de la Entidad Planes de Estudio'},
+{name_group: 'Escuela', description: 'Acceso a las Funciones de la Entidad Escuela'},
+{name_group: 'Configuración General', description: 'Ingreso al Sistema'}])
 
 p '      FINAL    '.center(400, '*')
 

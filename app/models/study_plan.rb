@@ -1,12 +1,27 @@
-class StudyPlan < ApplicationRecord
-  # SCHEMA:
-  # t.string "code"
-  # t.string "name"
-  # t.integer "madatory_credits"
-  # t.integer "optative_credits"
-  # t.integer "elective_credits"
-  # t.bigint "school_id", null: false 
-  
+# == Schema Information
+#
+# Table name: study_plans
+#
+#  id            :bigint           not null, primary key
+#  code          :string
+#  levels        :integer          default(10), not null
+#  modality      :integer          default("Anual"), not null
+#  name          :string
+#  structure     :integer          default("por_dependencia"), not null
+#  total_credits :integer          default(0)
+#  created_at    :datetime         not null
+#  updated_at    :datetime         not null
+#  school_id     :bigint           not null
+#
+# Indexes
+#
+#  index_study_plans_on_school_id  (school_id)
+#
+# Foreign Keys
+#
+#  fk_rails_...  (school_id => schools.id)
+#
+class StudyPlan < ApplicationRecord  
   
   # HISTORY:
   has_paper_trail on: [:create, :destroy, :update]
@@ -17,19 +32,33 @@ class StudyPlan < ApplicationRecord
 
   # ASSOCIATIONS:
   belongs_to :school
+  # accepts_nested_attributes_for :school
+
   has_many :grades, dependent: :destroy
-  has_many :subject_types, dependent: :destroy
-  accepts_nested_attributes_for :subject_types, allow_destroy: true  
+  has_many :requirement_by_subject_types, dependent: :destroy
+  accepts_nested_attributes_for :requirement_by_subject_types, allow_destroy: true  
+  
+  has_many :requirement_by_levels, dependent: :destroy
+  
+  has_many :mentions, dependent: :destroy
+  accepts_nested_attributes_for :mentions, allow_destroy: true  
 
   # VALIDATIONS:
-  validates :code, presence: true, uniqueness: {case_sensitive: false}
-  validates :name, presence: true, uniqueness: {case_sensitive: false}
-  validates :subject_types, presence: true
+  validates :code, presence: true
+  validates :name, presence: true
+  validates :modality, presence: true
+  validates :levels, presence: true
+  validates :requirement_by_subject_types, presence: true
   validates :school, presence: true
+  validates :structure, presence: true
 
+  # ENUMS:
+  enum modality: [:Anual, :Semestral]
+  enum structure: {por_dependencia: 0, por_nivel: 1, sin_restricciones: 2}
   # CALLBACKS:
-  after_initialize :set_unique_school
   before_save :clean_values
+
+  #SCOPE:
 
   # HOOKS:
   def clean_values
@@ -41,11 +70,34 @@ class StudyPlan < ApplicationRecord
     self.code.upcase!
   end
 
-  # FUNTIONS:
-  def desc
+  # FUNCTIONS:
+  # def initialization
+  #   requirement_by_levels
+  # end
+
+  def modality_to_tipo
+    Anual? ? 'Año' : 'Semestre'
+  end
+
+  def modality_to_tipo_short
+    Anual? ? 'Año' : 'Sem'
+  end  
+
+  def desc_with_school
+    "#{school.short_name} - #{name}"
+  end
+
+  def code_name
     "(#{code}) #{name}"
   end
 
+  def desc
+    "#{school&.short_name} (#{code}) #{name}"
+  end
+
+  def label_structure_desc
+    ApplicationController.helpers.label_status('bg-info', structure&.titleize)
+  end
   # def desc_credits
   #   "(Créditos Requeridos) #{mandatory_credits}"
   # end
@@ -56,42 +108,68 @@ class StudyPlan < ApplicationRecord
     weight -2
 
     show do
-      fields :school, :code, :name, :subject_types
+      fields :school, :code, :modality, :levels, :name, :mentions, :requirement_by_subject_types
     end
 
     list do
-      fields :code, :name, :subject_types do
-        sortable false
-        filterable false
-        searchable false
-        queryable false
+      sort_by :name
+      checkboxes false
+      field :school do
+        sticky true
+        pretty_value do
+          bindings[:object].school&.short_name
+        end
       end
+      field :code do
+        sticky true
+      end
+      fields :name, :modality, :levels, :requirement_by_subject_types, :mentions
     end
 
     export do
-      fields :code, :name, :subject_types
+      fields :code, :name, :requirement_by_subject_types
     end
 
     edit do
-      field :school
+      field :school do
+        inline_add false
+        inline_edit false 
+        partial 'study_plan/custom_school_id_field'
+      end
       field :code do 
         html_attributes do
           {:length => 8, :size => 8, :onInput => "$(this).val($(this).val().toUpperCase().replace(/[^a-zA-Z0-9\u00f1\u00d1 ]/g,''))"}
         end
       end
-      field :name#, :subject_types
-      field :subject_types
+      field :name do
+        html_attributes do
+          {:onInput => "$(this).val($(this).val().toUpperCase())"}
+        end        
+      end
+      field :modality do
+        partial 'study_plan/custom_modality_field'
+        help 'Atención: la opción indicada servirá adicionalemnte para la inscripción de los estudiantes.'        
+      end
+      field :structure do
+        partial 'study_plan/custom_structure_field'
+        help 'Atención: la opción indicada servirá adicionalemnte para la inscripción de los estudiantes.'
+      end
+      fields :levels, :requirement_by_subject_types, :mentions
+
     end
+		update do
 
-  end
+			field :school do
+				inline_edit false
+				inline_add false
+				read_only true
+			end
+			field :name
+		end    
 
-  def set_unique_school
-    self.school_id = School.first.id if School.count.eql? 1
   end
 
   private
-
-
     def paper_trail_update
       # changed_fields = self.changes.keys - ['created_at', 'updated_at']
       object = I18n.t("activerecord.models.#{self.model_name.param_key}.one")

@@ -1,0 +1,79 @@
+.table-responsive
+  %table.table.table-bordered.table-sm.mt-3
+    %thead
+      %tr.text-center
+        - orders.each do |k,v|
+          - if k.nil? or k < 1
+            - title = "Sin Orden"
+            - bg = 'bg-danger'
+          - else
+            - title = "#{Subject.ordinal_to_cardinal(k, @object.modality_to_tipo)}"
+            - bg = 'bg-success'            
+          %td{class: bg}
+            %b= title
+            - if false 
+              - # OJO REVISAR ESTÁ SUMANDO TODAS LAS ASIGNATURAS!!! 
+              %span.badge.bg-dark{title: 'Total de Asignaturas'}= "#{v}"
+          - if !k.nil? and k > 0
+            %td= render partial: '/requirement_by_levels/card', locals: {level: k, subjects: subjects} #@object.modality_to_tipo
+        - SubjectType.all.reject{|el| el.code.eql? 'OB'}.each do |subType|
+          %td{class: bg}
+            %b= subType.name.titleize
+            - if false 
+              - # OJO REVISAR ESTÁ SUMANDO TODAS LAS ASIGNATURAS!!! 
+              %span.badge.bg-dark{title: 'Total de Asignaturas'}= "#{v}"
+        %tr
+          %td{colspan: (orders.max.first)+1}
+            .text-center.mt-1= submit_tag 'Guardar', class: 'btn btn-sm btn-info p-1', style: 'font-size: 11px'
+    %tbody
+      %tr
+        - orders.each do |k,v|
+          %td.p-1
+            .table-responsive{style: 'max-height:480px'}
+
+              - if k.nil?
+                - table = 'table-danger'
+              - elsif k.eql? 0
+                - table = 'table-info'
+              - else
+                - table = ''
+
+              %table.table.table-bordered.table-sm.table.table-striped
+                - SubjectType.all.order(:name).each do |s_type|
+                  - tipo = s_type.name.downcase
+                  - subjects_by_type = s_type.subjects.where(ordinal: k).order(:code)
+                  - if subjects_by_type.any? 
+                    %thead
+                      %tr
+                        %td.text-center.bg-dark.text-light
+                          - title = "#{s_type.name.downcase.pluralize.titleize}"
+                          %small
+                            = title
+                            %span.label{title: "Total Asignaturas #{title}"}= "#{subjects_by_type.count}"
+                    %tbody
+                      - subjects_by_type.each do |asig|
+                        %tr.trFiltrable{class: table}
+                          = render partial: '/subject_links/tree_by_school', locals: {subject: asig}
+
+
+:javascript
+
+  document.addEventListener("rails_admin.dom_ready", function() {
+
+    $('#filterTable').on('keyup', function(e){
+      $('.trFiltrable').hide().filter(":contains('" + this.value.toUpperCase() + "')").show();
+
+      // Avancing in search by title:
+      // $('.trFiltrable').hide().filter("a[aria-label*='" + this.value.toUpperCase() + "']").show();
+
+
+    });
+
+    $('.mouseover').hover( function(e){
+      let clase = $(this).attr( "mouseover");
+      $('.'+clase).toggleClass('table-warning');
+    });
+  });
+
+
+

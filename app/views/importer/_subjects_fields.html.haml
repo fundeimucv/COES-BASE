@@ -4,18 +4,20 @@
   %label.col-sm-2.col-form-label.text-md-end{for: "qualification_type_field"} Tipo de Calificación
   .col-sm-10.controls
     - Subject.qualification_types.each_with_index.map do |value, i|
-      %label.btn.btn-secondary.btn-sm.tooltip-btn{'data_toggle': :tooltip, title: value[0].titleize}
+      %label.btn.btn-secondary.btn-sm
         = radio_button_tag 'qualification_type', value[0], i.eql?(0)
         = "#{value[0].upcase}"
     .form-text
-      %span.label.label-danger Requerido
+      %span.label.label-danger Requerida
+      .bg-warning.p-1.my-1.text-dark Opción por defecto: Esta selección será omitida si el archivo contiene una columna que indica el tipo de calificación
 
-#modality_field.control-group.row.mb-3
-  %label.col-sm-2.col-form-label.text-md-end{for: "modality_field"} Tipo
+#subject_type.control-group.row.mb-3
+  %label.col-sm-2.col-form-label.text-md-end{for: "subject_type"} Tipo de Asignatura
   .col-sm-10.controls
-    - Subject.modalities.each_with_index.map do |value, i|
-      %label.btn.btn-secondary.btn-sm.tooltip-btn{'data_toggle': :tooltip, title: value[0].titleize}
-        = radio_button_tag 'modality', value[0], i.eql?(0)
-        = "#{value[0].upcase}"
+    - SubjectType.all.each do |e|
+      %label.btn.btn-secondary.btn-sm
+        = radio_button_tag 'subject_type_id', e.id
+        = e.name&.downcase.pluralize.titleize
     .form-text
-      %span.label.label-danger Requerido
+      %span.label.label-danger Requerida
+      .bg-warning.p-1.my-1.text-dark Opción por defecto: Esta selección será omitida si el archivo contiene una columna que indica el tipo de asignatura (o modalidad) 

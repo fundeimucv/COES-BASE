@@ -1,9 +1,28 @@
+# == Schema Information
+#
+# Table name: courses
+#
+#  id                  :bigint           not null, primary key
+#  name                :string
+#  offer               :boolean          default(TRUE)
+#  offer_as_pci        :boolean
+#  created_at          :datetime         not null
+#  updated_at          :datetime         not null
+#  academic_process_id :bigint           not null
+#  subject_id          :bigint           not null
+#
+# Indexes
+#
+#  index_courses_on_academic_process_id  (academic_process_id)
+#  index_courses_on_subject_id           (subject_id)
+#
+# Foreign Keys
+#
+#  fk_rails_...  (academic_process_id => academic_processes.id)
+#  fk_rails_...  (subject_id => subjects.id)
+#
 class Course < ApplicationRecord
-  # SCHEMA:
-  # t.bigint "academic_process_id", null: false
-  # t.bigint "subject_id", null: false
-  # t.boolean "offer_as_pci"
-  # t.string "name"
+
   # Course.all.map{|ap| ap.update(name: 'x')}  
   # HISTORY:
 
@@ -38,7 +57,10 @@ class Course < ApplicationRecord
   scope :pcis, -> {where(offer_as_pci: true)}
   scope :order_by_subject_ordinal, -> {joins(:subject).order('subjects.ordinal': :asc)}
   scope :order_by_subject_code, -> {joins(:subject).order('subjects.code': :asc)}
+  scope :order_by_subject_ordinal_and_subject_code, -> {joins(:subject).order(['subjects.ordinal': :asc, 'subjects.code': :asc])}
 
+  scope :offers, -> {where(offer: true)}
+  
   scope :custom_search, -> (keyword) {joins(:period, :subject).where("subjects.name ILIKE '%#{keyword}%' OR subjects.code ILIKE '%#{keyword}%' OR periods.name ILIKE '%#{keyword}%'") }
   # default_scope {of_academic_process(@academic_process.id)}
 
@@ -118,18 +140,21 @@ class Course < ApplicationRecord
       sort_by ['courses.name']
       search_by :custom_search
       field :academic_process do
+        sticky true
         queryable true
         label 'Periodo'
-        column_width 100
+        column_width 150
         pretty_value do
-          value.period.name
+          value.name
         end
       end
       field :area do
+        sticky true
         searchable :name
         sortable :name
       end
       field :subject do
+        sticky true
         filterable false
       end
       field :total_sections do
@@ -138,6 +163,8 @@ class Course < ApplicationRecord
           ApplicationController.helpers.label_status('bg-info', value)
         end
       end
+
+      field :offer
 
       field :sections do
         column_width '300'
@@ -206,18 +233,20 @@ class Course < ApplicationRecord
     edit do
       field :academic_process do
         inline_edit false
-        inline_add false        
+        inline_add false
+        # partial 'course/custom_academic_process_id_field'
       end
 
       field :subject do
         inline_edit false
         inline_add false        
       end
-      field :sections
+
     end
 
+
     export do
-      fields :academic_process, :period, :subject, :area
+      fields :academic_process, :period, :subject, :area, :offer
       field :total_sections do
         label 'T. Sec'
       end

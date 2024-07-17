@@ -12,14 +12,11 @@
 
   %tbody
     - academic_records.sort_by_subject_name.each do |academic_record|
-      - subject = academic_record.subject
-      %tr{class: academic_record.tr_class_by_status_q, style: 'padding: 3px'}
-        %td= subject.code
-        %td.text-start{style: 'padding-left: 10px; width: 500px'}= subject.name
-        %td= subject.unit_credits
-        %td= subject.modality_initial_letter
-        %td= academic_record.section.code
-        %td= academic_record.conv_type
+      - @subject = academic_record.subject
+      - @academic_record = academic_record
+      - if academic_record.qualifications.any?
+        - academic_record.qualifications.each do |q|
+          = render partial: '/academic_records/tr_to_history_kardex', locals: {obj: q}
+      - else
+        = render partial: '/academic_records/tr_to_history_kardex', locals: {obj: @academic_record}
 
-        %td= academic_record.q_value_to_02i
-        %td= academic_record.cal_alfa

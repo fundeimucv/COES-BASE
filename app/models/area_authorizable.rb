@@ -1,8 +1,15 @@
+# == Schema Information
+#
+# Table name: area_authorizables
+#
+#  id          :bigint           not null, primary key
+#  description :string
+#  icon        :string
+#  name        :string           not null
+#  created_at  :datetime         not null
+#  updated_at  :datetime         not null
+#
 class AreaAuthorizable < ApplicationRecord
-	# SCHEMA:
-	# t.string "name", null: false
-	# t.string "description"
-	# t.string "icon"
 
 	# HISTORY:
 	has_paper_trail on: [:create, :destroy, :update]
@@ -46,18 +53,19 @@ class AreaAuthorizable < ApplicationRecord
 	private
 
 		def paper_trail_update
-			changed_fields = self.changes.keys - ['created_at', 'updated_at']
+			# changed_fields = self.changes.keys - ['created_at', 'updated_at']
 			object = I18n.t("activerecord.models.#{self.model_name.param_key}.one")
-			self.paper_trail_event = "¡#{object} actualizada en #{changed_fields.to_sentence}"
+			# self.paper_trail_event = "¡#{object} actualizada en #{changed_fields.to_sentence}"
+			self.paper_trail_event = "¡#{object} actualizada!"
 		end  
 
 		def paper_trail_create
 			object = I18n.t("activerecord.models.#{self.model_name.param_key}.one")
-			self.paper_trail_event = "¡#{object} creada!"
+			self.paper_trail_event = "¡#{object} registrada!"
 		end  
 
 		def paper_trail_destroy
 			object = I18n.t("activerecord.models.#{self.model_name.param_key}.one")
-			self.paper_trail_event = "¡Área Autorizable eliminada!"
+			self.paper_trail_event = "¡Area Autorizable eliminada!"
 		end
 end

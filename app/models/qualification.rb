@@ -1,6 +1,24 @@
+# == Schema Information
+#
+# Table name: qualifications
+#
+#  id                 :bigint           not null, primary key
+#  definitive         :boolean          default(TRUE), not null
+#  type_q             :integer          default("final"), not null
+#  value              :integer          not null
+#  created_at         :datetime         not null
+#  updated_at         :datetime         not null
+#  academic_record_id :bigint           not null
+#
+# Indexes
+#
+#  index_qualifications_on_academic_record_id  (academic_record_id)
+#
+# Foreign Keys
+#
+#  fk_rails_...  (academic_record_id => academic_records.id)
+#
 class Qualification < ApplicationRecord
-  # t.integer "value"
-  # t.integer "type_q"
   
   belongs_to :academic_record
   # accepts_nested_attributes_for :academic_record
@@ -14,7 +32,9 @@ class Qualification < ApplicationRecord
 
   scope :definitive, -> {where(definitive: true)}
 
-  enum type_q: [:final, :diferido, :reparacion]
+  default_scope {order(:type_q)}
+
+  enum type_q: {final: 0, diferido: 1, reparacion: 2}
 
   validates :academic_record, presence: true
   validates :value, presence: true, numericality: { only_integer: true, in: 0..20 }
@@ -22,12 +42,15 @@ class Qualification < ApplicationRecord
   validates_uniqueness_of :academic_record, scope: [:type_q], message: 'Calificación ya existente', field_name: false
 
   after_save :update_academic_record_status
+  after_destroy :update_academic_record_status
 
   def name
     "#{type_q.titleize} #{value}" if (type_q and value)
   end
 
-  after_destroy :update_academic_record_status
+  def num_to_s
+    (academic_record.num_to_s value.to_i) if value
+  end
 
   def update_academic_record_status    
     definitive_q_value = self.academic_record.definitive_q_value
@@ -54,18 +77,42 @@ class Qualification < ApplicationRecord
     end
   end
 
-  def desc_conv
-    if self.final?
-      if self.academic_record.pi?
-        'PI'
-      elsif self.academic_record.retirado?
-        'RT'
-      else
-        I18n.t(self.type_q)
-      end
+  def conv_type
+    type = I18n.t(self.type_q)
+    type = type[1]
+
+    modality_process = academic_record.academic_process.modality[0]
+    modality_process ||= 'A'
+
+    "#{type.upcase}#{modality_process.upcase}#{academic_record.period.period_type.code.last}"
+  end  
+
+  def status_of_q
+    # Attention: This Status do reference to the Qualification directy and not to AcademicRecord. 
+    # For Example: when have two qualifications and one is 'aplazado' and the other is 'aprovado' 
+    
+    if value and value > 10
+      I18n.t('activerecord.models.academic_record.status.A')
     else
-      I18n.t(self.type_q)
+      I18n.t('activerecord.models.academic_record.status.AP')
     end
+  end
+
+  def cal_alfa
+    I18n.t('activerecord.models.academic_record.status.'+status_of_q)
+  end
+
+
+  def desc_conv
+
+    # OJO: Hay un problema con el estado, no puede ser el mismo de la definitiva (academic_record) ya que es A y debe ser AP
+    I18n.t(self.type_q)
+    # OJO
+    # if self.final? and (self.academic_record.absolute_pi_or_rt?)
+    #   I18n.t(self.academic_record.status)
+    # else
+      
+    # end
   end
 
   def is_valid_numeric_value?
@@ -92,7 +139,7 @@ class Qualification < ApplicationRecord
   def update_status
 
     if self.diferido? or self.reparacion?
-      self.academic_record.qualifications.final.first.update(definitive: false)
+      self.academic_record.qualifications.final.first&.update(definitive: false)
     end
 
     eap = self.enroll_academic_process
