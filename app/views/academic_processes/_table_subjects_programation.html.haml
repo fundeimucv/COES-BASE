@@ -12,6 +12,7 @@
         %th.col-1.text-center Activar
         %th.col-1.text-center Ofertar
         %th.col-1.text-center PCI
+        %th.col-1.text-center Números
         - if (current_user&.admin&.authorized_read? 'Section') or (current_user&.admin&.authorized_create? 'Section')
           %th Secciones
     %tbody.table-group-divider
@@ -40,6 +41,10 @@
             - if @course
               = render partial: 'academic_processes/active_course_switch', locals: {tipo: 2}
 
+          - # Numeritos
+          %th.text-center
+            - if @course
+              = @course.label_numbery_total
           - # Sections
           %td.overflow-scroll{id: "sections#{@subj_id}"}
             - if @course

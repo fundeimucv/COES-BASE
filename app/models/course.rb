@@ -22,7 +22,7 @@
 #  fk_rails_...  (subject_id => subjects.id)
 #
 class Course < ApplicationRecord
-
+  include Totalizable
   # Course.all.map{|ap| ap.update(name: 'x')}  
   # HISTORY:
 
