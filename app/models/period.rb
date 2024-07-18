@@ -41,15 +41,15 @@ class Period < ApplicationRecord
 
 
 	def name_revert
-		"#{period_type.code.upcase}#{year}" if period_type
+		"#{period_type&.code&.upcase}#{year}"
 	end
 
 	def get_name
-		"#{year}-#{period_type.code.upcase}" if period_type
+		"#{year}-#{period_type&.code&.upcase}"
 	end
 
 	def period_type_name
-		period_type.name if period_type
+		period_type&.name
 	end
 
   rails_admin do

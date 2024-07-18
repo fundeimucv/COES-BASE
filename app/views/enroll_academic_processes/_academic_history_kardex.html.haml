@@ -12,7 +12,7 @@
 
     %tbody
       %tr
-        %td.text-center= enroll_academic_process.academic_process.period.name
+        %td.text-center= enroll_academic_process.academic_process&.process_name
         %td.text-center
           .badge.bg-info= enroll_academic_process.enroll_status.titleize if enroll_academic_process.enroll_status
         %td.text-center

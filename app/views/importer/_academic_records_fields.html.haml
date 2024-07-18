@@ -4,8 +4,8 @@
     - if StudyPlan.count.eql? 1 and School.count.eql? 1
       - study_plan = StudyPlan.first
       - @study_plan_id = study_plan.id
-      - period = study_plan.school.periods.first
-      - @period_nombre = period.name if period
+      - academic_process = study_plan.school.academic_process.first
+      - @academic_process_name = academic_process&.name 
 
     = grouped_collection_select nil, :study_plan_id, School.all, :study_plans, :description, :id, :desc, {:prompt => "Seleccione plan de estudio por defecto...", selected: @study_plan_id}, { class: 'form-control', required: true}
     .form-text
@@ -14,7 +14,7 @@
 #period_field.control-group.row.mb-3.enum_type
   %label.col-sm-2.col-form-label.text-md-end{for: "period_field"} Período
   .col-sm-10.controls
-    = grouped_collection_select nil, :nombre_periodo, School.all, :periods, :name, :name, :name, {:prompt => "Seleccione periodo por defecto...", selected: @period_nombre}, { class: 'form-control', required: true}
+    = grouped_collection_select nil, :nombre_periodo, School.all, :academic_processes, :name, :name, :name, {:prompt => "Seleccione periodo por defecto...", selected: @academic_process_name}, { class: 'form-control', required: true}
 
     .form-text
       %span.label.label-danger Require

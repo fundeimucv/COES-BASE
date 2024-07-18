@@ -383,7 +383,7 @@ class Grade < ApplicationRecord
   end
   
   def label_start_process
-    ApplicationController.helpers.label_status('bg-info', start_process&.period_name)
+    ApplicationController.helpers.label_status('bg-info', start_process&.process_name)
   end
 
   def label_study_plan

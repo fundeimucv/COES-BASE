@@ -1,6 +1,6 @@
 
 -# academic_process = AcademicProcess.find session[:academic_processes_id]
--# @period_name = academic_process.period.name if (academic_process and academic_process.period)
+-# @process_name = acedemic_process&.process_name
 
 - logged_as_admin = (current_user and current_user.admin? and session[:rol].eql? 'admin') ? true : false
 .mb-0= render partial: 'layouts/main_banner', locals: {bg_color: 'bg-info bg-opacity-20 '}
@@ -11,10 +11,10 @@
 	- schools_auh = current_user&.admin&.schools_auh
 	- if schools_auh.any?
 		- schools_auh.order(:name).each do |school|
-			- @period_name = nil
+			- @process_name = nil
 			- ap = school.academic_processes.first
-			- @period_name = ap&.process_name #if (ap and ap.period)
-			- @query = "&query=#{@period_name}" unless @period_name.blank?
+			- @process_name = ap&.process_name 
+			- @query = "&query=#{@process_name}" unless @process_name.blank?
 			- school_auth = current_user&.admin&.authorized_read? 'School'
 
 			.col.mx-3.mb-3				
@@ -26,28 +26,28 @@
 						- object = I18n.t("activerecord.models.academic_record.other")
 
 						-# url = "/admin/academic_record?f%5Bschool%5D%5B81356%5D%5Bo%5D=like&f%5Bschool%5D%5B81356%5D%5Bv%5D=#{school.short_name}&#{@query}"
-						- url = "/admin/academic_record?f[school][81356][o]=like&f[school][81356][v]=#{school.short_name}&f[academic_process][35634][o]=like&f[academic_process][35634][v]=#{@period_name}"
+						- url = "/admin/academic_record?f[school][81356][o]=like&f[school][81356][v]=#{school.short_name}&f[academic_process][35634][o]=like&f[academic_process][35634][v]=#{@process_name}"
 
 						= link_to url, class: 'btn btn-primary' do
 							%h4.fa.fa-signature
-							%h6.text-center= "#{object.upcase} #{@period_name}"
+							%h6.text-center= "#{object.upcase} #{@process_name}"
 				- if logged_as_admin and current_user.admin.authorized_read? 'Section'
 					.row
 						- object = I18n.t("activerecord.models.section.other")
 						-# url = "/admin/section?f%5Bschool%5D%5B81356%5D%5Bo%5D=like&f%5Bschool%5D%5B81356%5D%5Bv%5D=#{school.short_name}&#{@query}"
 						-# url = "/admin/enroll_academic_process?f[school][81356][o]=like&f[school][81356][v]=#{school.short_name}&#{@query}"
-						- url = "/admin/section?f[school][81356][o]=like&f[school][81356][v]=#{school.short_name}&f[academic_process][35634][o]=like&f[academic_process][35634][v]=#{@period_name}"
+						- url = "/admin/section?f[school][81356][o]=like&f[school][81356][v]=#{school.short_name}&f[academic_process][35634][o]=like&f[academic_process][35634][v]=#{@process_name}"
 						= link_to url, class: 'btn btn-primary' do
 							%h4.fa.fa-list
-							%h6.text-center= "#{object.upcase} #{@period_name}"
+							%h6.text-center= "#{object.upcase} #{@process_name}"
 				- if logged_as_admin and current_user.admin.authorized_manage? 'EnrollAcademicProcess'
 					.row
 						- object = I18n.t("activerecord.models.enroll_academic_process.other")
 						-# url = "/admin/enroll_academic_process?f%5Bschool%5D%5B81356%5D%5Bo%5D=like&f%5Bschool%5D%5B81356%5D%5Bv%5D=#{school.short_name}&#{@query}"
-						- url = "/admin/enroll_academic_process?f[school][81356][o]=like&f[school][81356][v]=#{school.short_name}&f[academic_process][35634][o]=like&f[academic_process][35634][v]=#{@period_name}"
+						- url = "/admin/enroll_academic_process?f[school][81356][o]=like&f[school][81356][v]=#{school.short_name}&f[academic_process][35634][o]=like&f[academic_process][35634][v]=#{@process_name}"
 						= link_to url, class: 'btn btn-primary' do
 							%h4.fa.fa-calendar-check
-							%h6.text-center= "#{object.upcase} #{@period_name}"
+							%h6.text-center= "#{object.upcase} #{@process_name}"
 - if false
 	.mt-4.align-middle.align-items-center{style: 'width:100%'}
 		.row
@@ -55,24 +55,24 @@
 				%h5.col.text-center= school.name
 		.row
 			- School.all.each do |school|
-				- @period_name = nil
+				- @process_name = nil
 				- ap = school.academic_processes.first
-				- @period_name = ap.period.name if (ap and ap.period)
-				%h5.col.text-center= @period_name
+				- @process_name = ap&.process_name
+				%h5.col.text-center= @process_name
 
 		- ['academic_record', 'section', 'enroll_academic_process'].each do |elem|
 			- object = I18n.t("activerecord.models.#{elem}.one")
 			.row
 				- School.all.each do |school|
-					- @period_name = nil
+					- @process_name = nil
 					- ap = school.academic_processes.first
-					- @period_name = ap.period.name if (ap and ap.period)
-					- @query = "?query=#{@period_name}" unless @period_name.blank?
+					- @process_name = ap&.process_name
+					- @query = "?query=#{@process_name}" unless @process_name.blank?
 					.col.text-center
 						%h1
 							= link_to "/admin/#{elem}#{@query}", class: 'btn btn-primary btn-lg' do
 								%span.fa.fa-calendar
-								= "#{object.upcase} #{@period_name}"	
+								= "#{object.upcase} #{@process_name}"	
 
 - if false
 	:javascript

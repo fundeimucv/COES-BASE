@@ -4,16 +4,16 @@
   %table.table.table-striped.table-sm.table-hover.table-bordered.table-responsive.tableDataMia
     %thead
       %tr
-        %th.text-center= "Estado Insc #{academic_process.period.name}"
+        %th.text-center= "Estado Insc #{acedemic_process.process_name}"
         %th.text-center Sede
         %th Cédula
         %th.col-4{width: '350px'} Apellidos, Nombres
         %th.col-4.text-center Desde
         %th.col-4.text-center Hasta
         %th.text-center.align-middle Est. Permanencia
-        %th.text-center{width: '50px'}= "Eficiencia #{academic_process.process_before.period.name}"
-        %th.col-1.text-center= "Promedio #{academic_process.process_before.period.name}" 
-        %th.col-1.text-center= "Ponderado #{academic_process.process_before.period.name}" 
+        %th.text-center{width: '50px'}= "Eficiencia #{academic_process.process_before.process_name}"
+        %th.col-1.text-center= "Promedio #{academic_process.process_before.process_name}" 
+        %th.col-1.text-center= "Ponderado #{academic_process.process_before.process_name}" 
     %tbody
       - grades.each do |grade, i|
         - student = grade.student

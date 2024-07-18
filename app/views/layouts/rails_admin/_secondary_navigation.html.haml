@@ -11,7 +11,7 @@
       - if false
         - if session[:academic_process_id]
           - academic_process = AcademicProcess.find session[:academic_process_id]
-          - msg = academic_process.period_name
+          - msg = academic_process&.process_name
         - else
           - msg = "Sin Periodo Activo"
         = link_to msg, 'javascript:void(0)', {"data-bs-target": "##{id}", "data-bs-toggle": :modal, class: 'nav-link', title: 'Cambiar Período de la Sesión'}

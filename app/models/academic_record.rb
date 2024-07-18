@@ -193,7 +193,7 @@ class AcademicRecord < ApplicationRecord
 
   def values_for_report
     user_aux = user
-    [user_aux.ci, user_aux.first_name, user_aux.last_name, school.name, grade&.level_offer, area.name, subject.code, subject.name, period.name, section.code, self.get_value_by_status]
+    [user_aux.ci, user_aux.first_name, user_aux.last_name, school.name, grade&.level_offer, area.name, subject.code, subject.name, academic_process.process_name, section.code, self.get_value_by_status]
   end
   
   def is_totality_partial?
@@ -519,16 +519,16 @@ class AcademicRecord < ApplicationRecord
       sort_by :academic_process
       
 
-      # filters [:period_name, :section_code, :subject_code, :student_desc]
+      # filters [:process_name, :section_code, :subject_code, :student_desc]
 
-      # field :period_name do
+      # field :process_name do
       #   label 'Período'
       #   column_width 100
       #   # searchable 'periods_academic_records.name'
       #   # filterable 'periods_academic_records.name'
       #   # sortable 'periods_academic_records.name'
       #   formatted_value do
-      #     bindings[:object].period.name if bindings[:object].period
+      #     bindings[:object].academic_process.process_name if bindings[:object].period
       #   end
       # end
 
@@ -676,7 +676,7 @@ class AcademicRecord < ApplicationRecord
     update do
       field :period do
         pretty_value do
-          bindings[:view].content_tag(:b, bindings[:object].period.name)
+          bindings[:view].content_tag(:b, bindings[:object].academic_process.process_name)
         end
         read_only true
       end 
