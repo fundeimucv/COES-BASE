@@ -31,7 +31,8 @@ class Teacher < ApplicationRecord
 
   belongs_to :departament
   # accepts_nested_attributes_for :departament
-  # has_and_belongs_to_many :secondary_teachers, class_name: 'SectionTeacher'
+  
+  has_and_belongs_to_many :secondary_sections, class_name: 'Section'
 
   has_many :sections
 
