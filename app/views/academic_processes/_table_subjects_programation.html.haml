@@ -45,14 +45,19 @@
           %th.text-center
             - if @course
               = @course.label_numbery_total
-              = ApplicationController.helpers.label_status_with_tooltip('bg-info me-1', @course.total_sections, 'Total Secciones')
           - # Sections
           %td.overflow-scroll{id: "sections#{@subj_id}"}
             - if @course
               %table
                 %tr
+                  =# ApplicationController.helpers.label_status_with_tooltip('bg-info me-1', @course.total_sections, 'Total Secciones')
+                  =# ApplicationController.helpers.label_status('bg-info me-1', @course.total_sections)
                   - if has_sections
                     - if (current_user&.admin&.authorized_read? 'Section')
+                      %td
+                        - url = "/admin/section?f[academic_process][39808][o]=like&f[academic_process][39808][v]=#{@course.academic_process.process_name}&f[school][40710][o]=like&f[school][40710][v]=#{@course.school.short_name}&f[subject][41128][o]=like&f[subject][41128][v]=#{@course.subject.code}&query="
+                        = ApplicationController.helpers.btn_link_with_tooptip(url,'btn-success', @course.total_sections, 'Total Secciones')
+                        = ":"
                       = render partial: 'academic_processes/sections_list_inline', locals: {sections: sections, has_enrolled: @course.academic_records.any?}
                   - if (current_user&.admin&.authorized_create? 'Section')
                     %td.p-0= ApplicationController.helpers.button_add_section @course.id
