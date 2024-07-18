@@ -476,47 +476,14 @@ class Section < ApplicationRecord
         end        
       end
 
-      field :total_academic_records do
-        label 'Insc'
-        column_width 40
+      field :numery do
+        label 'Números'
+        column_width 200
         pretty_value do
-          ApplicationController.helpers.label_status('bg-secondary', value)
+          bindings[:object].label_numbery_total
         end
       end
 
-      field :total_sc do
-        label 'SC'
-        pretty_value do
-          ApplicationController.helpers.label_status('bg-secondary', value)
-        end         
-      end
-      field :total_aprobados do
-        label 'A'
-        help 'Aprobado'
-        pretty_value do
-          ApplicationController.helpers.label_status('bg-success', value)
-        end         
-      end
-      field :total_aplazados do
-        label 'AP'
-        help 'Aplazados'
-        pretty_value do
-          ApplicationController.helpers.label_status('bg-danger', value)
-        end         
-      end
-      field :total_retirados do
-        label 'RT'
-        pretty_value do
-          ApplicationController.helpers.label_status('bg-secondary', value)
-        end         
-      end 
-      field :total_pi do
-        label 'PI'
-        # header 'Pérdida'
-        pretty_value do
-          ApplicationController.helpers.label_status('bg-danger', value)
-        end         
-      end
       field :qualifications_average do
         label 'Prom'
         pretty_value do
