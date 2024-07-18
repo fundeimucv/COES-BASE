@@ -1,6 +1,6 @@
 
 -# academic_process = AcademicProcess.find session[:academic_processes_id]
--# @process_name = acedemic_process&.process_name
+-# @process_name = academic_process&.process_name
 
 - logged_as_admin = (current_user and current_user.admin? and session[:rol].eql? 'admin') ? true : false
 .mb-0= render partial: 'layouts/main_banner', locals: {bg_color: 'bg-info bg-opacity-20 '}

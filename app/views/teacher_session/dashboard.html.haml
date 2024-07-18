@@ -15,7 +15,7 @@
             %td= i+1
             %td= sec.code
             %td= sec.subject.name
-            %td= sec.acedemic_process&.process_name
+            %td= sec.academic_process&.process_name
             %td= sec.academic_records.count
             %td
               - if !sec.qualified? and sec.is_in_process_active?
