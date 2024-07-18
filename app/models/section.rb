@@ -26,7 +26,7 @@
 #  fk_rails_...  (teacher_id => teachers.user_id) ON DELETE => cascade ON UPDATE => cascade
 #
 class Section < ApplicationRecord
-  
+  include Totalizable
   # HISTORY:
   has_paper_trail on: [:create, :destroy, :update]
 
@@ -267,10 +267,6 @@ class Section < ApplicationRecord
     "#{subject.desc} (#{self.code})"
   end
 
-  def total_academic_records
-    academic_records.count
-  end
-
   def subject_desc
     subject&.desc
   end
@@ -301,26 +297,6 @@ class Section < ApplicationRecord
 
   def schedule_table
     schedules.each{|s| s.name}.to_sentence
-  end
-
-  def total_sc
-    academic_records.sin_calificar.count
-  end
-
-  def total_aprobados
-    academic_records.not_perdida_por_inasistencia.aprobado.count
-  end
-
-  def total_aplazados
-    academic_records.not_perdida_por_inasistencia.aplazado.count
-  end
-
-  def total_retirados
-    academic_records.retirado.count
-  end
-
-  def total_pi
-    academic_records.perdida_por_inasistencia.count
   end
 
   # RAILS_ADMIN:
