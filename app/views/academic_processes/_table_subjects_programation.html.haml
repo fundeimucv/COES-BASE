@@ -23,21 +23,21 @@
 
         - sections = @course&.sections
         - has_sections = sections&.any?
-        %tr.trFiltrable{style: 'overflow: scroll;'}
+        %tr.align-middle.trFiltrable{style: 'overflow: scroll;'}
           %td= i+1
           %td= subject.ordinal_to_cardinal_short
           %td{title: subj_desc}= link_to_if (current_user&.admin&.authorized_read? 'Subject'), subj_desc, "/admin/subject/#{@subj_id}"
           - # Activar
-          %td.text-center.align-middle{id: "enableSubject#{@subj_id}"}
+          %td.text-center{id: "enableSubject#{@subj_id}"}
             = render partial: 'academic_processes/active_course_switch', locals: {tipo: 0}
          
           - # Ofertar
-          %td.text-center.align-middle{id: "courseOffer#{@subj_id}"}
+          %td.text-center{id: "courseOffer#{@subj_id}"}
             - if @course
               = render partial: 'academic_processes/active_course_switch', locals: {tipo: 1}
 
           - # PCI 
-          %td.text-center.align-middle{id: "courseOfferAsPCI#{@subj_id}"}
+          %td.text-center{id: "courseOfferAsPCI#{@subj_id}"}
             - if @course
               = render partial: 'academic_processes/active_course_switch', locals: {tipo: 2}
 
@@ -45,6 +45,7 @@
           %th.text-center
             - if @course
               = @course.label_numbery_total
+              = ApplicationController.helpers.label_status_with_tooltip('bg-info me-1', @course.total_sections, 'Total Secciones')
           - # Sections
           %td.overflow-scroll{id: "sections#{@subj_id}"}
             - if @course

@@ -25,11 +25,11 @@ module Totalizable
   end
 
   def label_numbery_total
-    aux = ApplicationController.helpers.label_status('bg-info', total_academic_records)
-    aux += ApplicationController.helpers.label_status('bg-secondary', total_sc)
-    aux += ApplicationController.helpers.label_status('bg-success', total_aprobados)
-    aux += ApplicationController.helpers.label_status('bg-danger', total_aplazados)
-    aux += ApplicationController.helpers.label_status('bg-secondary', total_retirados)
-    aux += ApplicationController.helpers.label_status('bg-danger', total_pi)  
+    aux = ApplicationController.helpers.label_status_with_tooltip('bg-info me-1', total_academic_records, 'Inscritos')
+    aux += ApplicationController.helpers.label_status_with_tooltip('bg-secondary me-1', total_sc, 'Sin Calificar')
+    aux += ApplicationController.helpers.label_status_with_tooltip('bg-success me-1', total_aprobados, 'Aprobados')
+    aux += ApplicationController.helpers.label_status_with_tooltip('bg-danger me-1', total_aplazados, 'Aplazados')
+    aux += ApplicationController.helpers.label_status_with_tooltip('bg-secondary me-1', total_retirados, 'Retirdos')
+    aux += ApplicationController.helpers.label_status_with_tooltip('bg-danger', total_pi, 'PI')  
   end
 end
