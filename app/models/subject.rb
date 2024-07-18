@@ -117,8 +117,9 @@ class Subject < ApplicationRecord
     self.name.upcase!
     self.code.upcase!
     # self.code = "0#{self.code}" if self.code[0] != '0' 
-
-    self.school_id ||= self.area&.schools.first&.id 
+    
+    # self.school_id ||= self.area&.schools.first&.id 
+    self.school_id ||= self.area&.school_id    
   end
 
   # GENERALS FUNCTIONS: 
