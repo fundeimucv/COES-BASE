@@ -1,46 +1,40 @@
-/ Title
-%form.form-inline
-  .input-group
-    %span.mb-0.fs-1 👋
-    %h3.text-center Inicio de Sesión
-    / Form START
-    .input-group-prepend
-    = form_for(resource, as: resource_name, url: session_path(resource_name), data: { turbo: :false }) do |f|
-      - if false
-        / Email
-        .mb-4
-          %label.form-label{:for => "InputEmail"} Correo electrónico *
-          .input-group.input-group-lg
-            %span.input-group-text.bg-light.rounded-start.border-0.text-secondary.px-3
-              %i.fas.fa-envelope
-            %input#InputEmail.form-control.border-0.bg-light.rounded-end.ps-1{placeholder: "mail@example.com", type: :email, name: "user[email]", required: true, autofocus: true}
-
-      / CI
-      .mb-2
-        %label.form-label{:for => "inputCi"} Cédula de Identidad *
-        .input-group.input-group-lg{required: true}
-          %span.input-group-text.bg-light.rounded-start.border-0.text-secondary.px-3
-            %i.fas.fa-id-card
-          %input#inputCi.form-control.border-0.bg-light.rounded-end.ps-1{type: :text, name: "user[ci]", required: true, autofocus: true, oninput: "$(this).val($(this).val().replace(/[^0-9]/g, ''))"}
-
-      / Password
-      .mb-2
-        %label.form-label{:for => "inputPassword5"} Contraseña *
+= form_for(resource, as: resource_name, url: session_path(resource_name), data: { turbo: :false }) do |f|
+  .p-3
+    - if false
+      / Email
+      .mb-4
+        %label.form-label{:for => "InputEmail"} Correo electrónico *
         .input-group.input-group-lg
-          %span.input-group-text.bg-light.rounded-start.border-0.text-secondary.px-3
-            %i.fas.fa-lock
-          %input#inputPassword5.form-control.border-0.bg-light.rounded-end.ps-1{placeholder: "Contraseña", type: :password, name: 'user[password]', required: true}
-      / Check box
-      .mb-2.d-flex.justify-content-between.mb-2
-        - if devise_mapping.rememberable?
-          .form-check
-            %input#exampleCheck1.form-check-input.boolean.optional{type: :checkbox, name: 'user[remember_me]'}
-            %label.form-check-label{for: "exampleCheck1"} Recuérdame
-    
-      / Button
-      .align-items-center.mt-0
-        .d-grid
-          %button.btn.btn-primary.mb-0{type: :submit} Entrar
-      .mt-4.text-center.mb-4        
-        .text-primary-hover
-          = link_to "Recuperar contraseña", new_user_password_path
+          %span.input-group-text.bg-light.border-0.text-secondary
+            %i.fas.fa-envelope
+          %input#InputEmail.form-control.border-0.bg-light.rounded-end.ps-1{placeholder: "mail@example.com", type: :email, name: "user[email]", required: true, autofocus: true}
+
+    / CI
+    .mb-2
+      %label.form-label{:for => "inputCi"} Cédula de Identidad *
+      .input-group.input-group-lg{required: true}
+        %span.input-group-text.bg-light.rounded-0.border-0.text-secondary
+          %i.fas.fa-id-card
+        %input#inputCi.form-control.border-0.bg-light.rounded-0.ps-1{type: :text, name: "user[ci]", required: true, autofocus: true, oninput: "$(this).val($(this).val().replace(/[^0-9]/g, ''))"}
+
+    / Password
+    .mb-2
+      %label.form-label{:for => "inputPassword5"} Contraseña *
+      .input-group.input-group-lg
+        %span.input-group-text.bg-light.border-0.text-secondary
+          %i.fas.fa-lock
+        %input#inputPassword5.form-control.border-0.bg-light.rounded-0.ps-1{placeholder: "Contraseña", type: :password, name: 'user[password]', required: true}
+    / Check box
+
+    - if devise_mapping.rememberable?
+      .input-group-text.my-3.border-0.rounded-0
+        %input#check1.rounded-0.btn.btn-outline-info.form-control.border-info.form-check-input.optional.border-0{type: :checkbox, name: 'user[remember_me]'}
+        %label.form-check-label.ms-2{for: "check1"} Recuérdame
+
+    / Button
+    .align-items-center.mt-0
+      .d-grid
+        %button.btn.btn-primary.mb-0.rounded-0{type: :submit} Entrar
+    .mt-4.text-center.mb-4        
+      .text-primary-hover
+        = link_to "Recuperar contraseña", new_user_password_path, class: 'btn btn-sm btn-outline-warning rounded-0'
