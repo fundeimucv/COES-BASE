@@ -1,0 +1,9 @@
+#offcanvasStart.offcanvas.offcanvas-start.bg-primary{"aria-labelledby" => "offcanvasStartLabel", tabindex: "-1", style: "width:285px;"}
+  .offcanvas-header
+    %h5#offcanvasStartLabel
+    %button.btn-close.text-reset.btn-close-white{"aria-label" => "Close", "data-bs-dismiss" => "offcanvas", type: "button"}
+  .offcanvas-body
+    %ul.sidebar.nav.btn-toggle-nav.flex-column.flex-nowrap.bg-light
+      = main_navigation
+      =# root_navigation
+      =# static_navigation

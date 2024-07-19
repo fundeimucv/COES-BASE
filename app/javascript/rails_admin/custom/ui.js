@@ -3,12 +3,14 @@
 import * as toastr from "toastr";
 window.toastr = toastr;
 
+import * as bootstrap from 'bootstrap';
+window.bootstrap = bootstrap;
 // import "trix"
 import "@rails/actiontext"
 
 document.addEventListener("rails_admin.dom_ready", function() {
 	// $('[rel="tooltip"]').tooltip();
-	$('[title!=" "]').tooltip();
+	// $('[title!=" "]').tooltip();
 	$('#update_if_exists').removeClass('form-control');
 	// $('[data-bs-toggle="collapse"]').click();
 
@@ -22,3 +24,7 @@ document.addEventListener("rails_admin.dom_ready", function() {
 	
 });
 
+var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+var tooltipList = tooltipTriggerList.map(function(tooltipTriggerEl) {
+    return new bootstrap.Tooltip(tooltipTriggerEl)
+})
