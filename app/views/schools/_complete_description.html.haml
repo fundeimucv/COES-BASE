@@ -11,7 +11,7 @@
                 - if last_ap = school&.academic_processes.first
                     - linked = (current_user&.admin&.authorized_read? 'EnrollAcademicProcess')
                     .card-title= last_ap&.label_total_enrolls_by_status(linked).html_safe
-                    .card-subtitle.mb-2.text-muted= "Última Inscripción en (#{last_ap.period.name})"
+                    .card-subtitle.mb-2.text-muted= "Última Inscripción en (#{last_ap&.process_name})"
 
     .col-6
         %table.float-end

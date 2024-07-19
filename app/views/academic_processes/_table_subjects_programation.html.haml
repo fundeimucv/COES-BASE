@@ -12,6 +12,7 @@
         %th.col-1.text-center Activar
         %th.col-1.text-center Ofertar
         %th.col-1.text-center PCI
+        %th.col-1.text-center Números
         - if (current_user&.admin&.authorized_read? 'Section') or (current_user&.admin&.authorized_create? 'Section')
           %th Secciones
     %tbody.table-group-divider
@@ -22,31 +23,41 @@
 
         - sections = @course&.sections
         - has_sections = sections&.any?
-        %tr.trFiltrable{style: 'overflow: scroll;'}
+        %tr.align-middle.trFiltrable{style: 'overflow: scroll;'}
           %td= i+1
           %td= subject.ordinal_to_cardinal_short
           %td{title: subj_desc}= link_to_if (current_user&.admin&.authorized_read? 'Subject'), subj_desc, "/admin/subject/#{@subj_id}"
           - # Activar
-          %td.text-center.align-middle{id: "enableSubject#{@subj_id}"}
+          %td.text-center{id: "enableSubject#{@subj_id}"}
             = render partial: 'academic_processes/active_course_switch', locals: {tipo: 0}
          
           - # Ofertar
-          %td.text-center.align-middle{id: "courseOffer#{@subj_id}"}
+          %td.text-center{id: "courseOffer#{@subj_id}"}
             - if @course
               = render partial: 'academic_processes/active_course_switch', locals: {tipo: 1}
 
           - # PCI 
-          %td.text-center.align-middle{id: "courseOfferAsPCI#{@subj_id}"}
+          %td.text-center{id: "courseOfferAsPCI#{@subj_id}"}
             - if @course
               = render partial: 'academic_processes/active_course_switch', locals: {tipo: 2}
 
+          - # Numeritos
+          %th.text-center
+            - if @course
+              = @course.label_numbery_total
           - # Sections
           %td.overflow-scroll{id: "sections#{@subj_id}"}
             - if @course
               %table
                 %tr
+                  =# ApplicationController.helpers.label_status_with_tooltip('bg-info me-1', @course.total_sections, 'Total Secciones')
+                  =# ApplicationController.helpers.label_status('bg-info me-1', @course.total_sections)
                   - if has_sections
                     - if (current_user&.admin&.authorized_read? 'Section')
+                      %td
+                        - url = "/admin/section?f[academic_process][39808][o]=like&f[academic_process][39808][v]=#{@course.academic_process.process_name}&f[school][40710][o]=like&f[school][40710][v]=#{@course.school.short_name}&f[subject][41128][o]=like&f[subject][41128][v]=#{@course.subject.code}&query="
+                        = ApplicationController.helpers.btn_link_with_tooptip(url,'btn-success', @course.total_sections, 'Total Secciones')
+                        = ":"
                       = render partial: 'academic_processes/sections_list_inline', locals: {sections: sections, has_enrolled: @course.academic_records.any?}
                   - if (current_user&.admin&.authorized_create? 'Section')
                     %td.p-0= ApplicationController.helpers.button_add_section @course.id

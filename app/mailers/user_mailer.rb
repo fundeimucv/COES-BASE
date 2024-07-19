@@ -20,7 +20,7 @@ class UserMailer < ApplicationMailer
     @sections = enroll_academic_process.sections
 
     @escuela_name = escuela.name
-    @periodo_name = enroll_academic_process.period.name
+    @periodo_name = enroll_academic_process.academic_process.process_name
     @nombre = user.nick_name
     @genero = user.genero
     mail(to: user.email_desc, subject: "¡Confirmación de inscripción en #{@escuela_name} para el Período #{@periodo_name} COES!")

@@ -6,13 +6,13 @@
         - if session[:academic_process_id]
           - academic_process = AcademicProcess.find session[:academic_process_id]
           Perído Actual de la Sesión:
-        %b= academic_process.period.name
+        %b= academic_process.process_name
 
     .control-group.my-3
       %span.control-label Períodos:
       .controls
 
-        = collection_select(nil, :id, academic_process.school.academic_processes.joins(period: :period_type).order('periods.year DESC, period_types.code DESC').reject{|pa| pa.id.eql? academic_process.id}, :id, :period_name, {prompt: "-- Seleccione Proceso --", selected: academic_process.process_before}, {class: 'text-field form-control', required: true})
+        = collection_select(nil, :id, academic_process.school.academic_processes.joins(period: :period_type).order('periods.year DESC, period_types.code DESC').reject{|pa| pa.id.eql? academic_process.id}, :id, :process_name, {prompt: "-- Seleccione Proceso --", selected: academic_process.process_before}, {class: 'text-field form-control', required: true})
           
     .modal-footer
       = submit_tag 'Cambiar', class: 'btn btn-primary'

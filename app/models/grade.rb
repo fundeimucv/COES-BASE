@@ -383,7 +383,7 @@ class Grade < ApplicationRecord
   end
   
   def label_start_process
-    ApplicationController.helpers.label_status('bg-info', start_process&.period_name)
+    ApplicationController.helpers.label_status('bg-info', start_process&.process_name)
   end
 
   def label_study_plan
@@ -404,7 +404,7 @@ class Grade < ApplicationRecord
 
   def label_status_enroll_academic_process(academic_process_id)
     if iep = self.enroll_academic_processes.of_academic_process(academic_process_id).first
-      iep.label_status
+      iep.enroll_label_status
     else
       ApplicationController.helpers.label_status('bg-secondary', 'Sin Inscripción')
     end

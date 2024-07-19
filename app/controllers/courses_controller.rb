@@ -21,7 +21,7 @@ class CoursesController < ApplicationController
 
           course_offer_as_pci = view_context.render partial: 'layouts/switch_checkbox_layout', locals: {title: title, name: name, id: course.id, checked: course&.offer_as_pci?, disabled: false, js_action_name: js_action_name}
 
-          format.json {render json: {data: "¡Curso activado para el período #{course.academic_process.period_name}!", status: :success, new_section: new_section, type: :create, course_offer: course_offer, course_offer_as_pci: course_offer_as_pci} }
+          format.json {render json: {data: "¡Curso activado para el período #{course.academic_process.process_name}!", status: :success, new_section: new_section, type: :create, course_offer: course_offer, course_offer_as_pci: course_offer_as_pci} }
         else
           format.json { render json: {data: course.errors, status: :unprocessable_entity} }
         end
@@ -38,7 +38,7 @@ class CoursesController < ApplicationController
   #       course = Course.find_by(course_params)
   #       if course.update!(offer_as_pci: params[:offer_as_pci])
   #         data = course.offer_as_pci? ? "activado" : "desactivado"
-  #         format.json {render json: {data: "¡Curso #{data} como PCI para el período #{course.academic_process.period_name}!", status: :success, type: :update} }
+  #         format.json {render json: {data: "¡Curso #{data} como PCI para el período #{course.academic_process.process_name}!", status: :success, type: :update} }
   #       else
   #         format.json { render json: {data: course.errors, status: :unprocessable_entity} }
   #       end
@@ -64,13 +64,13 @@ class CoursesController < ApplicationController
   def destroy
     begin
       course = Course.find_by(course_params)
-      period_name = course.academic_process.period_name
+      process_name = course.academic_process.process_name
 
       respond_to do |format|
         if course.destroy
-          format.json {render json: {data: "¡Curso desactivado para el período #{period_name}!", status: :success, type: :destroy} }
+          format.json {render json: {data: "¡Curso desactivado para el período #{process_name}!", status: :success, type: :destroy} }
         else
-          format.json {render json: {data: "¡Error al intentar desactivar la asignatura para el período #{period_name}!", status: :unprocessable_entity} }
+          format.json {render json: {data: "¡Error al intentar desactivar la asignatura para el período #{process_name}!", status: :unprocessable_entity} }
         end
       end
     rescue Exception => e

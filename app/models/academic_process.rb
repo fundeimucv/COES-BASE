@@ -133,6 +133,9 @@ class AcademicProcess < ApplicationRecord
     (self.Anual?) ? 'Año' : 'Sem'
   end
 
+	def process_name_revert
+		"#{self.modality[0]&.upcase}#{period&.name_revert}" 
+	end  
 
   def process_name
     "#{period&.name}#{self.modality[0]&.upcase}"
@@ -181,7 +184,7 @@ class AcademicProcess < ApplicationRecord
     total = []    
     link = con_reportes = sin_reportes = ''
     if linked
-      link = "/admin/enroll_academic_process?query=#{period_name}"
+      link = "/admin/enroll_academic_process?query=#{process_name}"
       con_reportes = "#{link}&model_name=enroll_academic_process&scope=con_reporte_de_pago"
       sin_reportes = "#{link}&model_name=enroll_academic_process&scope=sin_reporte_de_pago"
     end
@@ -202,7 +205,7 @@ class AcademicProcess < ApplicationRecord
   
   def btn_total_enrolls_by_status 
     total = []
-    link = "/admin/enroll_academic_process?query=#{period_name}"
+    link = "/admin/enroll_academic_process?query=#{process_name}"
     total << ApplicationController.helpers.label_link_with_tooptip(link, 'bg-secondary', self.enroll_academic_processes.count, 'Total')
 
     total << ApplicationController.helpers.label_link_with_tooptip("#{link}&model_name=enroll_academic_process&scope=con_reporte_de_pago", 'bg-success', self.enroll_academic_processes.total_with_payment_report, 'Con Reportes de Pago')    
@@ -312,15 +315,14 @@ class AcademicProcess < ApplicationRecord
         column_width 100
         pretty_value do
           # value.name
-          bindings[:object]&.period_desc_and_modality
+          bindings[:object]&.process_name
         end
       end
 
       field :process_before do
         column_width 80
         pretty_value do
-          # value.period.name if value
-          bindings[:object]&.process_before&.period_desc_and_modality
+          bindings[:object]&.process_before&.process_name
         end
       end
 
@@ -341,7 +343,7 @@ class AcademicProcess < ApplicationRecord
         pretty_value do 
           user = bindings[:view]._current_user
           if (user&.admin&.authorized_read? 'Section')
-            %{<a href='/admin/section?query=#{bindings[:object].period.name}' title='Total Secciones'><span class='badge bg-info'>#{value} en #{bindings[:object].courses.count} Cursos</span></a>}.html_safe
+            %{<a href='/admin/section?query=#{bindings[:object].process_name}' title='Total Secciones'><span class='badge bg-info'>#{value} en #{bindings[:object].courses.count} Cursos</span></a>}.html_safe
           else
             %{<span class='badge bg-info'>#{value}</span>}.html_safe
           end
@@ -362,7 +364,7 @@ class AcademicProcess < ApplicationRecord
         pretty_value do
           user = bindings[:view]._current_user
           if (user and user.admin and user.admin.authorized_read? 'AcademicRecord')
-            a = %{<a href='/admin/academic_record?query=#{bindings[:object].period.name}' title='Total Inscripciones En Asignaturas'><span class='badge bg-info'>#{value}</span></a>}.html_safe
+            a = %{<a href='/admin/academic_record?query=#{bindings[:object].process_name}' title='Total Inscripciones En Asignaturas'><span class='badge bg-info'>#{value}</span></a>}.html_safe
             "#{a} #{ApplicationController.helpers.link_academic_records_csv bindings[:object]}".html_safe
           else
             %{<span class='badge bg-info'>#{value}</span>}.html_safe
@@ -377,7 +379,7 @@ class AcademicProcess < ApplicationRecord
           user = bindings[:view]._current_user
           total = bindings[:object].enroll_academic_processes.count
           if (user&.admin&.authorized_read? 'EnrollAcademicProcess')
-            a = %{<a href='/admin/enroll_academic_process?query=#{bindings[:object].period.name}' title='Total Inscripciones En Periodo'><span class='badge bg-info'>#{total}</span></a>}.html_safe
+            a = %{<a href='/admin/enroll_academic_process?query=#{bindings[:object].process_name}' title='Total Inscripciones En Periodo'><span class='badge bg-info'>#{total}</span></a>}.html_safe
             "#{a} #{ApplicationController.helpers.link_enroll_academic_process_csv bindings[:object]}".html_safe
           else
             %{<span class='badge bg-info'>#{value}</span>}.html_safe

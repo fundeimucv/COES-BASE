@@ -123,7 +123,7 @@ class EnrollAcademicProcess < ApplicationRecord
   def values_for_report
     # ['#', 'CI', 'NOMBRES', 'APELLIDOS','ESCUELA','PERIODO','ESTADO INSCRIP','ESTADO PERMANENCIA','REPORTE PAGO']
     user_aux = user
-    [user_aux.ci, user_aux.first_name, user_aux.last_name, school.name, period.name, enroll_status&.titleize, permanence_status&.titleize, resume_payment_reports]
+    [user_aux.ci, user_aux.first_name, user_aux.last_name, school.name, academic_process.process_name, enroll_status&.titleize, permanence_status&.titleize, resume_payment_reports]
   end
   def overlapped? schedule2
     # self.schedules.where(day: schedule2.day).each do |sh|
@@ -245,11 +245,11 @@ class EnrollAcademicProcess < ApplicationRecord
   end  
 
   def short_name
-    "#{self.school.code}_#{self.period.name_revert}_#{self.student.user_ci}"
+    "#{self.school.code}_#{self.academic_process.process_name}_#{self.student.user_ci}"
   end
 
   def name
-    "(#{self.school.code}) #{self.period.name}:#{self.student.name}" if ( self.period and self.school and self.student)
+    "(#{self.school.code}) #{self.academic_process.process_name}:#{self.student.name}" if ( self.period and self.school and self.student)
   end
 
   def enroll_label_status
@@ -323,7 +323,7 @@ class EnrollAcademicProcess < ApplicationRecord
 
     list do
       search_by :custom_search
-      # filters [:period_name, :student]
+      # filters [:process_name, :student]
       scopes [:todos, :preinscrito, :reservado, :confirmado, :retirado, :con_reporte_de_pago, :sin_reporte_de_pago]
 
       

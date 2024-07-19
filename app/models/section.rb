@@ -26,7 +26,7 @@
 #  fk_rails_...  (teacher_id => teachers.user_id) ON DELETE => cascade ON UPDATE => cascade
 #
 class Section < ApplicationRecord
-  
+  include Totalizable
   # HISTORY:
   has_paper_trail on: [:create, :destroy, :update]
 
@@ -64,9 +64,28 @@ class Section < ApplicationRecord
   has_many :grades, through: :enroll_academic_processes
   has_many :students, through: :grades
 
-  # has_and_belongs_to_namy
-  has_and_belongs_to_many :section_teachers, class_name: 'SectionTeacher'
-  has_and_belongs_to_many :secondary_teachers, through: :section_teachers, class_name: 'Teacher'
+
+  # has_and_belongs_to_many :teachers#, class_name: 'SectionTeacher', dependent: :delete_all
+  has_and_belongs_to_many :secondary_teachers, class_name: 'Teacher'
+
+  # has_many :secondary_teachers, through: :section_teachers, class_name: 'Teacher'
+  # accepts_nested_attributes_for :section_teachers
+
+
+
+	# has_many :secciones_profesores_secundarios,
+	# 	class_name: 'SeccionProfesorSecundario', dependent: :delete_all
+	# accepts_nested_attributes_for :secciones_profesores_secundarios
+
+	# has_many :profesores, through: :secciones_profesores_secundarios, source: :profesor
+
+
+
+
+
+  # # has_and_belongs_to_namy
+  # has_and_belongs_to_many :section_teachers, class_name: 'SectionTeacher'
+  # has_and_belongs_to_many :secondary_teachers, through: :section_teachers, class_name: 'Teacher'
 
   #ENUMERIZE:
   enum modality: {nota_final: 0, equivalencia_externa: 1, equivalencia_interna: 2, suficiencia: 3, reparacion: 4, diferido: 5}
@@ -252,11 +271,11 @@ class Section < ApplicationRecord
   end
 
   def number_acta
-    "#{self.subject.code.upcase}#{self.code.upcase} #{self.period.name_revert}"
+    "#{self.subject.code.upcase}#{self.code.upcase} #{self.academic_process.process_name}"
   end
 
   def name_to_file
-     "#{self.period.name}_#{self.subject.code.upcase}_#{self.code.upcase}" if self.course
+     "#{self.academic_process.process_name}_#{self.subject.code.upcase}_#{self.code.upcase}" if self.course
   end
 
   def name
@@ -267,16 +286,16 @@ class Section < ApplicationRecord
     "#{subject.desc} (#{self.code})"
   end
 
-  def total_academic_records
-    academic_records.count
-  end
-
   def subject_desc
     subject&.desc
   end
 
   def period_name
-    period.name if period
+    period&.name
+  end
+
+  def process_name
+    academic_process&.process_name
   end
 
   def schedule_name
@@ -303,26 +322,6 @@ class Section < ApplicationRecord
     schedules.each{|s| s.name}.to_sentence
   end
 
-  def total_sc
-    academic_records.sin_calificar.count
-  end
-
-  def total_aprobados
-    academic_records.not_perdida_por_inasistencia.aprobado.count
-  end
-
-  def total_aplazados
-    academic_records.not_perdida_por_inasistencia.aplazado.count
-  end
-
-  def total_retirados
-    academic_records.retirado.count
-  end
-
-  def total_pi
-    academic_records.perdida_por_inasistencia.count
-  end
-
   # RAILS_ADMIN:
   rails_admin do
     navigation_label 'Config Específica'
@@ -339,7 +338,7 @@ class Section < ApplicationRecord
       #   label 'Período'
       #   column_width 120
       #   pretty_value do
-      #     value.period.name
+      #     value.academic_process.process_name
       #   end
       # end
 
@@ -394,7 +393,7 @@ class Section < ApplicationRecord
       #   # filterable 'periods.name'
       #   # sortable 'periods.name'
       #   formatted_value do
-      #     bindings[:object].period.name if bindings[:object].period
+      #     bindings[:object].academic_process&.process_name 
       #   end
       # end
 
@@ -477,47 +476,14 @@ class Section < ApplicationRecord
         end        
       end
 
-      field :total_academic_records do
-        label 'Insc'
-        column_width 40
+      field :numery do
+        label 'Números'
+        column_width 200
         pretty_value do
-          ApplicationController.helpers.label_status('bg-secondary', value)
+          bindings[:object].label_numbery_total
         end
       end
 
-      field :total_sc do
-        label 'SC'
-        pretty_value do
-          ApplicationController.helpers.label_status('bg-secondary', value)
-        end         
-      end
-      field :total_aprobados do
-        label 'A'
-        help 'Aprobado'
-        pretty_value do
-          ApplicationController.helpers.label_status('bg-success', value)
-        end         
-      end
-      field :total_aplazados do
-        label 'AP'
-        help 'Aplazados'
-        pretty_value do
-          ApplicationController.helpers.label_status('bg-danger', value)
-        end         
-      end
-      field :total_retirados do
-        label 'RT'
-        pretty_value do
-          ApplicationController.helpers.label_status('bg-secondary', value)
-        end         
-      end 
-      field :total_pi do
-        label 'PI'
-        # header 'Pérdida'
-        pretty_value do
-          ApplicationController.helpers.label_status('bg-danger', value)
-        end         
-      end
       field :qualifications_average do
         label 'Prom'
         pretty_value do
@@ -569,6 +535,8 @@ class Section < ApplicationRecord
           bindings[:view].render(partial: "sections/show_by_admin", locals: {section: bindings[:object]})
         end
       end
+
+      field :secondary_teachers
 
       field :academic_records_table do
         label 'Registros Académicos'

@@ -1,9 +1,9 @@
 - academic_process = enroll_academic_process.academic_process
-- period = academic_process.period
+-# period = academic_process.period
 - academic_records = enroll_academic_process.academic_records
 - school = enroll_academic_process.school
 - enabled_to_admin = (current_user&.admin? and session[:rol].eql? 'admin') ? true : false
-= render partial: 'enroll_academic_processes/options', locals: {period: period, enroll_academic_process: enroll_academic_process, enabled_options: (enrolling_process or active_process)}
+= render partial: 'enroll_academic_processes/options', locals: {academic_process: academic_process, enroll_academic_process: enroll_academic_process, enabled_options: (enrolling_process or active_process)}
 .responsive-table
   %table.table.table-sm
     %thead
@@ -19,8 +19,8 @@
 
     %tbody
       %tr
-        %td.text-center{title: period.name}
-          = period.name
+        %td.text-center{title: academic_process&.process_name}
+          = academic_process&.process_name
         %td.text-center
           - if (current_user&.admin&.authorized_manage? 'EnrollAcademicProcess') and enabled_to_admin
             = enroll_academic_process.enroll_label_status_to_list
@@ -34,11 +34,11 @@
         %td.text-center= enroll_academic_process.total_subjects
         %td.text-center= enroll_academic_process.total_credits
         %td.text-center
-          %i{title: "Eficiencia del #{period.name}"}
+          %i{title: "Eficiencia del #{academic_process&.process_name}"}
             = ApplicationController.helpers.label_status("bg-info", enroll_academic_process.efficiency)
-          %i{title: "Promedio Simple del #{period.name}"}
+          %i{title: "Promedio Simple del #{academic_process&.process_name}"}
             = ApplicationController.helpers.label_status("bg-info", enroll_academic_process.simple_average.round(2))
-          %i{title: "Promedio Ponderado del #{period.name}"}
+          %i{title: "Promedio Ponderado del #{academic_process&.process_name}"}
             = ApplicationController.helpers.label_status("bg-info", enroll_academic_process.weighted_average.round(2))
 
 

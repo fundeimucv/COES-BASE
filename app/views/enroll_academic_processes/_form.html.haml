@@ -47,7 +47,7 @@
 
 
     INSCRIPCIÓN
-    %b= academic_process.period.name
+    %b= academic_process&.process_name
     de
     %b= @grade.student.name
 
@@ -217,7 +217,7 @@
       alert('ATENCIÓN: DEBE SELECCIONAR AL MENOS UNA ASIGNATURA A INSCRIBIR');
 
     }else{
-      msg = `${total} Asignaturas a preinscribir en el período académico #{academic_process.period.name} de #{@grade.school.name}:`;
+      msg = `${total} Asignaturas a preinscribir en el período académico #{academic_process&.process_name} de #{@grade.school.name}:`;
       msg += selected;
       msg += '\n';
       msg += '\n';

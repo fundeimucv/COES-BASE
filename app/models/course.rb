@@ -22,7 +22,7 @@
 #  fk_rails_...  (subject_id => subjects.id)
 #
 class Course < ApplicationRecord
-
+  include Totalizable
   # Course.all.map{|ap| ap.update(name: 'x')}  
   # HISTORY:
 
@@ -88,30 +88,6 @@ class Course < ApplicationRecord
   def total_sections
     sections.count
   end
-
-  def total_academic_records
-    academic_records.count
-  end
-
-  def total_sc
-    academic_records.sin_calificar.count
-  end
-
-  def total_aprobados
-    academic_records.not_perdida_por_inasistencia.aprobado.count
-  end
-
-  def total_aplazados
-    academic_records.not_perdida_por_inasistencia.aplazado.count
-  end
-
-  def total_retirados
-    academic_records.retirado.count
-  end
-
-  def total_pi
-    academic_records.perdida_por_inasistencia.count
-  end 
 
   def subject_desc_with_pci
     if offer_as_pci

@@ -51,7 +51,7 @@ class EnrollmentDay < ApplicationRecord
 
   #CSV:
   def name_to_file
-    "#{academic_process.school.code}_#{academic_process.period.name}_#{start.strftime('%Y%m%d')}_#{self.id}"
+    "#{academic_process.school.code}_#{academic_process.process_name}_#{start.strftime('%Y%m%d')}_#{self.id}"
   end
 
   def own_grades_to_csv

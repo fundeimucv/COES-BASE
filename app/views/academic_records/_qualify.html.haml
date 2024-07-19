@@ -55,7 +55,7 @@
             %td= acre_id
             %td= acre.section.id
             %td= acre.enroll_academic_process_id
-            %td= acre.period.name
+            %td= acre.academic_process&.process_name
           %td.text-center= user.ci
           %td.text-center= acre.enroll_academic_process.enroll_label_status
           %td{title: user.reverse_name}

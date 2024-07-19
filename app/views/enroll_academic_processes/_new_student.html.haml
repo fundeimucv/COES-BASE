@@ -6,7 +6,7 @@
   - academic_process_before = academic_process&.process_before
   - # INSCRIPCIÓN ABIERTA!
   .border.border-success.mb-3
-    - title = "PROCESO DE INSCRIPCIÓN #{academic_process.period.name} - #{school&.name} "
+    - title = "PROCESO DE INSCRIPCIÓN #{academic_process&.process_name} - #{school&.name} "
     - if academic_process.enrollment_days&.of_today.first&.active_now?
       - title += " CON CITA HORARIA"
     %h5.text-center.bg-success.text-light.py-2.mt-0= title
@@ -98,5 +98,5 @@
         - elsif (academic_process_before and @grade.enroll_academic_processes.of_academic_process(academic_process_before.id).any?)
           .alert.alert-danger 
             %b ATENCIÓN: 
-            = "Usted no realizó un proceso de inscripción en el período anterior (#{academic_process_before.period_name}) por lo que su preinscripción no podrá realizarla. Debe dirigirse a Control de Estudio para solventar su situación."
+            = "Usted no realizó un proceso de inscripción en el período anterior (#{academic_process_before&.process_name}) por lo que su preinscripción no podrá realizarla. Debe dirigirse a Control de Estudio para solventar su situación."
             = @grade.help_msg
