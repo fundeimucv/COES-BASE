@@ -386,14 +386,6 @@ class EnrollAcademicProcess < ApplicationRecord
       field :payment_reports do
         # filterable true #"joins(:payment_reports).count"
         # queryable true
-        associated_collection_cache_all false
-        associated_collection_scope do
-
-          Proc.new { |scope|
-            scope = scope.joins(:payment_reports)
-            scope = scope.limit(30)
-          }
-        end        
       end
 
       field :payment_report_status do

@@ -26,5 +26,9 @@
                         = link_to 'Asignaturas', "/admin/subject?f%5Bschool%5D%5B45550%5D%5Bo%5D=like&f%5Bschool%5D%5B45550%5D%5Bv%5D=#{school.name}", class: 'btn btn-info btn-sm float-end mb-2'
                         = link_to 'Nuevo Asignatura', "/admin/subject/new?school_id=#{school.id}", class: "btn btn-success btn-sm float-end mb-2 me-2"
                 %tr
-                    %td= link_to 'Nuevo Profesor', "/admin/teacher/new?school_id=#{school.id}", class: "btn btn-success btn-sm float-end"
+                    %td
+                        = link_to 'Profesores', "/admin/teacher?f%5Bschool%5D%5B45550%5D%5Bo%5D=like&f%5Bschool%5D%5B45550%5D%5Bv%5D=#{school.name}", class: 'btn btn-info btn-sm float-end mb-2'
+                        = link_to 'Nuevo Profesor', "/admin/teacher/new?school_id=#{school.id}", class: "btn btn-success btn-sm float-end me-2"
     
+
+

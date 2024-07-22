@@ -107,7 +107,7 @@ class Section < ApplicationRecord
   scope :sort_by_period, -> {joins(:period).order('periods.name')}
   scope :sort_by_period_reverse, -> {joins(:period).order('periods.name DESC')}
 
-  scope :custom_search, -> (keyword) { joins(:period, :subject).where("sections.code ILIKE '%#{keyword}%' OR subjects.name ILIKE '%#{keyword}%' OR subjects.code ILIKE '%#{keyword}%' OR periods.name ILIKE '%#{keyword}%'").sort_by_period }
+  scope :custom_search, -> (keyword) { joins(:period, :subject, :user).where("users.ci ILIKE '%#{keyword}%' OR users.first_name ILIKE '%#{keyword}%' OR users.last_name ILIKE '%#{keyword}%' OR sections.code ILIKE '%#{keyword}%' OR subjects.name ILIKE '%#{keyword}%' OR subjects.code ILIKE '%#{keyword}%' OR periods.name ILIKE '%#{keyword}%'").sort_by_period }
   
   scope :qualified, -> () {where(qualified: true)}
 

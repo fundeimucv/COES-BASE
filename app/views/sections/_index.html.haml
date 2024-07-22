@@ -1,9 +1,12 @@
 .alert.alert-info 
   Últimas 10
+  - # Subject, Teacher or Course 
   - if @object&.class&.name.eql? 'Subject'
     - url = "/admin/section?f[subject][41128][o]=like&f[subject][41128][v]=#{@object.code}&query="
     = link_to 'Ver Todas', url, class: 'btn btn-sm btn-info'
-  -# elsif @object&.class&.name.eql? 'Teacher'
+  - elsif @object&.class&.name.eql? 'Teacher'
+    - url = "/admin/section?query=#{@object.user&.ci}"
+    = link_to 'Ver Todas', url, class: 'btn btn-sm btn-info'  
 
 .table-responsive
   %table.table.table-striped.table-sm

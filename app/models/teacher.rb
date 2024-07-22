@@ -31,7 +31,8 @@ class Teacher < ApplicationRecord
 
   belongs_to :departament
   # accepts_nested_attributes_for :departament
-  
+
+  has_one :school, through: :departament
   has_and_belongs_to_many :secondary_sections, class_name: 'Section'
 
   has_many :sections
@@ -79,13 +80,28 @@ class Teacher < ApplicationRecord
     navigation_icon 'fa-regular fa-chalkboard-user'
 
     list do
+      sort_by :school
       checkboxes false
-      search_by :custom_search
+      # search_by :custom_search
       field :user_ci do
         sticky true
         label 'Cédula'
         # sortable 'joins(:user).users.ci'
         # queryable "course_periods_periods.name"
+      end
+      field :departament
+      field :school do
+        searchable :name
+        sortable :name
+        filterable :name
+        associated_collection_cache_all false
+        associated_collection_scope do
+
+          Proc.new { |scope|
+            scope = scope.joins(:school)
+            scope = scope.limit(30)
+          }
+        end
       end
 
       field :user_last_name do
@@ -101,7 +117,6 @@ class Teacher < ApplicationRecord
         label 'Email'
       end 
 
-      field :departament
     end
 
     show do
@@ -124,7 +139,7 @@ class Teacher < ApplicationRecord
     end
 
     export do
-      fields :user, :departament, :sections, :created_at
+      fields :user, :departament, :school, :sections, :created_at
     end
 
     import do

@@ -858,6 +858,7 @@ es:
         required_credits: Créditos Requeridos 
       teacher:
         departament: 'Departamento'
+        school: Escuela
         user: 'Usuario'
         created_at: 'Fecha de Registro'
         sections: 'Secciones'
