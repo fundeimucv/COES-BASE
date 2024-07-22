@@ -312,7 +312,7 @@ class Student < ApplicationRecord
           }
         end
         pretty_value do
-          value.name
+          value&.name
         end
       end
 
