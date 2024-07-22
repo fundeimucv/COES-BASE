@@ -299,14 +299,21 @@ class Student < ApplicationRecord
       end
 
       field :address do
-        label 'Ciudad'
-        # associated_collection_cache_all false
-        # associated_collection_scope do
-        #   Proc.new { |scope|
-        #     scope = scope.joins(:address).limit(30)
-        #   }
-        # end
+        label 'Ubicación'
 
+        filterable [:state, :city, :municipality]
+        queryable [:state, :city, :municipality]
+        searchable [:state, :city, :municipality]
+        
+        associated_collection_cache_all false
+        associated_collection_scope do
+          Proc.new { |scope|
+            scope = scope.joins(:address).limit(30)
+          }
+        end
+        pretty_value do
+          value.name
+        end
       end
 
       field :admission_types do
@@ -323,9 +330,9 @@ class Student < ApplicationRecord
 
       field :created_at
 
-      field :roles do
-        label 'Roles'
-      end
+      # field :roles do
+      #   label 'Roles'
+      # end
 
     end
 
