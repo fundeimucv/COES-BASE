@@ -13,5 +13,5 @@
         = link_to user_name, "/admin/user/#{_current_user&.id}/edit", class: 'nav-link' 
     - if logout_path.present?
       %li.nav-item
-        = link_to logout_path, method: logout_method, class: 'btn btn-sm btn-outline-danger align-middle', data: {turbo: 'false'} do
+        = link_to logout_path, method: logout_method, class: 'btn btn-sm badge mt-2 btn-outline-danger align-text-bottom', data: {turbo: 'false'} do
           = t('admin.misc.log_out')
