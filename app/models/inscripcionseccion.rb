@@ -389,7 +389,7 @@ class Inscripcionseccion < ApplicationRecord
       
       if academic_record.nil?
         academic_record = AcademicRecord.new(enroll_academic_process_id: eap.id, section_id: section.id, status: get_status)
-        if academic_record.save
+        if academic_record.save(validate: false)
           print "*NAR #{academic_record.id}*" 
           estado_import = '+'
         else

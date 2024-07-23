@@ -1,10 +1,10 @@
 .p-3
-    = link_to "/admin/student/#{@object.student_id}", title: 'Volver el detalle del estudiante', class: 'btn btn-info float-start' do
+    = link_to "/admin/student/#{@object.student_id}", 'data-bs-toggle': :tooltip, title: 'Volver el detalle del estudiante', class: 'btn btn-info float-start' do
         %i.fa-solid.fa-chevron-left
 
     - if (session[:rol]&.eql? 'admin' and current_user&.admin&.authorized_manage? 'Grade')
         %td
-        = link_to "/grades/#{@object.id}/import_inscripciones", title: 'IMPORTAR REGISTROS', class: 'btn btn-success float-end' do
+        = link_to "/grades/#{@object.id}/import_inscripciones", 'data-bs-toggle': :tooltip, title: 'IMPORTAR REGISTROS', class: 'btn btn-success float-end' do
             %i.fa-solid.fa-download
             Importar de COES v1
 

@@ -220,6 +220,14 @@ class Student < ApplicationRecord
           bindings[:view].render(partial: 'users/personal_data', locals: {user: bindings[:object].user, student_id: bindings[:object].id})
         end
       end
+
+      field :old_coes do
+        label 'Coes v1'
+        formatted_value do
+          bindings[:view].render(partial: 'students/old_student')
+        end          
+      end
+
       field :description_grades do
         label 'Registro Académico'
         formatted_value do

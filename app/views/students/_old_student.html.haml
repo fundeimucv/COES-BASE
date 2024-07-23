@@ -1,0 +1,16 @@
+- if estudiante = Estudiante.where(usuario_id: @object&.user&.ci).first
+    #sidescroll.table-responsive
+    %table.table.table-condensed.table-striped.table-hover.border
+        %thead
+        %tr
+            %th.sticky.header Escuela
+            %th.header Plan
+            %th.header{title: 'Calificacion Final'} Estado
+            %th.header{title: 'Calificacion Posterior'} Tipo Ingreso
+        %tbody.table-group-divider
+        - estudiante.grados.each do |gra|
+            %tr
+            %th.sticky.text-start= gra.escuela&.descripcion
+            %td= gra.plan_id
+            %td= gra.estado
+            %td= gra.tipo_ingreso
