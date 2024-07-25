@@ -296,6 +296,7 @@ class AcademicProcess < ApplicationRecord
     navigation_icon 'fa-solid fa-calendar'
     weight -3
     list do
+      items_per_page 12
       checkboxes false
       sort_by 'periods.name'
 
