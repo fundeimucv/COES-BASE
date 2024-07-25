@@ -106,7 +106,7 @@ class Subject < ApplicationRecord
   scope :not_obligatorias, -> {joins(:subject_type).where("subject_types.code != 'OB'")}
 
   # CALLBACKS:
-  before_save :clean_values
+  before_validation :clean_values
 
   # HOOKS:
   def clean_values
@@ -302,7 +302,7 @@ class Subject < ApplicationRecord
     end
 
     list do
-      scopes [:todas, :obligatorias, :electivas, :optativas]
+      scopes [:todas, :obligatorias, :electivas, :optativas, :proyectos]
       sort_by :code
       search_by :custom_search
       checkboxes false
