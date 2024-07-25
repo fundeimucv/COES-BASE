@@ -82,7 +82,7 @@ class Teacher < ApplicationRecord
     list do
       sort_by :school
       checkboxes false
-      # search_by :custom_search
+      search_by :custom_search
       field :user_ci do
         sticky true
         label 'Cédula'
