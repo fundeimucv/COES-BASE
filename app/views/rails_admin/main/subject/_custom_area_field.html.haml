@@ -12,4 +12,5 @@
             Antes de agregar asignaturas debe agregar las Cátedras
             = link_to 'Agregar Nueva Cátedra', '/admin/area/new', class: 'btn btn-sm btn-success' 
 - else
-    = grouped_collection_select :subject, :area_id, School.all, :areas_sort, :short_name, :id, :name, {prompt: "Seleccione Cátedra...", selected: @object&.area_id}, { class: "form-control", required: true}
+    - schools_auh = _current_user&.admin&.schools_auh
+    = grouped_collection_select :subject, :area_id, schools_auh.order(:name), :areas_sort, :short_name, :id, :name, {prompt: "Seleccione Cátedra...", selected: @object&.area_id}, { class: "form-control", required: true}
