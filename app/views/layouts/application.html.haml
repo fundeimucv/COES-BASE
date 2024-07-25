@@ -16,9 +16,9 @@
   %body
     %main
       %nav.navbar.navbar-expand-lg.navbar-dark.bg-dark.sticky-top.navbar-text.justify-content-end
+      - if false
         %button.btn.btn-warning.me-3.mx-1.rounded-0{"aria-controls" => "offcanvasEnd", "data-bs-target" => "#offcanvasEnd", "data-bs-toggle" => "offcanvas", type: "button"} Inicio de Sesión
       #offcanvasEnd.offcanvas.offcanvas-end{"aria-labelledby" => "offcanvasEndLabel", tabindex: "-1"}
-
         = yield
 
       %section.p-0.d-flex.align-items-center.position-relative.overflow-hidden
