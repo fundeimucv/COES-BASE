@@ -2,9 +2,10 @@
   %h5#offcanvasEndLabel
     .input-group-prepend
       %span.mb-0.fs-1 😎
-      %h3.text-center Cambio de Contraseña de Usuario
+      %h3.text-center Cambio de Contraseña
   %button.btn-close.text-reset{"aria-label" => "Close", "data-bs-dismiss" => "offcanvas", type: "button"}
 .offcanvas-body
+  = render "shared/flashes"
 
   = simple_form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :put, novalidate: false }) do |f|
     = f.error_notification

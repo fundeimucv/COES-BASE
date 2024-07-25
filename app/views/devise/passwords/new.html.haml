@@ -2,12 +2,14 @@
   %h5#offcanvasEndLabel
     .input-group-prepend
       %span.mb-0.fs-1 🤔
-      %h3.text-center Recuperar Contraseña 
+      %h3.text-center Recuperar Inicio de Sesión 
   %button.btn-close.text-reset{"aria-label" => "Close", "data-bs-dismiss" => "offcanvas", type: "button"}
 .offcanvas-body
 
   .alert= notice
-  %h6.fw-light.mb-4 Para recibir instrucciones de una nueva contraseña, escriba su correo registrado en COES:
+  = render "shared/flashes"
+
+  %h6.fw-light.mb-4.alert.alert-info Para recibir instrucciones de una nueva contraseña, escriba su correo electrónico registrado en COES
   / Form START
   = form_for(resource, as: resource_name, url: password_path(resource_name), data: { turbo: :false }) do |f|
 
