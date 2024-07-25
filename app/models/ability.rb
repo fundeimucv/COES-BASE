@@ -30,7 +30,7 @@ class Ability
         can :manage, [User]
         user.admin.authorizeds.each do |authd|
             if authd.authorizable.klazz.eql? 'Subject' and authd.can_manage?
-                can :manage, [SubjectLink, Area, Departament]
+                can :manage, [SubjectLink, Area, Departament, SubjectType]
             end
             if authd.authorizable.klazz.eql? 'Student' and authd.can_manage?
                 can :manage, [Address, Grade]

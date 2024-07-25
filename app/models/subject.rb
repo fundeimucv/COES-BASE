@@ -462,8 +462,8 @@ class Subject < ApplicationRecord
         end  
       end      
       field :subject_type do
-      inline_add false
-      inline_edit false
+        inline_add false
+        inline_edit false
       end
       field :unit_credits      
 
