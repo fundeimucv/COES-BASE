@@ -1,27 +1,32 @@
-%span.mb-0.fs-1 😎
-%h1.fs-2 Cambio de Clave de Usuario
-= simple_form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :put, novalidate: false }) do |f|
-  = f.error_notification
-  = f.input :reset_password_token, as: :hidden
-  = f.full_error :reset_password_token
-  .form-inputs
-    = f.input :password,                                                                    |
-      label: "Nueva Clave",                                                                 |
-      required: true,                                                                       |
-      autofocus: true,                                                                      |
-      hint: ("Mínimo #{@minimum_password_length} caracteres" if @minimum_password_length), |
-      input_html: { autocomplete: "new-password" }   
+.offcanvas-header
+  %h5#offcanvasEndLabel
+    .input-group-prepend
+      %span.mb-0.fs-1 😎
+      %h3.text-center Cambio de Contraseña de Usuario
+  %button.btn-close.text-reset{"aria-label" => "Close", "data-bs-dismiss" => "offcanvas", type: "button"}
+.offcanvas-body
 
-    = f.input :password_confirmation,              |
-      label: "Confirme su nueva clave",            |
-      required: true,                              |
-      input_html: { autocomplete: "new-password" } |
-  .align-items-center.mt-0
-    .d-grid
-      = f.button :submit, "Guargar mi clave", class: 'btn btn-primary'
+  = simple_form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :put, novalidate: false }) do |f|
+    = f.error_notification
+    = f.input :reset_password_token, as: :hidden
+    = f.full_error :reset_password_token
+    .form-inputs
+      = f.input :password,                                                                    |
+        label: "Nueva Clave",                                                                 |
+        required: true,                                                                       |
+        autofocus: true,                                                                      |
+        hint: ("Mínimo #{@minimum_password_length} caracteres" if @minimum_password_length), |
+        input_html: { autocomplete: "new-password" }   
+
+      = f.input :password_confirmation,              |
+        label: "Confirme su nueva clave",            |
+        required: true,                              |
+        input_html: { autocomplete: "new-password" } |
+    .align-items-center.mt-0
+      .d-grid
+        = f.button :submit, "Guargar mi clave", class: 'btn btn-primary'
 
 
 :javascript
-  let ele = document.getElementById('offcanvasEnd');
-
-  ele.className += ' show';
+  document.getElementById('offcanvasEnd').className += ' show';
+  
