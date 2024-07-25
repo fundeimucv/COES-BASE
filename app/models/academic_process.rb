@@ -3,6 +3,8 @@
 # Table name: academic_processes
 #
 #  id                  :bigint           not null, primary key
+#  active              :boolean          default(FALSE), not null
+#  enroll              :boolean          default(FALSE), not null
 #  max_credits         :integer
 #  max_subjects        :integer
 #  modality            :integer          default("Semestral"), not null
@@ -101,7 +103,7 @@ class AcademicProcess < ApplicationRecord
     grades_others = Grade.enrolled_in_academic_process(self.process_before_id).others_permanence_invalid_to_enroll
 
     CSV.generate do |csv|
-      csv << ['Est. Permanencia', 'Cédula', 'Apellido y Nombre', 'Efficiencia', 'Promedio', 'Ponderado']
+      csv << ['Est. Permanencia', 'Cédula', 'Apellido y Nombre', 'Eficiencia', 'Promedio', 'Ponderado']
       grades_others.each do |grade|
         user = grade.user
     
@@ -164,6 +166,9 @@ class AcademicProcess < ApplicationRecord
 
   def short_desc
     "#{self.school.short_name} #{self.period_desc_and_modality}" if (self.school and self.period)
+  end
+  def description
+    "#{self.school.name} #{self.process_name}" if (self.school and self.period)
   end
 
   def get_name
@@ -291,6 +296,7 @@ class AcademicProcess < ApplicationRecord
   end
 
 
+
   rails_admin do
     navigation_label 'Config Específica'
     navigation_icon 'fa-solid fa-calendar'
@@ -403,6 +409,15 @@ class AcademicProcess < ApplicationRecord
         inline_edit false
       end
       field :modality
+      field :description do
+        visible false
+      end
+      field :active do
+        visible false
+      end
+      field :enroll do
+        visible false
+      end    
       field :process_before do
         inline_edit false
         inline_add false
@@ -433,19 +448,25 @@ class AcademicProcess < ApplicationRecord
     update do
       # group :default do
       #   hide
-      # end      
-      field :school do
+      # end
+      field :description do
         read_only true
       end
+      field :active
+      field :enroll
+      field :school do
+        visible false
+      end
       field :period do
-        read_only true
+        visible false
         pretty_value do
           value.name
         end
       end
       field :modality do
-        read_only true
+        visible false
       end
+      
       field :process_before do
         inline_edit false
         inline_add false
