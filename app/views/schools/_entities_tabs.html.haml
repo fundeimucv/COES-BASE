@@ -13,7 +13,7 @@
     .tab-pane.fade.border.p-3{id: "ContentDpto", "aria-labelledby": "#TabDpto", role: "tabpanel"}
         - total_dpts = school.departaments.count
         - total_cat = school.areas.uniq.count
-        .text-center.bg-success.text-dark.mb-1= "#{total_cat} #{'cátedra'.pluralize(total_cat).titleize} en #{total_dpts} #{'departamemento'.pluralize(total_dpts).titleize }"
+        .text-center.bg-success.text-dark.mb-1= "#{total_cat} #{'cátedra'.pluralize(total_cat).titleize} en #{total_dpts} #{'departamento'.pluralize(total_dpts).titleize }"
 
         = link_to "/admin/departament/new?school_id=#{school.id}", class: "btn btn-success btn-sm float-end mb-2" do
             Nuevo Departamento
