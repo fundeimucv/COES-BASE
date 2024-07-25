@@ -58,7 +58,8 @@ class Period < ApplicationRecord
     visible false
 
     list do 
-			field :name
+		sort_by [:year]
+		field :name
     end
 
     edit do
