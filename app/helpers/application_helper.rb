@@ -34,7 +34,7 @@ module ApplicationHelper
 			target = '_blank'
 			rel = 'noopener noreferrer'
 		end
-		link_to href, class: "badge #{type}", title: title_tooltip, onclick: onclick_action, target: target, rel: rel do
+		link_to href, class: "badge #{type}", 'data-bs-toggle': :tooltip,  title: title_tooltip, onclick: onclick_action, target: target, rel: rel do
 			capture_haml{"<i class= '#{icon}'></i> #{value}".html_safe}
 		end
 	end
@@ -48,7 +48,7 @@ module ApplicationHelper
 			target = '_blank'
 			rel = 'noopener noreferrer'
 		end
-		link_to href, class: "btn btn-sm #{type}", title: title_tooltip, onclick: onclick_action, target: target, rel: rel do
+		link_to href, class: "btn btn-sm #{type}", 'data-bs-toggle': :tooltip, title: title_tooltip, onclick: onclick_action, target: target, rel: rel do
 			capture_haml{"<i class= '#{icon}'></i> #{value}".html_safe}
 		end
 	end
@@ -69,7 +69,7 @@ module ApplicationHelper
 	end
 
 	def sticky_label top, right, bg_color, text_color, title, content
-		content_tag :div, title: title, class: "btn btn-sm #{bg_color} #{ text_color}", style: "top: #{top}px; right: #{right};font-size: xx-small;" do
+		content_tag :div, 'data-bs-toggle': :tooltip, title: title, class: "btn btn-sm #{bg_color} #{ text_color}", style: "top: #{top}px; right: #{right};font-size: xx-small;" do
 			capture_haml{"#{content}".html_safe }
 		end	
 	end
@@ -163,7 +163,7 @@ module ApplicationHelper
 
 	def simple_toggle href, value, title_tooltip, color_type, icon, onclick_action = nil
 		target = (href.include? 'descargar') ? '_blank' : ''
-		link_to href, class: "tooltip-btn text-#{color_type} btn btn-sm", onclick: onclick_action, target: target, 'data_toggle': :tooltip, title: title_tooltip do
+		link_to href, class: "tooltip-btn text-#{color_type} btn btn-sm", onclick: onclick_action, target: target, 'data-bs-toggle': :tooltip, title: title_tooltip do
 			capture_haml{"<i class= '#{icon}'></i> #{value}".html_safe}
 		end
 

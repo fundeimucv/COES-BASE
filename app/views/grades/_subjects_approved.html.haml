@@ -19,6 +19,6 @@
           %td= record.id
         %td.align-middle.text-right= i+1
         %td.align-middle.text-center= subject.ordinal
-        %td.align-middle{title: subject.desc}= subject.desc
+        %td.align-middle{'data-bs-toggle': :tooltip, title: subject.desc}= subject.desc
         - if false
           %td.align-middle.text-center= subject.unit_credits

@@ -26,12 +26,12 @@
         %tr{class: academic_record.tr_class_by_status_q}
           - if (current_user&.admin&.yo?)
             %td= academic_record.id
-          %td{title: 'Ir al detalle de la asignatura'}= link_to_if (logged_as_admin and admin.authorized_manage? 'Subject'), subject.code, "/admin/subject/#{subject.id}"
+          %td{'data-bs-toggle': :tooltip, title: 'Ir al detalle de la asignatura'}= link_to_if (logged_as_admin and admin.authorized_manage? 'Subject'), subject.code, "/admin/subject/#{subject.id}"
           %td.text-center= subject.ordinal_to_cardinal_short
-          %td{title: subject.name}= subject.name
+          %td{'data-bs-toggle': :tooltip, title: subject.name}= subject.name
           %td.text-center= subject.unit_credits
           %td.text-center= subject.label_subject_type_code
-          %td.text-center{title: 'Ir al detalle de la sección'}
+          %td.text-center{'data-bs-toggle': :tooltip, title: 'Ir al detalle de la sección'}
             = link_to_if (logged_as_admin and admin.authorized_manage? 'Section'), academic_record.section.code, "/admin/section/#{academic_record.section.id}"
           %td.text-center= academic_record.section.label_modality true
           %td.text-center= academic_record.q_value_to_02i

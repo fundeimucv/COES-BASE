@@ -25,6 +25,6 @@
 
         - if (session[:rol]&.eql? 'admin' and current_user&.admin&.authorized_read? 'Student')
           %td
-            = link_to "/admin/student/#{student_id}/personal_data", title: 'Más detalles' do
+            = link_to "/admin/student/#{student_id}/personal_data", 'data-bs-toggle': :tooltip, title: 'Más detalles' do
               .btn.btn-sm.btn-info
                 %i.fa-solid.fa-id-card

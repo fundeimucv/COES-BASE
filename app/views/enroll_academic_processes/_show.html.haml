@@ -9,17 +9,17 @@
     %thead
       %tr
         %th.text-center Período
-        %th.text-center{title: 'Estado inscripción'} Inscripción
-        %th.text-center{title: 'Estado Permanencia'} Permanencia
-        %th.text-center{title: 'Total Asignaturas Inscritas'} TAI
-        %th.text-center{title: 'Total Créditos Inscritos'} TCI
+        %th.text-center{'data-bs-toggle': :tooltip, title: 'Estado inscripción'} Inscripción
+        %th.text-center{'data-bs-toggle': :tooltip, title: 'Estado Permanencia'} Permanencia
+        %th.text-center{'data-bs-toggle': :tooltip, title: 'Total Asignaturas Inscritas'} TAI
+        %th.text-center{'data-bs-toggle': :tooltip, title: 'Total Créditos Inscritos'} TCI
         %th.text-center.w-25 Números
         - if (session[:rol].eql? 'student') or (enabled_to_admin and current_user&.admin&.authorized_read? 'PaymentReport')
           %th.text-center.w-25 Reporte Pago        
 
     %tbody
       %tr
-        %td.text-center{title: academic_process&.process_name}
+        %td.text-center{'data-bs-toggle': :tooltip, title: academic_process&.process_name}
           = academic_process&.process_name
         %td.text-center
           - if (current_user&.admin&.authorized_manage? 'EnrollAcademicProcess') and enabled_to_admin
@@ -34,11 +34,11 @@
         %td.text-center= enroll_academic_process.total_subjects
         %td.text-center= enroll_academic_process.total_credits
         %td.text-center
-          %i{title: "Eficiencia del #{academic_process&.process_name}"}
+          %i{'data-bs-toggle': :tooltip, title: "Eficiencia del #{academic_process&.process_name}"}
             = ApplicationController.helpers.label_status("bg-info", enroll_academic_process.efficiency)
-          %i{title: "Promedio Simple del #{academic_process&.process_name}"}
+          %i{'data-bs-toggle': :tooltip, title: "Promedio Simple del #{academic_process&.process_name}"}
             = ApplicationController.helpers.label_status("bg-info", enroll_academic_process.simple_average.round(2))
-          %i{title: "Promedio Ponderado del #{academic_process&.process_name}"}
+          %i{'data-bs-toggle': :tooltip, title: "Promedio Ponderado del #{academic_process&.process_name}"}
             = ApplicationController.helpers.label_status("bg-info", enroll_academic_process.weighted_average.round(2))
 
 

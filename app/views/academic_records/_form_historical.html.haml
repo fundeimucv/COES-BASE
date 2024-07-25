@@ -1,10 +1,10 @@
 %h5.bg-info.p-1.text-center.mb-0 Agregar Nuevo Registro
 .border.p-3.mb-3
   .row.text-center.fw-bold
-    .col-3{title: 'Descripción de la asigntura'} Asignatura
-    .col-4{title: 'Identificación y tipo de la Sección'} Sección
-    .col-2{title: 'Estado de calificación'} Estado
-    .col-2{title: 'Valor de calificación'} Calificación
+    .col-3{'data-bs-toggle': :tooltip, title: 'Descripción de la asigntura'} Asignatura
+    .col-4{'data-bs-toggle': :tooltip, title: 'Identificación y tipo de la Sección'} Sección
+    .col-2{'data-bs-toggle': :tooltip, title: 'Estado de calificación'} Estado
+    .col-2{'data-bs-toggle': :tooltip, title: 'Valor de calificación'} Calificación
     .col-1
   = form_tag "/academic_records" do
     = hidden_field_tag 'academic_record[enroll_academic_process_id]', enroll.id
@@ -23,14 +23,14 @@
               .input-group.text-center
                 =# select_tag :section_code, options_for_select(Section.codes), {class: "form-control", id: 'sections'} 
                 = select_tag :section_code, nil, {class: "form-control withSections", id: 'sections'} 
-                = link_to 'javascript:void(0)', id: 'addCodeBtn', class: 'input-group-text btn btn-success withSections', title: 'Agregar Nuevo Código de la Sección', onclick: "toggleSectionCodes(false);" do
+                = link_to 'javascript:void(0)', id: 'addCodeBtn', class: 'input-group-text btn btn-success withSections', 'data-bs-toggle': :tooltip, title: 'Agregar Nuevo Código de la Sección', onclick: "toggleSectionCodes(false);" do
                   %i.fa-regular.fa-plus
 
               =# NEW SECTION CODE 
               #newSection
                 .input-group.text-center
                   = text_field_tag :section_code, {}, {placeholder: 'Código', class: "form-control newSection", oninput: "notSpecialChars(this)", maxlength: 3, id: :inputCode}        
-                  = link_to 'javascript:void(0)', id: 'restoreSections', class: 'input-group-text btn btn-success d-none newSection', title: 'Códigos existentes', onclick: "toggleSectionCodes(true);" do
+                  = link_to 'javascript:void(0)', id: 'restoreSections', class: 'input-group-text btn btn-success d-none newSection', 'data-bs-toggle': :tooltip, title: 'Códigos existentes', onclick: "toggleSectionCodes(true);" do
                     %i.fa-regular.fa-rotate
         
             .col-6
@@ -54,7 +54,7 @@
             = select_tag '[qualifications]value', options_for_select( (1..20).map{|a| sprintf("%02i", a)}), {class: "form-control numericValue d-none", required: true}
       .col-1
         =# GUARDAR
-        %button.btn.bt.btn-primary.float-end.d-none{id: 'submitBtn', type: :submit, title: 'Guardar'}
+        %button.btn.bt.btn-primary.float-end.d-none{id: 'submitBtn', type: :submit, 'data-bs-toggle': :tooltip, title: 'Guardar'}
           %i.fa-regular.fa-check
 
 :javascript

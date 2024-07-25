@@ -16,7 +16,7 @@
         %th.headers{style: 'width: 4%', scope: :col} #
         %th.headers{style: 'width: 56%', scope: :col}
           .input-group.input-group-sm{style: 'width: 100%;'}
-            %span.badge.bg-dark.align-middle{title: 'Total asignaturas disponibles'}= courses.count
+            %span.badge.bg-dark.align-middle{'data-bs-toggle': :tooltip, title: 'Total asignaturas disponibles'}= courses.count
             %span#inputGroup-sizing-sm.input-group-text 
               = "Asignaturas:"
             %input.form-control{"aria-describedby": "inputGroup-sizing-sm", "aria-label": "", type: "text", onkeyup: "filterSections(this, '#{idTable}');", placeholder: 'Buscar', autofocus: true, id: "filter#{idTable}", name: "filter#{idTable}"}

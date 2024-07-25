@@ -49,7 +49,7 @@ module SubjectLinksHelper
 	end
 
 	def btn_delete_depend(dep)
-		link_to "/subject_links/#{dep.id}.json", class: "tooltip-btn text-danger", 'data_toggle': :tooltip, title: 'Eliminar prelación', method: :delete, onclick: "$('#dep#{dep.id}').remove();" do
+		link_to "/subject_links/#{dep.id}.json", class: "tooltip-btn text-danger", 'data-bs-toggle': :tooltip, title: 'Eliminar prelación', method: :delete, onclick: "$('#dep#{dep.id}').remove();" do
 			capture_haml{"<i class='fa fa-trash'></i>".html_safe}
 		end
 	end

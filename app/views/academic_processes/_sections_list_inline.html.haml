@@ -8,18 +8,18 @@
     = btn.html_safe
     - if enabled_delete 
       - if sec.academic_records.any?
-        %b{title: "Elimine las inscripciones para activar esta opción"}
+        %b{'data-bs-toggle': :tooltip, title: "Elimine las inscripciones para activar esta opción"}
           %a.btn.btn-sm.btn-secondary.disabled.ml-0.px-1.xx-small
             %i.fas.fa-remove 
       - else
         - url = "/sections/bulk_delete?bulk_ids%5B%5D=#{sec.id}"
-        = link_to url, class: 'btn btn-sm btn-danger ml-0 px-1 xx-small', title: "Eliminar #{sec.code}", method: :post, 'data-confirm': "Está acción es irreversible, eliminará la sección" do
+        = link_to url, 'data-bs-toggle': :tooltip, class: 'btn btn-sm btn-danger ml-0 px-1 xx-small', title: "Eliminar #{sec.code}", method: :post, 'data-confirm': "Está acción es irreversible, eliminará la sección" do
           %i.fas.fa-remove
 
 - if enabled_delete
   %td.border-start.border-3.border-secondary.px-1
     - if has_enrolled
-      %b{title: 'Elimine las inscripciones en la sección para activar esta opcíon'}
+      %b{'data-bs-toggle': :tooltip, title: 'Elimine las inscripciones en la sección para activar esta opcíon'}
         = link_to 'javascript:void(0)', class: 'btn btn-sm btn-danger disabled', disabled: true do
           %i.fas.fa-trash
     - else
@@ -28,5 +28,5 @@
         - aux = (i.eql? 0) ? "?" : "&"
         - url += "#{aux}bulk_ids%5B%5D=#{sec.id}"
 
-      = link_to url, class: 'btn btn-sm btn-danger', title: 'Eliminar Todas Secciones', method: :post, 'data-confirm': "Está acción es irreversible, eliminará un total de #{sections.count}" do
+      = link_to url, class: 'btn btn-sm btn-danger', 'data-bs-toggle': :tooltip, title: 'Eliminar Todas Secciones', method: :post, 'data-confirm': "Está acción es irreversible, eliminará un total de #{sections.count}" do
         %i.fas.fa-trash

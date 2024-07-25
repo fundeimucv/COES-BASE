@@ -4,14 +4,14 @@
       %tr
         %th.sticky.header Asignatura
         %th.header Sección
-        %th.header{title: 'Calificacion Final'} Final
-        %th.header{title: 'Calificacion Posterior'} Posterior
+        %th.header{'data-bs-toggle': :tooltip, title: 'Calificacion Final'} Final
+        %th.header{'data-bs-toggle': :tooltip, title: 'Calificacion Posterior'} Posterior
         %th.header Tipo
         %th.header Periodo
     %tbody.table-group-divider
       - @object.grado&.inscripciones.each do |ins|
         %tr
-          %th.sticky.text-start{title: "#{ins.seccion&.asignatura&.descripcion}"}= ins.seccion&.asignatura_id
+          %th.sticky.text-start{'data-bs-toggle': :tooltip, title: "#{ins.seccion&.asignatura&.descripcion}"}= ins.seccion&.asignatura_id
           %td= ins.seccion&.numero
           %td= ins.calificacion_final
           %td= ins.calificacion_posterior

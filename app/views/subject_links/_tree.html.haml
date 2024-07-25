@@ -6,7 +6,7 @@
         %tr{class: aprobada, id: "dep#{dep.id}"}
           %th.py-1.px-2
             - if !(aprobada.eql? '')
-              %i.fa.fa-check.text-success{title: 'Aprobada'}
+              %i.fa.fa-check.text-success{'data-bs-toggle': :tooltip, title: 'Aprobada'}
 
             - if adelante 
               - links = dep.depend_subject.depend_links.joins(:depend_subject).order('subjects.ordinal': :asc)

@@ -16,7 +16,7 @@
       %td= section.academic_process&.process_name
       %td= section.code
       %td= section.label_modality true
-      %td{title: section.subject.desc}
+      %td{'data-bs-toggle': :tooltip, title: section.subject.desc}
         - if section.subject
           - if current_user.admin? and session[:rol].eql? 'admin'
             %a{href: "/admin/subject/#{section.subject_id}"}= section.subject.desc 
@@ -24,7 +24,7 @@
             = section.subject.desc
 
       - teacher_desc = section.teacher.desc if section.teacher
-      %td{title: teacher_desc}
+      %td{'data-bs-toggle': :tooltip, title: teacher_desc}
         - if section.teacher 
           - if current_user.admin? and session[:rol].eql? 'admin'
             %a{href: "/admin/teacher/#{section.teacher_id}"}= section.teacher.desc 
@@ -32,7 +32,7 @@
             = section.teacher.desc
 
       - if section.schedules
-        %td{title: section.schedule_name}
+        %td{'data-bs-toggle': :tooltip, title: section.schedule_name}
           = section.schedule_short_name
       -else 
         %td

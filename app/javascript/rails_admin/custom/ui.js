@@ -21,10 +21,11 @@ document.addEventListener("rails_admin.dom_ready", function() {
 	// });
 
 	$(".form-text:not(:has(span))").addClass('alert alert-warning');
-	
-});
 
-var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
-var tooltipList = tooltipTriggerList.map(function(tooltipTriggerEl) {
-    return new bootstrap.Tooltip(tooltipTriggerEl)
-})
+
+	var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+	var tooltipList = tooltipTriggerList.map(function(tooltipTriggerEl) {
+		return new bootstrap.Tooltip(tooltipTriggerEl)
+	})	
+
+});

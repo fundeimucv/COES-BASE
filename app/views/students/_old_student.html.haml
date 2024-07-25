@@ -5,8 +5,8 @@
         %tr
             %th.sticky.header Escuela
             %th.header Plan
-            %th.header{title: 'Calificacion Final'} Estado
-            %th.header{title: 'Calificacion Posterior'} Tipo Ingreso
+            %th.header{'data-bs-toggle': :tooltip, title: 'Calificacion Final'} Estado
+            %th.header{'data-bs-toggle': :tooltip, title: 'Calificacion Posterior'} Tipo Ingreso
         %tbody.table-group-divider
         - estudiante.grados.each do |gra|
             %tr

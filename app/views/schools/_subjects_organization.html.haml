@@ -25,7 +25,7 @@
             %b= title
             - if false 
               - # OJO REVISAR ESTÁ SUMANDO TODAS LAS ASIGNATURAS!!! 
-              %span.badge.bg-dark{title: 'Total de Asignaturas'}= "#{v}"
+              %span.badge.bg-dark{'data-bs-toggle': :tooltip, title: 'Total de Asignaturas'}= "#{v}"
       %tr
         - orders.each do |k,v|
           %td= render partial: '/requirement_by_levels/card', locals: {level: k, subjects: subjects} #@object.modality_to_tipo
@@ -56,7 +56,7 @@
                           - title = "#{s_type.name.downcase.pluralize.titleize}"
                           %small
                             = title
-                            %span.label{title: "Total Asignaturas #{title}"}= "#{subjects_by_type.count}"
+                            %span.label{'data-bs-toggle': :tooltip, title: "Total Asignaturas #{title}"}= "#{subjects_by_type.count}"
                     %tbody
                       - subjects_by_type.each do |asig|
                         %tr.trFiltrable{class: table}

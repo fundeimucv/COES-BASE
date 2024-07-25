@@ -26,7 +26,7 @@
         %tr.align-middle.trFiltrable{style: 'overflow: scroll;'}
           %td= i+1
           %td= subject.ordinal_to_cardinal_short
-          %td{title: subj_desc}= link_to_if (current_user&.admin&.authorized_read? 'Subject'), subj_desc, "/admin/subject/#{@subj_id}"
+          %td{'data-bs-toggle': :tooltip, title: subj_desc}= link_to_if (current_user&.admin&.authorized_read? 'Subject'), subj_desc, "/admin/subject/#{@subj_id}"
           - # Activar
           %td.text-center{id: "enableSubject#{@subj_id}"}
             = render partial: 'academic_processes/active_course_switch', locals: {tipo: 0}

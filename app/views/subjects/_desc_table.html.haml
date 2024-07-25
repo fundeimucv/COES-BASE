@@ -12,7 +12,7 @@
   %tbody
     %tr
       %td= ApplicationController.helpers.label_status("bg-info", subject.code)
-      %td{title: subject.name}= subject.name
+      %td{'data-bs-toggle': :tooltip, title: subject.name}= subject.name
       - active_link = (subject.area and current_user&.admin&.authorized_read? 'Area')
       %td= link_to_if active_link, subject.area.name, "/admin/area/#{subject.area_id}"
       %td= ApplicationController.helpers.label_status("bg-info", subject.ordinal)

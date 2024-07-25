@@ -14,7 +14,8 @@
           - msg = academic_process&.process_name
         - else
           - msg = "Sin Periodo Activo"
-        = link_to msg, 'javascript:void(0)', {"data-bs-target": "##{id}", "data-bs-toggle": :modal, class: 'nav-link', title: 'Cambiar Período de la Sesión'}
+        %div{'data-bs-toggle': :tooltip, title: 'Cambiar Período de la Sesión'}
+          = link_to msg, 'javascript:void(0)', {"data-bs-target": "##{id}", "data-bs-toggle": :modal, class: 'nav-link'}
 
 
     - if _current_user and _current_user.profile_picture and _current_user.profile_picture.attached?

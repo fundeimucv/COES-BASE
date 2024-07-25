@@ -1,5 +1,5 @@
 - total = school.grades.count
-= link_to "/schools/#{school.id}/export_grades_stream.xls", class: 'btn btn-success float-end m-1 btn-sm', title: '2X' do
+= link_to "/schools/#{school.id}/export_grades_stream.xls", class: 'btn btn-success float-end m-1 btn-sm', 'data-bs-toggle': :tooltip, title: '2X' do
   .fa.fa-download
   = total
 

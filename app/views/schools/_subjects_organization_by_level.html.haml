@@ -13,7 +13,7 @@
             %b= title
             - if false 
               - # OJO REVISAR ESTÁ SUMANDO TODAS LAS ASIGNATURAS!!! 
-              %span.badge.bg-dark{title: 'Total de Asignaturas'}= "#{v}"
+              %span.badge.bg-dark{'data-bs-toggle': :tooltip, title: 'Total de Asignaturas'}= "#{v}"
           - if !k.nil? and k > 0
             %td= render partial: '/requirement_by_levels/card', locals: {level: k, subjects: subjects} #@object.modality_to_tipo
         - SubjectType.all.reject{|el| el.code.eql? 'OB'}.each do |subType|
@@ -21,7 +21,7 @@
             %b= subType.name.titleize
             - if false 
               - # OJO REVISAR ESTÁ SUMANDO TODAS LAS ASIGNATURAS!!! 
-              %span.badge.bg-dark{title: 'Total de Asignaturas'}= "#{v}"
+              %span.badge.bg-dark{'data-bs-toggle': :tooltip, title: 'Total de Asignaturas'}= "#{v}"
         %tr
           %td{colspan: (orders.max.first)+1}
             .text-center.mt-1= submit_tag 'Guardar', class: 'btn btn-sm btn-info p-1', style: 'font-size: 11px'
@@ -49,7 +49,7 @@
                           - title = "#{s_type.name.downcase.pluralize.titleize}"
                           %small
                             = title
-                            %span.label{title: "Total Asignaturas #{title}"}= "#{subjects_by_type.count}"
+                            %span.label{'data-bs-toggle': :tooltip, title: "Total Asignaturas #{title}"}= "#{subjects_by_type.count}"
                     %tbody
                       - subjects_by_type.each do |asig|
                         %tr.trFiltrable{class: table}

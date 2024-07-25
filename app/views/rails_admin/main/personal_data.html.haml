@@ -43,7 +43,7 @@
                 %td.fw-bold= @object.sede&.titleize
               %tr
                 %td.col-4 Dirección:
-                %td.fw-bold{title: @object.address&.full_address}= @object.address&.full_address
+                %td.fw-bold{'data-bs-toggle': :tooltip, title: @object.address&.full_address}= @object.address&.full_address
               %tr
                 %td.col-4 Origen:
                 %td.fw-bold= @object.origin_location

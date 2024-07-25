@@ -27,17 +27,17 @@
                 %th.text-center= ord[0]&.titleize
             - if (admin_authorized_to_qualify or teacher_authorized_to_qualify)
               %th.text-center PI
-            %th.text-center{title: 'Calificación Final'} Final
+            %th.text-center{'data-bs-toggle': :tooltip, title: 'Calificación Final'} Final
             - if GeneralSetup.enabled_post_qualification?
               - colspan += 3
-              %th{title: 'Calificación Diferida'} Dif
-              %th{title: 'Calificación Reparación'} Rep
-              %th{title: 'Calificación Posterior'} Post
+              %th{'data-bs-toggle': :tooltip, title: 'Calificación Diferida'} Dif
+              %th{'data-bs-toggle': :tooltip, title: 'Calificación Reparación'} Rep
+              %th{'data-bs-toggle': :tooltip, title: 'Calificación Posterior'} Post
           - else
-            %th.text-center{title: 'Calificación Final'} Definitva
+            %th.text-center{'data-bs-toggle': :tooltip, title: 'Calificación Final'} Definitva
           %th
-            %i.fa.fa-remove{title: 'Limpiar valores'}
-          %th{title: 'Calificación en letras'} Calificación Descriptiva
+            %i.fa.fa-remove{'data-bs-toggle': :tooltip, title: 'Limpiar valores'}
+          %th{'data-bs-toggle': :tooltip, title: 'Calificación en letras'} Calificación Descriptiva
         %th Estado
 
 
@@ -58,7 +58,7 @@
             %td= acre.academic_process&.process_name
           %td.text-center= user.ci
           %td.text-center= acre.enroll_academic_process.enroll_label_status
-          %td{title: user.reverse_name}
+          %td{'data-bs-toggle': :tooltip, title: user.reverse_name}
             - if enabled_to_admin and current_user&.admin&.authorized_read? 'Student'
               %a{href: "/admin/student/#{acre.student.id}"}= user.reverse_name 
             - else

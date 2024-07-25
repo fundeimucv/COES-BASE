@@ -9,7 +9,7 @@
     .input-group
       = select_tag :section_code, options_for_select(section_codes), {class: "form-control", id: 'sessions'} 
 
-      = link_to 'javascript:void(0)', id: 'addCode', class: 'input-group-text btn btn-success', title: 'Agregar Identificador', onclick: "showSections(false);" do
+      = link_to 'javascript:void(0)', id: 'addCode', class: 'input-group-text btn btn-success', 'data-bs-toggle': :tooltip, title: 'Agregar Identificador', onclick: "showSections(false);" do
         %i.fa-regular.fa-plus
 
   =# NEW SECTION CODE 
@@ -17,7 +17,7 @@
     .input-group
       = text_field_tag :section_code, {}, {placeholder: 'Identificador', class: "form-control", oninput: "notSpecialChars(this)", maxlength: 3, id: :code}
               
-      = link_to 'javascript:void(0)', id: 'restoreSections', class: 'input-group-text btn btn-success', title: 'Códigos existentes', onclick: "showSections(true);" do
+      = link_to 'javascript:void(0)', id: 'restoreSections', class: 'input-group-text btn btn-success', 'data-bs-toggle': :tooltip, title: 'Códigos existentes', onclick: "showSections(true);" do
         %i.fa-regular.fa-minus
 
   %select#section_teacher_id{"data-filteringselect": true, "data-options": "{\"xhr\":true,\"remote_source\":\"/admin/teacher?associated_collection=teacher\\u0026compact=true\\u0026current_action=create\\u0026source_abstract_model=section\"}", name: "section[teacher_id]", :placeholder => "Buscar", :style => "display: none;"}

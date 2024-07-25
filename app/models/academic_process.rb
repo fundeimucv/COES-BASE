@@ -343,7 +343,7 @@ class AcademicProcess < ApplicationRecord
         pretty_value do 
           user = bindings[:view]._current_user
           if (user&.admin&.authorized_read? 'Section')
-            %{<a href='/admin/section?query=#{bindings[:object].process_name}' title='Total Secciones'><span class='badge bg-info'>#{value} en #{bindings[:object].courses.count} Cursos</span></a>}.html_safe
+            %{<a href='/admin/section?query=#{bindings[:object].process_name}' data-bs-toggle = 'tooltip', title='Total Secciones'><span class='badge bg-info'>#{value} en #{bindings[:object].courses.count} Cursos</span></a>}.html_safe
           else
             %{<span class='badge bg-info'>#{value}</span>}.html_safe
           end
@@ -364,7 +364,7 @@ class AcademicProcess < ApplicationRecord
         pretty_value do
           user = bindings[:view]._current_user
           if (user and user.admin and user.admin.authorized_read? 'AcademicRecord')
-            a = %{<a href='/admin/academic_record?query=#{bindings[:object].process_name}' title='Total Inscripciones En Asignaturas'><span class='badge bg-info'>#{value}</span></a>}.html_safe
+            a = %{<a href='/admin/academic_record?query=#{bindings[:object].process_name}' data-bs-toggle='tooltip' title='Total Inscripciones En Asignaturas'><span class='badge bg-info'>#{value}</span></a>}.html_safe
             "#{a} #{ApplicationController.helpers.link_academic_records_csv bindings[:object]}".html_safe
           else
             %{<span class='badge bg-info'>#{value}</span>}.html_safe
@@ -379,7 +379,7 @@ class AcademicProcess < ApplicationRecord
           user = bindings[:view]._current_user
           total = bindings[:object].enroll_academic_processes.count
           if (user&.admin&.authorized_read? 'EnrollAcademicProcess')
-            a = %{<a href='/admin/enroll_academic_process?query=#{bindings[:object].process_name}' title='Total Inscripciones En Periodo'><span class='badge bg-info'>#{total}</span></a>}.html_safe
+            a = %{<a href='/admin/enroll_academic_process?query=#{bindings[:object].process_name}' data-bs-toggle='tooltip' title='Total Inscripciones En Periodo'><span class='badge bg-info'>#{total}</span></a>}.html_safe
             "#{a} #{ApplicationController.helpers.link_enroll_academic_process_csv bindings[:object]}".html_safe
           else
             %{<span class='badge bg-info'>#{value}</span>}.html_safe

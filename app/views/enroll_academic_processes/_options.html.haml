@@ -15,7 +15,7 @@
         .fa-solid.fa-graduation-cap
         .fa.fa-check
 
-  = link_to "/admin/enroll_academic_process/#{enroll_academic_process.id}", class: "btn btn-sm float-end btn-warning", title: "Modificar Inscripción #{academic_process&.process_name}" do
+  = link_to "/admin/enroll_academic_process/#{enroll_academic_process.id}", class: "btn btn-sm float-end btn-warning", 'data-bs-toggle': :tooltip, title: "Modificar Inscripción #{academic_process&.process_name}" do
     .fas.fa-info-circle
 
 - if enabled_to_admin and (current_user&.admin&.authorized_delete? 'EnrollAcademicProcess')

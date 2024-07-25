@@ -1,7 +1,7 @@
 .text-center
   .form-check.form-switch
     - url = "/schools/#{school.id}"
-    = check_box_tag "enable_by_level#{school.id}", school.id, school.enable_by_level?, class: "form-check-input switch", onclick: 'updateElem(`'+url+'`, `{"school":{"enable_by_level":${this.checked}}}`);', title: 'Activar o desactivar inscripciones por nivel aprobado'
+    = check_box_tag "enable_by_level#{school.id}", school.id, school.enable_by_level?, class: "form-check-input switch", onclick: 'updateElem(`'+url+'`, `{"school":{"enable_by_level":${this.checked}}}`);', 'data-bs-toggle': :tooltip, title: 'Activar o desactivar inscripciones por nivel aprobado'
 
 :javascript
 

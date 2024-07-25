@@ -23,7 +23,7 @@
 
 - if current_user&.admin? and session[:rol].eql? 'admin'
   .bg-info.text-primary.p-3.text-center
-    = link_to "/admin/student/#{@grade.student_id}", class: 'float-start btn btn-sm btn-primary align-middle', title: "Ir al detalle de #{user.nick_name}" do
+    = link_to "/admin/student/#{@grade.student_id}", class: 'float-start btn btn-sm btn-primary align-middle', 'data-bs-toggle': :tooltip, title: "Ir al detalle de #{user.nick_name}" do
       %i.fa-regular.fa-chevron-left
       Ir a Detalle
 
