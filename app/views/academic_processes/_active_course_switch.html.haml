@@ -1,5 +1,5 @@
 
-- if (current_user&.admin&.authorized_delete? 'Course')
+- if (current_user&.admin&.authorized_manage? 'Course')
     - if tipo.eql? 0
         - id = @subj_id
         - disabled = @course&.sections&.any?
