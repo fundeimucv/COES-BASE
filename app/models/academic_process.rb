@@ -396,7 +396,7 @@ class AcademicProcess < ApplicationRecord
       field :school do
         inline_edit false
         inline_add false
-        partial 'academic_process/custom_school_id_field'
+        partial 'school/custom_school_id_field'
       end
       field :period do
         inline_edit false

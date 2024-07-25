@@ -134,7 +134,7 @@ class StudyPlan < ApplicationRecord
       field :school do
         inline_add false
         inline_edit false 
-        partial 'study_plan/custom_school_id_field'
+        partial 'school/custom_school_id_field'
       end
       field :code do 
         html_attributes do
