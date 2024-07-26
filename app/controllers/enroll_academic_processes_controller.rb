@@ -9,7 +9,7 @@ class EnrollAcademicProcessesController < ApplicationController
   # GET /enroll_academic_processes/1 or /enroll_academic_processes/1.json
 
   def show
-    if @enroll_academic_process.confirmado? and (@enroll_academic_process.school.enroll_process.eql? @enroll_academic_process.academic_process or @enroll_academic_process.school.active_process.eql? @enroll_academic_process.academic_process)
+    if @enroll_academic_process.confirmado? and (@enroll_academic_process.academic_process.enroll? or @enroll_academic_process.academic_process.active?)
 
       @school = @enroll_academic_process.school
       @faculty = @school.faculty

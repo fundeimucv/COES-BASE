@@ -3,8 +3,6 @@
 # Table name: academic_processes
 #
 #  id                  :bigint           not null, primary key
-#  active              :boolean          default(FALSE), not null
-#  enroll              :boolean          default(FALSE), not null
 #  max_credits         :integer
 #  max_subjects        :integer
 #  modality            :integer          default("Semestral"), not null
@@ -29,7 +27,8 @@
 #  fk_rails_...  (school_id => schools.id)
 #
 class AcademicProcess < ApplicationRecord
-
+  include Totalizable
+  # include Schoolizable
   # HISTORY:
   has_paper_trail on: [:create, :destroy, :update]
 
@@ -74,6 +73,9 @@ class AcademicProcess < ApplicationRecord
   # SCOPE:
   default_scope { order(name: :desc) }
 
+  scope :actives, -> {where(active: true)}
+  scope :enrolls, -> {where(enroll: true)}
+  scope :post_qualifications, -> {where(post_qualification: true)}
   scope :without_enroll_academic_processes, -> {left_joins(:enroll_academic_processes).where('enroll_academic_processes.academic_process_id': nil)}
   # Atention: To be commented by not use
   scope :sort_by_period, -> {unscoped.joins(:period).order('periods.year desc').second}
@@ -98,6 +100,10 @@ class AcademicProcess < ApplicationRecord
     I18n.t("activerecord.scopes.academic_process."+letter)
   end
   
+  def active_or_enroll?
+    (active? or enroll?)
+  end
+
   def invalid_grades_to_csv
 
     grades_others = Grade.enrolled_in_academic_process(self.process_before_id).others_permanence_invalid_to_enroll
@@ -257,7 +263,7 @@ class AcademicProcess < ApplicationRecord
   end
 
   def enrolling?
-    self.id.eql? self.school.enroll_process_id
+    enroll?
   end
 
   def update_grades_enrollment_day (to_enroll_academic_processes, final_lap, appointment_time, duration_slot_time)
@@ -295,7 +301,32 @@ class AcademicProcess < ApplicationRecord
       end
   end
 
+  def self.icon_entity
+    'fa-solid fa-calendar'
+  end
 
+  def label_process value
+    if value
+      tipo = 'success'
+      fa = 'check'
+    else
+      tipo = 'danger'
+      fa = 'times'
+    end
+    "<span class='badge bg-#{tipo}'><span class='fas fa-#{fa}'></span></span>"
+  end
+
+  def label_active
+    label_process active?
+  end
+  
+  def label_enroll
+    label_process enroll?
+  end 
+
+  def label_post_q
+    label_process post_qualification?
+  end 
 
   rails_admin do
     navigation_label 'Config Específica'
@@ -341,7 +372,51 @@ class AcademicProcess < ApplicationRecord
       #     bindings[:view].render(partial: "/academic_processes/enroll_state", locals: {academic_process: bindings[:object]})
       #   end
       # end
+      field :enroll do
+        label '¿Inscripción?'
+        # pretty_value do
+        #   "#{bindings[:object].label_active} p".html_safe
+        # end
+        pretty_value do
+          current_user = bindings[:view]._current_user
+          if current_user&.admin&.authorized_manage? 'AcademicProcess'
+            bindings[:view].render(partial: "/academic_processes/active_process", locals: {academic_process: bindings[:object], mode: 'enroll'})
+          else
+            label_enroll
+          end
+        end
 
+      end
+
+      field :active do
+        label '¿Activo?'
+        pretty_value do
+          current_user = bindings[:view]._current_user
+          if current_user&.admin&.authorized_manage? 'AcademicProcess'
+            bindings[:view].render(partial: "/academic_processes/active_process", locals: {academic_process: bindings[:object], mode: 'active'})
+          else
+            label_active
+          end
+        end
+      end
+
+      field :post_qualification do
+        label '¿Califi Post?'
+        pretty_value do
+          pretty_value do
+            if GeneralSetup.enabled_post_qualification?
+              current_user = bindings[:view]._current_user
+              if current_user&.admin&.authorized_manage? 'AcademicProcess'
+                bindings[:view].render(partial: "/academic_processes/active_process", locals: {academic_process: bindings[:object], mode: 'post_qualification'})
+              else
+                label_active
+              end
+            else
+              nil
+            end
+          end
+        end
+      end
 
       field :total_sections do
 

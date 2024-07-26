@@ -4,14 +4,14 @@
         .card{style: "width: 18rem;"}
             .card-header.text-sm.text-center= school.name
             .card-body.text-center
-                .card-title= school&.active_process_label_status
-                .card-subtitle.mb-2.text-muted.border-bottom Periodo Activo
-                .card-title= school&.enroll_process_label_status
+                .card-title= school.show_process_actives
+                .card-subtitle.mb-2.text-muted.border-bottom Periodos Activos
+                .card-title= school.show_process_enrolls
                 .card-subtitle.mb-2.text-muted.border-bottom Periodo de Inscripción
                 - if last_ap = school&.academic_processes.first
                     - linked = (current_user&.admin&.authorized_read? 'EnrollAcademicProcess')
                     .card-title= last_ap&.label_total_enrolls_by_status(linked).html_safe
-                    .card-subtitle.mb-2.text-muted= "Última Inscripción en (#{last_ap&.process_name})"
+                    .card-subtitle.mb-2.text-muted= "Última Inscripción (#{last_ap&.process_name})"
 
     .col-6
         %table.float-end
@@ -24,7 +24,7 @@
                     %td
                         =# link_to 'Asignaturas', "/admin/academic_process?f%5Bschool%5D%5B84194%5D%5Bo%5D=like&f%5Bschool%5D%5B84194%5D%5Bv%5D=#{school.name}&query=", class: 'btn btn-info btn-sm float-end mb-2'
                         = link_to 'Asignaturas', "/admin/subject?f%5Bschool%5D%5B45550%5D%5Bo%5D=like&f%5Bschool%5D%5B45550%5D%5Bv%5D=#{school.name}", class: 'btn btn-info btn-sm float-end mb-2'
-                        = link_to 'Nuevo Asignatura', "/admin/subject/new?school_id=#{school.id}", class: "btn btn-success btn-sm float-end mb-2 me-2"
+                        = link_to 'Nueva Asignatura', "/admin/subject/new?school_id=#{school.id}", class: "btn btn-success btn-sm float-end mb-2 me-2"
                 %tr
                     %td
                         = link_to 'Profesores', "/admin/teacher?f%5Bschool%5D%5B45550%5D%5Bo%5D=like&f%5Bschool%5D%5B45550%5D%5Bv%5D=#{school.name}", class: 'btn btn-info btn-sm float-end mb-2'

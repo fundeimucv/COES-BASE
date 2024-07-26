@@ -149,11 +149,12 @@ class AcademicProcessesController < ApplicationController
   def update
     respond_to do |format|
       if @academic_process.update(academic_process_params)
-        format.html { redirect_to academic_process_url(@academic_process), notice: "Academic process was successfully updated." }
-        format.json { render :show, status: :ok, location: @academic_process }
+        # format.json { render json: '¡Escuela actualizada con éxito!', status: :ok}
+        format.json {render json: {data: '¡Período actualizado con éxito!', status: :success} }
+        format.html { redirect_back fallback_location: root_path, notice: '¡Período actualizado con Éxito!' }
       else
-        format.html { render :edit, status: :unprocessable_entity }
-        format.json { render json: @academic_process.errors, status: :unprocessable_entity }
+        format.json { render json: {data: @school.errors, status: :unprocessable_entity} }
+        format.html { redirect_back fallback_location: root_path, notice: 'No fue posible realizar la solicitud!'  }
       end
     end
   end
@@ -176,6 +177,6 @@ class AcademicProcessesController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def academic_process_params
-      params.require(:academic_process).permit(:school_id, :period_id, :max_credit, :max_subjects)
+      params.require(:academic_process).permit(:school_id, :period_id, :max_credits, :max_subjects, :active, :enroll, :post_qualification)
     end
 end

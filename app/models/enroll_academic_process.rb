@@ -205,7 +205,7 @@ class EnrollAcademicProcess < ApplicationRecord
   end
 
   def enrolling?
-    school.enroll_process_id.eql? academic_process_id  
+    academic_process&.enrolling?
   end
 
   def historical?

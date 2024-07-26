@@ -16,7 +16,7 @@
             %td= sec.code
             %td= sec.subject.name
             %td= sec.academic_process&.process_name
-            %td= sec.academic_records.count
+            %td= sec.label_numbery_total
             %td
               - if !sec.qualified? and sec.is_in_process_active?
                 = link_to section_path(sec), class: 'btn btn-sm btn-success' do

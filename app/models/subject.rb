@@ -292,6 +292,11 @@ class Subject < ApplicationRecord
     courses.count
   end
 
+  def self.icon_entity
+    'fa-regular fa-book'
+  end  
+
+
   rails_admin do
     navigation_label 'Config General'
     navigation_icon 'fa-regular fa-book'

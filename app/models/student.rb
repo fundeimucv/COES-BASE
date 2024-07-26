@@ -179,6 +179,10 @@ class Student < ApplicationRecord
   # def before_import_save(row, map)
   #   self.created_nested_items(row, map)
   # end  
+
+  def self.icon_entity
+    'fa-regular fa-user-graduate'
+  end  
   
   rails_admin do
     navigation_label 'Gestión de Usuarios'

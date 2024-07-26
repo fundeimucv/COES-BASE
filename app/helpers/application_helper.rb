@@ -123,7 +123,7 @@ module ApplicationHelper
 			content = 'Sin Información'
 			klazz = 'bg-secondary' 
 		end
-		klazz += ' text-dark' if (klazz.eql? 'bg-info')
+		klazz += ' text-dark' if (klazz.include? 'bg-info')
 		capture_haml{"<span class='text-center #{type} #{klazz}'>#{content}</span>".html_safe }
 	end
 

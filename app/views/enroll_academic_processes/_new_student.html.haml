@@ -2,7 +2,8 @@
 - faculty = @grade.school&.faculty
 - # NUEVO SECUENCIA DE INSCRIPCIÓN:
 
-- if academic_process = school&.enroll_process
+
+- school.academic_processes.enrolls.each do |academic_process|
   - academic_process_before = academic_process&.process_before
   - # INSCRIPCIÓN ABIERTA!
   .border.border-success.mb-3

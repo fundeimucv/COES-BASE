@@ -2,12 +2,12 @@
     - if academic_process.enrolling?
         %div{'data-bs-toggle': :tooltip, title: 'Estado de Inscripción'}
             .btn.btn-success.disabled Abierta
-        - if current_user&.admin&.authorized_manage? 'School' and current_user&.admin&.authorized_manage? 'AcademicProcess'
+        - if false #current_user&.admin&.authorized_manage? 'AcademicProcess'
             = link_to "/schools/#{academic_process.school_id}?[school][enroll_process_id]=-1", class: 'btn btn-danger', method: :put, 'data-bs-toggle': :tooltip, title: 'Cerrar Inscripción', 'data-confirm': "Esta acción cerrará las inscripciones en #{academic_process.name} ¿Está completamente seguro?" do
                 %i.fa.fa-remove
     - else
         %div{'data-bs-toggle': :tooltip, title: 'Estado de Inscripción'}
             .btn.btn-secondary.disabled Cerrada
-        - if current_user&.admin&.authorized_manage? 'School' and current_user&.admin&.authorized_manage? 'AcademicProcess'
+        - if false #current_user&.admin&.authorized_manage? 'AcademicProcess'
             = link_to "/schools/#{academic_process.school_id}?[school][enroll_process_id]=#{academic_process.id}", class: 'btn btn-success', method: :put, 'data-bs-toggle': :tooltip, title: "Activar Inscripción para #{academic_process.name}", 'data-confirm': "Esta acción abrirá las inscripciones en #{academic_process.name} ¿Está completamente seguro?" do
                 %i.fa.fa-check

@@ -1,5 +1,6 @@
 - school = @grade.school
-- if academic_process = school.enroll_process
+
+- school.academic_processes.enrolls.each do |academic_process|
   - enroll_in_process = @grade.enroll_academic_processes.where(academic_process_id: academic_process.id).first
 
   - totalCreditsReserved = enroll_in_process ? enroll_in_process.total_credits : 0

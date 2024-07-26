@@ -101,6 +101,9 @@ class StudyPlan < ApplicationRecord
   # def desc_credits
   #   "(Créditos Requeridos) #{mandatory_credits}"
   # end
+  def self.icon_entity
+    'fa-solid fa-award'
+  end
 
   rails_admin do
     navigation_label 'Config General'

@@ -6,8 +6,8 @@
     - @grade.enroll_academic_processes.sort_by_period.each do |enroll_academic_process|
       - school = enroll_academic_process.school
       - academic_process = enroll_academic_process.academic_process
-      - enrolling_process = (school&.enroll_process.eql? academic_process)
-      - active_process = (school&.active_process.eql? academic_process)
+      - enrolling_process = academic_process&.enroll? 
+      - active_process = academic_process&.active?
       .accordion-item
         %h2.accordion-header{id: "flush-heading#{enroll_academic_process.id}"}
           %button.accordion-button.collapsed{"aria-controls" => "flush-collapse#{enroll_academic_process.id}", "aria-expanded" => "false", "data-bs-target" => "#flush-collapse#{enroll_academic_process.id}", "data-bs-toggle" => "collapse", :type => "button"}

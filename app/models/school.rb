@@ -57,6 +57,7 @@ class School < ApplicationRecord
   has_many :study_plans, dependent: :destroy
   accepts_nested_attributes_for :study_plans, allow_destroy: true
   has_many :grades, through: :study_plans
+  has_many :students, through: :grades
 
   has_many :enroll_academic_processes, through: :grades
   has_many :academic_records, through: :enroll_academic_processes
@@ -157,6 +158,77 @@ class School < ApplicationRecord
     process_label_desc active_process
   end
 
+
+  def show_process_actives
+    show_process 'actives'
+  end
+
+  def show_process_enrolls
+    show_process 'enrolls'
+  end
+
+  def show_process_post_q
+    show_process 'post'
+  end
+  
+  def show_process type
+    aux = ""
+    processes = (type.eql? 'active') ? academic_processes.actives : academic_processes.enrolls
+
+    case type
+    when 'actives'
+      processes = academic_processes.actives
+    when 'enrolls'
+      processes = academic_processes.enrolls
+    when 'post'
+      processes = academic_processes.post_qualifications
+    end
+    if processes.any?
+      processes.each do |process|
+        aux += ApplicationController.helpers.label_status('bg-info me-1', process.process_name)
+      end
+    else
+      valor = (type.eql? 'active') ? 'Sin Proceso Activo' : 'Sin Proceso Abierto'
+      aux = ApplicationController.helpers.label_status('bg-secondary', valor)
+    end
+    aux.html_safe
+  end
+
+  def link_to_list object
+    if object.eql? Student
+      # Student Case:
+      href = "/admin/#{object.model_name.param_key}?f[schools][39981][v]=#{self.short_name}" 
+    else
+      # Others Cases:
+      href = "/admin/#{object.model_name.param_key}?f[school][38030][o]=like&f[school][38030][v]=#{self.short_name}"
+    end
+    name = I18n.t("activerecord.models.#{object.model_name.param_key}.other")
+    ApplicationController.helpers.label_link_with_tooltip(href, 'bg-info me-1', "<i class='fa #{object.icon_entity}'></i>", "#{name} de #{self.short_name&.titleize}")
+  end
+
+  def general_links
+
+    # AcademicProcessses:
+    # href = "/admin/academic_process?f[school][28047][o]=like&f[school][28047][v]=#{short_name}"
+    # aux = ApplicationController.helpers.label_link_with_tooltip(href, 'bg-info me-1', "<i class='fa fa-calendar'></i>", "Períodos de #{short_name&.titleize}")
+    aux = self.link_to_list AcademicProcess
+
+    # StudyPlans:
+    aux += self.link_to_list StudyPlan
+    
+    # Subjects:
+    aux += self.link_to_list Subject
+    
+    # Sections:
+    aux += self.link_to_list Section
+    
+    # Students
+    aux += self.link_to_list Student
+
+    aux
+  end
+
+
   rails_admin do
     navigation_label 'Config General'
     navigation_icon 'fa-regular fa-school'
@@ -241,43 +313,64 @@ class School < ApplicationRecord
         end
       end
 
-      fields :enroll_process do
-        label 'Período Inscripción'
-        queryable false
-        filterable false
-        searchable false
-        sortable false
-        help ''
-
-        html_attributes do
-          {'data-bs-original-title': ''}
-        end
-        pretty_value do
-
-          current_user = bindings[:view]._current_user
-
-          if current_user&.admin&.authorized_manage? 'School'
-            bindings[:view].render(partial: "/schools/form_enabled_enroll", locals: {school: bindings[:object]})            
-          end
-        end
-
+      field :show_process_actives do
+        label 'Períodos Activos'
       end
-      fields :active_process do
-        label 'Período Activo'
-        queryable false
-        filterable false
-        searchable false
-        sortable false
-
+      field :show_process_enrolls do
+        label 'Períodos en Inscripción'
+      end
+      field :show_process_post_q do
+        label 'Períodos en Calif. Post.'
         pretty_value do
-          current_user = bindings[:view]._current_user
-          if current_user&.admin&.authorized_manage? 'School'
-            bindings[:view].render(partial: "/schools/form_enabled_active", locals: {school: bindings[:object]})
-          else
+          if GeneralSetup.enabled_post_qualification?
             value
+          else
+            nil
           end
         end
       end
+
+      field :general_links do
+        label 'Enlaces'
+      end
+
+      # fields :enroll_process do
+      #   label 'Período Inscripción'
+      #   queryable false
+      #   filterable false
+      #   searchable false
+      #   sortable false
+      #   help ''
+
+      #   html_attributes do
+      #     {'data-bs-original-title': ''}
+      #   end
+      #   pretty_value do
+
+      #     current_user = bindings[:view]._current_user
+
+      #     if current_user&.admin&.authorized_manage? 'School'
+      #       bindings[:view].render(partial: "/schools/form_enabled_enroll", locals: {school: bindings[:object]})            
+      #     end
+      #   end
+
+      # end
+      # fields :active_process do
+      #   label 'Período Activo'
+      #   queryable false
+      #   filterable false
+      #   searchable false
+      #   sortable false
+
+      #   pretty_value do
+      #     current_user = bindings[:view]._current_user
+      #     if current_user&.admin&.authorized_manage? 'School'
+      #       bindings[:view].render(partial: "/schools/form_enabled_active", locals: {school: bindings[:object]})
+      #     else
+      #       value
+      #     end
+      #   end
+      # end
 
       # field :download_all_grades do
       #   label 'Total Estudiantes'

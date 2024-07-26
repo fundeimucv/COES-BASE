@@ -263,11 +263,11 @@ class Section < ApplicationRecord
   end
 
   def is_in_process_active?
-    self.academic_process&.id&.eql? self.school.active_process_id
+    self.academic_process&.active? 
   end
 
   def is_inrolling?
-    self.academic_process&.id&.eql? self.school.enroll_process_id
+    self.academic_process&.enroll? 
   end
 
   def number_acta
@@ -321,6 +321,11 @@ class Section < ApplicationRecord
   def schedule_table
     schedules.each{|s| s.name}.to_sentence
   end
+
+
+  def self.icon_entity
+    'fa-solid fa-list'
+  end  
 
   # RAILS_ADMIN:
   rails_admin do

@@ -554,6 +554,8 @@ es:
         period: 'Período'
         subjects: Asignaturas
         max_credits: 'Máximo Créditos'
+        active: ¿Activo?
+        enroll: ¿Inscripción?
         max_subjects: 'Máximas Asignaturas'
         enroll_academic_processes: 'Inscripciones en Período'
         grades: 'Grados'

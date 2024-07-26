@@ -1,7 +1,15 @@
+- case mode
+- when 'enroll'
+  - title = 'Activar o desactivar Inscripción'
+- when 'active'
+  - title = 'Activar o desactivar Período'
+- when 'post_qualification'
+  - title = 'Activar o desactivar Calificaciones Posteriores'
+
 .text-center
   .form-check.form-switch
-    - url = "/schools/#{school.id}"
-    = check_box_tag "enroll_payment_report#{school.id}", school.id, school.enable_enroll_payment_report?, 'data-bs-toggle': :tooltip, class: "form-check-input switch", onclick: 'updateElem(`'+url+'`, `{"school":{"enable_enroll_payment_report":${this.checked}}}`);', title: 'Activar o desactivar Reporte de Pagos al momento de inscripción del estudiante.'
+    - url = "/academic_processes/#{academic_process.id}"
+    = check_box_tag "#{mode}#{academic_process.id}", academic_process.id, academic_process.attributes[mode], 'data-bs-toggle': :tooltip, class: "form-check-input switch", onclick: 'updateElem(`'+url+'`, `{"academic_process":{"'+mode+'":${this.checked}}}`);', title: title
 
 :javascript
 
