@@ -20,7 +20,6 @@
 
 		- teacher_authorized_to_qualify = (logged_as_teacher? and current_user&.teacher&.id.eql? @section.teacher&.id)
 
-		- 
 		- if @section.is_in_process_active? and not @section.is_inrolling? and teacher_authorized_to_qualify and !@section.qualified?
 			= form_for(@section) do |f|
 				= render partial: 'academic_records/qualify', locals: {section: @section}
