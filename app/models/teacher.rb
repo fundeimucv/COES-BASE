@@ -63,6 +63,14 @@ class Teacher < ApplicationRecord
     user_aux.delete if user_aux.without_rol?
   end  
 
+  def total_sections
+    sections.count
+  end
+
+  def total_secondary_sections
+    secondary_sections.count
+  end
+
   def description
     if user
       aux = user.description
@@ -89,7 +97,7 @@ class Teacher < ApplicationRecord
         # sortable 'joins(:user).users.ci'
         # queryable "course_periods_periods.name"
       end
-      field :departament
+      
       field :school do
         searchable :name
         sortable :name
@@ -99,6 +107,23 @@ class Teacher < ApplicationRecord
 
           Proc.new { |scope|
             scope = scope.joins(:school)
+            scope = scope.limit(30)
+          }
+        end
+        pretty_value do
+          value.short_name
+        end
+      end
+
+      field :departament do
+        searchable :name
+        sortable :name
+        filterable :name
+        associated_collection_cache_all false
+        associated_collection_scope do
+
+          Proc.new { |scope|
+            scope = scope.joins(:departament)
             scope = scope.limit(30)
           }
         end
@@ -117,6 +142,16 @@ class Teacher < ApplicationRecord
         label 'Email'
       end 
 
+      field :total_sections do
+        label 'T. Secciones'
+        # sortable true
+      end
+
+      field :total_secondary_sections do
+        label 'T. Secundario'
+        # sortable true
+      end
+
     end
 
     show do
@@ -126,6 +161,13 @@ class Teacher < ApplicationRecord
         pretty_value do
           bindings[:view].render(partial: '/sections/index', locals: {sections: bindings[:object].sections.joins(:period).order('periods.name': :desc)})
         end
+      end
+
+      field :secondary_sections do
+        label 'Como profesor secundario'
+        pretty_value do
+          bindings[:view].render(partial: '/teachers/index_sections', locals: {sections: bindings[:object].secondary_sections.joins(:period).order('periods.name': :desc), teacher_session: false})
+        end        
       end
     end
 

@@ -1,28 +1,24 @@
+.justify-content-center
+  = render 'layouts/main_banner'
 
-.vh-100.d-flex.justify-content-center
-  - headers = ['#','Sección', 'Asignatura', 'Periodo', 'Inscritos', 'Opciones']
-  .col-md-11
-    = render 'layouts/main_banner'
-    %h4.text-center.text-primary.mb-3 Secciones Asignadas 
-    %table.table.table-striped.table-hover.border.table-bordered.table-sm.table-responsive
-      %thead.table-light
-        %tr
-          - headers.each do |head|
-            %th= head.titleize
-      %tbody.table-group-divider
-        - current_teacher.sections.sort_by_period_reverse.each_with_index do |sec,i|
-          %tr
-            %td= i+1
-            %td= sec.code
-            %td= sec.subject.name
-            %td= sec.academic_process&.process_name
-            %td= sec.label_numbery_total
-            %td
-              - if !sec.qualified? and sec.is_in_process_active?
-                = link_to section_path(sec), class: 'btn btn-sm btn-success' do
-                  .fa.fa-list-check
-                  Ir al detalle y calificar
-              - else
-                = link_to section_path(sec), class: 'btn btn-sm btn-primary' do
-                  .fa.fa-search
-                  Ir al detalle
+
+  .nav.nav-tabs{role: "tablist"}
+    .nav-item{role: "presentation"}
+      = link_to 'Secciones Asignadas', "#", class: "nav-link active", id: "TabPrincipal", "aria-controls": "ContentPrincipal", "aria-selected": true, "data-bs-target": "#ContentPrincipal", "data-bs-toggle": :tab, role: :tab
+    .nav-item{role: "presentation"}
+      = link_to 'Secciones Cómo Secundario', "#", class: "nav-link", id: "TabSecundario", "aria-controls": "ContentSecundario", "aria-selected": true, "data-bs-target": "#ContentSecundario", "data-bs-toggle": :tab, role: :tab
+
+  .tab-content
+    .tab-pane.fade.p-3{id: "ContentPrincipal", "aria-labelledby": "#TabPrincipal", role: "tabpanel", class: "active show"}
+      - secciones = current_teacher.sections.sort_by_period_reverse
+      - if secciones.any?
+        = render partial: '/teachers/index_sections', locals: {sections: secciones, teacher_session: true}
+      - else
+        .alert.alert-warning Sin Secciones Asignadas
+    .tab-pane.fade.p-3{id: "ContentSecundario", "aria-labelledby": "#TabSecundario", role: "tabpanel"}
+      
+      - secciones = current_teacher.secondary_sections.sort_by_period_reverse
+      - if secciones.any?
+        = render partial: '/teachers/index_sections', locals: {sections: secciones, teacher_session: true}
+      - else
+        .alert.alert-warning Sin Secciones Secundarias Asignadas

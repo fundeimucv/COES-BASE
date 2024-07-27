@@ -51,7 +51,7 @@ class Escuelaperiodo < ApplicationRecord
 
 	def find_or_inicialize_academic_process
 		
-		school_id = escuela.find_school.id 
+		school_id = escuela.find_school&.id 
 		letter = periodo_id.last
 		modality = AcademicProcess.letter_to_modality letter
 		p_id = periodo_id.delete(periodo_id.last)
@@ -64,7 +64,7 @@ class Escuelaperiodo < ApplicationRecord
 	end
 	def find_or_create_academic_process
 		
-		school_id = escuela.find_school.id 
+		school_id = escuela.find_school&.id 
 
 		# p "∫chool_id: #{school_id}"
 		letter = periodo_id.last

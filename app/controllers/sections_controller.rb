@@ -27,7 +27,7 @@ class SectionsController < ApplicationController
 
   # GET /sections/1 or /sections/1.json
   def show
-    if current_admin or (current_teacher and @section.teacher and @section.teacher_id.eql? current_teacher.id)
+    if current_admin or (current_teacher and @section.teacher and (@section.teacher_id.eql? current_teacher.id or @section.secondary_teachers.pluck(:teacher_id).include? current_teacher.id ))
       respond_to do |format|
         format.html
         format.pdf do

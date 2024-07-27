@@ -15,7 +15,7 @@
 #  fk_rails_...  (teacher_id => teachers.user_id)
 #
 class SectionTeacher < ApplicationRecord
-  # self.table_name = 'sections_teachers'
+  self.table_name = 'sections_teachers'
 
   belongs_to :section
   belongs_to :teacher#, primary_key: :user_id

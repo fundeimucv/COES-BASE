@@ -313,11 +313,11 @@ class School < ApplicationRecord
         end
       end
 
-      field :show_process_actives do
-        label 'Períodos Activos'
-      end
       field :show_process_enrolls do
         label 'Períodos en Inscripción'
+      end
+      field :show_process_actives do
+        label 'Períodos Activos'
       end
       field :show_process_post_q do
         label 'Períodos en Calif. Post.'
