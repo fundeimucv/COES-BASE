@@ -479,11 +479,7 @@ class Subject < ApplicationRecord
         help 'Semestre o año en que se ubica la asignatura o partir del cual puede ser inscrita (En caso de ser optativa o electiva).'
       end
 
-      field :qualification_type, :enum do
-        enum do
-          {'Numérica': 0, 'Absoluta': 1}
-        end
-      end
+      field :qualification_type
 
       # field :qualification_type
 
