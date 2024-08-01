@@ -298,8 +298,8 @@ class AcademicRecord < ApplicationRecord
   def tr_class_by_status_q
     valor = ''
     valor = 'table-success' if self.aprobado?
-    valor = 'table-danger' if (self.aplazado? || self.retirado? || self.pi?)
-    valor += ' text-muted' if self.retirado?
+    valor = 'table-danger' if (self.aplazado?|| self.pi?)
+    valor = 'table-secondary text-muted' if self.retirado?
     return valor
   end
 
