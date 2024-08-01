@@ -2,6 +2,10 @@
 
 - user_student = academic_record.user
 - section = academic_record.section
+
+- if (admin&.authorized_update? 'AcademicRecord')
+  = link_to "/admin/academic_record/#{academic_record.id}/edit", class: 'btn btn-primary btn-sm float-end align-middle mx-2', 'data-bs-toggle': :tooltip, 'data-bs-placement': :top, title: 'Editar Registro', rel: "tooltip" do
+    .fa-solid.fa-pencil
 - if (admin&.authorized_delete? 'AcademicRecord') and enabled_delete
   - msg = 'Eliminar Asignatura'
   - confirm = "Está acción eliminará el registro de inscripción de #{user_student.reverse_name} en la sección #{section.code} de #{section.subject_desc} del periodo #{section.academic_process&.process_name} ¿Está completamente seguro?"
