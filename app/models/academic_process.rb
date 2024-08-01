@@ -382,23 +382,12 @@ class AcademicProcess < ApplicationRecord
           if current_user&.admin&.authorized_manage? 'AcademicProcess'
             bindings[:view].render(partial: "/academic_processes/active_process", locals: {academic_process: bindings[:object], mode: 'enroll'})
           else
-            label_enroll
+            bindings[:object].label_enroll&.html_safe
           end
         end
 
       end
 
-      field :active do
-        label '¿Activo?'
-        pretty_value do
-          current_user = bindings[:view]._current_user
-          if current_user&.admin&.authorized_manage? 'AcademicProcess'
-            bindings[:view].render(partial: "/academic_processes/active_process", locals: {academic_process: bindings[:object], mode: 'active'})
-          else
-            label_active
-          end
-        end
-      end
 
       field :post_qualification do
         label '¿Califi Post?'
@@ -409,7 +398,7 @@ class AcademicProcess < ApplicationRecord
               if current_user&.admin&.authorized_manage? 'AcademicProcess'
                 bindings[:view].render(partial: "/academic_processes/active_process", locals: {academic_process: bindings[:object], mode: 'post_qualification'})
               else
-                label_active
+                bindings[:object].label_post_q&.html_safe
               end
             else
               nil
