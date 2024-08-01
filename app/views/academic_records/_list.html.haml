@@ -4,7 +4,7 @@
   Sección de solo lectura
 - if admin
   .alert.alert-warning
-    Para activar las calificaciones, en el listado de escuelas primero cierre todo proceso de inscripción de la escuela respectiva y seguidamente active el periodo correspondiente a esta sección  
+    Para activar las calificaciones, cierre todo proceso de inscripción de la escuela respectiva en el listado de períodos y seguidamente active el periodo correspondiente a esta sección  
 
 .table-responsive
   %table.table.table-condensed.table-striped.table-hover
@@ -23,7 +23,9 @@
         - user = academic_record.user
         %tr{class: academic_record.tr_class_by_status_q}
           %td= i+1
-          %td= user.ci
+          %td
+            - enabled = current_user&.admin&.authorized_read? 'AcademicRecord'
+            = link_to_if enabled, user.ci, "/admin/student/#{academic_record.student.id}"
           %td= user.email
           %td= user.last_name
           %td= user.first_name
