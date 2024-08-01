@@ -2,7 +2,10 @@
   %ul.navbar-nav.ms-auto.root_links
     %li.nav-item
       - if _current_user&.profile_picture&.attached?
-        = image_tag _current_user.profile_picture_as_thumb, class: "avatar", size: '35x35'
+        - begin
+          = image_tag _current_user.profile_picture_as_thumb, class: "avatar", size: '35x35'
+        - rescue Exception => e
+          = image_tag 'foto_perfil_default_35.png'
       - else
         = image_tag 'foto_perfil_default_35.png'
     - if user_link = edit_user_link
