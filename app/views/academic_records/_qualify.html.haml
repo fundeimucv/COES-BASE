@@ -79,7 +79,7 @@
                 %td= text_field_tag nil, {}, {value: acre.final_q_to_02i_to_from, class: 'form-control form-control-sm', disabled: true}          
               %td
                 .btn
-                  %i.fa.fa-broom{onclick: "reset(this);", id_obj: acre_id}
+                  %i.fa.fa-eraser{'data-bs-toggle': :tooltip, title: 'Limpiar valores', onclick: "reset(this);", id_obj: acre_id}
             = render partial: '/academic_records/qualification_to_s', locals: {academic_record: acre, id: acre_id}
           %td.text-center
             .badge.bg-info{id: "labelStatus#{acre_id}"}= status.titleize
