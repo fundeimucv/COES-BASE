@@ -706,6 +706,7 @@ es:
         graduate_status: 'Estado de Graduación'
         admission_type: 'Tipo de Admisión'
         registration_status: 'Estado de Registro'
+        current_permanence_status: 'Estado de Permanencia Actual'
         efficiency: 'Eficiencia'
         weighted_average: 'Promedio Ponderado'
         simple_average: 'Promedio Simple'
