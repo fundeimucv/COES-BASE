@@ -1,8 +1,18 @@
+  
 - areas = academic_process.school.areas.all.order(name: :asc).uniq
 - params[:area] ||= areas.first.id
 - @academic_process_id = academic_process.id
 - @academic_process = academic_process
 - @school = @academic_process.school
+
+- if current_user&.admin&.is_departament?
+  - @dpts = current_user&.admin&.departaments
+- else
+  - @dpts = @school.departaments
+
+- @current_dpt = Departament.find params[:dpt_id] if params[:dpt_id]
+- areas = @current_dpt.nil? ? @dpts.first.areas : @current_dpt.areas
+
 - # ATENCIÓN: HAY QUE VERIFICAR ESTA VISTA YA QUE SE ESTÁ FUCIONANDO: OFFER Y PFFER_PCI
 - if !areas.any?
   .alert.alert-danger.text-center 
@@ -15,11 +25,18 @@
 - else
   .row
     %ul#area_selector.nav.nav-tabs.flex-column.col-3.p-0
+      %li.nav-item.bg-primary
+        .nav-link
+          = select nil, 'Dpto', @dpts.map{|dpto| [dpto.total_section_by_process_and_name(@academic_process_id), dpto.id]}, {selected: @current_dpt&.id}, {class: 'form-control', onchange: "select_dpt(this)"}
+      
+        .text-light.ms-3 Áreas:
+
       - areas.each do |area|
-  
-        - active_area_tab = (area.id.eql? params[:area].to_i) ? 'active' : 'text-light'
+        - active_area_tab = (params[:area] and area.id.eql? params[:area].to_i) ? 'active' : 'text-light'
         %li.nav-item.bg-primary
-          %a.nav-link.position-relative{:href => "/admin/academic_process/#{@academic_process_id}/programation?area=#{area.id}", class: active_area_tab, style: 'font-size: small;'}
+          - url = "/admin/academic_process/#{@academic_process_id}/programation?area=#{area.id}"
+          - url += "&dpt_id="+params[:dpt_id] if params[:dpt_id]
+          %a.nav-link{:href => url, class: active_area_tab, style: 'font-size: small;'}
             = ApplicationController.helpers.total_sections_stiky area.sections.where('courses.academic_process_id': @academic_process_id).count
             = area.name.titleize
 
@@ -27,8 +44,9 @@
       -# modalities = Subject.modalities
       - modalities = SubjectType.all
       - params[:moda] ||= modalities.first.code
+      .text-dark.ms-3 Tipología:
       - areas.each do |area|
-        - active_area = (area.id.eql? params[:area].to_i)
+        - active_area = (params[:area] and area.id.eql? params[:area].to_i)
         - active_area_cont = active_area ? 'active' : 'text-light'
         - show_area_cont = active_area ? 'show' : ''
 
@@ -37,17 +55,19 @@
           .tab-pane.fade{class: "#{active_area_cont} #{show_area_cont}", role: :tabpanel} 
             %ul#moda_selector.nav.nav-tabs
               - modalities.each do |moda|
-                - active_moda = (moda.code.eql? params[:moda])
+                - active_moda = (active_area and params[:moda] and (moda.code.eql? params[:moda]))
                 - active_moda = active_moda ? 'active text-primary' : 'text-light'
                 - show = active_moda ? 'show' : ''
                 %li.nav-item.bg-primary
-                  %a.nav-link.position-relative{:href => "/admin/academic_process/#{@academic_process_id}/programation?area=#{area.id}&moda=#{moda.code}", class: active_moda, style: 'font-size: small;'}
+                  - url = "/admin/academic_process/#{@academic_process_id}/programation?area=#{area.id}&moda=#{moda.code}"
+                  - url += "&dpt_id="+params[:dpt_id] if params[:dpt_id]
+                  %a.nav-link.position-relative{:href => url, class: active_moda, style: 'font-size: small;'}
                     = ApplicationController.helpers.total_sections_stiky sections.joins(:subject_type).where('subject_types.code': moda.code).count
                     = moda&.name&.downcase.pluralize.titleize
 
             .tab-content.border-bottom.border-end.border-start.p-3
               - modalities.each do |moda|
-                - if active_area and (moda.code.eql? params[:moda])
+                - if active_area and params[:moda] and (moda.code.eql? params[:moda])
                   .tab-pane.fade.active.text-primary.show{role: :tabpanel} 
                     %h6.text-primary.text-center
                       = "#{moda&.name&.downcase.pluralize.titleize} de #{area&.name&.titleize}"
@@ -78,6 +98,12 @@
       });
 
     });
+
+    function select_dpt(ele){
+        let id = ele.value
+        let url = "/admin/academic_process/#{@academic_process_id}/programation?dpt_id="+id
+        window.location = url;
+    }
 
     function filterSections(ele){
       var keyword = ele.value;

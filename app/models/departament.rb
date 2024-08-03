@@ -40,7 +40,13 @@ class Departament < ApplicationRecord
 
 	before_save {name.strip!}
 
-	
+	def total_sections_by_process process_id
+		sections.joins(:course).where('courses.academic_process_id': process_id).count
+	end
+
+	def total_section_by_process_and_name process_id
+		"#{name} - #{total_sections_by_process process_id}"
+	end
 	def short_name
 		desc
 	end

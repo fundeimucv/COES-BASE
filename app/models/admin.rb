@@ -77,6 +77,15 @@ class Admin < ApplicationRecord
 
   # FUNCTIONS:
 
+  def is_departament?
+    env_auths&.pluck(:env_authorizable_type).uniq.first.to_s.eql? 'Departament'
+  end
+
+  def departaments
+    ids = env_auths.pluck(:env_authorizable_id)
+    Departament.where(id: ids)
+  end
+
   def schools_auh
     if (desarrollador? or jefe_control_estudio?)
       School.all
