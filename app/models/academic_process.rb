@@ -388,6 +388,17 @@ class AcademicProcess < ApplicationRecord
 
       end
 
+      field :active do
+        label '¿Activo?'
+        pretty_value do
+          current_user = bindings[:view]._current_user
+          if current_user&.admin&.authorized_manage? 'AcademicProcess'
+            bindings[:view].render(partial: "/academic_processes/active_process", locals: {academic_process: bindings[:object], mode: 'active'})
+          else
+            label_active
+          end
+        end
+      end
 
       field :post_qualification do
         label '¿Califi Post?'
