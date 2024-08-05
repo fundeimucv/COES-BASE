@@ -2,6 +2,7 @@
 - admin_authorized_to_qualify = enabled_to_admin and (current_user&.admin&.authorized_update? 'Qualification')
 - teacher_authorized_to_qualify = current_user&.teacher&.id.eql? section.teacher&.id
 - colspan = 2
+- @academic_process = section.academic_process
 - if !enabled_to_admin and teacher_authorized_to_qualify
   %h5.alert.alert-success.text-center Autorizado para Calificar
 .table-responsive
@@ -28,7 +29,7 @@
             - if (admin_authorized_to_qualify or teacher_authorized_to_qualify)
               %th.text-center PI
             %th.text-center{'data-bs-toggle': :tooltip, title: 'Calificación Final'} Final
-            - if GeneralSetup.enabled_post_qualification?
+            - if GeneralSetup.enabled_post_qualification? and @academic_process.post_qualification?
               - colspan += 3
               %th{'data-bs-toggle': :tooltip, title: 'Calificación Diferida'} Dif
               %th{'data-bs-toggle': :tooltip, title: 'Calificación Reparación'} Rep
@@ -36,6 +37,8 @@
           - else
             %th.text-center{'data-bs-toggle': :tooltip, title: 'Calificación Final'} Definitva
           %th
+            - if false
+              %a{href: 'javascript:void(0)', onclick: 'reset_all();'}
             %i.fa.fa-remove{'data-bs-toggle': :tooltip, title: 'Limpiar valores'}
           %th{'data-bs-toggle': :tooltip, title: 'Calificación en letras'} Calificación Descriptiva
         %th Estado
@@ -79,7 +82,7 @@
                 %td= text_field_tag nil, {}, {value: acre.final_q_to_02i_to_from, class: 'form-control form-control-sm', disabled: true}          
               %td
                 .btn
-                  %i.fa.fa-eraser{'data-bs-toggle': :tooltip, title: 'Limpiar valores', onclick: "reset(this);", id_obj: acre_id}
+                  %i.fa.fa-eraser{'data-bs-toggle': :tooltip, title: 'Limpiar valores', onclick: "reset(this);", id_obj: acre_id, class: 'eraser'}
             = render partial: '/academic_records/qualification_to_s', locals: {academic_record: acre, id: acre_id}
           %td.text-center
             .badge.bg-info{id: "labelStatus#{acre_id}"}= status.titleize
@@ -191,6 +194,11 @@
     value = value.replace('a', value.charAt(0).toUpperCase());
     $(`#labelStatus${ar_id}`)[0].innerHTML = value;
 
+  }
+  function reset_all(){
+    $('.eraser').each(function(index, element){
+      reset(element);
+    })
   }
 
   function reset(ele) {
