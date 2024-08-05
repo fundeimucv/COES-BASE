@@ -119,6 +119,10 @@ class Qualification < ApplicationRecord
     !value.blank? and (value.is_a? Integer or value.is_a? Float)
   end
 
+  def value_to_acta
+    academic_record&.pi? ? 'PI' : value_to_02i
+  end
+
   def value_to_02i
     is_valid_numeric_value? ? sprintf("%02i", value) : nil
   end

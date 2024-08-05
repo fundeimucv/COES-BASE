@@ -395,7 +395,11 @@ class AcademicRecord < ApplicationRecord
   end
 
   def final_q_to_02i_to_from
-    q_value_to_02i_to_from final_q
+    if pi?
+      'PI'
+    else
+      q_value_to_02i_to_from final_q
+    end
   end
 
   def final_type_q
@@ -443,6 +447,14 @@ class AcademicRecord < ApplicationRecord
     end
   end
 
+  def q_value_to_acta
+    if pi?
+      'PI'
+    else
+      q_value_to_02i
+    end
+  end
+
   def description_q force_final = false
     qualification = force_final ? final_q : definitive_q
     qualification ? (num_to_s qualification) : self.status.to_s.humanize.upcase 
@@ -450,7 +462,7 @@ class AcademicRecord < ApplicationRecord
 
   def num_to_s num = definitive_q_value 
     if pi?
-      'CERO'
+      I18n.t("activerecord.scopes.academic_record.PI")&.humanize.upcase
     elsif retirado? or (subject&.absoluta?) or num.nil? or !(num.is_a? Integer or num.is_a? Float)
       status&.humanize&.upcase
     else

@@ -293,6 +293,9 @@
     final.prop('disabled', false);
 
     numero_a_letras(undefined, ar_id);
+    // $(`#[${ar_id}][qualification]pi`).prop('checked', false);
+    $(`#_${ar_id}_qualification_pi`).prop('checked', false);
+    
     $(`#_${ar_id}qualfication_to_s`).prop('disabled', true);
     $(`#_${ar_id}qualfication_to_s`).prop('readonly', true);        
   } 

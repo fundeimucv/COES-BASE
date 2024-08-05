@@ -18,7 +18,7 @@
   - no_post_q = !(diferido or reparacion)
   - disabled_final_q = (disable_row or !no_post_q)
 
-  %td= check_box_tag nil, 'pi', academic_record.pi?, {id: "[#{academic_record.id}][qualification]pi", class: 'pi', id_obj: id, disabled: preinscrito, onclick: 'pi(this);'}
+  %td= check_box_tag nil, 'pi', academic_record.pi?, {name: "[#{academic_record.id}][qualification]pi", id: "_#{academic_record.id}_qualification_pi", class: 'pi', id_obj: id, disabled: preinscrito, onclick: 'pi(this);'}
   %td.text-center
     - if have_partial_qualification
       = text_field_tag "qualification_final_#{academic_record.id}", nil, {value: final_q_to_02i, placeholder: 'Final', class: 'form-control form-control-sm qualifiable final onlyQualify', disabled: true, step: 1, in: 0...21, id_obj: id, type_q: :final, onchange: 'sendQualification(this);final(this);'}
