@@ -24,8 +24,13 @@
 			= form_for(@section) do |f|
 				= render partial: 'academic_records/qualify', locals: {section: @section}
 				= f.hidden_field :qualified, {value: true}
-				= f.button :submit, class: 'float-end btn btn-success' do
+				= f.button :submit, class: 'float-end btn btn-success mb-3' do
 					%i.fa.fa-check
 					= 'Finalizar Calificación'
+
+				%br
+				%br
+				%br
+				%br
 		- else
 			= render partial: 'academic_records/list', locals: {academic_records: @section.academic_records, admin: false}
