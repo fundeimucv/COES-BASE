@@ -7,6 +7,21 @@ class UsersController < ApplicationController
   def edit_images
   end
 
+  # Función para resetear contraseña a un usuario desde Rails Admin
+  # PATCH /user/:id/reset_password
+  def reset_password
+    @user = User.find(params[:id])
+    @user.password = @user.ci
+    if @user.save
+      # info_bitacora 'Reseteo de contraseña', Bitacora::ACTUALIZACION, @user
+      flash[:success] = "Contraseña reseteada correctamente."
+    else
+      flash[:error] = "No se pudo resetear la contraseña."
+    end
+    # render @user
+    redirect_to @user
+  end
+
   def update
     begin
       if @user.update(user_params)

@@ -79,6 +79,7 @@ Rails.application.routes.draw do
     member do
       get :edit_images
       get :edit_password
+      patch 'user/:id/reset_password', to: 'user#reset_password', as: :reset_password_user
     end
   end
   resources :students do
