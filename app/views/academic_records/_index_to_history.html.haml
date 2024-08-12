@@ -28,7 +28,7 @@
             %td= academic_record.id
           %td{'data-bs-toggle': :tooltip, title: 'Ir al detalle de la asignatura'}= link_to_if (logged_as_admin and admin.authorized_manage? 'Subject'), subject.code, "/admin/subject/#{subject.id}"
           %td.text-center= subject.ordinal_to_cardinal_short
-          %td{'data-bs-toggle': :tooltip, title: subject.name}= subject.name
+          %td{'data-bs-toggle': :tooltip, title: subject.name}= academic_record.subject_name_with_pci_badge.html_safe
           %td.text-center= subject.unit_credits
           %td.text-center= subject.label_subject_type_code
           %td.text-center{'data-bs-toggle': :tooltip, title: 'Ir al detalle de la sección'}

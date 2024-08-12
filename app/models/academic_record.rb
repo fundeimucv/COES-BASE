@@ -279,7 +279,19 @@ class AcademicRecord < ApplicationRecord
 
   def student_name_with_pci_badge
     aux = "#{user.reverse_name}"
-    aux = " <div class='badge bg-warning text-dark'>PCI - #{school.code}</div>  "+aux if student_pci?
+    aux = " <div class='badge bg-warning text-dark'>PCI - #{school.code}</div> "+aux if student_pci?
+    return aux
+  end
+  
+  def subject_name_with_pci_badge
+    aux = "#{subject.name}"
+    aux = " <div class='badge bg-warning text-dark'>PCI - #{subject.school.code}</div> "+aux if student_pci?
+    return aux
+  end
+  
+  def subject_name_with_pci
+    aux = "#{subject.name}"
+    aux = "(PCI - #{subject.school.code}) "+aux if student_pci?
     return aux
   end  
 
