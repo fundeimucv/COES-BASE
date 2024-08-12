@@ -273,6 +273,16 @@ class AcademicRecord < ApplicationRecord
     return aux
   end
 
+  def student_pci?
+    course.offer_as_pci? and !(section.academic_process.id.eql? enroll_academic_process.academic_process.id)
+  end
+
+  def student_name_with_pci_badge
+    aux = "#{user.reverse_name}"
+    aux = " <div class='badge bg-warning text-dark'>PCI - #{school.code}</div>  "+aux if student_pci?
+    return aux
+  end  
+
   def subject_name_with_retiro  
     aux = "#{subject.name}"
     aux += " <b>(Retirada)</b>" if retirado? 
