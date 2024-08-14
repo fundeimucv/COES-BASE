@@ -277,6 +277,10 @@ class User < ApplicationRecord
     return aux
   end
 
+  def link_to_reset_password
+    "<a href='/users/#{id}/reset_password'><i class='fa-regular fa-user-cog'></i></a>".html_safe
+  end
+
   # def profile_set
   #   # "<img src='/assets/foto_perfil_default_35.png' class='img-thumbnail' />"
   #   if self.profile_picture and self.profile_picture.attached? and self.profile_picture.representable?
@@ -401,6 +405,12 @@ class User < ApplicationRecord
 
       end
       field :profile_picture
+      field :link_to_reset_password do
+        label 'Opciones'
+        # link_icon do 
+        #   'fa-regular fa-user-cog'
+        # end
+      end
     end
 
     export do

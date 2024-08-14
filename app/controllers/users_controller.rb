@@ -1,6 +1,6 @@
 class UsersController < ApplicationController
   skip_before_action :authenticate_user!, only: [ :edit ]
-  before_action :set_user, only: [:edit, :update, :edit_images]
+  before_action :set_user, only: [:edit, :update, :edit_images, :reset_password]
   # before_action :authenticate_student_or_teacher!
 
   layout 'logged'
@@ -8,18 +8,18 @@ class UsersController < ApplicationController
   end
 
   # Función para resetear contraseña a un usuario desde Rails Admin
-  # PATCH /user/:id/reset_password
   def reset_password
-    @user = User.find(params[:id])
     @user.password = @user.ci
-    if @user.save
+    @user.password_confirmation = @user.ci
+
+    if @user.update(password: @user.ci, password_confirmation: @user.ci)
       # info_bitacora 'Reseteo de contraseña', Bitacora::ACTUALIZACION, @user
-      flash[:success] = "Contraseña reseteada correctamente."
+      flash[:success] = "Contraseña reseteada correctamente del usuario."
+      redirect_to rails_admin_path
     else
-      flash[:error] = "No se pudo resetear la contraseña."
+      flash[:error] = "No se pudo resetear la contraseña del usuario."
+      redirect_to rails_admin_path
     end
-    # render @user
-    redirect_to @user
   end
 
   def update

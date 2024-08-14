@@ -164,13 +164,6 @@ RailsAdmin.config do |config|
     history_show do
       except [School, StudyPlan, Departament]
     end
-
-    member :reset_password do
-      only [User]
-        link_icon do
-          'fa-regular fa-user-cog'
-        end
-    end
   end
 
   # config.model Section do
