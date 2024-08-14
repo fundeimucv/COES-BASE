@@ -13,9 +13,9 @@
       = t('admin.toggle_navigation')
     %span.navbar-toggler-icon
   =# form_for(resource, as: resource_name, url: session_path(resource_name), data: { turbo: :false }) do |f|
-  = form_tag("/admin/student", class: 'd-flex me-3', method: :get, data: { turbo: :false }) do
-    - @value = params['query'] if @object.class.name.eql? 'Student'
-    %input.border-0.me-0.form-control{name: :query, "aria-label" => "Buscar", placeholder: "Buscar Estudiante", type: "search", value: @value}
+  = form_tag("/admin/user", class: 'd-flex me-3', method: :get, data: { turbo: :false }) do
+    - @value = params['query'] if @object.class.name.eql? 'User'
+    %input.border-0.me-0.form-control{name: :query, "aria-label" => "Buscar", placeholder: "Buscar Usuario", type: "search", value: @value}
     %button.border-0.ms-0.btn.btn-success.rounded-end{type: "submit"} 
       %i.fa-solid.fa-search
   .text-white= "| #{@page_name}"
