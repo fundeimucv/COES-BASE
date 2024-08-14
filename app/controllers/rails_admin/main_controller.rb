@@ -21,13 +21,13 @@ module RailsAdmin
       auth_scope = @authorization_adapter&.query(auth_scope_key, model_config.abstract_model)
       
       
-      if !(current_admin.desarrollador? or current_admin.jefe_control_estudio?)
-        schoolables = ['Subject', 'Teacher', 'StudyPlan', 'Departament', 'AcademicProcess', 'EnrollAcademicProcecess', 'PaymentReport', 'Grade', 'Area', 'Seccion', 'Course', 'AcademicRecord']
-        departamentables = ['Teacher', 'Area']
-
+      if !(current_admin.desarrollador?)
+        
         if (@abstract_model.to_s.eql? 'Departament' and session[:env_type].eql? 'Departament') or (@abstract_model.to_s.eql? 'School' and session[:env_type].eql? 'School')          
           scope = scope.where(id: session[:env_ids]) 
         else
+          schoolables = ['Subject', 'Teacher', 'StudyPlan', 'Departament', 'AcademicProcess', 'EnrollAcademicProcess', 'PaymentReport', 'Grade', 'Area', 'Section', 'Course', 'AcademicRecord']
+          departamentables = ['Teacher', 'Area']
           if session[:env_type]&.to_s.eql? 'Departament'
             if departamentables.include? @abstract_model.to_s
               scope = scope.joins(:departaments).where('departaments.id': session[:env_ids])
@@ -44,7 +44,8 @@ module RailsAdmin
               scope = scope.joins(:schools).where('schools.id': session[:env_ids])
             elsif schoolables.include? @abstract_model.to_s and schoolables.include? model_config.abstract_model.to_s
               scope = scope.joins(:school).where('schools.id': session[:env_ids])
-
+            elsif (schoolables << 'School').include? @abstract_model.to_s
+              scope = scope.joins(:school).where('schools.id': [])
             end
           end
 
@@ -65,7 +66,7 @@ module RailsAdmin
 
     def set_current_env
         if current_admin
-          if !(current_admin.desarrollador? or current_admin.jefe_control_estudio?)
+          if !(current_admin.desarrollador?)
             session[:env_type] = current_admin.env_auths.map(&:env_authorizable_type).first
             session[:env_ids] = current_admin.env_auths.map(&:env_authorizable_id)
           end
