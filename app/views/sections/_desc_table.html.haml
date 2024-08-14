@@ -2,9 +2,11 @@
 %table.table.table-sm
   %thead
     %tr.text-center
+      %td.col-1 Escuela
       %td.col-1 Período
       %td.col-1 Sec
       %td.col-1 Tipo
+      %td.col-1 PCI
       %td Asignatura
       %td Profesor
       %td Horario
@@ -13,16 +15,17 @@
       %td.col-1 Calif
   %tbody
     %tr.text-center
+      %td= section.academic_process&.school&.short_name
       %td= section.academic_process&.process_name
       %td= section.code
       %td= section.label_modality true
+      %td= section.course.label_pci_yes_or_not
       %td{'data-bs-toggle': :tooltip, title: section.subject.desc}
         - if section.subject
           - if current_user.admin? and session[:rol].eql? 'admin'
-            %a{href: "/admin/subject/#{section.subject_id}"}= section.subject.desc 
+            %a{href: "/admin/subject/#{section.subject_id}"}= section.course.subject_desc_with_pci 
           - else
-            = section.subject.desc
-
+            = section.course.subject_desc_with_pci
       - teacher_desc = section.teacher.desc if section.teacher
       %td{'data-bs-toggle': :tooltip, title: teacher_desc}
         - if section.teacher 

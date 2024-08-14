@@ -253,6 +253,10 @@ class User < ApplicationRecord
     compile
   end
 
+  def acte_name
+    "#{ci}: #{reverse_name}"
+  end
+  
   def ci_fullname
     "#{ci}: #{full_name}"
   end

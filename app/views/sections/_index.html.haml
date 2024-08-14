@@ -12,6 +12,7 @@
   %table.table.table-striped.table-sm
     %thead
       %tr.text-center
+        %th Escuela
         %th Período
         %th Número
         %th Capacidad
@@ -27,6 +28,7 @@
     %tbody
       - sections.limit(20).each do |section|
         %tr.text-center
+          %td= section.academic_process.school.short_name
           %td= section.academic_process.process_name
           %td= link_to_if (current_user&.admin&.authorized_read? 'Section'), section.code, "/admin/section/#{section.id}"
           %td= section.capacity

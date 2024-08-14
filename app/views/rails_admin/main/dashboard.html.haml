@@ -9,7 +9,7 @@
 
 .row
 	- schools_auh = current_user&.admin&.schools_auh
-	- if schools_auh.any?
+	- if schools_auh&.any?
 		- schools_auh.order(:name).each do |school|
 			- @process_name = nil
 			- ap = school.academic_processes.first

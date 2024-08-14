@@ -54,6 +54,7 @@ class Admin < ApplicationRecord
   # validates :env_authorizable, presence: true
   validates :role, presence: true
 
+  validates :env_auths, presence: true
   # validates :env_authorizable_type, presence: true
 
   # SCOPES:
@@ -77,8 +78,17 @@ class Admin < ApplicationRecord
 
   # FUNCTIONS:
 
+  def is_departament?
+    env_auths&.pluck(:env_authorizable_type).uniq.first.to_s.eql? 'Departament'
+  end
+
+  def departaments
+    ids = env_auths.pluck(:env_authorizable_id)
+    Departament.where(id: ids)
+  end
+
   def schools_auh
-    if (desarrollador? or jefe_control_estudio?)
+    if (desarrollador?)
       School.all
     elsif env_auths.any?   
       if env_auths.pluck(:env_authorizable_type).uniq.first.to_s.eql? 'School'
@@ -245,7 +255,9 @@ class Admin < ApplicationRecord
 
     edit do
       field :user 
-      field :role # do
+      field :role do
+        partial 'admin/custom_role_field'
+      end
         # visible do
         #   user = bindings[:view]._current_user
         #   (user and user.admin and user.admin.yo? )

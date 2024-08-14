@@ -97,6 +97,16 @@ class Course < ApplicationRecord
     end
   end
 
+  def label_pci_yes_or_not
+    aux = offer_as_pci ? ['Sí', 'success'] : ['No', 'Secondary']
+    "<span class='badge bg-#{aux[1]}'>#{aux[0]}</span>".html_safe
+  end
+
+  def label_pci
+    aux = offer_as_pci ? ['PCI', 'success'] : ['No', 'Secondary']
+    "<span class='badge bg-#{aux[1]}'>#{aux[0]}</span>".html_safe
+  end
+
   def curso_name
     "Curso #{self.name}"
   end
