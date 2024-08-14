@@ -281,6 +281,14 @@ class User < ApplicationRecord
     return aux
   end
 
+  def links_to_detail
+    aux = []
+    aux << "<i class='fa-regular fa-user-tie'></i>#{I18n.t('activerecord.models.admin.one')}" if admin?
+    aux << "<a href='/admin/student/#{id}'><i class='fa-regular fa-user-graduate'></i>#{I18n.t('activerecord.models.student.one')}</a>" if student?
+    aux << "<a href='/admin/teacher/#{id}'><i class='fa-regular fa-chalkboard-user'></i>#{I18n.t('activerecord.models.teacher.one')}</a>" if teacher?
+    return aux.to_sentence.html_safe
+  end
+
   # def profile_set
   #   # "<img src='/assets/foto_perfil_default_35.png' class='img-thumbnail' />"
   #   if self.profile_picture and self.profile_picture.attached? and self.profile_picture.representable?
@@ -388,23 +396,30 @@ class User < ApplicationRecord
 
     list do
       items_per_page 10
+      checkboxes false
       search_by :my_search #[:email, :first_name, :last_name, :ci]
-      field :ci
+      field :ci do
+        label 'Cédula'
+        sticky true
+      end
+      field :links_to_detail do
+        label 'Roles'
+      end
       field :email
       field :first_name
       field :last_name
-      field :number_phone
-      field :sex do
-        formatted_value do # used in form views
-          value.titleize if value
-        end
-
-        pretty_value do # used in list view columns and show views, defaults to formatted_value for non-association fields
-          value.titleize if value
-        end
-
-      end
       field :profile_picture
+
+      ## Comentado para que se vean únicamente en el detalle del usuario
+      # field :number_phone
+      # field :sex do
+      #   formatted_value do # used in form views
+      #     value.titleize if value
+      #   end
+      #   pretty_value do # used in list view columns and show views, defaults to formatted_value for non-association fields
+      #     value.titleize if value
+      #   end
+      # end
     end
 
     export do
