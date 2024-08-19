@@ -21,6 +21,7 @@
 #  fk_rails_...  (user_id => users.id)
 #
 class Admin < ApplicationRecord
+  include Userable
 
   # ENUMERIZE:
   # enum role: [:desarrollador, :jefe_control_estudio, :asistente]
@@ -251,6 +252,12 @@ class Admin < ApplicationRecord
       end
       field :env_auths
       # field :created_at
+      field :link_to_reset_password do
+        label 'Opciones'
+        # link_icon do 
+        #   'fa-regular fa-user-cog'
+        # end
+      end
     end
 
     edit do

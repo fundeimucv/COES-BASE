@@ -26,6 +26,7 @@
 #  fk_rails_...  (user_id => users.id)
 #
 class Student < ApplicationRecord
+  include Userable
 
   # GLOBALS VARIABLES:
   ESTADOS_CIVILES = {'Soltero/a.': 0, 'Casado/a.': 1, 'Concubinato': 2, 'Divorciado/a.': 3, 'Viudo/a.': 4}
@@ -345,6 +346,13 @@ class Student < ApplicationRecord
       # field :roles do
       #   label 'Roles'
       # end
+
+      field :link_to_reset_password do
+        label 'Opciones'
+        # link_icon do 
+        #   'fa-regular fa-user-cog'
+        # end
+      end
 
     end
 

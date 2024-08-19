@@ -281,6 +281,10 @@ class User < ApplicationRecord
     return aux
   end
 
+  def link_to_reset_password
+    "<a href='/users/#{id}/reset_password' class='float-end' data-bs-toggle='tooltip' data-bs-placement='top' title='Resetear Contraseña de #{nick_name}' data-confirm='Esta acción colocará la Cédula de Identidad como contraseña, ¿está completamente seguro?'><i class='fa-regular fa-user-cog'></i></a>".html_safe
+  end
+
   def links_to_detail
     aux = []
     aux << "<i class='fa-regular fa-user-tie'></i>#{I18n.t('activerecord.models.admin.one')}" if admin?
@@ -412,17 +416,6 @@ class User < ApplicationRecord
       field :first_name
       field :last_name
       field :profile_picture
-
-      ## Comentado para que se vean únicamente en el detalle del usuario
-      # field :number_phone
-      # field :sex do
-      #   formatted_value do # used in form views
-      #     value.titleize if value
-      #   end
-      #   pretty_value do # used in list view columns and show views, defaults to formatted_value for non-association fields
-      #     value.titleize if value
-      #   end
-      # end
     end
 
     export do

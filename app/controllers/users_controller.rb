@@ -1,10 +1,23 @@
 class UsersController < ApplicationController
   skip_before_action :authenticate_user!, only: [ :edit ]
-  before_action :set_user, only: [:edit, :update, :edit_images]
+  before_action :set_user, only: [:edit, :update, :edit_images, :reset_password]
   # before_action :authenticate_student_or_teacher!
 
   layout 'logged'
   def edit_images
+  end
+
+  # Función para resetear contraseña a un usuario desde Rails Admin
+  def reset_password
+    @user.password = @user.ci
+    @user.password_confirmation = @user.ci
+
+    if @user.update(password: @user.ci, password_confirmation: @user.ci)
+      flash[:success] = "Contraseña reseteada correctamente del usuario."
+    else
+      flash[:error] = "No se pudo resetear la contraseña del usuario."
+    end
+    redirect_back fallback_location: rails_admin_path
   end
 
   def update

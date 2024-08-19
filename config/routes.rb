@@ -79,6 +79,7 @@ Rails.application.routes.draw do
     member do
       get :edit_images
       get :edit_password
+      get :reset_password 
     end
   end
   resources :students do

@@ -18,6 +18,8 @@
 #  fk_rails_...  (user_id => users.id)
 #
 class Teacher < ApplicationRecord
+  include Userable
+
   # HISTORY:
   has_paper_trail on: [:create, :destroy, :update]
 
@@ -150,6 +152,13 @@ class Teacher < ApplicationRecord
       field :total_secondary_sections do
         label 'T. Secundario'
         # sortable true
+      end
+
+      field :link_to_reset_password do
+        label 'Opciones'
+        # link_icon do 
+        #   'fa-regular fa-user-cog'
+        # end
       end
 
     end
