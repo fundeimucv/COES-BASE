@@ -382,6 +382,9 @@ class User < ApplicationRecord
         #   bindings[:view].render(partial: "rails_admin/main/image", locals: {object: bindings[:object]})
         # end
       # end
+      field :links_to_detail do
+        label 'Roles'
+      end
       field :profile_picture, :active_storage 
       field :ci_image, :active_storage 
       field :ci
