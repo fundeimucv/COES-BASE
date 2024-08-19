@@ -1,9 +1,29 @@
+# == Schema Information
+#
+# Table name: enroll_academic_processes
+#
+#  id                  :bigint           not null, primary key
+#  efficiency          :float            default(1.0)
+#  enroll_status       :integer
+#  permanence_status   :integer
+#  simple_average      :float            default(0.0)
+#  weighted_average    :float            default(0.0)
+#  created_at          :datetime         not null
+#  updated_at          :datetime         not null
+#  academic_process_id :bigint           not null
+#  grade_id            :bigint           not null
+#
+# Indexes
+#
+#  index_enroll_academic_processes_on_academic_process_id  (academic_process_id)
+#  index_enroll_academic_processes_on_grade_id             (grade_id)
+#
+# Foreign Keys
+#
+#  fk_rails_...  (academic_process_id => academic_processes.id)
+#  fk_rails_...  (grade_id => grades.id)
+#
 class EnrollAcademicProcess < ApplicationRecord
-  # SCHEMA:
-  # t.bigint "grade_id", null: false
-  # t.bigint "academic_process_id", null: false
-  # t.integer "enroll_status"
-  # t.integer "permanence_status"
 
   # HISTORY:
   has_paper_trail on: [:create, :destroy, :update]
@@ -12,8 +32,16 @@ class EnrollAcademicProcess < ApplicationRecord
   before_destroy :paper_trail_destroy
   before_update :paper_trail_update
 
+  # OJO: Sólo para la migradión:
+  # Excluir la siguiente validación y agregar la que viene luego
   after_save :update_current_permanence_status_on_grade
-
+  
+  # before_validation :set_enroll_status
+  
+  # def set_enroll_status
+  #   enroll_status = :confirmado
+  # end
+  
   # ASSOCIATIONS:
   belongs_to :grade
   has_one :student, through: :grade
@@ -50,6 +78,8 @@ class EnrollAcademicProcess < ApplicationRecord
   # scope :preinscrito_or_reservado, -> (){where(enroll_status: [:preinscrito, :reservado])}
 
   scope :sort_by_period, -> {joins(period: :period_type).order('periods.year': :desc, 'period_types.name': :desc)}
+  
+  scope :last_enrolled, -> {sort_by_period.first}
 
   scope :sort_by_period_reverse, -> {joins(period: :period_type).order('periods.year': :asc, 'period_types.name': :asc)}
 
@@ -69,15 +99,32 @@ class EnrollAcademicProcess < ApplicationRecord
 
   scope :custom_search, -> (keyword) { joins(:user, :period).where("users.ci ILIKE '%#{keyword}%' OR periods.name ILIKE '%#{keyword}%'") }
 
+  
   scope :with_payment_report, -> {joins(:payment_reports)}
+  #Alias
+  scope :con_reporte_de_pago, -> {with_payment_report}
+  scope :without_payment_report, -> {left_joins(:payment_reports).where('payment_reports.payable_id': nil)}
+  scope :sin_reporte_de_pago, -> {without_payment_report}
+  
   scope :total_with_payment_report, -> {with_payment_report.count}
-
+  scope :total_without_payment_report, -> {without_payment_report.count}  
   def total_retire?
     academic_records.any? and (academic_records.count.eql? academic_records.retirado.count)
   end
 
   # FUNCTIONS:
+  def resume_payment_reports
+    payment_reports.map(&:name)
+  end
+  def header_for_report
+    ['#', 'CI', 'NOMBRES', 'APELLIDOS','ESCUELA', 'NIVEL', 'PERIODO','ESTADO INSCRIP','ESTADO PERMANENCIA','REPORTE PAGO']
+  end
 
+  def values_for_report
+    # ['#', 'CI', 'NOMBRES', 'APELLIDOS','ESCUELA','PERIODO','ESTADO INSCRIP','ESTADO PERMANENCIA','REPORTE PAGO']
+    user_aux = user
+    [user_aux.ci, user_aux.first_name, user_aux.last_name, school.name, academic_process.process_name, enroll_status&.titleize, permanence_status&.titleize, resume_payment_reports]
+  end
   def overlapped? schedule2
     # self.schedules.where(day: schedule2.day).each do |sh|
     self.schedules.where.not('academic_records.status': 3).where(day: schedule2.day).each do |sh|
@@ -86,6 +133,10 @@ class EnrollAcademicProcess < ApplicationRecord
       end
     end
     return false
+  end
+
+  def not_confirmado?
+    (reservado? or preinscrito?)
   end
 
   def self.type_label_by_enroll type
@@ -143,6 +194,77 @@ class EnrollAcademicProcess < ApplicationRecord
     end
   end
 
+  def before_enroll
+    process_before_id = academic_process&.process_before_id
+    process_before_id ? grade.enroll_academic_processes.where(academic_process_id: process_before_id).first : nil
+  end
+
+  # def before_permanece_status
+  #   before_enroll ? before_enroll.permanence_status : nil
+  # end
+
+  def set_permanence_status
+    if before_enrollbefore_permanece_status
+  end
+
+  # ------------- BORRAR -------------- # 
+  reglamento_aux = :regular
+  if inscribio_pero_no_aprobo_ninguna?
+    reglamento_aux = :articulo_3
+    iep_anterior = self.anterior_iep
+    if iep_anterior and iep_anterior.inscribio_pero_no_aprobo_ninguna?
+      reglamento_aux = :articulo_6
+      iep_anterior2 = iep_anterior.anterior_iep
+      if iep_anterior2 and iep_anterior2.inscribio_pero_no_aprobo_ninguna?
+        reglamento_aux = :articulo_7
+      end
+    end
+  end
+  return reglamento_aux
+
+  # ------------- BORRAR -------------- # 
+  
+  def get_permanece_status
+    aux = get_direct_permanence_status
+
+    if aux.eql? :articulo3
+      if before_enroll&.not_pass_any?
+
+        before_before_enroll = before_enroll.before_enroll
+        aux = (before_before_enroll&.get_direct_permanence_status.eql? :articulo3) ? :articulo7 : :articulo6
+
+  end
+  def get_direct_permanence_status
+    # [:nuevo, :regular, :reincorporado, :articulo3, :articulo6, :articulo7, :intercambio, :desertor, :egresado, :egresado_doble_titulo, :permiso_para_no_cursar]  
+    if before_enroll.nil?
+      # ATENCIÓN: Requiere haber agregado todos los históricos de Procesos Académicos anteriores
+      :nuevo
+    elsif not_pass_any?
+
+      process_before_id = academic_process&.process_before_id
+      if process_before_id
+        aux = before_enroll
+        if aux
+          process_before_before_id = aux.academic_process&.process_before_id
+        else
+        end
+      else
+      end
+    
+
+      aux = before_enroll
+      if aux
+        aux2 = aux.before_enroll
+      else
+        :articulo3
+    else
+      :regular
+    end
+  end
+
+  def not_pass_any?
+    (academic_records.any? and !academic_records.aprobado.any?)
+  end
 
   def any_permanence_articulo?
     (self.articulo3? or self.articulo6? or self.articulo7?)
@@ -150,11 +272,11 @@ class EnrollAcademicProcess < ApplicationRecord
 
   def set_default_values_by_import
     self.enroll_status = :confirmado
-    self.permanence_status = :regular
+    self.permanence_status = :nuevo
   end
 
   def enrolling?
-    school.enroll_process_id.eql? academic_process_id  
+    academic_process&.enrolling?
   end
 
   def historical?
@@ -194,14 +316,14 @@ class EnrollAcademicProcess < ApplicationRecord
   end  
 
   def short_name
-    "#{self.school.code}_#{self.period.name_revert}_#{self.student.user_ci}"
+    "#{self.school.code}_#{self.academic_process.process_name}_#{self.student.user_ci}"
   end
 
   def name
-    "(#{self.school.code}) #{self.period.name}:#{self.student.name}" if ( self.period and self.school and self.student)
+    "(#{self.school.code}) #{self.academic_process.process_name}:#{self.student.name}" if ( self.period and self.school and self.student)
   end
 
-  def label_status
+  def enroll_label_status
     # ["CO", "INS", "NUEVO", "PRE", "REINC", "RES", "RET", "VAL"] 
     case self.enroll_status
     when 'confirmado'
@@ -214,6 +336,14 @@ class EnrollAcademicProcess < ApplicationRecord
       label_color = 'secondary'
     end
     return ApplicationController.helpers.label_status("bg-#{label_color}", self.enroll_status&.titleize)
+  end
+
+  def enroll_label_status_to_list
+    aux = enroll_label_status
+    if not_confirmado?
+      aux += "<a href='/enroll_academic_processes/#{self.id}/update_permanece_status?enroll_academic_process[enroll_status]=confirmado' data-method='POST' class='label label-sm bg-success ms-1' data-bs-placement='right' data-bs-original-title='Confirmación rápida' rel='tooltip' data-bs-toggle='tooltip'><i class='fa fa-check'></i></a>".html_safe
+    end
+    return aux
   end
 
   def label_permanence_status
@@ -239,19 +369,18 @@ class EnrollAcademicProcess < ApplicationRecord
     show do
       field :enrolling do
         label do 
-          "INSCRIPCIÓN #{bindings[:object].period.name} de #{bindings[:object].user.reverse_name}"
+          "INSCRIPCIÓN #{bindings[:object].academic_process&.short_desc} de #{bindings[:object].user.reverse_name}"
         end
         visible do
           current_user = bindings[:view]._current_user
           (current_user and current_user.admin and current_user.admin.authorized_manage? 'EnrollAcademicProcess')
         end
         formatted_value do          
-          grade = bindings[:object].grade          
           if bindings[:object].enrolling?
             totalCreditsReserved = bindings[:object].total_credits_not_retired
             totalSubjectsReserved = bindings[:object].total_subjects_not_retired
 
-            bindings[:view].render(partial: '/enroll_academic_processes/form', locals: {grade: grade, academic_process: bindings[:object].academic_process, totalCreditsReserved: totalCreditsReserved, totalSubjectsReserved: totalSubjectsReserved})
+            bindings[:view].render(partial: '/enroll_academic_processes/form', locals: {grade: bindings[:object].grade, academic_process: bindings[:object].academic_process, totalCreditsReserved: totalCreditsReserved, totalSubjectsReserved: totalSubjectsReserved})
           else
             bindings[:view].render(partial: "/academic_records/making_historical", locals: {enroll: bindings[:object]})
           end
@@ -265,34 +394,45 @@ class EnrollAcademicProcess < ApplicationRecord
 
     list do
       search_by :custom_search
-      # filters [:period_name, :student]
-      scopes [:todos, :preinscrito, :reservado, :confirmado, :retirado]
+      # filters [:process_name, :student]
+      scopes [:todos, :preinscrito, :reservado, :confirmado, :retirado, :con_reporte_de_pago, :sin_reporte_de_pago]
 
-      field :enroll_status_label do
-        label 'Estado'
-        column_width 100
-        searchable :enroll_status
-        filterable false
-        sortable false
-        formatted_value do
-          bindings[:object].label_status
-        end
+      
+      field :school do
+        sticky true 
+        searchable :name
+        sortable :name               
       end
-
-      field :period do
-        label 'Período'
+      
+      field :academic_process do
+        sticky true
         column_width 100
         searchable :name
-        # filterable 'periods.name'
+        filterable :name
         sortable :name
+        pretty_value do
+          value.process_name
+        end
       end
-
+      
       field :student do
         column_width 340
         # searchable ['users.ci', 'users.first_name', 'users.last_name']
         # filterable ['users.ci', 'users.first_name', 'users.last_name']
         # sortable ['users.ci', 'users.first_name', 'users.last_name']
       end
+      field :enroll_status_label do
+        label 'Estado'
+        sticky true 
+        column_width 150
+        searchable :enroll_status
+        filterable false
+        sortable false
+        formatted_value do
+          bindings[:object].enroll_label_status_to_list
+        end
+      end
+      
       field :total_subjects do
         label 'Tot Asig'
         column_width 40
@@ -317,15 +457,15 @@ class EnrollAcademicProcess < ApplicationRecord
       field :payment_reports do
         # filterable true #"joins(:payment_reports).count"
         # queryable true
-        associated_collection_cache_all false
-        associated_collection_scope do
-
-          Proc.new { |scope|
-            scope = scope.joins(:payment_reports)
-            scope = scope.limit(30)
-          }
-        end        
       end
+
+      field :payment_report_status do
+        label 'Estado Reporte Pago'
+        formatted_value do
+          bindings[:object].payment_reports&.map(&:label_status).to_sentence.html_safe
+        end
+      end
+      
       fields :efficiency, :simple_average, :weighted_average
     end
 
@@ -343,7 +483,7 @@ class EnrollAcademicProcess < ApplicationRecord
       fields :student, :user
 
       field :efficiency do
-        label 'Edifiencia en el Período'
+        label 'Eficiencia en el Período'
       end
       
       field :simple_average do
@@ -431,33 +571,34 @@ class EnrollAcademicProcess < ApplicationRecord
     (cursados > 0 and aux) ? (aux.to_f/cursados.to_f).round(4) : self.weighted_average
   end
 
+
   private
 
-    def update_current_permanence_status_on_grade
-      grade.update(current_permanence_status: self.permanence_status) if is_the_last_enroll_of_grade?
-      
-    end
+  def update_current_permanence_status_on_grade
+    grade.update(current_permanence_status: self.permanence_status) if is_the_last_enroll_of_grade?
+    
+  end
 
-    def paper_trail_update
-      changed_fields = self.changes#.keys - ['created_at', 'updated_at']
-      changed_fields = changed_fields.map do |fi|
-        if fi[0] != 'updated_at'
-          elem = I18n.t("activerecord.attributes.#{self.model_name.param_key}.#{fi[0]}").to_s
-          elem += " de #{fi[1][0]} a #{fi[1][1]}"
-        end
+  def paper_trail_update
+    changed_fields = self.changes#.keys - ['created_at', 'updated_at']
+    changed_fields = changed_fields.map do |fi|
+      if fi[0] != 'updated_at'
+        elem = I18n.t("activerecord.attributes.#{self.model_name.param_key}.#{fi[0]}").to_s
+        elem += " de #{fi[1][0]} a #{fi[1][1]}"
       end
-      object = I18n.t("activerecord.models.#{self.model_name.param_key}.one")
-      self.paper_trail_event = "¡#{object} actualizada en: #{changed_fields.to_sentence}"
-    end  
-    def paper_trail_create
-      object = I18n.t("activerecord.models.#{self.model_name.param_key}.one")
-      self.paper_trail_event = "¡#{object} registrado!"
-    end  
-
-    def paper_trail_destroy
-      object = I18n.t("activerecord.models.#{self.model_name.param_key}.one")
-      self.paper_trail_event = "¡Proceso Académico eliminado!"
     end
+    object = I18n.t("activerecord.models.#{self.model_name.param_key}.one")
+    self.paper_trail_event = "¡#{object} actualizada en: #{changed_fields.to_sentence}"
+  end  
+  def paper_trail_create
+    object = I18n.t("activerecord.models.#{self.model_name.param_key}.one")
+    self.paper_trail_event = "¡#{object} registrado!"
+  end  
+
+  def paper_trail_destroy
+    object = I18n.t("activerecord.models.#{self.model_name.param_key}.one")
+    self.paper_trail_event = "¡Proceso Académico eliminado!"
+  end
 
 
 end

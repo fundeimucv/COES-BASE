@@ -52,8 +52,10 @@ class AcademicRecord < ApplicationRecord
   validates_presence_of :qualifications, message: "Calificación no puede estar en blanco. Si desea eliminar la calificación, coloque el estado de calificación a 'Sin Calificar'", if: lambda{ |object| (object.subject.present? and object.subject.numerica? and (object.aprobado? or object.aplazado?))}
 
   # CALLBACK
-  after_save :set_options_q
-  after_save :update_grade_numbers#, if: :will_save_change_to_status?
+  after_save :set_options_q_and_update_status_enroll
+  before_save :set_status_by_EQ_modality_section
+  # after_save :update_status_q_and_grades
+  # after_save :update_grade_numbers#, if: :will_save_change_to_status?
 
   after_destroy :destroy_enroll_academic_process
 
@@ -820,6 +822,11 @@ class AcademicRecord < ApplicationRecord
 
   end
 
+
+  def set_options_q_and_update_status_enroll
+    set_options_q
+    self.enroll_academic_process.update(permanence_status: ) if is_last_academic_record_qualified_of_enroll?
+  end
   def set_options_q
     self.qualifications.destroy_all if (self.pi? or self.retirado? or self.sin_calificar? or (self.subject and self.subject.absoluta?))
 
@@ -833,6 +840,10 @@ class AcademicRecord < ApplicationRecord
   def update_grade_numbers
     self.grade.update(efficiency: self.grade.calculate_efficiency, simple_average: self.grade.calculate_average, weighted_average: self.grade.calculate_weighted_average)
   end
+
+  def is_last_academic_record_qualified_of_enroll?
+    !self.enroll_academic_process.academic_records.sin_calificar.any?
+  end  
 
   def paper_trail_update
     changed_fields = self.changes.keys - ['created_at', 'updated_at']

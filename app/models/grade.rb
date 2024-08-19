@@ -272,7 +272,7 @@ class Grade < ApplicationRecord
   end
 
   def is_new?
-    !enroll_academic_processes.any?
+    enroll_academic_processes.count <= 1
   end
 
   def academic_records_any?
