@@ -416,6 +416,12 @@ class User < ApplicationRecord
       field :first_name
       field :last_name
       field :profile_picture
+      field :link_to_reset_password do
+        label 'Opciones'
+        # link_icon do 
+        #   'fa-regular fa-user-cog'
+        # end
+      end
     end
 
     export do
