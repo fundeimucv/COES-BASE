@@ -13,13 +13,11 @@ class UsersController < ApplicationController
     @user.password_confirmation = @user.ci
 
     if @user.update(password: @user.ci, password_confirmation: @user.ci)
-      # info_bitacora 'Reseteo de contraseña', Bitacora::ACTUALIZACION, @user
       flash[:success] = "Contraseña reseteada correctamente del usuario."
-      redirect_to rails_admin_path
     else
       flash[:error] = "No se pudo resetear la contraseña del usuario."
-      redirect_to rails_admin_path
     end
+    redirect_back fallback_location: rails_admin_path
   end
 
   def update
