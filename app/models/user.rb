@@ -282,7 +282,7 @@ class User < ApplicationRecord
   end
 
   def link_to_reset_password
-    "<a href='/users/#{id}/reset_password'><i class='fa-regular fa-user-cog'></i></a>".html_safe
+    "<a href='/users/#{id}/reset_password' class='float-end' data-bs-toggle='tooltip' data-bs-placement='top' title='Resetear Contraseña de #{nick_name}' data-confirm='Esta acción colocará la Cédula de Identidad como contraseña, ¿está completamente seguro?'><i class='fa-regular fa-user-cog'></i></a>".html_safe
   end
 
   # def profile_set
