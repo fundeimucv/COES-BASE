@@ -410,6 +410,7 @@ class User < ApplicationRecord
         sticky true
       end
       field :links_to_detail do
+        column_width 350
         label 'Roles'
       end
       field :email
