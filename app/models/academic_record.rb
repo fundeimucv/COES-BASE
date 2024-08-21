@@ -188,12 +188,14 @@ class AcademicRecord < ApplicationRecord
 
   # FUNCTIONS:
   def header_for_report
-    ['#', 'CI', 'NOMBRES', 'APELLIDOS','ESCUELA','CATEDRA','CÓDIGO ASIG', 'NOMBRE ASIG','PERIODO','SECCIÓN','ESTADO']
+    # ['#', 'CI', 'NOMBRES', 'APELLIDOS','ESCUELA','CATEDRA','CÓDIGO ASIG', 'NOMBRE ASIG','PERIODO','SECCIÓN','ESTADO']
+    ['#', 'CÉDULA', 'NOMBRES', 'APELLIDOS','ESCUELA','CATEDRA','CÓDIGO ASIG', 'NOMBRE ASIG', 'CRÉDITOS', 'NOTA_FINAL', 'NOTA_DEF', 'TIPO_EXAM', 'PER_LECTI', 'ANO_LECT','SECCIÓN', 'PLAN']
   end
 
   def values_for_report
     user_aux = user
-    [user_aux.ci, user_aux.first_name, user_aux.last_name, school.name, grade&.level_offer, area.name, subject.code, subject.name, academic_process.process_name, section.code, self.get_value_by_status]
+    # [user_aux.ci, user_aux.first_name, user_aux.last_name, school.name, grade&.level_offer, area.name, subject.code, subject.name, academic_process.process_name, section.code, self.get_value_by_status]
+    [user_aux.ci, user_aux.first_name, user_aux.last_name, school.name, area.name, subject.code, subject.name, subject.unit_credits, self.final_q_to_02i, self.q_value_to_02i, self.tipo_examen, period_type.code, period.year, section.code, study_plan&.code]
   end
   
   def is_totality_partial?
@@ -412,6 +414,10 @@ class AcademicRecord < ApplicationRecord
     end
   end
 
+  def tipo_examen
+    aux = qualifications.definitive.first
+    aux.nil? ? 'F' : aux.desc_conv.last
+  end
   def final_q_to_02i
     q_value_to_02i final_q
   end
