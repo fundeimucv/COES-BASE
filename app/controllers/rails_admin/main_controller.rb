@@ -40,8 +40,15 @@ module RailsAdmin
               end
             end
           else
-            if @abstract_model.to_s.eql? 'Student'
-              scope = scope.joins(:schools).where('schools.id': session[:env_ids])
+            if @abstract_model.to_s.eql? 'Student' #and model_config.abstract_model.to_s.eql? 'Student'
+              if model_config.abstract_model.to_s.eql? 'StudyPlan'
+                # p "  IF: Estoy aquí después  #{model_config.abstract_model.to_s}".center(500, '#')
+                scope = scope.joins(:school).where('schools.id': session[:env_ids]) 
+              elsif !model_config.abstract_model.to_s.eql? 'AdmissionType'
+                scope = scope.joins(:schools).where('schools.id': session[:env_ids]) 
+                # p "  Else: Estoy aquí después  #{model_config.abstract_model.to_s}".center(500, '#')
+              end
+
             elsif schoolables.include? @abstract_model.to_s and schoolables.include? model_config.abstract_model.to_s
               scope = scope.joins(:school).where('schools.id': session[:env_ids])
             elsif (schoolables << 'School').include? @abstract_model.to_s
