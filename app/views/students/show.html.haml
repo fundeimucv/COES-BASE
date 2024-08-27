@@ -1,9 +1,10 @@
 - @student ||= student
+- @grades = @student.grades.joins(:school)
 - if current_user&.admin? and session[:rol].eql? 'admin'
 	- env = current_user.admin.schools_auh
-	- @grades = @student.grades.joins(:school).where(schools: { id: env.ids })
-- else 
-	- @grades = @student.grades.joins(:school).order('schools.name')
+	- @grades = @grades.where(schools: { id: env.ids })
+	
+- @grades = @grades.order('schools.name')
 %ul#GradesTab.nav.nav-tabs{role: "tablist"}
 	- @grades.each_with_index do |g,i|
 		- active = (i.eql? 0) ? 'active' : ''
