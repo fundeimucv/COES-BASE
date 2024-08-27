@@ -12,8 +12,12 @@
 	- if schools_auh&.any?
 		- schools_auh.order(:name).each do |school|
 			- @process_name = nil
-			- ap = school.academic_processes.first
+			- ap = school.academic_processes.actives.first
+			- ap ||= school.academic_processes.first
 			- @process_name = ap&.process_name 
+			- ap = school.academic_processes.enrolls.first
+			- ap ||= school.academic_processes.first
+			- @process_enroll_name = ap&.process_name
 			- @query = "&query=#{@process_name}" unless @process_name.blank?
 			- school_auth = current_user&.admin&.authorized_read? 'School'
 
@@ -44,10 +48,10 @@
 					.row
 						- object = I18n.t("activerecord.models.enroll_academic_process.other")
 						-# url = "/admin/enroll_academic_process?f%5Bschool%5D%5B81356%5D%5Bo%5D=like&f%5Bschool%5D%5B81356%5D%5Bv%5D=#{school.short_name}&#{@query}"
-						- url = "/admin/enroll_academic_process?f[school][81356][o]=like&f[school][81356][v]=#{school.short_name}&f[academic_process][35634][o]=like&f[academic_process][35634][v]=#{@process_name}"
+						- url = "/admin/enroll_academic_process?f[school][81356][o]=like&f[school][81356][v]=#{school.short_name}&f[academic_process][35634][o]=like&f[academic_process][35634][v]=#{@process_enroll_name}"
 						= link_to url, class: 'btn btn-primary' do
 							%h4.fa.fa-calendar-check
-							%h6.text-center= "#{object.upcase} #{@process_name}"
+							%h6.text-center= "#{object.upcase} #{@process_enroll_name}"
 - if false
 	.mt-4.align-middle.align-items-center{style: 'width:100%'}
 		.row
