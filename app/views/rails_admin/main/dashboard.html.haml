@@ -26,6 +26,11 @@
 					%h4.bg-info.mb-0.py-2.text-center
 						= link_to_if school_auth, school.short_name, "/admin/school/#{school.id}", class: 'undecored'
 					
+					- if logged_as_admin and current_user.admin.authorized_read? 'AcademicProcess' and @process_enroll_name
+						- url = "/admin/academic_process?f[school][81356][o]=like&f[school][81356][v]=#{school.short_name}"
+						= link_to url, class: 'btn btn-primary' do
+							%h4.fa.fa-calendar
+							%h6.text-center Períodos
 					- if logged_as_admin and current_user.admin.authorized_read? 'AcademicRecord'
 						- object = I18n.t("activerecord.models.academic_record.other")
 
