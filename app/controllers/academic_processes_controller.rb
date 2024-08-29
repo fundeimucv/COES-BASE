@@ -1,5 +1,5 @@
 class AcademicProcessesController < ApplicationController
-  before_action :set_academic_process, only: %i[ show edit update destroy clone_sections clean_courses run_regulation massive_confirmation]
+  before_action :set_academic_process, only: %i[ show edit update destroy clone_sections clean_courses run_regulation massive_confirmation massive_actas_generation]
 
   def massive_confirmation
     total = @academic_process.enroll_academic_processes.not_confirmado
@@ -11,6 +11,48 @@ class AcademicProcessesController < ApplicationController
     end
     redirect_back fallback_location: '/admin/enroll_academic_process'
   end
+
+  def massive_actas_generation
+
+    sections = @academic_process.sections.qualified
+    pdf = CombinePDF.new
+
+    sections.each do |section|
+
+      footer_html = view_context.render template: "/sections/signatures", locals: {teacher: section.teacher&.user&.acte_name}
+      header_html = view_context.render template: "/sections/acta_header", locals: {school: section.school, section: section}
+
+      pdf << CombinePDF.parse(render_to_string(delete_temporary_files: true, pdf: 'actas_sections', 
+      template: "sections/acta", page_size: 'letter', margin: {top: 72, bottom: 68},
+      locals: {section: section}, formats: [:html],
+      footer: {content: footer_html},
+      header: {content: header_html}))
+    end
+    send_data pdf.to_pdf, filename: "Total Actas Periodo #{@academic_process.name}.pdf", type: "application/pdf", disposition: :attachment #:inline
+  end
+
+
+  # def massive_actas_generation_alt
+  #   sections = @academic_process.sections.qualified
+  #   pdf = CombinePDF.new
+  #   aux = "Actas_secciones_periodo_#{@academic_process.name}.pdf"
+  #   response.headers.delete('Content-Length')
+  #   response.headers['Cache-Control'] = 'no-cache'
+  #   response.headers['Content-Type'] = "pdf/event-stream;charset='utf-8';header=present"
+  #   response.headers['X-Accel-Buffering'] = 'no'
+  #   response.headers['ETag'] = '0'
+  #   response.headers['Last-Modified'] = '0'
+  #   response.headers['Content-Disposition'] = "attachment; filename=#{aux}"    
+
+  #   sections.each do |section|
+  #     pdf_data = render_to_string pdf: "acta_#{section.number_acta}", template: "sections/acta", locals: {section: section}, formats: [:html], page_size: 'letter', header: {html: {template: '/sections/acta_header', formats: [:html], layout: false, locals: {school: section.school, section: section}}}, footer: {html: {template: '/sections/signatures', formats: [:html], locals: {teacher: section.teacher&.user&.acte_name}}}, margin: {top: 72, bottom: 68}#, dpi: 150
+  #     response.stream.write pdf_data
+      
+  #   end
+  # ensure
+  #   response.stream.close
+  # end
+
 
   def run_regulation
     total_actualizados = 0
