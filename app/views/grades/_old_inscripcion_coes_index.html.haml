@@ -9,7 +9,7 @@
         %th.header Tipo
         %th.header Periodo
     %tbody.table-group-divider
-      - @object.grado&.inscripciones.each do |ins|
+      - inscripciones.each do |ins|
         %tr
           %th.sticky.text-start{'data-bs-toggle': :tooltip, title: "#{ins.seccion&.asignatura&.descripcion}"}= ins.seccion&.asignatura_id
           %td= ins.seccion&.numero
