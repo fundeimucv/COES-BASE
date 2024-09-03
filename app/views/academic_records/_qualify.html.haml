@@ -1,77 +1,147 @@
 - enabled_to_admin = (current_user&.admin? and session[:rol].eql? 'admin') ? true : false 
 - admin_authorized_to_qualify = enabled_to_admin and (current_user&.admin&.authorized_update? 'Qualification')
 - teacher_authorized_to_qualify = current_user&.teacher&.id.eql? section.teacher&.id
-
+- colspan = 2
+- @academic_process = section.academic_process
 - if !enabled_to_admin and teacher_authorized_to_qualify
   %h5.alert.alert-success.text-center Autorizado para Calificar
-%table.table.table-condensed.table-striped.table-hover.border.table-bordered.table-sm.table-responsive
-  %thead
-    %tr.text-center
-      %th{style: 'width: 30px'} #
-      - if false #(current_user&.admin&.yo?)
-        %th AcRe ID
-        %th Sec ID
-        %th EnrollID
-        %th Period
-      %th{style: 'width: 80px'} CI
-      %th{style: 'width: 100px'} Estado Insc
-      %th Estudiante
-      
-      - if section.subject.numerica?
-        - if (admin_authorized_to_qualify or teacher_authorized_to_qualify)
-          %th.text-center PI
-        %th.text-center Cal. Final
-        - if GeneralSetup.enabled_post_qualification?
-          %th CD
-          %th CR
-          %th Cal. Repar
-      - else
-        %th.text-center Cal. Final
-      %th{style: 'width: 150px'} Descripción
-      %th{style: 'width: 120px'} Estado
+.table-responsive
+  %table.table.table-condensed.table-striped.table-hover.border.table-bordered.table-sm.border-success
+    %thead
+      %tr.text-center
+        %th #
+        - if false #(current_user&.admin&.yo?)
+          %th AcRe ID
+          %th Sec ID
+          %th EnrollID
+          %th Period
+        %th CI
+        %th Estado Insc
+        %th Estudiante
+
+        - unless section.any_equivalencia?
+          - if section.subject.numerica?
+            - colspan += 2
+            - if section&.school&.have_partial_qualification?
+              - colspan += 3
+              - PartialQualification.partials.map do |ord|
+                %th.text-center= ord[0]&.titleize
+            - if (admin_authorized_to_qualify or teacher_authorized_to_qualify)
+              %th.text-center PI
+            %th.text-center{'data-bs-toggle': :tooltip, title: 'Calificación Final'} Final
+            - if GeneralSetup.enabled_post_qualification? and @academic_process.post_qualification?
+              - colspan += 3
+              %th{'data-bs-toggle': :tooltip, title: 'Calificación Diferida'} Dif
+              %th{'data-bs-toggle': :tooltip, title: 'Calificación Reparación'} Rep
+              %th{'data-bs-toggle': :tooltip, title: 'Calificación Posterior'} Post
+          - else
+            %th.text-center{'data-bs-toggle': :tooltip, title: 'Calificación Final'} Definitva
+          %th
+            - if false
+              %a{href: 'javascript:void(0)', onclick: 'reset_all();'}
+            %i.fa.fa-remove{'data-bs-toggle': :tooltip, title: 'Limpiar valores'}
+          %th{'data-bs-toggle': :tooltip, title: 'Calificación en letras'} Calificación Descriptiva
+        %th Estado
 
 
-  %tbody.align-middle.align-items-center
-    - section.academic_records.joins(:user).order('users.last_name ASC, users.first_name ASC').each_with_index do |acre, i|
-      - user = acre.user
-      - id = acre.id
-      - retirado = acre.retirado?
-      - preinscrito = acre.preinscrito_in_process?
-      - disable_row = (retirado || acre.pi? || preinscrito)
-      - status = acre.status
-      %tr{id: "acRe#{acre.id}", class: acre.tr_class_by_status_q}
-        %td.text-center= i+1
-        - if false #current_user&.admin&.yo?
-          %td= acre.id
-          %td= acre.section.id
-          %td= acre.enroll_academic_process_id
-          %td= acre.period.name
-        %td.text-center= user.ci
-        %td.text-center= acre.enroll_academic_process.label_status
-        %td{title: user.reverse_name}
-          - if enabled_to_admin and current_user&.admin&.authorized_read? 'Student'
-            %a{href: "/admin/student/#{acre.student.id}"}= user.reverse_name 
-          - else
-            = user.reverse_name
-        - if retirado
-          %td{colspan: 2}
-        - else
-          - if (admin_authorized_to_qualify or teacher_authorized_to_qualify)
-            - @academic_record = acre
-            = render partial: '/academic_records/form_qualify', locals: {academic_record: acre, disable_row: disable_row, status: status, id: id, preinscrito: preinscrito}
-          - else
-            %td= text_field_tag nil, {}, {value: acre.final_q_to_02i_to_from, class: 'form-control form-control-sm', disabled: true}          
-        = render partial: '/academic_records/qualification_to_s', locals: {academic_record: acre, id: id}
-        %td.text-center
-          .badge.bg-info{id: "labelStatus#{acre.id}"}= status.titleize
+    %tbody.align-middle.align-items-center
+      - section.academic_records.joins(:user).order('users.last_name ASC, users.first_name ASC').each_with_index do |acre, i|
+        - user = acre.user
+        - acre_id = acre.id
+        - retirado = acre.retirado?
+        - preinscrito = acre.preinscrito_in_process?
+        - disable_row = (retirado || acre.pi? || preinscrito)
+        - status = acre.status
+        %tr{id: "acRe#{acre_id}", class: acre.tr_class_by_status_q}
+          %td.text-center= i+1
+          - if false #current_user&.admin&.yo?
+            %td= acre_id
+            %td= acre.section.id
+            %td= acre.enroll_academic_process_id
+            %td= acre.academic_process&.process_name
+          %td.text-center= user.ci
+          %td.text-center= acre.enroll_academic_process.enroll_label_status
+          %td{'data-bs-toggle': :tooltip, title: user.reverse_name}
+            - if enabled_to_admin and current_user&.admin&.authorized_read? 'Student'
+              %a{href: "/admin/student/#{acre.student.id}"}= acre.student_name_with_pci_badge.html_safe 
+            - else
+              = acre.student_name_with_pci_badge.html_safe
+
+          - unless section.any_equivalencia?    
+            - if retirado or acre.enroll_academic_process&.not_confirmado?
+              %td.text-center{colspan: colspan-1}
+                - if retirado
+                  = label_status('bg-info', acre.status.titleize)
+                - elsif acre.enroll_academic_process&.not_confirmado?
+                  = label_status('bg-warning text-dark', 'Inscripción pendiente por confirmar')
+            - else
+              - if (admin_authorized_to_qualify or teacher_authorized_to_qualify)
+                - @academic_record = acre
+                = render partial: '/academic_records/form_qualify', locals: {section: section, academic_record: acre, disable_row: disable_row, status: status, id: acre_id, preinscrito: preinscrito}
+              - else
+                %td= text_field_tag nil, {}, {value: acre.final_q_to_02i_to_from, class: 'form-control form-control-sm', disabled: true}          
+              %td
+                .btn
+                  %i.fa.fa-eraser{'data-bs-toggle': :tooltip, title: 'Limpiar valores', onclick: "reset(this);", id_obj: acre_id, class: 'eraser'}
+            = render partial: '/academic_records/qualification_to_s', locals: {academic_record: acre, id: acre_id}
+          %td.text-center
+            .badge.bg-info{id: "labelStatus#{acre_id}"}= status.titleize
 
 :javascript
+
+  function savePartial(ele){
+    let elem = $(ele)
+    let id = elem.attr('object_id');
+    let partial = elem.attr('object_partial');
+    let value = elem.val();
+    try {
+      if (value == '') {value = -2}
+      let values = `{"partial_qualification": {"value": ${parseFloat(value)}, "partial": "${partial}"}}`;
+      console.log(values);
+      sendPartial(values, id);
+    }catch (error){
+      toastr.error('Error inesperado: La acción que intenta realiza no es permitida. Por favor, corrija el error o repórtelo al administrador del sistema: '+error);
+    }
+  }
+
+  function sendPartial(values, id){
+    let result = false;
+    let tipo, url; 
+    toastr.options.progressBar = true;
+    $.ajax({
+      url: `/partial_qualifications/${id}`,
+      type: 'PATCH',
+      data: JSON.parse(values),
+      dataType: 'json',
+      beforeSend: function(xhr) {
+        xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'));
+      },
+      success: function(json) {
+        toastr.success(json.data);
+        if (json.final != '--'){
+          // console.log(json.final);
+          $(`#qualification_final_${id}`).val(json.final);
+          numero_a_letras(json.final, id);
+        }
+        
+      },
+      error: function(json) {
+        toastr.error(`(${json.status}): ${json.responseText.substring(0, 100)}`);
+      }
+    });
+  }
+
+  function onlyDecimalNumbers(ele){
+    var node = $(ele);
+    node.val(node.val().replace(/[^0-9.]/g,'') );
+  }
 
   function checkPost(ele) {
     let elem = $(ele);
     let post_elem, final_elem;
     let id = elem.attr('id_obj');
     let val = elem.val();
+    console.log(val);
     let valor_checked = elem.prop('checked');
     let checkboxs = $(`#acRe${id} .checkPost`);
 
@@ -81,10 +151,10 @@
     elem.prop('disabled', false);
     elem.prop('checked', valor_checked);
 
-    final_elem = $(`#acRe${id} #_qualificationfinal`);
+    final_elem = $(`#acRe${id} .final`);
     final_elem.prop('disabled', valor_checked);
 
-    post_elem = $(`#acRe${id} #_qualificationpost`);
+    post_elem = $(`#acRe${id} .value_post`);
     let post_elem_val = post_elem.val();
     let final_elem_val = final_elem.val();
     post_elem.attr('type_q', val);
@@ -116,7 +186,6 @@
 
   function valor_a_letras(value, ar_id) {
 
-    console.log(value);
     let clase = 'table-success'
     if (value == 'aplazado') clase = 'table-danger'
 
@@ -126,11 +195,25 @@
     $(`#labelStatus${ar_id}`)[0].innerHTML = value;
 
   }
+  function reset_all(){
+    $('.eraser').each(function(index, element){
+      reset(element);
+    })
+  }
+
+  function reset(ele) {
+    let id = $(ele).attr('id_obj');
+    let status = 'sin_calificar';
+    let values = `{"academic_record": {"status": "${status}"}}`;
+    let url = `/academic_records/${id}`
+    sendData('reset', ele, id, url, values);
+  }
+
 
   function pi(ele) {
     let id = $(ele).attr('id_obj');
-    let status;
-    status = 'sin_calificar';
+    let status = 'sin_calificar';
+    
     if (ele.checked) {status = 'perdida_por_inasistencia'}
     let values = `{"academic_record": {"status": "${status}"}}`;
     let url = `/academic_records/${id}`
@@ -169,12 +252,14 @@
       },
       done: function(json) {
         if (tipo == 'pi') {desactivar_por_pi(ele, id)}
+        if (tipo == 'reset') {activar_por_reset(ele, id)}
         if (tipo == 'qualifiable') {numero_a_letras(ele, id)}
         if (tipo == 'absolute') {valor_a_letras(ele, id)}
         messageSendData(json.type, json.data);
       },
       success: function(json) {
         if (tipo == 'pi') {desactivar_por_pi(ele, id)}
+        if (tipo == 'reset') {activar_por_reset(ele, id)}
         if (tipo == 'qualifiable') {numero_a_letras(ele, id)}
         if (tipo == 'absolute') {valor_a_letras(ele, id)}
         if (val2 != undefined) {numero_a_letras(val2, id)}
@@ -194,20 +279,42 @@
     else toastr.success(msg);
   }
 
+  function activar_por_reset(obj, ar_id) {
+
+    let checks = $(`#acRe${ar_id} .post`);
+    checks.prop('disabled', true);
+    checks.prop('checked', false);
+
+    let post = $(`#acRe${ar_id} .value_post`);
+    post.val(null);
+
+    let final = $(`#acRe${ar_id} .final`);
+    final.val(null);
+    final.prop('disabled', false);
+
+    numero_a_letras(undefined, ar_id);
+    // $(`#[${ar_id}][qualification]pi`).prop('checked', false);
+    $(`#_${ar_id}_qualification_pi`).prop('checked', false);
+    
+    $(`#_${ar_id}qualfication_to_s`).prop('disabled', true);
+    $(`#_${ar_id}qualfication_to_s`).prop('readonly', true);        
+  } 
+
   function desactivar_por_pi(obj, ar_id){
     var inputs, valor_checked;
 
-    inputs = $(`#acRe${ar_id} input`);
+    inputs = $(`#acRe${ar_id} .qualifiable`);
     valor_checked = $(obj).prop('checked');
     inputs.val(null);
 
     let checkboxs = $(`#acRe${ar_id} .checkPost`);
+    let posts = $(`#acRe${ar_id} .post`);
 
-    checkboxs.prop('disabled', valor_checked);
-    checkboxs.prop('checked', false)
+    inputs.prop('disabled', valor_checked);
+    $(obj).prop('disabled', false);
 
-    inputs.prop('disabled', valor_checked)
-    $(obj).prop('disabled', false)
+    checkboxs.prop('checked', false);
+    posts.prop('disabled', true);
     
     // final.val = (null)
     if (valor_checked === true) {

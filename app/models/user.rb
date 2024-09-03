@@ -1,24 +1,38 @@
+# == Schema Information
+#
+# Table name: users
+#
+#  id                     :bigint           not null, primary key
+#  ci                     :string           not null
+#  current_sign_in_at     :datetime
+#  current_sign_in_ip     :string
+#  email                  :string           default(""), not null
+#  encrypted_password     :string           default(""), not null
+#  first_name             :string
+#  last_name              :string
+#  last_sign_in_at        :datetime
+#  last_sign_in_ip        :string
+#  location_number_phone  :string
+#  number_phone           :string
+#  remember_created_at    :datetime
+#  reset_password_sent_at :datetime
+#  reset_password_token   :string
+#  sex                    :integer
+#  sign_in_count          :integer          default(0), not null
+#  updated_password       :boolean          default(FALSE), not null
+#  created_at             :datetime         not null
+#  updated_at             :datetime         not null
+#
+# Indexes
+#
+#  index_users_on_ci                    (ci) UNIQUE
+#  index_users_on_email                 (email) UNIQUE
+#  index_users_on_reset_password_token  (reset_password_token) UNIQUE
+#
 class User < ApplicationRecord
-  # Include default devise modules. Others available are:
-  # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
+
   devise :database_authenticatable,
          :recoverable, :rememberable, :validatable, :trackable, :timeoutable
-
-
-  # SCHEMA:
-  # t.string "email", default: "", null: false
-  # t.string "ci", null: false
-  # t.string "encrypted_password", default: "", null: false
-  # t.string "name"
-  # t.string "last_name"
-  # t.string "number_phone"
-  # t.integer "sex"
-  # t.datetime "remember_created_at"
-  # t.integer "sign_in_count", default: 0, null: false
-  # t.datetime "current_sign_in_at"
-  # t.datetime "last_sign_in_at"
-  # t.string "current_sign_in_ip"
-  # t.string "last_sign_in_ip"  
 
   # ENUMERIZE:
   enum sex: [:Femenino, :Masculino]
@@ -105,7 +119,7 @@ class User < ApplicationRecord
 
   before_validation(on: :create) do
     self.password ||= self.ci #if self.password.blank?
-    self.email = "temp#{self.ci}@mailinator.com" if self.email.blank? and attribute_present?("ci")
+    self.email = "actualizar-correo#{us.ci}@mailinator.com" if self.email.blank? and attribute_present?("ci")
     
   end
 
@@ -115,6 +129,11 @@ class User < ApplicationRecord
     # called on the model after it is saved
     p "<   #{record}   >".center(200, "-") 
   end
+
+  def false_email?
+    email&.include? "mailinator"
+  end
+
 
   def set_clean_values
     # self.password ||= self.ci 
@@ -159,7 +178,7 @@ class User < ApplicationRecord
   end
 
   def empty_personal_info?
-    (self.email.blank? or self.first_name.blank? or last_name.blank? or self.number_phone.blank? or self.sex.blank?)
+    (self.email.blank? or self.false_email? or self.first_name.blank? or last_name.blank? or self.number_phone.blank? or self.sex.blank?)
   end
 
   def empty_any_image?
@@ -234,6 +253,10 @@ class User < ApplicationRecord
     compile
   end
 
+  def acte_name
+    "#{ci}: #{reverse_name}"
+  end
+  
   def ci_fullname
     "#{ci}: #{full_name}"
   end
@@ -256,6 +279,18 @@ class User < ApplicationRecord
     aux += 1 if student?
     aux += 1 if teacher?    
     return aux
+  end
+
+  def link_to_reset_password
+    "<a href='/users/#{id}/reset_password' class='float-end' data-bs-toggle='tooltip' data-bs-placement='top' title='Resetear Contraseña de #{nick_name}' data-confirm='Esta acción colocará la Cédula de Identidad como contraseña, ¿está completamente seguro?'><i class='fa-regular fa-user-cog'></i></a>".html_safe
+  end
+
+  def links_to_detail
+    aux = []
+    aux << "<i class='fa-regular fa-user-tie'></i>#{I18n.t('activerecord.models.admin.one')}" if admin?
+    aux << "<a href='/admin/student/#{id}'><i class='fa-regular fa-user-graduate'></i>#{I18n.t('activerecord.models.student.one')}</a>" if student?
+    aux << "<a href='/admin/teacher/#{id}'><i class='fa-regular fa-chalkboard-user'></i>#{I18n.t('activerecord.models.teacher.one')}</a>" if teacher?
+    return aux.to_sentence.html_safe
   end
 
   # def profile_set
@@ -351,6 +386,9 @@ class User < ApplicationRecord
         #   bindings[:view].render(partial: "rails_admin/main/image", locals: {object: bindings[:object]})
         # end
       # end
+      field :links_to_detail do
+        label 'Roles'
+      end
       field :profile_picture, :active_storage 
       field :ci_image, :active_storage 
       field :ci
@@ -365,23 +403,26 @@ class User < ApplicationRecord
 
     list do
       items_per_page 10
+      checkboxes false
       search_by :my_search #[:email, :first_name, :last_name, :ci]
-      field :ci
+      field :ci do
+        label 'Cédula'
+        sticky true
+      end
+      field :links_to_detail do
+        column_width 350
+        label 'Roles'
+      end
       field :email
       field :first_name
       field :last_name
-      field :number_phone
-      field :sex do
-        formatted_value do # used in form views
-          value.titleize if value
-        end
-
-        pretty_value do # used in list view columns and show views, defaults to formatted_value for non-association fields
-          value.titleize if value
-        end
-
-      end
       field :profile_picture
+      field :link_to_reset_password do
+        label 'Opciones'
+        # link_icon do 
+        #   'fa-regular fa-user-cog'
+        # end
+      end
     end
 
     export do
@@ -405,8 +446,10 @@ class User < ApplicationRecord
 
     def send_welcome_email
       begin
-        UserMailer.welcome(self).deliver_now
-        # UserMailer.welcome(self).deliver_later
+        if GeneralSetup.send_wellcome_mailer_on_create_user?
+          UserMailer.welcome(self).deliver_now
+          # UserMailer.welcome(self).deliver_later
+        end
       rescue Exception => e
         
       end

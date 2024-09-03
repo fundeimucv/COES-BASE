@@ -6,9 +6,8 @@
         - home = teacher_session_dashboard_path if logged_as_teacher?
         - home = student_session_dashboard_path if logged_as_student?
 
-      = link_to home, class: 'btn btn-sm btn-primary mx-3' do
-        %i.fa.fa-dashboard
-        Principal
+        %a.navbar-brand.ms-3{:href => home}
+          = image_tag 'logo_coes_simple.png', size: '35x28'
       - if false
         = link_to home do
           = image_tag "logo.png", width: '25%'

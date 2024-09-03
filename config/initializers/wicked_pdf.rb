@@ -8,6 +8,7 @@
 #
 # https://github.com/mileszs/wicked_pdf/blob/master/README.md
 
+
 WickedPdf.config = {
   # Path to the wkhtmltopdf executable: This usually isn't needed if using
   # one of the wkhtmltopdf-binary family of gems.
@@ -35,6 +36,9 @@ WickedPdf.config.merge!({
   layout: "layouts/pdf",
   orientation: "Portrait", # Landscape
   page_size: "letter",
-  lowquality: true,
-  zoom: 1
+  background: true,
+  pdi: 75,
+  image_quality: 800,
+  image_dpi: 800,
+  delete_temporary_files: true 
 })

@@ -1,5 +1,5 @@
 class SectionsController < ApplicationController
-  before_action :set_section, only: %i[ show update export change]
+  before_action :set_section, only: %i[ show update export change_qualification_status]
 
   layout 'logged'
 
@@ -27,13 +27,13 @@ class SectionsController < ApplicationController
 
   # GET /sections/1 or /sections/1.json
   def show
-    if current_admin or (current_teacher and @section.teacher and @section.teacher_id.eql? current_teacher.id)
+    if current_admin or (current_teacher and @section.teacher and (@section.teacher_id.eql? current_teacher.id or @section.secondary_teachers.pluck(:teacher_id).include? current_teacher.id ))
       respond_to do |format|
         format.html
         format.pdf do
           top = 72
           # top += 10 if @section.subject&.name&.length > 52
-          render pdf: "acta_#{@section.number_acta}", template: "sections/acta", locals: {section: @section}, formats: [:html], page_size: 'letter', header: {html: {template: '/sections/acta_header', formats: [:html], layout: false, locals: {school: @section.school, section: @section}}}, footer: {html: {template: '/sections/signatures', formats: [:html]}}, margin: {top: top, bottom: 68}#, dpi: 150
+          render pdf: "acta_#{@section.number_acta}", template: "sections/acta", locals: {section: @section}, formats: [:html], page_size: 'letter', header: {html: {template: '/sections/acta_header', formats: [:html], layout: false, locals: {school: @section.school, section: @section}}}, footer: {html: {template: '/sections/signatures', formats: [:html], locals: {teacher: @section.teacher&.user&.acte_name}}}, margin: {top: top, bottom: 68}#, dpi: 150
         end
       end
     else
@@ -79,6 +79,16 @@ class SectionsController < ApplicationController
 
   end
 
+  def change_qualification_status
+    if @section.update(qualified: params[:section][:qualified])
+      flash[:success] = "Sección Actualizada"
+    else
+      flash[:danger] = "Error: #{@section.errors.full_messages.to_sentence}"
+    end
+    
+    redirect_back fallback_location: '/admin/section'
+  end  
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_section
@@ -87,7 +97,7 @@ class SectionsController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def section_params
-      params.require(:section).permit(:id, :code, :capacity, :course_id, :teacher_id, :qualified, :modality, :classroom, :enabled)
+      params.require(:section).permit(:id, :code, :capacity, :course_id, :teacher_id, :qualified, :modality, :classroom, :enabled, :secondary_teachers)
     end
 
   # def schedules_params

@@ -2,8 +2,11 @@
 %table.table.table-sm
   %thead
     %tr.text-center
+      %td.col-1 Escuela
       %td.col-1 Período
       %td.col-1 Sec
+      %td.col-1 Tipo
+      %td.col-1 PCI
       %td Asignatura
       %td Profesor
       %td Horario
@@ -12,17 +15,19 @@
       %td.col-1 Calif
   %tbody
     %tr.text-center
-      %td= section.period.name if section.period
+      %td= section.academic_process&.school&.short_name
+      %td= section.academic_process&.process_name
       %td= section.code
-      %td{title: section.subject.desc}
+      %td= section.label_modality true
+      %td= section.course.label_pci_yes_or_not
+      %td{'data-bs-toggle': :tooltip, title: section.subject.desc}
         - if section.subject
           - if current_user.admin? and session[:rol].eql? 'admin'
-            %a{href: "/admin/subject/#{section.subject_id}"}= section.subject.desc 
+            %a{href: "/admin/subject/#{section.subject_id}"}= section.course.subject_desc_with_pci 
           - else
-            = section.subject.desc
-
+            = section.course.subject_desc_with_pci
       - teacher_desc = section.teacher.desc if section.teacher
-      %td{title: teacher_desc}
+      %td{'data-bs-toggle': :tooltip, title: teacher_desc}
         - if section.teacher 
           - if current_user.admin? and session[:rol].eql? 'admin'
             %a{href: "/admin/teacher/#{section.teacher_id}"}= section.teacher.desc 
@@ -30,7 +35,7 @@
             = section.teacher.desc
 
       - if section.schedules
-        %td{title: section.schedule_name}
+        %td{'data-bs-toggle': :tooltip, title: section.schedule_name}
           = section.schedule_short_name
       -else 
         %td
@@ -40,8 +45,6 @@
         de
         .badge.bg-info= section.capacity
       %td
-        - if section.qualified?
-          .fa.fa-check
-        - else
-          .fa.fa-remove
-
+        = section.label_qualified
+        - if current_user.admin? and session[:rol].eql? 'admin'
+          = badge_toggle_section_qualified section

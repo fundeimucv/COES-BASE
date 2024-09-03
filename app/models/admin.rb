@@ -1,12 +1,32 @@
+# == Schema Information
+#
+# Table name: admins
+#
+#  env_authorizable_type :string           default("Faculty")
+#  role                  :integer
+#  created_at            :datetime         not null
+#  updated_at            :datetime         not null
+#  env_authorizable_id   :bigint
+#  profile_id            :bigint
+#  user_id               :bigint           not null, primary key
+#
+# Indexes
+#
+#  index_admins_on_env_authorizable  (env_authorizable_type,env_authorizable_id)
+#  index_admins_on_profile_id        (profile_id)
+#  index_admins_on_user_id           (user_id)
+#
+# Foreign Keys
+#
+#  fk_rails_...  (user_id => users.id)
+#
 class Admin < ApplicationRecord
-  # SCHEMA:
-  # t.bigint "user_id", null: false
-  # t.integer "role"
-  # t.string "env_authorizable_type", default: "Faculty"
-  # t.bigint "env_authorizable_id"
+  include Userable
 
   # ENUMERIZE:
-  enum role: [:desarrollador, :jefe_control_estudio, :asistente]
+  # enum role: [:desarrollador, :jefe_control_estudio, :asistente]
+  enum role: {desarrollador: 0, jefe_control_estudio: 1, asistente: 3}
+  
 
   # HISTORY:
   has_paper_trail on: [:create, :destroy, :update]
@@ -19,10 +39,13 @@ class Admin < ApplicationRecord
   belongs_to :user
   # accepts_nested_attributes_for :user
   
-  belongs_to :env_authorizable, polymorphic: true, optional: true
+  
   belongs_to :profile, optional: true
 
   has_many :authorizeds
+  
+  has_many :env_auths, dependent: :destroy
+  accepts_nested_attributes_for :env_auths, allow_destroy: true
 
   before_save :set_role
 
@@ -32,6 +55,7 @@ class Admin < ApplicationRecord
   # validates :env_authorizable, presence: true
   validates :role, presence: true
 
+  validates :env_auths, presence: true
   # validates :env_authorizable_type, presence: true
 
   # SCOPES:
@@ -53,6 +77,33 @@ class Admin < ApplicationRecord
     user_aux.delete if user_aux.without_rol?
   end 
 
+  # FUNCTIONS:
+
+  def is_departament?
+    env_auths&.pluck(:env_authorizable_type).uniq.first.to_s.eql? 'Departament'
+  end
+
+  def departaments
+    ids = env_auths.pluck(:env_authorizable_id)
+    Departament.where(id: ids)
+  end
+
+  def schools_auh
+    if (desarrollador?)
+      School.all
+    elsif env_auths.any?   
+      if env_auths.pluck(:env_authorizable_type).uniq.first.to_s.eql? 'School'
+        ids = env_auths.pluck(:env_authorizable_id)
+        School.where(id: ids)
+      elsif env_auths.pluck(:env_authorizable_type).uniq.first.to_s.eql? 'Departament'
+        ids = env_auths.pluck(:env_authorizable_id)
+        school_ids = Departament.where(id: ids).pluck(:school_id)
+        School.where(id: school_ids)
+      end
+    else
+      nil
+    end
+  end
   def authorized_to action_name, clazz
     case action_name
     when 'create'
@@ -168,21 +219,24 @@ class Admin < ApplicationRecord
       field :pare do
         label 'PARE (Procesos de Acceso Restringido)'
         formatted_value do
-          if bindings[:object].asistente?
+          unless bindings[:object].jefe_control_estudio? or bindings[:object].desarrollador?
 
             bindings[:view].render(partial: 'authorizeds/form', locals: {user: bindings[:object].user})
           end
         end
       end
 
+      field :env_auths
 
       # field :env_authorizable 
       # field :created_at
     end
 
     list do
+      checkboxes false
       search_by :custom_search
       field :user do
+        sticky true
         pretty_value do
           value.description
         end
@@ -196,13 +250,21 @@ class Admin < ApplicationRecord
           value.titleize
         end        
       end
-      # field :env_authorizable
+      field :env_auths
       # field :created_at
+      field :link_to_reset_password do
+        label 'Opciones'
+        # link_icon do 
+        #   'fa-regular fa-user-cog'
+        # end
+      end
     end
 
     edit do
       field :user 
-      field :role # do
+      field :role do
+        partial 'admin/custom_role_field'
+      end
         # visible do
         #   user = bindings[:view]._current_user
         #   (user and user.admin and user.admin.yo? )
@@ -218,11 +280,22 @@ class Admin < ApplicationRecord
 
       #   end
       # end
+
+      field :env_auths do
+        active true
+      # field :env_auths do
+      #   partial 'env_auth/custom_env_auth_field'
+      # end
+        pretty_value do
+          value.short_name
+        end
+      end
     end
 
     export do
       field :role
       field :user
+      field :env_auths
     end
   end
 

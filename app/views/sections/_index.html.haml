@@ -1,24 +1,45 @@
-%table.table.table-striped.table-sm
-  %thead
-    %tr.text-center
-      %th Período
-      %th Número
-      %th Capacidad
-      %th.text-start Profesor
-      %th Estado
-      %th Tipo
-      %th Horario
+.alert.alert-info 
+  Últimas 10
+  - # Subject, Teacher or Course 
+  - if @object&.class&.name.eql? 'Subject'
+    - url = "/admin/section?f[subject][41128][o]=like&f[subject][41128][v]=#{@object.code}&query="
+    = link_to 'Ver Todas', url, class: 'btn btn-sm btn-info'
+  - elsif @object&.class&.name.eql? 'Teacher'
+    - url = "/admin/section?query=#{@object.user&.ci}"
+    = link_to 'Ver Todas', url, class: 'btn btn-sm btn-info'  
 
-  %tbody
-    - sections.each do |section|
+.table-responsive
+  %table.table.table-striped.table-sm
+    %thead
       %tr.text-center
-        %td= section.academic_process.period_name
-        %td= link_to_if (current_user&.admin&.authorized_read? 'Section'), section.code, "/admin/section/#{section.id}"
-        %td= section.capacity
-        %td.text-start= section.teacher_desc
-        %td= section.label_qualified
-        %td= section.label_modality
-        %td= section.schedule_name
+        %th Escuela
+        %th Período
+        %th Número
+        %th Capacidad
+        - if @object&.class&.name.eql? 'Subject'
+          %th Profesor
+        - else
+          %th Asignatura
+        %th Estado
+        %th Numeros
+        %th Tipo
+        %th Horario
+
+    %tbody
+      - sections.limit(20).each do |section|
+        %tr.text-center
+          %td= section.academic_process.school.short_name
+          %td= section.academic_process.process_name
+          %td= link_to_if (current_user&.admin&.authorized_read? 'Section'), section.code, "/admin/section/#{section.id}"
+          %td= section.capacity
+          - if @object&.class&.name.eql? 'Subject'
+            %th.text-start= section.teacher_desc
+          - else
+            %th.text-start= section.subject_desc
+          %td= section.label_qualified
+          %th= section.label_numbery_total
+          %td= section.label_modality
+          %td= section.schedule_name
 
 %br
 - if false

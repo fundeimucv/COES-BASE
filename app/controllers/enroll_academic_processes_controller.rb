@@ -9,12 +9,12 @@ class EnrollAcademicProcessesController < ApplicationController
   # GET /enroll_academic_processes/1 or /enroll_academic_processes/1.json
 
   def show
-    if @enroll_academic_process.confirmado? and (@enroll_academic_process.school.enroll_process.eql? @enroll_academic_process.academic_process or @enroll_academic_process.school.active_process.eql? @enroll_academic_process.academic_process)
+    if @enroll_academic_process.confirmado? and (@enroll_academic_process.academic_process.enroll? or @enroll_academic_process.academic_process.active?)
 
       @school = @enroll_academic_process.school
       @faculty = @school.faculty
       @user = @enroll_academic_process.user
-      @period = @enroll_academic_process.period
+      @academic_process = @enroll_academic_process.academic_process
       @academic_records = @enroll_academic_process.academic_records
       event = 'Se generó Constancia de Inscripción'
       file_name = "ConstanciaInscripcion#{@enroll_academic_process.short_name}"
@@ -36,7 +36,7 @@ class EnrollAcademicProcessesController < ApplicationController
           # @encrypted_id, @salt = crypt.encrypt_and_sign(@version.id).split("/")
 
 
-          render pdf: file_name, template: "enroll_academic_processes/constance", formats: [:html], page_size: 'letter', backgroud: false,  footer: { center: 'Página: [page] de [topage]', font_size: '8'}
+          render pdf: file_name, template: "enroll_academic_processes/constance", formats: [:html], page_size: 'letter', backgroud: true,  footer: { center: 'Página: [page] de [topage]', font_size: '8'}
         end
       end
 
@@ -242,7 +242,7 @@ class EnrollAcademicProcessesController < ApplicationController
     respond_to do |format|
       send_confirmation = (params['enroll_academic_process'] and params['enroll_academic_process']['enroll_status'] and params['enroll_academic_process']['enroll_status'].eql? 'confirmado') ? true : false
       if @enroll_academic_process.update(enroll_academic_process_params)
-        flash[:success] = "Inscripción en Proceso Académico #{@enroll_academic_process.period.name} Actualizada"
+        flash[:success] = "Inscripción en Proceso Académico #{@enroll_academic_process.academic_process.process_name} Actualizada"
 
         begin
           flash[:info] = 'Se envió un correo al estudiante con la información.' if send_confirmation and UserMailer.enroll_confirmation(@enroll_academic_process.id).deliver_now

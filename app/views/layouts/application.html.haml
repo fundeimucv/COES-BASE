@@ -2,7 +2,7 @@
 %html{ lang: "#{I18n.locale}"}
   %head
     %meta{:content => "text/html; charset=UTF-8", "http-equiv" => "Content-Type"}/
-    %title Coesfau - Bienvenido
+    %title Coes - Bienvenido
     %meta{:content => "width=device-width, initial-scale=1, shrink-to-fit=no", :name => "viewport"}/
     = csrf_meta_tags
     = csp_meta_tag
@@ -11,29 +11,29 @@
     =# stylesheet_link_tag "style", "data-turbo-track": "reload", id: 'style-switch'
     = stylesheet_link_tag "style-dark", "data-turbo-track": "reload", id: 'style-switch'
     = javascript_include_tag "application", "data-turbo-track": "reload", defer: true
-    = favicon_link_tag 'ico_logo.png'
+    = favicon_link_tag 'logo_coes_simple.png'
 
   %body
     %main
+      %nav.navbar.navbar-expand-lg.navbar-dark.bg-dark.sticky-top.navbar-text.justify-content-end
+        %button.btn.btn-warning.me-3.mx-1.rounded-0{"aria-controls" => "offcanvasEnd", "data-bs-target" => "#offcanvasEnd", "data-bs-toggle" => "offcanvas", type: "button"} Inicio de Sesión
+      #offcanvasEnd.offcanvas.offcanvas-end{"aria-labelledby" => "offcanvasEndLabel", tabindex: "-1"}
+        = yield
+
       %section.p-0.d-flex.align-items-center.position-relative.overflow-hidden
         .container-fluid
-          .row
-            / left
-            .col-12.col-lg-7.d-md-flex.align-items-center.justify-content-center.bg-primary.bg-opacity-10.vh-lg-100
-              .p-3.p-lg-5
-                / Title
-                = render partial: 'layouts/main_banner', locals: {width: '96%', bg_color: ' '}
+          = render "shared/flashes"
+          .p-3.p-lg-5
+            / Title
+            = render partial: 'layouts/main_banner', locals: {bg_color: ' '}
 
-                / Carousel
-                = render partial: 'layouts/carousel', locals: {billboards: Billboard.activas}
+            - @billboards = Billboard.activas
+            - if @billboards.any?
+              = render partial: 'layouts/carousel', locals: {billboards: @billboards}
 
-            / Right
-            .col-12.col-lg-5.m-auto
-              .row.my-5
-                .col-sm-10.col-xl-8.m-auto
-                  = render "shared/flashes"
 
-                  = yield
+
+                  
 
               / Row END
           / Row END
@@ -41,3 +41,6 @@
       / Back to top
       .back-top
       %i.bi.bi-arrow-up-short.position-absolute.top-50.start-50.translate-middle
+    = render '/layouts/footer'
+
+

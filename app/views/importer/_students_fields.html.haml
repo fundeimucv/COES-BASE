@@ -1,31 +1,30 @@
 #school_field.control-group.row.mb-3.enum_type
   %label.col-sm-2.col-form-label.text-md-end{for: "school_field"} Escuela
   .col-sm-10.controls
-    - @school_id = School.first.id if School.count.eql? 1
-    = select(nil, :school_id, School.all.collect{|o| [ o.description, o.id ] }, { include_blank: 'Seleccione Escuela...', selected: @school_id}, {class: "form-control ra-filtering-select-input ui-autocomplete-input", required: true})
+    - schools = current_user&.admin&.schools_auh
+    = select(nil, :school_id, schools.order(:id).pluck(:name, :id), { include_blank: 'Seleccione Escuela...', selected: @school_id}, {class: "form-control ra-filtering-select-input ui-autocomplete-input", required: true})
     .form-text
       %span.label.label-danger Requerido
 #options
   #study_plan_field.control-group.row.mb-3.enum_type
     %label.col-sm-2.col-form-label.text-md-end{for: "study_plan_field"} Plan de Estudio
     .col-sm-10.controls
-      - @study_plan_id = StudyPlan.first.id if StudyPlan.count.eql? 1
-
-      = grouped_collection_select nil, :study_plan_id, School.all, :study_plans, :description, :id, :desc, {:prompt => "Seleccione plan de estudio por defecto...", selected: @study_plan_id}, { class: 'form-control', required: true}
+      = grouped_collection_select nil, :study_plan_id, schools, :study_plans, :name, :id, :desc, {:prompt => "Seleccione plan de estudio por defecto..."}, { class: 'form-control', required: true}
       .form-text
         %span.label.label-danger Requerido
 
   #admission_type_field.control-group.row.mb-3.enum_type
     %label.col-sm-2.col-form-label.text-md-end{for: "admission_type_field"} Tipo de Admisión
     .col-sm-10.controls
-      = grouped_collection_select nil, :admission_type_id, School.all, :admission_types, :description, :id, :name, {:prompt => "Seleccione el tipo de Admisión a la escuela...", selected: @school_id}, { class: 'form-control', required: true}
+      =# grouped_collection_select nil, :admission_type_id, schools, :admission_types, :description, :id, :name, {:prompt => "Seleccione el tipo de Admisión a la escuela...", selected: @school_id}, { class: 'form-control', required: true}
+      = select_tag 'admission_type_id', options_for_select(AdmissionType.all.pluck(:name, :id)), class: "form-control required", required: true, include_blank: 'Seleccione Tipo de Adminsión...'
       .form-text
         %span.label.label-danger Requerido
 
   #start_process_field.control-group.row.mb-3.enum_type
     %label.col-sm-2.col-form-label.text-md-end{for: "start_process_field"} Periodo de Inicio
     .col-sm-10.controls
-      = grouped_collection_select nil, :start_process_id, School.all, :academic_processes, :description, :id, :name, {:prompt => "Seleccione el Periodo de Inicio por defecto..."}, { class: 'form-control'}
+      = grouped_collection_select nil, :start_process_id, schools, :academic_processes, :name, :id, :name, {:prompt => "Seleccione el Periodo de Inicio por defecto..."}, { class: 'form-control'}
       .form-text
         %span.label.label-default Opcional
 
@@ -34,7 +33,7 @@
     %label.col-sm-2.col-form-label.text-md-end{for: "registration_status_field"} Estado de Registro
     .col-sm-10.controls
       - Grade.registration_statuses.map do |k,v|
-        %label.btn.btn-secondary.btn-sm.tooltip-btn{'data_toggle': :tooltip, title: k.titleize}
+        %label.btn.btn-secondary.btn-sm.tooltip-btn{'data-bs-toggle': :tooltip, title: k.titleize}
           = radio_button_tag 'registration_status', k, false
           = "#{k.upcase}"
       .form-text
@@ -48,26 +47,34 @@
     var onchanged = function(){
       var this_ = this;
       var value = this_[this_.value].text;
+      console.log(value);
       var study_plans = document.querySelector("#study_plan_id");
-      var admission_types = document.querySelector("#admission_type_id");
+      var academic_process = document.querySelector("#start_process_id");
+      // var admission_types = document.querySelector("#admission_type_id");
 
       var alloptionSP = study_plans.querySelectorAll('optgroup');
-      var alloptionAT = admission_types.querySelectorAll('optgroup');
+      var alloptionAP = academic_process.querySelectorAll('optgroup');
+      // var alloptionAT = admission_types.querySelectorAll('optgroup');
 
       alloptionSP.forEach(function(element){
        element.style.display = "none";
       });
 
-      alloptionAT.forEach(function(element){
+      alloptionAP.forEach(function(element){
        element.style.display = "none";
       });
 
+      /*alloptionAT.forEach(function(element){
+       element.style.display = "none";
+      });*/
+
       var getByLabelSP = study_plans.querySelector('[label="'+value+'"]');
-      var getByLabelAT = admission_types.querySelector('[label="'+value+'"]');
+      var getByLabelAP = academic_process.querySelector('[label="'+value+'"]');
+      // var getByLabelAT = admission_types.querySelector('[label="'+value+'"]');
       
 
       getByLabelSP.style.display = "block";
-      getByLabelAT.style.display = "block";
+      getByLabelAP.style.display = "block";
 
       // document.getElementById('options').classList.toggle("d-none");
       

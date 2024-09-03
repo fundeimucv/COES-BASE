@@ -1,0 +1,11 @@
+- # Es necesario el @object
+.btn-group.btn-group-toggle{"data-toggle" => "buttons"}
+    - objects.each do |at|
+        %label.btn.btn-info
+            =# radio_button object_name, field_name, at[1], class: 'btn-check', required: true
+            %input{id: "#{object_name}_#{field_name}_#{at[1]}", name: "#{object_name}[#{field_name}]", type: "radio", value: at[1], checked: (at[0].eql? @object.attributes[field_name])}
+            = at[0]&.titleize
+
+
+
+

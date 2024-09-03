@@ -1,0 +1,29 @@
+
+- if (current_user&.admin&.authorized_manage? 'Course')
+    - if tipo.eql? 0
+        - id = @subj_id
+        - disabled = @course&.sections&.any?
+        - title = disabled ? 'Para habilitar esta opción elimine primero las secciones' : 'Activar o desactivar asignatura para este Porceso Académico'
+        - name = "enabled_subject_#{@subj_id}"
+        - checked = !@course.nil?
+        - js_action_name = 'enableSubject(this);'
+
+    - else 
+        - id = @course.id
+        - disabled = false
+        - if tipo.eql? 1
+            - title = 'Ofertar u ocultar asignatura durante la inscripción de los estudiantes' 
+            - name = "course_offer_#{@course.id}"
+            - checked = @course&.offer?
+            - js_action_name = 'courseOffer(this);'
+        - else
+            - title = 'Ofertar u ocultar asignatura como PCI durante la inscripción de los estudiantes' 
+            - name = "course_offer_as_pci_#{@course.id}"            
+            - checked = @course&.offer_as_pci?
+            - js_action_name = 'courseOffer(this, true);'
+    = render partial: 'layouts/switch_checkbox_layout', locals: {title: title, name: name, id: id, checked: checked, disabled: disabled, js_action_name: js_action_name}
+- else    
+    - if @course
+        %i.fas.fa-check
+    - else
+        %i.fas.fa-remove

@@ -63,6 +63,7 @@ group :development, :production do
   gem "sassc-rails"
 
   gem 'wicked_pdf'
+  gem 'combine_pdf'
 
   # gem 'prawn', '~> 2.4'
   # gem 'prawn-table'
@@ -76,8 +77,10 @@ group :development, :production do
   # Autorization
   gem 'cancancan'
 
+  # gem 'xlsxtream'
   # Administration
-  gem 'rails_admin', '~> 3.0'
+  gem 'rails_admin', '~> 3.1'#, '>= 3.1.2'
+
   gem "rails_admin_import", "~> 3.0"  
 
   gem "autoprefixer-rails"
@@ -103,6 +106,9 @@ group :development do
 
   # Speed up commands on slow machines / big apps [https://github.com/rails/spring]
   # gem "spring"
+
+  gem 'annotate'
+
 end
 
 group :test do
@@ -114,7 +120,7 @@ end
 gem "cssbundling-rails"
 
 # Gestor de Correos
-gem "mailersend-ruby"
+# gem "mailersend-ruby"
 
 # Bitácora
 gem "paper_trail"
@@ -122,3 +128,4 @@ gem "paper_trail"
 # Delayed Job
 gem 'delayed_job_active_record'
 gem 'daemons'
+

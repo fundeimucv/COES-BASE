@@ -1,13 +1,32 @@
+# == Schema Information
+#
+# Table name: sections
+#
+#  id         :bigint           not null, primary key
+#  capacity   :integer
+#  classroom  :string
+#  code       :string
+#  enabled    :boolean
+#  modality   :integer
+#  qualified  :boolean          default(FALSE), not null
+#  created_at :datetime         not null
+#  updated_at :datetime         not null
+#  course_id  :bigint           not null
+#  teacher_id :bigint
+#
+# Indexes
+#
+#  index_sections_on_code_and_course_id  (code,course_id) UNIQUE
+#  index_sections_on_course_id           (course_id)
+#  index_sections_on_teacher_id          (teacher_id)
+#
+# Foreign Keys
+#
+#  fk_rails_...  (course_id => courses.id)
+#  fk_rails_...  (teacher_id => teachers.user_id) ON DELETE => cascade ON UPDATE => cascade
+#
 class Section < ApplicationRecord
-  # SCHEMA:
-  # t.string "code"
-  # t.integer "capacity"
-  # t.bigint "course_id", null: false
-  # t.bigint "teacher_id", null: false
-  # t.boolean "qualified"
-  # t.integer "modality"
-  # t.boolean "enabled"
-
+  include Totalizable
   # HISTORY:
   has_paper_trail on: [:create, :destroy, :update]
 
@@ -23,6 +42,7 @@ class Section < ApplicationRecord
 
   # has_one
   has_one :subject, through: :course
+  has_one :subject_type, through: :subject
   has_one :area, through: :subject
   # accepts_nested_attributes_for :subject
 
@@ -44,11 +64,31 @@ class Section < ApplicationRecord
   has_many :grades, through: :enroll_academic_processes
   has_many :students, through: :grades
 
-  # has_and_belongs_to_namy
-  # has_and_belongs_to_many :secondary_teachers, class_name: 'SectionTeacher'
+
+  # has_and_belongs_to_many :teachers#, class_name: 'SectionTeacher', dependent: :delete_all
+  has_and_belongs_to_many :secondary_teachers, class_name: 'Teacher'
+
+  # has_many :secondary_teachers, through: :section_teachers, class_name: 'Teacher'
+  # accepts_nested_attributes_for :section_teachers
+
+
+
+	# has_many :secciones_profesores_secundarios,
+	# 	class_name: 'SeccionProfesorSecundario', dependent: :delete_all
+	# accepts_nested_attributes_for :secciones_profesores_secundarios
+
+	# has_many :profesores, through: :secciones_profesores_secundarios, source: :profesor
+
+
+
+
+
+  # # has_and_belongs_to_namy
+  # has_and_belongs_to_many :section_teachers, class_name: 'SectionTeacher'
+  # has_and_belongs_to_many :secondary_teachers, through: :section_teachers, class_name: 'Teacher'
 
   #ENUMERIZE:
-  enum modality: [:nota_final, :equivalencia]
+  enum modality: {nota_final: 0, equivalencia_externa: 1, equivalencia_interna: 2, suficiencia: 3, reparacion: 4, diferido: 5}
 
   # VALIDATIONS:
   validates :code, presence: true, uniqueness: { scope: :course_id, message: 'Ya existe la sesión para el curso', case_sensitive: false, field_name: false}, length: { in: 1..7, too_long: "%{count} caracteres es el máximo permitido", too_short: "%{count} caracter es el mínimo permitido"}
@@ -59,13 +99,15 @@ class Section < ApplicationRecord
 
   #CALLBACKS
   before_save :set_code_to_02i
+  after_save :update_academic_records
+
   
   # SCOPE:
   default_scope {includes(:course, :subject, :period, :area)} # No hace falta
   scope :sort_by_period, -> {joins(:period).order('periods.name')}
   scope :sort_by_period_reverse, -> {joins(:period).order('periods.name DESC')}
 
-  scope :custom_search, -> (keyword) { joins(:period, :subject).where("sections.code ILIKE '%#{keyword}%' OR subjects.name ILIKE '%#{keyword}%' OR subjects.code ILIKE '%#{keyword}%' OR periods.name ILIKE '%#{keyword}%'").sort_by_period }
+  scope :custom_search, -> (keyword) { joins(:period, :subject, :user).where("users.ci ILIKE '%#{keyword}%' OR users.first_name ILIKE '%#{keyword}%' OR users.last_name ILIKE '%#{keyword}%' OR sections.code ILIKE '%#{keyword}%' OR subjects.name ILIKE '%#{keyword}%' OR subjects.code ILIKE '%#{keyword}%' OR periods.name ILIKE '%#{keyword}%'").sort_by_period }
   
   scope :qualified, -> () {where(qualified: true)}
 
@@ -80,9 +122,30 @@ class Section < ApplicationRecord
 
   scope :has_academic_record, -> (academic_record_id) {joins(:academic_records).where('academic_records.id': academic_record_id)}
 
+  scope :not_equivalence, -> {where('sections.modality': [:nota_final, :suficiencia])}
+  scope :equivalence, -> {where('sections.modality': [:equivalencia_externa, :equivalencia_interna])}
+
   # FUNCTIONS:
-  def label_modality
-    ApplicationController.helpers.label_status('bg-info', modality.titleize) if modality
+  # ATTENTION: FUNCTION TO PRINT COMMANDS BY CONSOLE 
+  def self.print_to_system_command
+    require 'benchmark'
+    memory_command = "ps -o rss= -p #{Process.pid}"
+    memory_before = %x(#{memory_command}).to_i
+    puts "Memory: #{((memory_before) / 1024.0).round(2)} MB"
+  end
+
+  def any_equivalencia?
+    self.equivalencia_externa? or  self.equivalencia_interna?
+  end
+
+  def label_modality short=false
+    if modality
+      if short 
+        ApplicationController.helpers.label_status_with_tooltip('bg-info', conv_initial_type, modality.titleize)
+      else
+      ApplicationController.helpers.label_status('bg-info', modality.titleize) 
+      end
+    end
   end
 
   def label_qualified
@@ -172,7 +235,7 @@ class Section < ApplicationRecord
 
   def set_default_values_by_import
     self.capacity = 50 
-    self.modality =  (self.code.eql? 'U') ? :equivalencia : :nota_final
+    self.modality =  (self.code.eql? 'U') ? :equivalencia_externa : :nota_final
   end
 
   def totaly_qualified?
@@ -192,30 +255,27 @@ class Section < ApplicationRecord
   end
 
   def conv_type
-    "#{conv_initial_type}S#{self.period.period_type.code.upcase}"
+    "#{conv_initial_type}#{academic_process&.conv_type}"
   end
 
   def conv_initial_type
-    case modality
-    when 'nota_final'
-      'NF'
-    when 'equivalencia_interna'
-      'EQ'
-    else
-      modality.first.upcase if modality
-    end
+    I18n.t("activerecord.scopes.section."+self.modality)
   end
 
   def is_in_process_active?
-    self.academic_process&.id&.eql? self.school.active_process_id
+    self.academic_process&.active? 
+  end
+
+  def is_inrolling?
+    self.academic_process&.enroll? 
   end
 
   def number_acta
-    "#{self.subject.code.upcase}#{self.code.upcase} #{self.period.name_revert}"
+    "#{self.subject.code.upcase}#{self.code.upcase} #{self.academic_process.process_name}"
   end
 
   def name_to_file
-     "#{self.period.name}_#{self.subject.code.upcase}_#{self.code.upcase}" if self.course
+     "#{self.academic_process.process_name}_#{self.subject.code.upcase}_#{self.code.upcase}" if self.course
   end
 
   def name
@@ -226,16 +286,16 @@ class Section < ApplicationRecord
     "#{subject.desc} (#{self.code})"
   end
 
-  def total_academic_records
-    academic_records.count
-  end
-
   def subject_desc
     subject&.desc
   end
 
   def period_name
-    period.name if period
+    period&.name
+  end
+
+  def process_name
+    academic_process&.process_name
   end
 
   def schedule_name
@@ -262,25 +322,10 @@ class Section < ApplicationRecord
     schedules.each{|s| s.name}.to_sentence
   end
 
-  def total_sc
-    academic_records.sin_calificar.count
-  end
 
-  def total_aprobados
-    academic_records.not_perdida_por_inasistencia.aprobado.count
-  end
-
-  def total_aplazados
-    academic_records.not_perdida_por_inasistencia.aplazado.count
-  end
-
-  def total_retirados
-    academic_records.retirado.count
-  end
-
-  def total_pi
-    academic_records.perdida_por_inasistencia.count
-  end
+  def self.icon_entity
+    'fa-solid fa-list'
+  end  
 
   # RAILS_ADMIN:
   rails_admin do
@@ -290,6 +335,7 @@ class Section < ApplicationRecord
 
     list do
       sort_by ['periods.name', 'areas.name', 'courses.name', 'subjects.code']
+      checkboxes false
       search_by :custom_search
       
       # filters [:period, :code, :subject_code]
@@ -298,29 +344,47 @@ class Section < ApplicationRecord
       #   label 'Período'
       #   column_width 120
       #   pretty_value do
-      #     value.period.name
+      #     value.academic_process.process_name
       #   end
       # end
 
-      field :period do
-        sticky true
+      field :school do
+        sticky true 
+        searchable :name
+        sortable :name
+        pretty_value do
+          value.code
+        end           
+      end
+
+      field :academic_process do
         label 'Período'
         searchable :name
         sortable :name
-        # associated_collection_cache_all false
-        # associated_collection_scope do
-        #   # bindings[:object] & bindings[:controller] are available, but not in scope's block!
-        #   Proc.new { |scope|
-        #     # scoping all Players currently, let's limit them to the team's league
-        #     # Be sure to limit if there are a lot of Players and order them by position
-        #     scope = scope.joins(:period)
-        #     scope = scope.limit(30) # 'order' does not work here
-        #   }
-        # end
+        sticky true
         pretty_value do
-          value.name
+          value.process_name
         end
       end
+      # field :period do
+      #   sticky true
+      #   label 'Período'
+      #   searchable :name
+      #   sortable :name
+      #   # associated_collection_cache_all false
+      #   # associated_collection_scope do
+      #   #   # bindings[:object] & bindings[:controller] are available, but not in scope's block!
+      #   #   Proc.new { |scope|
+      #   #     # scoping all Players currently, let's limit them to the team's league
+      #   #     # Be sure to limit if there are a lot of Players and order them by position
+      #   #     scope = scope.joins(:period)
+      #   #     scope = scope.limit(30) # 'order' does not work here
+      #   #   }
+      #   # end
+      #   pretty_value do
+      #     value.name
+      #   end
+      # end
 
       field :area do
         sticky true
@@ -335,17 +399,20 @@ class Section < ApplicationRecord
       #   # filterable 'periods.name'
       #   # sortable 'periods.name'
       #   formatted_value do
-      #     bindings[:object].period.name if bindings[:object].period
+      #     bindings[:object].academic_process&.process_name 
       #   end
       # end
 
       field :subject do
         sticky true
         label 'Asignatura'
-        column_width 240
-
-        filterable false #'subjects.code'
+        column_width 60
+        searchable :code
+        filterable :code #'subjects.code'
         sortable :code
+        pretty_value do
+          value.code
+        end
       end
 
       field :code do
@@ -358,6 +425,12 @@ class Section < ApplicationRecord
 
         end
       end
+
+      field :modality do
+        pretty_value do
+          value&.titleize
+        end
+      end      
 
       field :classroom do
         filterable false 
@@ -409,47 +482,14 @@ class Section < ApplicationRecord
         end        
       end
 
-      field :total_academic_records do
-        label 'Insc'
-        column_width 40
+      field :numery do
+        label 'Números'
+        column_width 200
         pretty_value do
-          ApplicationController.helpers.label_status('bg-secondary', value)
+          bindings[:object].label_numbery_total
         end
       end
 
-      field :total_sc do
-        label 'SC'
-        pretty_value do
-          ApplicationController.helpers.label_status('bg-secondary', value)
-        end         
-      end
-      field :total_aprobados do
-        label 'A'
-        help 'Aprobado'
-        pretty_value do
-          ApplicationController.helpers.label_status('bg-success', value)
-        end         
-      end
-      field :total_aplazados do
-        label 'AP'
-        help 'Aplazados'
-        pretty_value do
-          ApplicationController.helpers.label_status('bg-danger', value)
-        end         
-      end
-      field :total_retirados do
-        label 'RT'
-        pretty_value do
-          ApplicationController.helpers.label_status('bg-secondary', value)
-        end         
-      end 
-      field :total_pi do
-        label 'PI'
-        # header 'Pérdida'
-        pretty_value do
-          ApplicationController.helpers.label_status('bg-danger', value)
-        end         
-      end
       field :qualifications_average do
         label 'Prom'
         pretty_value do
@@ -461,15 +501,19 @@ class Section < ApplicationRecord
         column_width 20
       end
 
-      field :acta do
-        label 'Acta'
+      field :options do
+        label 'Opciones'
         pretty_value do
           current_user = bindings[:view]._current_user
+
+          display = ApplicationController.helpers.badge_toggle_section_qualified bindings[:object]
           if (current_user.admin? and bindings[:view].session[:rol] and bindings[:view].session[:rol].eql? 'admin' and current_user.admin.authorized_manage? 'Section' and bindings[:object].academic_records.any?) #and bindings[:object].qualified?
-            ApplicationController.helpers.btn_toggle_download 'btn-success', "/sections/#{bindings[:object].id}.pdf", 'Generar Acta', nil
+            display += ApplicationController.helpers.btn_toggle_download 'mx-3 btn-success', "/sections/#{bindings[:object].id}.pdf", 'Generar Acta', nil
           end
+          display
         end
-      end
+      end      
+      
     end
 
     show do
@@ -498,54 +542,45 @@ class Section < ApplicationRecord
         end
       end
 
+      field :secondary_teachers
+
       field :academic_records_table do
         label 'Registros Académicos'
         formatted_value do
-          bindings[:view].render(partial: 'academic_records/qualify', locals: {section: bindings[:object]})          
+          if bindings[:object].is_in_process_active? and not bindings[:object].is_inrolling?
+            bindings[:view].render(partial: 'academic_records/qualify', locals: {section: bindings[:object]})
+          else
+            bindings[:view].render(partial: 'academic_records/list', locals: {academic_records: bindings[:object].academic_records, admin: true}) 
+          end
         end
       end
     end
 
     edit do
       field :course do
-        # read_only true
-        label 'Curso'
-
+        inline_edit false
+        inline_add true
+        # partial 'course/custom_course_id_field'
       end
+
       field :code do
         html_attributes do
           {:length => 8, :size => 8, :onInput => "$(this).val($(this).val().toUpperCase().replace(/[^A-Za-z0-9]/g,''))"}
         end
       end
 
-      field :modality do
+      field :modality
 
-      end
       field :teacher do
+        label 'Profesor Principal'
         inline_edit false
         inline_add false
       end
 
-      field :qualified
-
-      # field :course_id do
-      #   formatted_value do
-      #     if bindings[:view].params[:course_id]
-      #       view_helper :hidden_field
-
-      #       # I added these next two lines to solve this
-      #       label ""
-      #       help ""
-
-      #       partial :form_field
-      #       def value
-      #         bindings[:view].params[:course_id]
-      #       end
-      #     else
-      #       bindings[:object].course
-      #     end
-      #   end
-      # end 
+      field :secondary_teachers do
+        inline_edit false
+        inline_add false
+      end
 
       field :classroom do
         html_attributes do
@@ -562,6 +597,51 @@ class Section < ApplicationRecord
       field :schedules
 
     end
+
+
+    update do
+      field :course do
+        read_only true
+      end
+      
+      field :code do
+        help 'Identificador'
+        html_attributes do
+          {:length => 8, :size => 8, :onInput => "$(this).val($(this).val().toUpperCase().replace(/[^A-Za-z0-9]/g,''))"}
+        end
+      end
+
+      field :modality
+
+      field :teacher do
+        label 'Profesor Principal'
+        inline_edit false
+        inline_add false
+      end
+
+      field :secondary_teachers do
+        inline_edit false
+        inline_add false
+      end
+
+      field :qualified
+
+      field :classroom do
+        html_attributes do
+          {:onInput => "$(this).val($(this).val().toUpperCase().replace(/[^A-Za-z0-9| ]/g,''))"}
+        end
+      end
+
+      field :capacity do
+        html_attributes do
+          {:min => 1}
+        end
+      end
+
+      field :schedules
+
+    end
+
 
     export do
       fields :period, :area, :subject, :code, :classroom, :user, :qualified, :modality, :schedules, :capacity
@@ -675,14 +755,26 @@ class Section < ApplicationRecord
     end
   end
 
+  def update_academic_records
+    if self.any_equivalencia?
+      academic_records.each do |ar|
+        ar.update(status: :aprobado)
+        ar.qualifications.destroy_all  
+      end
+    end
+  end
+  
   private
 
-
     def paper_trail_update
-      # changed_fields = self.changes.keys - ['created_at', 'updated_at']
       object = I18n.t("activerecord.models.#{self.model_name.param_key}.one")
+      msg = "#{object} actualizada."
+      if self.qualified_changed?
+        msg = self.qualified? ? "¡Sección calificada!" : "Activada para calificar nuevamente"
+      end
+      # changed_fields = self.changes.keys - ['created_at', 'updated_at']
       # self.paper_trail_event = "¡#{object} actualizado en #{changed_fields.to_sentence}"
-      self.paper_trail_event = "#{object} actualizada."
+      self.paper_trail_event = msg
     end  
 
     def paper_trail_create

@@ -1,6 +1,24 @@
+# == Schema Information
+#
+# Table name: teachers
+#
+#  created_at     :datetime         not null
+#  updated_at     :datetime         not null
+#  departament_id :bigint
+#  user_id        :bigint           not null, primary key
+#
+# Indexes
+#
+#  index_teachers_on_departament_id  (departament_id)
+#  index_teachers_on_user_id         (user_id)
+#
+# Foreign Keys
+#
+#  fk_rails_...  (departament_id => departaments.id)
+#  fk_rails_...  (user_id => users.id)
+#
 class Teacher < ApplicationRecord
-  # SCHEMA:
-  # t.bigint "area_id", null: false
+  include Userable
 
   # HISTORY:
   has_paper_trail on: [:create, :destroy, :update]
@@ -13,9 +31,11 @@ class Teacher < ApplicationRecord
   belongs_to :user
   # accepts_nested_attributes_for :user
 
-  belongs_to :area
-  # accepts_nested_attributes_for :area
-  # has_and_belongs_to_many :secondary_teachers, class_name: 'SectionTeacher'
+  belongs_to :departament
+  # accepts_nested_attributes_for :departament
+
+  has_one :school, through: :departament
+  has_and_belongs_to_many :secondary_sections, class_name: 'Section'
 
   has_many :sections
 
@@ -25,7 +45,7 @@ class Teacher < ApplicationRecord
   scope :custom_search, -> (keyword) { joins(:user).where("users.ci ILIKE '%#{keyword}%' OR users.email ILIKE '%#{keyword}%' OR users.first_name ILIKE '%#{keyword}%' OR users.last_name ILIKE '%#{keyword}%'") }  
 
   # VALIDATIONS:
-  validates :area, presence: true
+  validates :departament, presence: true
   validates :user, presence: true, uniqueness: true
 
   def desc
@@ -45,6 +65,14 @@ class Teacher < ApplicationRecord
     user_aux.delete if user_aux.without_rol?
   end  
 
+  def total_sections
+    sections.count
+  end
+
+  def total_secondary_sections
+    secondary_sections.count
+  end
+
   def description
     if user
       aux = user.description
@@ -62,11 +90,45 @@ class Teacher < ApplicationRecord
     navigation_icon 'fa-regular fa-chalkboard-user'
 
     list do
+      sort_by :school
+      checkboxes false
       search_by :custom_search
       field :user_ci do
+        sticky true
         label 'Cédula'
         # sortable 'joins(:user).users.ci'
         # queryable "course_periods_periods.name"
+      end
+      
+      field :school do
+        searchable :name
+        sortable :name
+        filterable :name
+        associated_collection_cache_all false
+        associated_collection_scope do
+
+          Proc.new { |scope|
+            scope = scope.joins(:school)
+            scope = scope.limit(30)
+          }
+        end
+        pretty_value do
+          value.short_name
+        end
+      end
+
+      field :departament do
+        searchable :name
+        sortable :name
+        filterable :name
+        associated_collection_cache_all false
+        associated_collection_scope do
+
+          Proc.new { |scope|
+            scope = scope.joins(:departament)
+            scope = scope.limit(30)
+          }
+        end
       end
 
       field :user_last_name do
@@ -82,33 +144,57 @@ class Teacher < ApplicationRecord
         label 'Email'
       end 
 
-      field :area
+      field :total_sections do
+        label 'T. Secciones'
+        # sortable true
+      end
+
+      field :total_secondary_sections do
+        label 'T. Secundario'
+        # sortable true
+      end
+
+      field :link_to_reset_password do
+        label 'Opciones'
+        # link_icon do 
+        #   'fa-regular fa-user-cog'
+        # end
+      end
+
     end
 
     show do
-      fields :user, :area
+      fields :user, :departament
 
       field :sections do
         pretty_value do
           bindings[:view].render(partial: '/sections/index', locals: {sections: bindings[:object].sections.joins(:period).order('periods.name': :desc)})
         end
       end
+
+      field :secondary_sections do
+        label 'Como profesor secundario'
+        pretty_value do
+          bindings[:view].render(partial: '/teachers/index_sections', locals: {sections: bindings[:object].secondary_sections.joins(:period).order('periods.name': :desc), teacher_session: false})
+        end        
+      end
     end
 
     edit do
-      fields :user
-      fields :area do
-        inline_edit false
-        inline_add false
+      fields :user do
+        # inline_edit false
+      end
+      fields :departament do
+        partial 'teacher/custom_departament_field'
       end
     end
 
     export do
-      fields :user, :area, :sections, :created_at
+      fields :user, :departament, :school, :sections, :created_at
     end
 
     import do
-      fields :user_id, :area_id
+      fields :user_id, :departament_id
     end
   end
 

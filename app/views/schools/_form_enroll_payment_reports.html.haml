@@ -1,8 +1,7 @@
 .text-center
-.text-center
   .form-check.form-switch
     - url = "/schools/#{school.id}"
-    = check_box_tag "enroll_payment_report#{school.id}", school.id, school.enable_enroll_payment_report?, class: "form-check-input switch", onclick: 'updateElem(`'+url+'`, `{"school":{"enable_enroll_payment_report":${this.checked}}}`);', title: 'Activar o desactivar Reporte de Pagos al momento de inscripción del estudiante.'
+    = check_box_tag "enroll_payment_report#{school.id}", school.id, school.enable_enroll_payment_report?, 'data-bs-toggle': :tooltip, class: "form-check-input switch", onclick: 'updateElem(`'+url+'`, `{"school":{"enable_enroll_payment_report":${this.checked}}}`);', title: 'Activar o desactivar Reporte de Pagos al momento de inscripción del estudiante.'
 
 :javascript
 

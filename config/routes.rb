@@ -10,6 +10,8 @@ Rails.application.routes.draw do
   match "/importer/academic_records" => "importer#academic_records" , :as => "importer_academic_records", :via => [:get, :post]
 
   match "/export/xls/:id" => "export#xls", via: :get
+  match "/export_csv/academic_records/:id" => "export_csv#academic_records", via: :get
+  match "/export_csv/enroll_academic_processes/:id" => "export_csv#enroll_academic_processes", via: :get
 
   resources :validar, only: :index do
     member do
@@ -19,12 +21,14 @@ Rails.application.routes.draw do
   resources :subject_links, only: :destroy
   resources :page, only: :show
   resources :qualifications, only: :update
+  resources :partial_qualifications
   resources :period_types
   resources :academic_records, :periods, :profiles, :sections, :courses
   
   resources :sections do
     member do
       get :export
+      get :change_qualification_status
     end
     collection do
       post :bulk_delete
@@ -60,6 +64,7 @@ Rails.application.routes.draw do
   resources :academic_processes do
     member do
       get 'massive_confirmation'
+      get 'massive_actas_generation'
       get 'clean_courses'
       get 'run_regulation'
     end
@@ -75,6 +80,7 @@ Rails.application.routes.draw do
     member do
       get :edit_images
       get :edit_password
+      get :reset_password 
     end
   end
   resources :students do
@@ -93,7 +99,11 @@ Rails.application.routes.draw do
   resources :banks do
     resources :payment_reports
   end
-  resources :payment_reports
+  resources :payment_reports do
+    member do
+      get :quick_validation
+    end
+  end
   resources :schools, only: [:update] do
     member do
       get 'export_grades'
@@ -110,9 +120,17 @@ Rails.application.routes.draw do
     end
   end
 
+  resources :study_plans do
+    member do
+      post 'save_requirement_by_level'
+    end
+  end
+
+
   resources :grades do
     member do
-      get 'kardex'
+      get :kardex
+      get :import_inscripciones
     end
   end
 

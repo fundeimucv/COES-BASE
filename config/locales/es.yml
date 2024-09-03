@@ -11,6 +11,7 @@ es:
   history_show: Bitácora
 
   dashboard: Principal
+
   diferido: ND
   final: NF
   reparacion: NR
@@ -18,8 +19,13 @@ es:
   perdida_por_inasistencia: PI
   PI: perdida_por_inasistencia
 
-  equivalencia: EQ
-  EQ: equivalencia
+  EQ: equivalencia_externa
+
+  equivalencia_externa: EE
+  EE: equivalencia_externa
+
+  equivalencia_interna: EI
+  EI: equivalencia_interna
   
   retirado: RT
   RT: retirado
@@ -34,7 +40,14 @@ es:
   sin_calificar: SC
 
   admin:
+
+    js: 'js'
     misc:
+      operators:
+        like: Contiene      
+      discard: 'Seleccione'
+      chose_all: 'Agregar Todos'
+      
       more: 'Más'
       count: Total
       root_navigation: Otro
@@ -56,23 +69,35 @@ es:
         menu: "Cita Horaria"
         breadcrumb: "Cita Horaria"
         link: "Cita Horaria"
-      programation: 
-        title: "Período"
-        menu: "Programación"
-        breadcrumb: "Programación"
-        link: "Programación"
+      index:
+        title: 'Listado'
       organization_chart: 
         title: "Escuela"
         menu: "Organigrama"
         breadcrumb: "Organigrama"
         link: "Organigrama"
+      old_inscripcion_coes:
+        title: "Registros Coes v1"
+        menu: "Registros Coes v1"
+        breadcrumb: "Registros Coes v1"
+        link: "Registros Coes v1"      
       personal_data: 
         title: "Datos Personales"
         menu: "Datos Personales"
         breadcrumb: "Datos Personales"
         link: "Datos Personales"
+      programation: 
+        title: "Período"
+        menu: "Programación"
+        breadcrumb: "Programación"
+        link: "Programación"
       index:
         title: 'Listado'
+      structure:
+        title: Estructura
+        menu: Estructura del Plan
+        link: Estructura
+        breadcrumb: Estructura        
     flash:
       object_not_found: 'Recurso no encontrado'
       model_not_found: 'Modelo no encontrado'
@@ -191,11 +216,11 @@ es:
       even: debe ser par
       exclusion: está reservado
       greater_than: debe ser mayor que %{count}
-      greater_than_or_equal_to: debe ser mayor que o igual a %{count}
+      greater_than_or_equal_to: debe ser mayor o igual a %{count}
       inclusion: no está incluido en la lista
       invalid: no es válido
       less_than: debe ser menor que %{count}
-      less_than_or_equal_to: debe ser menor que o igual a %{count}
+      less_than_or_equal_to: debe ser menor o igual a %{count}
       not_a_number: no es un número
       not_an_integer: debe ser un entero
       odd: debe ser impar
@@ -312,15 +337,18 @@ es:
           attributes:
             period:
               required: requerido
+            school:
+              required: requerido
         admin:
           attributes:
             env_authorizable:
               required: 'requerido'
         area:
+          departaments: Departamentos
           attributes:
             base:
               restrict_dependent_destroy:
-                has_many: 'Tiene asignaturas asociadas'
+                has_many: 'Tiene asignaturas o profesores asociados'
         bank_account:
           attributes:
             bank:
@@ -347,22 +375,22 @@ es:
               required: requerido
             payable:
               required: 'requerido'
-        parent_area:
+        departament:
           attributes:
             base:
               restrict_dependent_destroy:
-                has_many: 'Tiene áreas de conocimiento asociadas'
+                has_many: 'Tiene departamentos asociadas'
             school:
               required: 'requerida'
         school:
           attributes:
             faculty:
               required: 'requerida'
-        sections:
+        section:
           attributes:
             course:
               required: Curso
-        students:
+        student:
           attributes:
             user:
               required: requerido
@@ -374,7 +402,7 @@ es:
           attributes:
             depend_subject:
               required: requerido
-        subject_type:
+        requirement_by_subject_type:
           attributes:
             required_credits:
               required: requerido
@@ -383,6 +411,8 @@ es:
           attributes:
             area:
               required: 'requerida'
+            subject_type:
+              required: 'Requerido'
         qualification:
           attributes:
             value:
@@ -394,6 +424,21 @@ es:
       academic_record:
         one: 'Registro Académico'
         other: 'Registros Académicos'
+        status:
+          SC: sin_calificar
+          sin_calificar: SC
+          
+          A: aprobado
+          aprobado: A
+          
+          AP: aplazado
+          aplazado: AP
+
+          RE: retirado
+          retirado: RE
+
+          PI: perdida_por_inasistencia
+          perdida_por_inasistencia: PI
       area_authorizable:
         one: 'Area Autorizable'
         other: 'Areas Autorizables'
@@ -410,8 +455,8 @@ es:
         one: 'Tipo de Admisión'  
         other: 'Tipos de Admisión'
       area:
-        one: 'Área de Conocimiento'
-        other: 'Áreas de Conocimiento'
+        one: 'Cátedra'
+        other: 'Cátedras'
       bank:
         one: 'Banco'
         other: 'Bancos'
@@ -439,12 +484,18 @@ es:
       general_setup:
         one: 'Configuración General'
         other: 'Configuraciones generales'
+      language:
+        one: Idioma
+        other: Idiomas
+      mention:
+        one: Mención
+        other: Menciones        
       payment_report:
         one: 'Reporte de Pago'
         other: 'Reportes de Pago'
-      parent_area:
-        one: 'Área Madre'
-        other: 'Áreas Madres'
+      departament:
+        one: 'Departamento'
+        other: 'Departamentos'
       period:
         one: 'Período'
         other: 'Períodos'
@@ -457,6 +508,12 @@ es:
       qualification:
         one: Calificación
         other: Calificaciones
+
+        type_q:
+          diferido: ND
+          final: NF
+          reparacion: NR
+
       schedule:
         one: Horario
         other: Horarios
@@ -497,6 +554,8 @@ es:
         period: 'Período'
         subjects: Asignaturas
         max_credits: 'Máximo Créditos'
+        active: ¿Activo?
+        enroll: ¿Inscripción?
         max_subjects: 'Máximas Asignaturas'
         enroll_academic_processes: 'Inscripciones en Período'
         grades: 'Grados'
@@ -522,6 +581,7 @@ es:
         grade: 'Grado'
         academic_process: 'Período'
         period_type: 'Tipo de Período'
+        school: Escuela
         user: 'Usuario'
         status: Estado
         subject: 'Asignatura'
@@ -534,19 +594,19 @@ es:
         aplazado: 'Aplazados'
         retirado: 'Retirados'
         diferido: 'Diferidos'
-      authorizable:
-        area_authorizable_id: Área Autorizable
-        klazz: Clase
-        description: Descripción
-        icon: Ícono
-      area_authorizable:
-        name: Nombre
-        description: Descripción
-        icon: Ícono 
-        authorizables: Accesibles       
+      address:
+        state: 'Estado'
+        municipality: 'Municipio'
+        city: 'Ciudad'
+        sector: 'Sector'
+        street: 'Calle'
+        house_type: 'Tipo de Vivienda'
+        house_name: 'Nombre de Vivienda'
+        student: 'Estudiante'      
       admin:
         user: 'Usuario'
         role: 'Rol'
+        env_auths: Entornos
         env_authorizable: 'Entorno Autorizado'
         profile: 'Perfil de Usuario' 
         created_at: 'Fecha Registro'
@@ -556,15 +616,33 @@ es:
         school: 'Escuela'
         total_students: 'Total Estudiantes'
         created_at: 'Fecha de Registro'
+      # Catedra
       area:
         name: 'Nombre'
         school: 'Escuela'
-        parent_area: 'Área Madre'
+        departaments: 'Departamentos'
         subjects: 'Asignaturas'
+        teachers: Profesores
         subarea: 'Subáreas'
-      parent_area:
+      area_authorizable:
+        name: Nombre
+        description: Descripción
+        icon: Ícono 
+        authorizables: Accesibles       
+      authorizable:
+        area_authorizable_id: Área Autorizable
+        klazz: Clase
+        description: Descripción
+        icon: Ícono
+      # Departamento
+      departament:
         name: 'Nombre'
         school: 'Escuela'
+        areas: Cátedras
+        teachers: Profesores
+      env_auth:
+        env_authorizable: Entorno Autorizable
+
       bank:
         code: 'Código'
         name: 'Nombre'
@@ -580,13 +658,16 @@ es:
         updated_at: 'Fecha de Edición'
         content: 'Contenido de Cartelera'
       course:
-        area: 'Área'
+        area: 'Cátedra'
         period: Período
         school: Escuela
         sections: Secciones
         academic_process: 'Período'
         subject: 'Asignatura'
+        offer: ¿Ofertada?
         offer_as_pci: 'Ofertar cómo PCI'
+      env_ath:
+        env_authorizable: Entorno Autoridado
       enroll_academic_process:
         grade: 'Grado'
         academic_process: 'Período'
@@ -601,6 +682,8 @@ es:
         simple_average: Promedio Simple
         weighted_average: Promedio Ponderado
         study_plan: Plan de Estudio
+        school: Escuela
+        period: Periodo
       enrollment_day:
         start: Inicio
         total_duration_hours: Total Duración de la Jornada
@@ -609,6 +692,10 @@ es:
       faculty:
         code: 'Código'
         name: 'Nombre'
+        short_name: Nombre Corto
+        contact_email: Correo de Contacto
+        coes_boss_name: Nombre Jefe Control Estudio
+        bank_accounts: Cuentas Bancarias Asociadas
       grade:
         numbers: Números
         description: Descripción
@@ -619,6 +706,7 @@ es:
         graduate_status: 'Estado de Graduación'
         admission_type: 'Tipo de Admisión'
         registration_status: 'Estado de Registro'
+        current_permanence_status: 'Estado de Permanencia Actual'
         efficiency: 'Eficiencia'
         weighted_average: 'Promedio Ponderado'
         simple_average: 'Promedio Simple'
@@ -627,16 +715,20 @@ es:
         enabled_enroll_process: 'Permiso especial para inscribir en'
         enrollment_status: 'Estado de Inscripción en la Facultad'
         start_process: 'Periodo de Inicio'
-      address:
-        state: 'Estado'
-        municipality: 'Municipio'
-        city: 'Ciudad'
-        sector: 'Sector'
-        street: 'Calle'
-        house_type: 'Tipo de Vivienda'
-        house_name: 'Nombre de Vivienda'
-        student: 'Estudiante'
+        current_permanece_status: Régimen Actual de Permanencia
+        language1: Idioma 1
+        language2: Idioma 2
+      mention:
+        name: Nombre
+        study_plan: Plan de Estudio
+        subjects: Asignaturas
+        total_required_subjects: Total Asignaturas Requeridas
+      language:
+        name: Nombre
       payment_report:
+        status: Estado
+        student: Estudiante
+        payable: Pagable      
         amount: 'Monto'
         transaction_id: 'Número de Transacción'
         transaction_type: 'Tipo de Transacción'
@@ -646,6 +738,8 @@ es:
         receiving_bank_account: 'Cuenta Receptora'
         voucher: 'Imagen de Comprobante'
         created_at: 'Fecha Registro'
+        owner_account_ci: CI del Titular Cuenta
+        owner_account_name: Nombre del Titular Cuenta
       period:
         year: 'Año'
         period_type: 'Tipo de Período'
@@ -659,10 +753,13 @@ es:
         value: valor
         type_q: Tipo de Calificación
       school:
-        description: Descripción        
-        contact_email: Correo de contacto
+        description: Descripción
         code: 'Código'
         name: 'Nombre'
+        modality: Modalidad
+        mentions: Menciones
+        levels: Niveles
+        short_name: 'Nombre Corto'
         type_entity: 'Tipo de Entidad'
         enable_subject_retreat: 'Activar retiro de Asignturas'
         enable_change_course: 'Activar cambio de Sección'
@@ -671,23 +768,26 @@ es:
         enroll_process: Inscripción en Período
         faculty: 'Facultad'
         periods: 'Períodos'
-        areas: 'Áreas'
+        departaments: Departamentos
+        areas: 'Cátedras'
         bank_accounts: Cuentas Bancarias
         study_plans: Planes de Estudio
         admission_types: Tipos de Admisión
-        boss_name: Nombre del Jefe de Control Estudios
+        have_partial_qualification: ¿Tiene Calificaciones Parciales?
+        have_language_combination: ¿Tiene Combinación de Idiomas?
+
       schedule:
         day: Día
         starttime: Hora Inicio
         endtime: Hora Final
       section:
-        area: 'Área'
+        area: 'Cátedra'
         code: 'Sección'
         capacity: 'Capacidad'
         course: 'Curso (Período/Asignatura)'
         teacher: 'Profesor'
         qualified: '¿Calificada?'
-        modality: 'Tipo'
+        modality: 'Modalidad'
         enabled: 'Activa'
         user: 'Profesor'
         subject: 'Asignatura'
@@ -702,6 +802,7 @@ es:
         students: Estudiantes
         schedules: Horarios
         classroom: 'Aula'
+        secondary_teachers: 'Profesores secundarios'
         created_at: Fecha Creación
         updated_at: Fecha Última Actualización
       student:
@@ -725,31 +826,42 @@ es:
         school: 'Escuela'
         code: 'Código'
         name: 'Nombre'
+        modality: Modalidad
+        levels: Niveles
         subject_types: 'Tipos de Asignatura'
+        requirement_by_subject_types: Requerimientos por Tipo de Asignatura
+        mentions: Menciones
+        structure: Estructura
       subject:
         school: Escuela
+        schools: Escuela
         courses: Cursos
         code: 'Código'
         name: 'Nombre'
         active: 'Activa'
         unit_credits: 'Unidad de Créditos'
-        ordinal: 'Orden'
+        ordinal: 'Nivel'
         qualification_type: 'Tipo de calificación'
-        modality: 'Tipo'
-        area: 'Área'
+        area: 'Cátedra'
+        modality: Modalidad
         prelate_subjects: Prelaciones
         depend_subjects: Asignaturas que prela
         created_at: 'Fecha de Registro'
         updated_at: 'Fecha de Actualización'
+        subject_type: Tipo de Asignatura
       subject_type:
-        study_plan: Plan de Estudio
         name: Nombre
-        code: Letra Identificativa
-        required_credits: Créditos Requeridos 
+        code: Identificador
+        
         created_at: Creado en
         updated_at: Actualizado en
+      requirement_by_subject_type:
+        subject_type: Tipo de Asignatura
+        study_plan: Plan de Estudio
+        required_credits: Créditos Requeridos 
       teacher:
-        area: 'Área'
+        departament: 'Departamento'
+        school: Escuela
         user: 'Usuario'
         created_at: 'Fecha de Registro'
         sections: 'Secciones'
@@ -781,7 +893,26 @@ es:
         profile_picture: 'Foto de Perfil'
         ci_image: 'Imagen de CI'
     scopes:
+      academic_process:
+        Semestral: S
+        Anual: A
+        Intensivo: I
+        Unico: U
+        Consecutivo: C
+
+        S: Semestral
+        A: Anual
+        I: Intensivo
+        U: Unico
+        C: Consecutivo  
+
       academic_record:
+        SC: sin_calificar
+        A: aprobado
+        AP: aplazado
+        RE: retirado
+        PI: perdida_por_inasistencia
+
         sin_calificar: 'Sin Calificar'
         sc: 'Sin Calificar'
         not_sin_calificar: 'Calificados'
@@ -806,13 +937,24 @@ es:
         pi: 'Pérdida por Inasistencia'
         parcial: 'Parciales'
         par: 'Parciales'
+      qualification:
+        ND: diferido
+        NF: final
+        NR: reparacion
+
       section:
-        nota_final: 'Final'
-        equivalencia: 'Equivalencia'
-        equivalencia: 'Equivalencia' 
-        diferido: 'Diferido' 
-        reparacion: 'Reparación'
-        suficiencia: 'Suficiencia'
+        nota_final: NF
+        equivalencia_externa: EE
+        equivalencia_interna: EI 
+        suficiencia: NS
+        reparacion: NR
+        diferido: ND
+        NF: nota_final
+        EE: equivalencia_externa
+        EI: equivalencia_interna
+        NS: suficiencia
+        NR: reparacion
+        ND: diferido
       payment_report:
         transferencia: 'Transferencia'
         efectivo: 'Efectivo'

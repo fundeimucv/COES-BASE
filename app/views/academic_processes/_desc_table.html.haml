@@ -12,15 +12,16 @@
 
   %tbody
     %tr.text-center
-      %td= academic_process.school.short_name
-      %td= academic_process.period.name
-      %td
+      %th= academic_process.school.short_name
+      %th= academic_process.process_name
+      %th
         .label.bg-info= academic_process.modality.titleize
-      %td= academic_process.max_credits
-      %td.text-center= academic_process.max_subjects
-      %td.text-center= academic_process.label_total_enrolls_by_status.html_safe
+      %th= academic_process.max_credits
+      %th.text-center= academic_process.max_subjects
+      - linked = (current_user&.admin&.authorized_read? 'EnrollAcademicProcess')
+      %th.text-center= academic_process.label_total_enrolls_by_status(linked).html_safe
 
 
-      %td.text-center
+      %th.text-center
         - academic_process.label_total_sections.map do |e|
           = e.html_safe

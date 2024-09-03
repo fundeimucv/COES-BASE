@@ -1,9 +1,9 @@
 %h6.titulo Imágenes de Soportes:
-- correo_ayuda = @user.grades.first ? @user.grades.first.school.contact_email : 'coes.fau@gmail.com'
+- correo_ayuda = @user.grades.first ? @user.grades.first.school&.faculty&.contact_email : 'coes.fhe@gmail.com'
 
 .alert.alert-warning
   %b IMPORTANTE: 
-  = "Debido a los inconvenientes de conectividad en el país, recomendamos encarecidamente subir archivos de baja resolución y peso (menores a 3 MegaByte), de ser posible capturas de pantalla. Si al intentar subir el archivo adjunto el sistema genera un error o tarda más de 3 minutos en responder, puede intentar nuevamente el proceso con un archivo más liviano o enviarlo al correo electrónico #{link_to correo_ayuda} para brindarle el apoyo respectivo.".html_safe
+  = "Debido a los inconvenientes de conectividad geenral, recomendamos encarecidamente subir archivos de baja resolución y peso (menores a 3 MegaByte), de ser posible capturas de pantalla. Si al intentar subir el archivo adjunto el sistema genera un error o tarda más de 3 minutos en responder, puede intentar nuevamente el proceso con un archivo más liviano o enviarlo al correo electrónico #{correo_ayuda} para brindarle el apoyo respectivo.".html_safe
 
 = form_tag(update_images_user_path(@user), class: 'form-horizontal') do
   = render partial: 'layouts/image_structure', locals: {objeto: @user.foto_perfil, titulo: 'Foto de Perfil:' , mensaje: "Suba una foto tipo carnet, de frente y con fondo blanco únicamente."}

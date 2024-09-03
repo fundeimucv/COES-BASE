@@ -1,22 +1,39 @@
+# == Schema Information
+#
+# Table name: students
+#
+#  active           :boolean          default(TRUE)
+#  birth_date       :date
+#  disability       :integer
+#  grade_title      :string
+#  grade_university :string
+#  graduate_year    :integer
+#  marital_status   :integer
+#  nacionality      :integer
+#  origin_city      :string
+#  origin_country   :string
+#  sede             :integer          default("Caracas"), not null
+#  created_at       :datetime         not null
+#  updated_at       :datetime         not null
+#  user_id          :bigint           not null, primary key
+#
+# Indexes
+#
+#  index_students_on_user_id  (user_id)
+#
+# Foreign Keys
+#
+#  fk_rails_...  (user_id => users.id)
+#
 class Student < ApplicationRecord
-
-  # SCHEMA:
-  # t.boolean "active", default: true
-  # t.integer "disability"
-  # t.integer "nacionality"
-  # t.integer "marital_status"
-  # t.string "origin_country"
-  # t.string "origin_city"
-  # t.date "birth_date"  
-  # t.string "grade_title"
-  # t.string "grade_university"
-  # t.integer "graduate_year"
+  include Userable
 
   # GLOBALS VARIABLES:
-  ESTADOS_CIVILES = ['Soltero/a', 'Casado/a', 'Concubinato', 'Divorciado/a', 'Viudo/a']
-  NACIONALIDAD = ['Venezolano/a', 'Venezolano/a Nacionalizado/a', 'Extranjero/a']
+  ESTADOS_CIVILES = {'Soltero/a.': 0, 'Casado/a.': 1, 'Concubinato': 2, 'Divorciado/a.': 3, 'Viudo/a.': 4}
+  NACIONALIDAD = {"Venezolano/a": 0, "Extranjero/a": 1, "Venezolano/a. Nacionalizado/a": 2}
+  
 
-  DISCAPACIDADES = ['Sensorial Visual', 'Sensorial Auditiva', 'Motora Miembros Inferiores', 'Motora Medios Superiores', 'Motora Ambos Miembros']
+  DISCAPACIDADES = {'SENSORIAL VISUAL': 0, 'SENSORIAL AUDITIVA': 1, 'MOTORA MIEMBROS INFERIORES': 2, 'MOTORA MIEMBROS SUPERIORES': 3, 'MOTORA AMBOS MIEMBROS': 4, 'OTRO': 5}
 
   SEDES = ['Caracas', 'Barquisimeto']
 
@@ -41,18 +58,19 @@ class Student < ApplicationRecord
   accepts_nested_attributes_for :address
   # has_many
   has_many :grades, dependent: :destroy
-  accepts_nested_attributes_for :grades, reject_if: proc { |attributes| attributes['study_plan_id'].blank? }
+  accepts_nested_attributes_for :grades, reject_if: proc { |attributes| attributes['study_plan_id'].blank? }, allow_destroy: true
 # creates avatar_attributes=
 
   has_many :study_plans, through: :grades
+  has_many :schools, through: :study_plans
   has_many :admission_types, through: :grades
   has_many :enroll_academic_processes, through: :grades
   has_many :academic_records, through: :enroll_academic_processes
 
   # VALIDATIONS:
-  validates :user, presence: true, uniqueness: true
-  validates :grades, presence: true
-  validates :sede, presence: true
+  validates :user, presence: true#, uniqueness: true
+  # validates :grades, presence: true
+  # validates :sede, presence: true
   # validates :nacionality, presence: true, unless: :new_record?
   # validates :marital_status, presence: true, unless: :new_record?
   # validates :origin_country, presence: true, unless: :new_record?
@@ -162,6 +180,10 @@ class Student < ApplicationRecord
   # def before_import_save(row, map)
   #   self.created_nested_items(row, map)
   # end  
+
+  def self.icon_entity
+    'fa-regular fa-user-graduate'
+  end  
   
   rails_admin do
     navigation_label 'Gestión de Usuarios'
@@ -173,11 +195,15 @@ class Student < ApplicationRecord
         inline_add false
       end
 
-      fields :grades, :address do
+      field :grades do
+        active true
+      end
+
+      field :address do
         inline_add false
       end
 
-      fields :sede, :nacionality, :origin_country, :origin_city, :birth_date, :marital_status, :grade_title, :grade_university, :graduate_year
+      fields :nacionality, :origin_country, :origin_city, :birth_date, :marital_status, :disability, :grade_title, :grade_university, :graduate_year
 
     end
 
@@ -188,7 +214,7 @@ class Student < ApplicationRecord
 
       field :grades
 
-      fields :sede, :nacionality, :origin_country, :origin_city, :birth_date, :marital_status, :grade_title, :grade_university, :graduate_year
+      fields :nacionality, :origin_country, :origin_city, :birth_date, :marital_status, :grade_title, :grade_university, :graduate_year
 
     end
 
@@ -199,10 +225,18 @@ class Student < ApplicationRecord
           bindings[:view].render(partial: 'users/personal_data', locals: {user: bindings[:object].user, student_id: bindings[:object].id})
         end
       end
+
+      field :old_coes do
+        label 'Coes v1'
+        formatted_value do
+          bindings[:view].render(partial: 'students/old_student')
+        end          
+      end
+
       field :description_grades do
         label 'Registro Académico'
         formatted_value do
-          bindings[:view].render(partial: 'students/show_admin', locals: {student: bindings[:object]})
+          bindings[:view].render(template: 'students/show', locals: {student: bindings[:object]})
         end
       end
       # fields :user, :grades, :nacionality, :origin_country, :origin_city, :birth_date, :marital_status, :address, :grade_title, :grade_university, :graduate_year, :created_at
@@ -210,8 +244,32 @@ class Student < ApplicationRecord
 
     list do
       search_by :custom_search
+      checkboxes false
+      field :schools do
+        label 'Escuelas'
+        sticky true
+        column_width 120
+        searchable :name
+        sortable :name
+        filterable :name
+        sort_reverse true 
+        associated_collection_cache_all false
+        associated_collection_scope do
+          # bindings[:object] & bindings[:controller] are available, but not in scope's block!
+          Proc.new { |scope|
+            # scoping all Players currently, let's limit them to the team's league
+            # Be sure to limit if there are a lot of Players and order them by position
+            scope = scope.joins(:schools)
+            scope = scope.limit(30) # 'order' does not work here
+          }
+        end
+        pretty_value do
+          value.map(&:short_name).to_sentence
+        end        
+      end
 
       field :user_image_profile do
+        sticky true
         label 'Perfil'
 
         formatted_value do
@@ -226,6 +284,7 @@ class Student < ApplicationRecord
 
 
       field :user_ci do
+        sticky true
         label 'CI'
         pretty_value do
           bindings[:object].user.ci
@@ -251,17 +310,23 @@ class Student < ApplicationRecord
       field :user_first_name do
         label 'Nombres'
       end
-      field :sede
 
       field :address do
-        label 'Ciudad'
-        # associated_collection_cache_all false
-        # associated_collection_scope do
-        #   Proc.new { |scope|
-        #     scope = scope.joins(:address).limit(30)
-        #   }
-        # end
+        label 'Ubicación'
 
+        filterable [:state, :city, :municipality]
+        queryable [:state, :city, :municipality]
+        searchable [:state, :city, :municipality]
+        
+        associated_collection_cache_all false
+        associated_collection_scope do
+          Proc.new { |scope|
+            scope = scope.joins(:address).limit(30)
+          }
+        end
+        pretty_value do
+          value&.name
+        end
       end
 
       field :admission_types do
@@ -278,8 +343,15 @@ class Student < ApplicationRecord
 
       field :created_at
 
-      field :roles do
-        label 'Roles'
+      # field :roles do
+      #   label 'Roles'
+      # end
+
+      field :link_to_reset_password do
+        label 'Opciones'
+        # link_icon do 
+        #   'fa-regular fa-user-cog'
+        # end
       end
 
     end
@@ -336,11 +408,14 @@ class Student < ApplicationRecord
     usuario = User.find_or_initialize_by(ci: row[0])
     
     # Email
+    row[1] = nil if fields[:console]&.eql? true
     if row[1]
       row[1].strip!
       usuario.email = row[1].remove("mailto:")
-    else
-      return [0,0,1]
+    elsif usuario.email.blank?
+      usuario.email = "#{usuario.ci}@mailinator.com"
+    # else
+    #   return [0,0,1]
     end
 
     # Nombres
@@ -371,29 +446,52 @@ class Student < ApplicationRecord
     # Numero Telefónico
     usuario.number_phone = row[5] if row[5]
 
-    if usuario.save!
+    if usuario.save!(validate: false)
       estudiante = Student.find_or_initialize_by(user_id: usuario.id)
 
+      estudiante.birth_date = row[8] if row[8]
+      # p "    Estudiante: #{estudiante.attributes.to_a.to_sentence}    ".center(600, "E")
+
+      new_grade = !estudiante.grades.where(study_plan_id: fields[:study_plan_id]).any?
       grado = estudiante.grades.find_or_initialize_by(study_plan_id: fields[:study_plan_id])
       grado.admission_type_id = fields[:admission_type_id]
-      grado.registration_status = fields[:registration_status]
 
       if estudiante.save!
-        grado = Grade.find_or_initialize_by(student_id: estudiante.id, study_plan_id: fields[:study_plan_id])
-        grado.admission_type_id = fields[:admission_type_id]
-        grado.registration_status = fields[:registration_status]
+        # grado = Grade.find_or_initialize_by(student_id: estudiante.id, study_plan_id: fields[:study_plan_id])
 
         if row[6]
           year, type = row[6].split('-')
-          period = grado.school.academic_processes.joins(:period, :period_type).where('periods.year': year, 'period_types.code': type).first
+          period_type = PeriodType.find_by_code(type)
+          modality = type[2]
+          period = Period.find_or_create_by(year: year, period_type_id: period_type.id)
+
+          modality = AcademicProcess.letter_to_modality modality
+          academic_process = AcademicProcess.where(period_id: period.id, modality: modality, school_id: grado.school.id).first
+
+          if academic_process.nil?
+            academic_process = AcademicProcess.create(period_id: period.id, modality: modality, school_id: grado.school.id, max_credits: 24, max_subjects: 5)
+          end
+
+          grado.start_process_id = academic_process&.id
+
         elsif fields[:start_process_id]
           grado.start_process_id = fields[:start_process_id]
-
         end
-        nuevo_grado = grado.new_record?
+
+        if row[7]
+          if aux_admission = AdmissionType.find_by_code(row[7])
+            grado.admission_type_id = aux_admission&.id
+          end
+        elsif fields[:admission_type_id]
+          grado.admission_type_id = fields[:admission_type_id]
+        else
+          grado.admission_type_id = AdmissionType.first.id
+        end
+
+        # print "AT: <#{grado.admission_type_id}>"
 
         if grado.save
-          if nuevo_grado
+          if new_grade
             total_newed = 1
           else
             total_updated = 1

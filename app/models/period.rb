@@ -1,7 +1,19 @@
+# == Schema Information
+#
+# Table name: periods
+#
+#  id             :bigint           not null, primary key
+#  name           :string
+#  year           :integer          not null
+#  created_at     :datetime         not null
+#  updated_at     :datetime         not null
+#  period_type_id :bigint
+#
+# Indexes
+#
+#  index_periods_on_period_type_id  (period_type_id)
+#
 class Period < ApplicationRecord
-	#SCHEMA:
-    # t.integer "year", null: false
-    # t.string "name"
 	
 	#ASSOCIATIONS:
 	# belongs_to
@@ -9,12 +21,14 @@ class Period < ApplicationRecord
 
 	# has_many:
 	has_many :academic_processes, dependent: :destroy
+	has_many :courses, through: :academic_processes
 	has_many :schools, through: :academic_processes
 	has_many :enroll_academic_processes, through: :academic_processes
 
 	# VALIDATIONS:
 	validates :year, presence: true
-	validates :year, numericality: {only_integer: true, greater_than_or_equal_to: 1920, less_than_or_equal_to: 2100}
+	validates :year, numericality: {only_integer: true, greater_than_or_equal_to: 1900, less_than_or_equal_to: 2100}
+
 	validates :period_type, presence: true
 	validates_uniqueness_of :year, scope: [:period_type], message: 'Periodo existente', field_name: false
 
@@ -27,15 +41,15 @@ class Period < ApplicationRecord
 
 
 	def name_revert
-		"#{period_type.code.upcase}#{year}" if period_type
+		"#{period_type&.code&.upcase}#{year}"
 	end
 
 	def get_name
-		"#{year}-#{period_type.code.upcase}" if period_type
+		"#{year}-#{period_type&.code&.upcase}"
 	end
 
 	def period_type_name
-		period_type.name if period_type
+		period_type&.name
 	end
 
   rails_admin do
@@ -44,7 +58,8 @@ class Period < ApplicationRecord
     visible false
 
     list do 
-			field :name
+		sort_by [:year]
+		field :name
     end
 
     edit do

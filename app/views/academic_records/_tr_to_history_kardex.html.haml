@@ -1,0 +1,11 @@
+%tr{class: @academic_record.tr_class_by_status_q, style: 'padding: 3px'}
+  %td= @subject.code
+  %td.text-start{style: 'padding-left: 10px; width: 500px'}= @academic_record.subject_name_with_pci
+  %td= @subject.unit_credits
+  %td= @subject.modality_initial_letter
+  %td= @academic_record.section.code
+  %td= obj.conv_type
+  %td= obj.value_to_02i
+  %td= obj.desc_conv
+ 
+

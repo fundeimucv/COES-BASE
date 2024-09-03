@@ -15,13 +15,15 @@
 
 %ul#myTab.nav.nav-tabs{role: "tablist"}
   %li.nav-item{role: "presentation"}
-    %button#otherGrades-tab.nav-link{"aria-controls": "otherGrades", "aria-selected": true, "data-bs-target": "#otherGrades", "data-bs-toggle": :tab, role: :tab, type: "button", title: "#{grades_others.count} Estudiante(s) que no aplican a Nueva Jornada por Cita Horaria"}
-      .label.bg-info.text-dark= grades_others.count
-      No Aplican
+    %div{'data-bs-toggle': :tooltip, title: "#{grades_others.count} Estudiante(s) que no aplican a Nueva Jornada por Cita Horaria"}
+      %button#otherGrades-tab.nav-link{"aria-controls": "otherGrades", "aria-selected": true, "data-bs-target": "#otherGrades", "data-bs-toggle": :tab, role: :tab, type: "button"}
+        .label.bg-info.text-dark= grades_others.count
+        No Aplican
   %li.nav-item{role: "presentation"}
-    %button#withoutAppointment-tab.nav-link.active{"aria-controls": "withoutAppointment", "aria-selected": true, "data-bs-target": "#withoutAppointment", "data-bs-toggle": :tab, role: :tab, type: "button", title: "#{total_grades} Estudiante(s) válido(s) para aplicar en Nueva Jornada"}
-      .label.bg-info.text-dark= total_grades
-      Válidos para Aplicar
+    %div{'data-bs-toggle': :tooltip, title: "#{total_grades} Estudiante(s) válido(s) para aplicar en Nueva Jornada"}
+      %button#withoutAppointment-tab.nav-link.active{"aria-controls": "withoutAppointment", "aria-selected": true, "data-bs-target": "#withoutAppointment", "data-bs-toggle": :tab, role: :tab, type: "button"}
+        .label.bg-info.text-dark= total_grades
+        Válidos para Aplicar
 
   - enrollment_days.each do |day|
     %li.nav-item{role: "presentation"}
@@ -45,7 +47,7 @@
 
     - if grades_without_appointment&.any?
       %h6.text-center.alert.alert-warning
-        = "Estudiantes sin Cita Horaria e Inscritos en el periodo anterior: <b>#{academic_process.process_before.period_name}</b> de <b>#{academic_process.school.short_name}</b>".html_safe
+        = "Estudiantes sin Cita Horaria e Inscritos en el periodo anterior: <b>#{academic_process&.process_before&.process_name}</b> de <b>#{academic_process.school.short_name}</b>".html_safe
       = render partial: '/enrollment_days/grades', locals: {grades: grades_without_appointment, academic_process: academic_process}
     - else
       %h5.alert.alert-info Sin estudiantes pendientes por asignar Cita Horaria  

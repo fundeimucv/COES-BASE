@@ -1,0 +1,56 @@
+
+-# "env_auths_attributes"=>{"0"=>{"env_authorizable_type"=>"School", "env_authorizable_id"=>"11", "id"=>"1"}, "1720117356620"=>{"_destroy"=>"false", "env_authorizable_type"=>"School", "env_authorizable_id"=>"10"}}
+
+
+.btn-group.btn-group-toggle.col-4{"data-toggle" => "buttons"}
+    %label.btn.btn-secondary{for: "env_auths_attributes_env_authorizable_type_School"}
+        %input{id: "env_auths_attributes_env_authorizable_type_School", name: "env_auths_attributes[env_authorizable_type]", type: "radio", value: 'School'}
+        - #, checked: ('School'.eql? @object.attributes[field_name])}
+        Escuela
+    %label.btn.btn-secondary{for: "env_auths_attributes_env_authorizable_type_Departament"}
+        %input{id: "env_auths_attributes_env_authorizable_type_Departament", name: "env_auths_attributes[env_authorizable_type]", type: "radio", value: 'Departament'}
+        Departamento
+
+- if false
+    = radio_button "env_auths_attributes", "env_authorizable_type", 'School', class: 'btn-check'
+    %label.btn.btn-secondary{for: "env_auths_attributes_env_authorizable_type_School"} Escuela
+
+    = radio_button "env_auths_attributes", "env_authorizable_type", 'Departament', class: 'btn-check'
+    %label.btn.btn-secondary{for: "env_auths_attributes_env_authorizable_type_Departament"} Departamento
+
+- if false 
+    - if false 
+        - school = School.find(params[:school_id])
+        .form-control.mb-3= school.short_name
+        = hidden_field 'subject', 'school_id', value: params[:school_id]
+        - dpts = school.departaments
+        = collection_select 'departament_id', nil, dpts, :id, :name, {include_blank: 'Seleccione...'}, {class: 'input-group form-control required', required: true, onChange: 'set_catedras();'}
+    - else 
+        = collection_select 'subject', 'school_id', School.all, :id, :short_name, {include_blank: 'Seleccione Escuela...'}, {class: 'form-control required', required: true, onChange: 'set_departaments();'}
+        =# collection_select 'departament_id', nil, Departament.all, :id, :name, {include_blank: 'Seleccione...'}, {class: 'input-group form-control required', required: true, onChange: 'set_catedras();'}
+        = grouped_collection_select :departament_id, nil, School.all, :departaments, :short_name, :id, :name, {prompt: "Seleccione Departamento..."}, { class: "form-control mt-3", disabled: true, readonly: true, required: false, onChange: 'set_catedras();'}
+    :javascript
+        set_departaments = () => {
+            let school = $('#subject_school_id option:selected').text();
+            let departament_id = $('#departament_id_');
+            $('#departament_id_ optgroup').hide();
+            departament_id.attr('disabled', false);
+            departament_id.attr('readonly', false);
+            departament_id.attr('required', true);
+            departament_id.prop('selectedIndex', 0);
+            $("#departament_id_ optgroup[label='" + school + "']").show();
+        }
+
+
+        set_catedras = () => {
+            let dpt = $('#departament_id_ option:selected').text();
+            let subject_area_id = $('#subject_area_id');
+            $('#subject_area_id optgroup').hide();
+            subject_area_id.attr('disabled', false);
+            subject_area_id.attr('readonly', false);
+            subject_area_id.attr('required', true);
+            subject_area_id.prop('selectedIndex', 0);
+            console.log(dpt);
+            $("#subject_area_id optgroup[label='" + dpt + "']").show();
+        }
+        

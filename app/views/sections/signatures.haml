@@ -1,3 +1,6 @@
+<meta charset="utf-8" />
+= wicked_pdf_stylesheet_link_tag "pdf"
+=# wicked_pdf_asset_pack_path "pdf"
 .signature
   %br
   .font-title.text-center FACULTAD
@@ -14,7 +17,7 @@
         %th FIRMAS
         %th 
       %tr{style: 'height:40px'}
-        %th _________________________________
+        %th= teacher.blank? ? '______________________' : teacher
         %th ______________________
         %th NOMBRE ______________________        
       %tr{style: 'height:40px'}
