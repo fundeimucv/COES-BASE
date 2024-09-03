@@ -407,20 +407,20 @@ class AcademicProcess < ApplicationRecord
 
       field :post_qualification do
         label '¿Califi Post?'
+
         pretty_value do
-          pretty_value do
-            if GeneralSetup.enabled_post_qualification?
-              current_user = bindings[:view]._current_user
-              if current_user&.admin&.authorized_manage? 'AcademicProcess'
-                bindings[:view].render(partial: "/academic_processes/active_process", locals: {academic_process: bindings[:object], mode: 'post_qualification'})
-              else
-                bindings[:object].label_post_q&.html_safe
-              end
+          if GeneralSetup.enabled_post_qualification?
+            current_user = bindings[:view]._current_user
+            if current_user&.admin&.authorized_manage? 'AcademicProcess'
+              bindings[:view].render(partial: "/academic_processes/active_process", locals: {academic_process: bindings[:object], mode: 'post_qualification'})
             else
-              nil
+              bindings[:object].label_post_q&.html_safe
             end
+          else
+            nil
           end
         end
+
       end
 
       field :total_sections do
