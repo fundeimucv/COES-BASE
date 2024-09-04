@@ -280,6 +280,11 @@ class AcademicRecord < ApplicationRecord
     course.offer_as_pci? and !(section.academic_process.id.eql? enroll_academic_process.academic_process.id)
   end
 
+
+  def qualified?
+    !(status.eql? :sin_calificar)
+  end
+
   def student_name_with_pci_badge
     aux = "#{user.reverse_name}"
     aux = " <div class='badge bg-warning text-dark'>PCI - #{school.code}</div> "+aux if student_pci?
@@ -1009,7 +1014,7 @@ class AcademicRecord < ApplicationRecord
 
   def set_options_q_and_update_status_enroll
     set_options_q
-    self.enroll_academic_process.update(permanence_status: ) if is_last_academic_record_qualified_of_enroll?
+    self.enroll_academic_process.update(permanence_status: enroll_academic_process.get_regulation) if is_last_academic_record_qualified_of_enroll?
   end
   def set_options_q
     self.qualifications.destroy_all if (self.pi? or self.retirado? or self.sin_calificar? or (self.subject&.absoluta?))
@@ -1025,7 +1030,8 @@ class AcademicRecord < ApplicationRecord
   end
 
   def is_last_academic_record_qualified_of_enroll?
-    !self.enroll_academic_process.academic_records.sin_calificar.any?
+    other_academic_records_of_enroll = enroll_academic_process.academic_records
+    other_academic_records_of_enroll.any? and !other_academic_records_of_enroll.sin_calificar.any?
   end  
 
   def paper_trail_update

@@ -2,6 +2,19 @@ def print_error e
 	p "     ERROR: <#{e}>     ".center 800, '!'
 end
 
+desc "Actualizar estados de permanencia"
+task :update_permanece_status => :environment do
+	Grade.all.each do |grade|
+		grade.enroll_academic_processes.joins(:period).order('periods.year': :asc).each do |eap|
+			print eap.update(permanence_status: eap.get_regulation) ? '√' : "X(#{eap.id})"
+
+		end
+	end
+rescue Exception => e
+	print_error e
+end
+
+
 desc "Migrar Departamentos"
 task :migrate_departamento => :environment do
 	begin

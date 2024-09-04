@@ -107,7 +107,9 @@ class EnrollAcademicProcess < ApplicationRecord
   scope :sin_reporte_de_pago, -> {without_payment_report}
   
   scope :total_with_payment_report, -> {with_payment_report.count}
-  scope :total_without_payment_report, -> {without_payment_report.count}  
+  scope :total_without_payment_report, -> {without_payment_report.count}
+  
+  scope :qualfied_complety, -> {joins(:academic_records).where('academic_records.status != 0')}
   def total_retire?
     academic_records.any? and (academic_records.count.eql? academic_records.retirado.count)
   end
@@ -153,6 +155,9 @@ class EnrollAcademicProcess < ApplicationRecord
     end
   end
 
+  def get_permanece_status
+    get_regulation
+  end
   def get_regulation
     if permiso_para_no_cursar?
       reglamento_aux = :permiso_para_no_cursar
@@ -166,10 +171,10 @@ class EnrollAcademicProcess < ApplicationRecord
         if coursed_but_not_approved_any?
           reglamento_aux = :articulo3
           iep_anterior = self.before_enrolled
-          if iep_anterior&.coursed_but_not_approved_any?
+          if iep_anterior&.articulo3?
             reglamento_aux = :articulo6
             iep_anterior2 = iep_anterior.before_enrolled
-            if iep_anterior2&.coursed_but_not_approved_any?
+            if iep_anterior2&.articulo6?
               reglamento_aux = :articulo7
             end
           end
@@ -187,80 +192,32 @@ class EnrollAcademicProcess < ApplicationRecord
     academic_records.any? and (academic_records.count.eql? academic_records.qualified.count)
   end
 
-  def before_enrolled
-    
-    if before_process = self.academic_process.process_before
-      EnrollAcademicProcess.where(grade_id: self.grade_id, academic_process_id: before_process.id).first
-    end
+  def fully_qualified?
+    finished?
   end
 
-  def before_enroll
+  def before_enrolled
     process_before_id = academic_process&.process_before_id
     process_before_id ? grade.enroll_academic_processes.where(academic_process_id: process_before_id).first : nil
   end
 
-  # def before_permanece_status
-  #   before_enroll ? before_enroll.permanence_status : nil
+  # ------------- BORRAR -------------- # 
+  # Traido de COES V1
+  # reglamento_aux = :regular
+  # if inscribio_pero_no_aprobo_ninguna?
+  #   reglamento_aux = :articulo_3
+  #   iep_anterior = self.anterior_iep
+  #   if iep_anterior and iep_anterior.inscribio_pero_no_aprobo_ninguna?
+  #     reglamento_aux = :articulo_6
+  #     iep_anterior2 = iep_anterior.anterior_iep
+  #     if iep_anterior2 and iep_anterior2.inscribio_pero_no_aprobo_ninguna?
+  #       reglamento_aux = :articulo_7
+  #     end
+  #   end
   # end
-
-  def set_permanence_status
-    if before_enrollbefore_permanece_status
-  end
+  # return reglamento_aux
 
   # ------------- BORRAR -------------- # 
-  reglamento_aux = :regular
-  if inscribio_pero_no_aprobo_ninguna?
-    reglamento_aux = :articulo_3
-    iep_anterior = self.anterior_iep
-    if iep_anterior and iep_anterior.inscribio_pero_no_aprobo_ninguna?
-      reglamento_aux = :articulo_6
-      iep_anterior2 = iep_anterior.anterior_iep
-      if iep_anterior2 and iep_anterior2.inscribio_pero_no_aprobo_ninguna?
-        reglamento_aux = :articulo_7
-      end
-    end
-  end
-  return reglamento_aux
-
-  # ------------- BORRAR -------------- # 
-  
-  def get_permanece_status
-    aux = get_direct_permanence_status
-
-    if aux.eql? :articulo3
-      if before_enroll&.not_pass_any?
-
-        before_before_enroll = before_enroll.before_enroll
-        aux = (before_before_enroll&.get_direct_permanence_status.eql? :articulo3) ? :articulo7 : :articulo6
-
-  end
-  def get_direct_permanence_status
-    # [:nuevo, :regular, :reincorporado, :articulo3, :articulo6, :articulo7, :intercambio, :desertor, :egresado, :egresado_doble_titulo, :permiso_para_no_cursar]  
-    if before_enroll.nil?
-      # ATENCIÓN: Requiere haber agregado todos los históricos de Procesos Académicos anteriores
-      :nuevo
-    elsif not_pass_any?
-
-      process_before_id = academic_process&.process_before_id
-      if process_before_id
-        aux = before_enroll
-        if aux
-          process_before_before_id = aux.academic_process&.process_before_id
-        else
-        end
-      else
-      end
-    
-
-      aux = before_enroll
-      if aux
-        aux2 = aux.before_enroll
-      else
-        :articulo3
-    else
-      :regular
-    end
-  end
 
   def not_pass_any?
     (academic_records.any? and !academic_records.aprobado.any?)

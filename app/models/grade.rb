@@ -149,6 +149,27 @@ class Grade < ApplicationRecord
   scope :custom_search, -> (keyword) { joins(:user, :school).where("users.ci ILIKE '%#{keyword}%' OR schools.name ILIKE '%#{keyword}%'") }
 
   # FUNCTIONS:
+  # Current_permanece_status
+
+  def get_current_permanence_status
+    # current_permanence_status: nuevo: 0, regular: 1, reincorporado: 2, articulo3: 3
+    # articulo6: 4, articulo7: 5, intercambio: 6, desertor: 7, egresado: 8, 
+    # egresado_doble_titulo: 8, permiso_para_no_cursar: 9
+
+    if is_new?
+      :nuevo
+    elsif current_process = self.school.academic_process.first
+      before_eap = self.enroll_academic_processes.where(academic_process_id: current_process.id)
+      if before_eap.nil? 
+        :reincorporado
+      else
+        before_eap.permanence_status
+      end
+    else
+      :regular
+    end
+  
+  end
 
 
   # Import's Functions:
