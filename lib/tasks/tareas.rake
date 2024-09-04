@@ -4,9 +4,11 @@ end
 
 desc "Actualizar estados de permanencia"
 task :update_permanece_status => :environment do
-	Grade.all.each do |grade|
-		grade.enroll_academic_processes.joins(:period).order('periods.year': :asc).each do |eap|
-			print eap.update(permanence_status: eap.get_regulation) ? '√' : "X(#{eap.id})"
+	School.pregrado.each do |escuela|
+		escuela.grades.each do |grade|
+			grade.enroll_academic_processes.joins(:period).order('periods.year': :asc).each do |eap|
+				print eap.update(permanence_status: eap.get_regulation) ? '√' : "X(#{eap.id})"
+			end
 
 		end
 	end
