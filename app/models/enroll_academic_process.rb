@@ -169,10 +169,10 @@ class EnrollAcademicProcess < ApplicationRecord
         if coursed_but_not_approved_any?
           reglamento_aux = :articulo3
           iep_anterior = self.before_enrolled
-          if iep_anterior&.articulo3?
+          if iep_anterior&.coursed_but_not_approved_any?
             reglamento_aux = :articulo6
             iep_anterior2 = iep_anterior.before_enrolled
-            if iep_anterior2&.articulo6?
+            if iep_anterior2&.coursed_but_not_approved_any?
               reglamento_aux = :articulo7
             end
           end
