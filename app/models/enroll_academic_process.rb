@@ -165,8 +165,6 @@ class EnrollAcademicProcess < ApplicationRecord
       reglamento_aux = :regular
       if !(self.grade.academic_records.qualified.any?)
         reglamento_aux = :nuevo
-      elsif total_retire?
-        reglamento_aux = :desertor
       elsif self.academic_records.coursed.any?
         if coursed_but_not_approved_any?
           reglamento_aux = :articulo3
