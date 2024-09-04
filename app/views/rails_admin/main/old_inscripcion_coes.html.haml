@@ -12,6 +12,6 @@
 
     %h5.bg-light.text-center.p-2.mb-3=@object.name
     - if con_inscripciones
-        = render partial: '/grades/old_inscripcion_coes_index'
+        = render partial: '/grades/old_inscripcion_coes_index', locals: {inscripciones: @object.grado&.inscripciones}
     - else
         %p.text-center.alert.alert-warning Sin Inscriciones en COES V1        
