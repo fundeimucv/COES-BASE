@@ -332,7 +332,7 @@ class User < ApplicationRecord
       field :email
 
       field :first_name do
-        help 'Ningún caracater especial será guardado, expectuando la letra Ñ y cualquier tipo de acento'
+        help 'Ningún caracater especial será guardado, exceptuando la letra Ñ y cualquier tipo de acento'
         # OJO: SE LIMPIA EN EL SERVIDOR ANTES DE GUARDAR
         # html_attributes do
         #   {:onInput => "$(this).val($(this).val().toUpperCase().replace(#{regexp_español3},''))"}
@@ -340,7 +340,7 @@ class User < ApplicationRecord
       end
 
       field :last_name do
-        help 'Ningún caracater especial será guardado, expectuando la letra Ñ y cualquier tipo de acento'
+        help 'Ningún caracater especial será guardado, exceptuando la letra Ñ y cualquier tipo de acento'
         # OJO: SE LIMPIA EN EL SERVIDOR ANTES DE GUARDAR
         # html_attributes do
         #   {:onInput => "$(this).val($(this).val().toUpperCase().replace(#{regexp_español3},''))"}
