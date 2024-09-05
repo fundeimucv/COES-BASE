@@ -60,7 +60,7 @@ class EnrollAcademicProcess < ApplicationRecord
   # ENUMERIZE:
   # IDEA CON ESTADO DE INSCRIPCIÓN EN GRADE Y ENROLL ACADEMIC PROCESS
   enum enroll_status: [:preinscrito, :reservado, :confirmado]
-  enum permanence_status: [:nuevo, :regular, :reincorporado, :articulo3, :articulo6, :articulo7, :intercambio, :desertor, :egresado, :egresado_doble_titulo, :permiso_para_no_cursar]  
+  enum permanence_status: [:nuevo, :regular, :reincorporado, :articulo3, :articulo6, :articulo7, :intercambio, :desertor, :egresado, :egresado_doble_titulo, :permiso_para_no_cursar, :retiro_total]  
 
   # VALIDATIONS:
   validates :grade, presence: true
@@ -165,6 +165,8 @@ class EnrollAcademicProcess < ApplicationRecord
       reglamento_aux = :regular
       if !(self.grade.academic_records.qualified.any?)
         reglamento_aux = :nuevo
+      elsif total_retire?
+        reglamento_aux = :retiro_total
       elsif self.academic_records.coursed.any?
         if coursed_but_not_approved_any?
           reglamento_aux = :articulo3
