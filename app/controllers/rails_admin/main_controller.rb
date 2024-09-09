@@ -26,7 +26,8 @@ module RailsAdmin
         if (@abstract_model.to_s.eql? 'Departament' and session[:env_type].eql? 'Departament') or (@abstract_model.to_s.eql? 'School' and session[:env_type].eql? 'School')          
           scope = scope.where(id: session[:env_ids]) 
         else
-          if current_admin&.jefe_control_estudio? 
+          p "     Controller: #{controller_name} | #{action_name} | #{@abstract_model} | #{model_config.abstract_model}      ".center(2000, "$")
+          if @abstract_model.to_s.eql? 'AcademicProcess' and model_config.abstract_model.to_s.eql? 'Period' and action_name.eql? 'new'
             schoolables = ['Subject', 'Teacher', 'StudyPlan', 'Departament', 'EnrollAcademicProcess', 'PaymentReport', 'Grade', 'Area', 'Section', 'Course', 'AcademicRecord']
           else
             schoolables = ['Subject', 'Teacher', 'StudyPlan', 'Departament', 'AcademicProcess', 'EnrollAcademicProcess', 'PaymentReport', 'Grade', 'Area', 'Section', 'Course', 'AcademicRecord']
