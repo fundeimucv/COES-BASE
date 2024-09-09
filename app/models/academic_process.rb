@@ -59,7 +59,7 @@ class AcademicProcess < ApplicationRecord
   has_many :subjects, through: :courses
 
   # ENUMERIZE:
-  enum modality: [:Semestral, :Anual, :Intensivo, :Unico, :Consecutivo]
+  enum modality: [:Semestral, :Anual, :Intensivo, :Unico, :Componente]
 
   #VALIDATIONS:
   validates :school, presence: true

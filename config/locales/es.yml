@@ -898,13 +898,13 @@ es:
         Anual: A
         Intensivo: I
         Unico: U
-        Consecutivo: C
+        Componente: C
 
         S: Semestral
         A: Anual
         I: Intensivo
         U: Unico
-        C: Consecutivo  
+        C: Componente  
 
       academic_record:
         SC: sin_calificar
