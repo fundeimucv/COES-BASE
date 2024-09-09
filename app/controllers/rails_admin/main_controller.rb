@@ -26,7 +26,11 @@ module RailsAdmin
         if (@abstract_model.to_s.eql? 'Departament' and session[:env_type].eql? 'Departament') or (@abstract_model.to_s.eql? 'School' and session[:env_type].eql? 'School')          
           scope = scope.where(id: session[:env_ids]) 
         else
-          schoolables = ['Subject', 'Teacher', 'StudyPlan', 'Departament', 'AcademicProcess', 'EnrollAcademicProcess', 'PaymentReport', 'Grade', 'Area', 'Section', 'Course', 'AcademicRecord']
+          if current_admin&.jefe_control_estudio? 
+            schoolables = ['Subject', 'Teacher', 'StudyPlan', 'Departament', 'EnrollAcademicProcess', 'PaymentReport', 'Grade', 'Area', 'Section', 'Course', 'AcademicRecord']
+          else
+            schoolables = ['Subject', 'Teacher', 'StudyPlan', 'Departament', 'AcademicProcess', 'EnrollAcademicProcess', 'PaymentReport', 'Grade', 'Area', 'Section', 'Course', 'AcademicRecord']
+          end
           departamentables = ['Teacher', 'Area']
           if session[:env_type]&.to_s.eql? 'Departament'
             if departamentables.include? @abstract_model.to_s
