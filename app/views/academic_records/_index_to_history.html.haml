@@ -3,7 +3,7 @@
 - study_plan = academic_records.first&.study_plan
 - level_desc = study_plan ? study_plan.modality_to_tipo_short : "Año/Sem"
 .responsive-table
-  %table.table.table-sm.table-striped.table-hover
+  %table.table.table-sm.table-hover
     %thead
       %tr
         - if (current_user&.admin&.yo?)
