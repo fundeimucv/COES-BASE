@@ -26,7 +26,7 @@ module RailsAdmin
         if (@abstract_model.to_s.eql? 'Departament' and session[:env_type].eql? 'Departament') or (@abstract_model.to_s.eql? 'School' and session[:env_type].eql? 'School')          
           scope = scope.where(id: session[:env_ids]) 
         else
-          p "     Controller: #{controller_name} | #{action_name} | #{@abstract_model} | #{model_config.abstract_model}      ".center(2000, "$")
+          # p "     Controller: #{controller_name} | Action: #{action_name} | @abstract_model: #{@abstract_model} | model_config.abstract_model: #{model_config.abstract_model}      ".center(2000, "$")
           if @abstract_model.to_s.eql? 'AcademicProcess' and model_config.abstract_model.to_s.eql? 'Period' and action_name.eql? 'new'
             schoolables = ['Subject', 'Teacher', 'StudyPlan', 'Departament', 'EnrollAcademicProcess', 'PaymentReport', 'Grade', 'Area', 'Section', 'Course', 'AcademicRecord']
           else
@@ -56,7 +56,7 @@ module RailsAdmin
 
             elsif schoolables.include? @abstract_model.to_s and schoolables.include? model_config.abstract_model.to_s
               scope = scope.joins(:school).where('schools.id': session[:env_ids])
-            elsif (schoolables << 'School').include? @abstract_model.to_s
+            elsif (schoolables << 'School').include? @abstract_model.to_s and (schoolables << 'School').include? model_config.abstract_model.to_s
               scope = scope.joins(:school).where('schools.id': [])
             end
           end
