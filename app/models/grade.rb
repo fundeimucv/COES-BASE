@@ -83,7 +83,7 @@ class Grade < ApplicationRecord
   enum registration_status: {pendiente: 0, secretaria: 1, facultad: 2, escuela: 3}
   enum enrollment_status: {preinscrito: 0, asignado: 1, confirmado: 2}
   enum graduate_status: {cursante: 0, tesista: 1, posible_graduando: 2, graduando: 3, graduado: 4, postgrado: 5}
-  enum current_permanence_status: {nuevo: 0, regular: 1, reincorporado: 2, articulo3: 3, articulo6: 4, articulo7: 5, intercambio: 6, desertor: 7, egresado: 8, egresado_doble_titulo: 8, permiso_para_no_cursar: 9}
+  enum current_permanence_status: {nuevo: 0, regular: 1, reincorporado: 2, articulo3: 3, articulo6: 4, articulo7: 5, intercambio: 6, desertor: 7, egresado: 8, egresado_doble_titulo: 8, permiso_para_no_cursar: 9, retiro_total: 10}
   enum region: {no_aplica: 0, amazonas: 1, barcelona: 2, barquisimeto: 3, bolivar: 4, capital: 5}
 
 
