@@ -123,6 +123,19 @@ class Subject < ApplicationRecord
   end
 
   # GENERALS FUNCTIONS: 
+  
+  def enroll_desc_ordinal
+    case ordinal
+    when 1..12
+      "#{ordinal}º"
+    else
+      '--'
+    end
+  end
+
+  def enroll_desc_type
+    subject_type&.code[0..2]&.upcase
+  end
   def ordinal_to_cardinal_short
 
     case ordinal

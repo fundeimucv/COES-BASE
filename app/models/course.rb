@@ -89,6 +89,10 @@ class Course < ApplicationRecord
     sections.count
   end
 
+  def subject_desc
+    self.subject.description_code
+  end
+
   def subject_desc_with_pci
     if offer_as_pci
       self.subject.description_code_with_school

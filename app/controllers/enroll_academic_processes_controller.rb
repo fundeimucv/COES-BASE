@@ -75,9 +75,12 @@ class EnrollAcademicProcessesController < ApplicationController
       if (params[:section_id] and !params[:section_id].blank?)
         # INSCRIBIR EN SECCIÓN
         section = Section.find params[:section_id]
+        
+        
         # grade = Grade.find params[:grade_id]
         course = section.course
-        academic_process = course.academic_process
+        academic_process = AcademicProcess.where(id: params[:academic_process_id]).first
+
         limit_credits = academic_process.max_credits
         limit_subjects = academic_process.max_subjects
 

@@ -25,20 +25,6 @@ class AcademicRecord < ApplicationRecord
   # ENUMERIZE:
   enum status: {sin_calificar: 0, aprobado: 1, aplazado: 2, retirado: 3, perdida_por_inasistencia: 4}
 
-  # HISTORY:
-  has_paper_trail on: [:create, :destroy, :update]
-
-  before_create :paper_trail_create
-  before_destroy :paper_trail_destroy
-  before_update :paper_trail_update
-
-  before_save :set_school_id
-
-  def set_school_id
-    school_id = school&.id
-  end
-
-
   # ASSOCIATIONS:
   belongs_to :section
   belongs_to :enroll_academic_process
@@ -81,8 +67,19 @@ class AcademicRecord < ApplicationRecord
   # OJO: Se usó este validador en luegar del de arriba para poder espeficificar el mensaje
   validates_presence_of :qualifications, message: "Calificación no puede estar en blanco. Si desea eliminar la calificación, coloque el estado de calificación a 'Sin Calificar'", if: lambda{ |object| (object.subject.present? and object.subject.numerica? and (object.aprobado? or object.aplazado?))}
 
+  # HISTORY:
+  has_paper_trail on: [:create, :destroy, :update]
+
   # CALLBACK
+  before_create :paper_trail_create
+  before_destroy :paper_trail_destroy
+  before_update :paper_trail_update
+  
   after_save :set_options_q_and_update_status_enroll
+  before_save :set_school_id
+  def set_school_id
+    school_id = school&.id
+  end
 
   before_save :set_status_by_EQ_modality_section
   # after_save :update_status_q_and_grades
@@ -279,7 +276,6 @@ class AcademicRecord < ApplicationRecord
   def student_pci?
     course.offer_as_pci? and !(section.academic_process.id.eql? enroll_academic_process.academic_process.id)
   end
-
 
   def qualified?
     !(status.eql? :sin_calificar)

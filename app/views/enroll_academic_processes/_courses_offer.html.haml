@@ -17,11 +17,10 @@
         %th.headers{style: 'width: 56%', scope: :col}
           .input-group.input-group-sm{style: 'width: 100%;'}
             %span.badge.bg-dark.align-middle{'data-bs-toggle': :tooltip, title: 'Total asignaturas disponibles'}= courses.count
-            %span#inputGroup-sizing-sm.input-group-text 
-              = "Asignaturas:"
-            %input.form-control{"aria-describedby": "inputGroup-sizing-sm", "aria-label": "", type: "text", onkeyup: "filterSections(this, '#{idTable}');", placeholder: 'Buscar', autofocus: true, id: "filter#{idTable}", name: "filter#{idTable}"}
+            %input.form-control{"aria-describedby": "inputGroup-sizing-sm", "aria-label": "", type: "text", onkeyup: "filterSections(this, '#{idTable}');", placeholder: 'Buscar Asignatura', autofocus: true, id: "filter#{idTable}", name: "filter#{idTable}"}
 
-        %th.headers{style: 'width: 5%', scope: :col}= "(Sem/Año)"
+        %th.headers{style: 'width: 5%', scope: :col} Tipo
+        %th.headers{style: 'width: 5%', scope: :col} (Sem/Año)
         %th.headers{style: 'width: 5%', scope: :col} Créd
         %th.text-center.headers{style: 'width: 30%;', scope: :col} Sección
     %tbody
@@ -49,12 +48,13 @@
           %tr{class: "#{trStatus}"}
             %td.align-middle.text-right= i+1
             %td.align-middle
-              = course.subject_desc_with_pci
+              = pcis ? course.subject_desc_with_pci : course.subject_desc
               = ac.badge_approved.html_safe if ac&.badge_approved
               = ac.badge_status.html_safe if ac&.retirado?
 
-            %td.align-middle.text-center= "#{subject.ordinal}º"
-            %td.align-middle.text-center= subject.unit_credits
+            %td.align-middle.text-center= subject&.enroll_desc_type
+            %td.align-middle.text-center= subject&.enroll_desc_ordinal
+            %td.align-middle.text-center= subject&.unit_credits
             %td.align-middle.pl-3
               - unless approved
                 - if ac&.retirado?
@@ -63,7 +63,7 @@
                   - sections = sections.select{|s| s.has_capacity? or s.has_academic_record? @grade.student_id or s.id.eql? section_id}
                   - disable_promt = ''
                   - if sections.any?
-                    = collection_select("sections", nil, sections, :id, :description_with_quotes, {selected: section_id, include_blank: 'Seleccione sección o libere cupo'}, {class: "form-control selectInscripcion", style: 'width: 100%', titulo: subject.desc_to_select, credits: subject.unit_credits, gradeId: @grade.id, courseId: course.id, pci: pcis, onchange: "selected(this);", name: "sections_course_id_#{course.id}", id: "sections_course_id_#{course.id}"})
+                    = collection_select("sections", nil, sections, :id, :description_with_quotes, {selected: section_id, include_blank: 'Seleccione sección o libere cupo'}, {class: "form-control selectInscripcion", style: 'width: 100%', titulo: subject.desc_to_select, credits: subject.unit_credits, gradeId: @grade.id, courseId: course.id, academicProcessId: academic_process_id, pci: pcis, onchange: "selected(this);", name: "sections_course_id_#{course.id}", id: "sections_course_id_#{course.id}"})
                   - else
                     - disable_promt = 'Sin cupos'
                     %b.pl-3.text-muted

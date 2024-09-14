@@ -341,6 +341,7 @@ class AcademicProcess < ApplicationRecord
       items_per_page 12
       checkboxes false
       sort_by 'periods.name'
+      filters [:school, :period]
 
       field :school do
         sticky true

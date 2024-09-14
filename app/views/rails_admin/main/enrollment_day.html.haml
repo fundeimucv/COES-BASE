@@ -10,7 +10,10 @@
       %b Atención
       Si está planificando una nueva jornada de inscripción por Cita Horaria, es importante que corra la función 'Actualizar Estados Estudiantes' indicada con el enlace abajo para que COES actualice tanto el estado de permanecia como los valores de eficiencia y promedios de cada estudiante antes de agregar la nueva cita. 
       .text-center
-        = link_to "/academic_processes/#{@object.process_before.id}/run_regulation?id_return=#{@object.id}", class: 'btn m-3 btn-lg btn-primary', 'data-bs-toggle': :tooltip, title: "Actualiza tanto el estado de permanecia como la eficiencia y los promedios de los estudiantes basado en los períodos anteriores al actual #{@object.process_name}. Incluye eliminación de Citas", data: {confirm: "Esta acción actualizará el estado de permanencia y los promedios de notas de cada estudiante que cursó materias en el periodo anterior #{@object.process_before&.process_name} ¿Está completamente seguro?"} do
+        - url = "/academic_processes/#{@object.process_before.id}/run_regulation?id_return=#{@object.id}"
+        - title = "Actualiza tanto el estado de permanecia como la eficiencia y los promedios de los estudiantes basado en los períodos anteriores al actual #{@object.process_name}. Incluye eliminación de Citas"
+        - confirm_msg = "Esta acción actualizará el estado de permanencia y los promedios de notas de cada estudiante que cursó materias en el periodo anterior #{@object.process_before&.process_name} ¿Está completamente seguro?"
+        = link_to url, class: 'btn m-3 btn-lg btn-primary', 'data-bs-toggle': :tooltip, title: title, data: {confirm: confirm_msg, 'disable-with': "<i class='fa fa-spinner fa-spin'></i> Procesando, espere...".html_safe } do
           %i.fa-regular.fa-refresh
           Actualizar Estados Estudiantes
 

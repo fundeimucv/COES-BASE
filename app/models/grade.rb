@@ -83,7 +83,7 @@ class Grade < ApplicationRecord
   enum registration_status: {pendiente: 0, secretaria: 1, facultad: 2, escuela: 3}
   enum enrollment_status: {preinscrito: 0, asignado: 1, confirmado: 2}
   enum graduate_status: {cursante: 0, tesista: 1, posible_graduando: 2, graduando: 3, graduado: 4, postgrado: 5}
-  enum current_permanence_status: {nuevo: 0, regular: 1, reincorporado: 2, articulo3: 3, articulo6: 4, articulo7: 5, intercambio: 6, desertor: 7, egresado: 8, egresado_doble_titulo: 8, permiso_para_no_cursar: 9, retiro_total: 10}
+  enum current_permanence_status: {nuevo: 0, regular: 1, reincorporado: 2, articulo3: 3, articulo6: 4, articulo7: 5, intercambio: 6, desertor: 7, egresado: 8, egresado_doble_titulo: 8, permiso_para_no_cursar: 9, retiro_total: 10, por_calificar: 11}
   enum region: {no_aplica: 0, amazonas: 1, barcelona: 2, barquisimeto: 3, bolivar: 4, capital: 5}
 
 
@@ -127,7 +127,7 @@ class Grade < ApplicationRecord
 
   scope :current_permanence_valid_to_enroll, -> {where('grades.current_permanence_status': [:regular, :reincorporado, :articulo3])}
 
-  scope :others_permanence_invalid_to_enroll, -> {where(current_permanence_status: [:nuevo, :articulo6, :articulo7, :intercambio, :desertor, :egresado, :egresado_doble_titulo, :permiso_para_no_cursar])}
+  scope :others_permanence_invalid_to_enroll, -> {where(current_permanence_status: [:nuevo, :articulo6, :articulo7, :intercambio, :desertor, :egresado, :egresado_doble_titulo, :permiso_para_no_cursar, :por_calificar])}
 
   scope :special_authorized, -> (academic_process_id) {where(enabled_enroll_process_id:academic_process_id )}
 

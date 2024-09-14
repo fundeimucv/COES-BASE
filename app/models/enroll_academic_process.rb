@@ -60,7 +60,7 @@ class EnrollAcademicProcess < ApplicationRecord
   # ENUMERIZE:
   # IDEA CON ESTADO DE INSCRIPCIÓN EN GRADE Y ENROLL ACADEMIC PROCESS
   enum enroll_status: [:preinscrito, :reservado, :confirmado]
-  enum permanence_status: [:nuevo, :regular, :reincorporado, :articulo3, :articulo6, :articulo7, :intercambio, :desertor, :egresado, :egresado_doble_titulo, :permiso_para_no_cursar, :retiro_total]  
+  enum permanence_status: [:nuevo, :regular, :reincorporado, :articulo3, :articulo6, :articulo7, :intercambio, :desertor, :egresado, :egresado_doble_titulo, :permiso_para_no_cursar, :retiro_total, :por_calificar]  
 
   # VALIDATIONS:
   validates :grade, presence: true
@@ -167,6 +167,8 @@ class EnrollAcademicProcess < ApplicationRecord
         reglamento_aux = :nuevo
       elsif total_retire?
         reglamento_aux = :retiro_total
+      elsif self.academic_records.sin_calificar.any?
+        reglamento_aux = :por_calificar
       elsif self.academic_records.coursed.any?
         if coursed_but_not_approved_any?
           reglamento_aux = :articulo3
@@ -186,7 +188,7 @@ class EnrollAcademicProcess < ApplicationRecord
   end
 
   def coursed_but_not_approved_any?
-    self.academic_records.coursed.any? and !(self.academic_records.aprobado.any?)
+    self.academic_records.any? and !(self.academic_records.sin_calificar.any?) and !(self.academic_records.aprobado.any?)
   end
   def finished?
     academic_records.any? and (academic_records.count.eql? academic_records.qualified.count)
@@ -232,6 +234,9 @@ class EnrollAcademicProcess < ApplicationRecord
     self.permanence_status = :nuevo
   end
 
+  # def is_enroll_pci?
+  #   !(grade.school&.id.eql? academic_process.school_id)
+  # end
   def enrolling?
     academic_process&.enrolling?
   end

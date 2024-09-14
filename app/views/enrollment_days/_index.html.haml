@@ -1,6 +1,11 @@
 - logged_as_admin = (current_user&.admin? and session[:rol].eql? 'admin') ? true : false
 - enrollment_days = academic_process.enrollment_days
 - grades_without_appointment = academic_process.grades_ready_to_enrollment_day
+
+- grades_without_appointment = academic_process.school.grades.valid_to_enrolls(academic_process.id,academic_process.process_before.id)
+
+- totales = grades_without_appointment.group(:current_permanence_status).count
+- grades_without_appointment = grades_without_appointment.sort_by_numbers.uniq
 - grades_others = Grade.enrolled_in_academic_process(academic_process.process_before_id).others_permanence_invalid_to_enroll
 
 - if logged_as_admin and grades_without_appointment.any? and (current_user&.admin&.authorized_create? 'AcademicProcess')
@@ -46,6 +51,9 @@
   #withoutAppointment.tab-pane.fade.show.active{"aria-labelledby": "withoutAppointment-tab", role: "tabpanel"}
 
     - if grades_without_appointment&.any?
+      - totales.each do |x,y| 
+        = p "<label class='label bg-info m-2 text-dark'>#{x.titleize}: #{y}</label>".html_safe
+
       %h6.text-center.alert.alert-warning
         = "Estudiantes sin Cita Horaria e Inscritos en el periodo anterior: <b>#{academic_process&.process_before&.process_name}</b> de <b>#{academic_process.school.short_name}</b>".html_safe
       = render partial: '/enrollment_days/grades', locals: {grades: grades_without_appointment, academic_process: academic_process}
