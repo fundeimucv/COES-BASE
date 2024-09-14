@@ -10,7 +10,7 @@
 %h5.mt-1.p-1.text-center.bg-light= title
 
 .table-responsive
-  %table.table.table-striped.table-sm.table-hover.table-bordered.responsive-table{id: idTable}
+  %table.table.table-sm.table-hover.table-bordered.responsive-table{id: idTable}
     %thead{style: "position: sticky;top: 0"}        
       %tr.table-primary
         %th.headers{style: 'width: 4%', scope: :col} #
@@ -25,11 +25,10 @@
         %th.text-center.headers{style: 'width: 30%;', scope: :col} Sección
     %tbody
       - courses.each_with_index do |course, i|
-        - ac = @grade.academic_records.joins(:course).where('courses.id': course.id).first
+        - ac = @grade.academic_records.joins(:subject).where('subject.id': course&.subject_id).first
         - section_id = ac&.section_id # ? ac.section_id : nil
         - approved = false
         - desc_qualification = nil
-        
         - if ac&.retirado?
           - trStatus = 'text-muted border table-danger'      
         - elsif ac&.aprobado?
