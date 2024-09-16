@@ -25,18 +25,20 @@
         %th.text-center.headers{style: 'width: 30%;', scope: :col} Sección
     %tbody
       - courses.each_with_index do |course, i|
-        - ac = @grade.academic_records.joins(:subject).where('subject.id': course&.subject_id).first
+        -# ac = @grade.academic_records.joins(:subject).where('subject.id': course&.subject_id).first
+        -# Atención: La linea de arriba no es ya que en este segmanto lo que se busca es identificar las inscripciones del período (Cursos). No del histórico sino del período actual
+        - ac = @grade.academic_records.joins(:course).where('courses.id': course.id).first
         - section_id = ac&.section_id # ? ac.section_id : nil
         - approved = false
         - desc_qualification = nil
-        - if false #ac&.retirado?
+        - if ac&.retirado?
           - trStatus = 'text-muted border table-danger'      
         - elsif ac&.aprobado?
           - approved = true
           - desc_qualification = ac.q_value_to_02i
           - trStatus = 'text-muted border table-success'
         - elsif (!section_id.nil?)
-          - trStatus = 'table-info'
+          - trStatus = 'table-success'
         - else
           - trStatus = ''
         - sections = course.sections#.con_cupos
@@ -56,7 +58,7 @@
             %td.align-middle.text-center= subject&.unit_credits
             %td.align-middle.pl-3
               - unless approved
-                - if false #ac&.retirado?
+                - if ac&.retirado?
                   .text-center.text-muted= 'RETIRADO'
                 - else
                   - sections = sections.select{|s| s.has_capacity? or s.has_academic_record? @grade.student_id or s.id.eql? section_id}
