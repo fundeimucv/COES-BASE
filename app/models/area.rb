@@ -108,6 +108,7 @@ class Area < ApplicationRecord
       field :school do
         inline_add false
         inline_edit false
+        partial 'school/custom_school_id_field'
       end
       field :name do
         html_attributes do

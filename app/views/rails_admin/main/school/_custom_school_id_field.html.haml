@@ -1,4 +1,5 @@
 - model = @object.class.name.underscore
+
 - if params[:school_id]
     .form-control= School.find(params[:school_id]).short_name
     = hidden_field model, 'school_id', value: params[:school_id]
@@ -7,4 +8,4 @@
     - if schools_auh.count.eql? 1
         = collection_select model, 'school_id', schools_auh, :id, :name, {selected: schools_auh.first.id }, {class: 'input-group form-control required', required: true}
     - else
-        = collection_select model, 'school_id', schools_auh, :id, :name, {include_blank: 'Seleccione...'}, {class: 'input-group form-control required', required: true}
+        = collection_select model, 'school_id', schools_auh, :id, :name, {include_blank: 'Seleccione...', selected: @object.school_id}, {class: 'input-group form-control required', required: true}
