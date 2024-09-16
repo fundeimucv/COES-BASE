@@ -29,14 +29,14 @@
         - section_id = ac&.section_id # ? ac.section_id : nil
         - approved = false
         - desc_qualification = nil
-        - if ac&.retirado?
+        - if false #ac&.retirado?
           - trStatus = 'text-muted border table-danger'      
         - elsif ac&.aprobado?
           - approved = true
           - desc_qualification = ac.q_value_to_02i
           - trStatus = 'text-muted border table-success'
         - elsif (!section_id.nil?)
-          - trStatus = 'table-success'
+          - trStatus = 'table-info'
         - else
           - trStatus = ''
         - sections = course.sections#.con_cupos
@@ -56,7 +56,7 @@
             %td.align-middle.text-center= subject&.unit_credits
             %td.align-middle.pl-3
               - unless approved
-                - if ac&.retirado?
+                - if false #ac&.retirado?
                   .text-center.text-muted= 'RETIRADO'
                 - else
                   - sections = sections.select{|s| s.has_capacity? or s.has_academic_record? @grade.student_id or s.id.eql? section_id}
