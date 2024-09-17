@@ -95,6 +95,7 @@ class Area < ApplicationRecord
       end
     end
     show do
+      field :school
       field :name
       field :departaments
       field :subjects do
