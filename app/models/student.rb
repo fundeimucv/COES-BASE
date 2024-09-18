@@ -245,6 +245,7 @@ class Student < ApplicationRecord
     list do
       search_by :custom_search
       checkboxes false
+      filters [:schools]
       field :schools do
         label 'Escuelas'
         sticky true

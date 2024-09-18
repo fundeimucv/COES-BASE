@@ -335,6 +335,7 @@ class Section < ApplicationRecord
 
     list do
       sort_by ['periods.name', 'areas.name', 'courses.name', 'subjects.code']
+      filters [:school]
       checkboxes false
       search_by :custom_search
       
