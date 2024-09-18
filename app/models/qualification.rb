@@ -19,6 +19,8 @@
 #  fk_rails_...  (academic_record_id => academic_records.id)
 #
 class Qualification < ApplicationRecord
+
+  include Qualifying
   
   belongs_to :academic_record
   # accepts_nested_attributes_for :academic_record
@@ -47,7 +49,6 @@ class Qualification < ApplicationRecord
   def name
     "#{type_q.titleize} #{value}" if (type_q and value)
   end
-
   def num_to_s
     (academic_record.num_to_s value.to_i) if value
   end
@@ -60,23 +61,6 @@ class Qualification < ApplicationRecord
     end
     update_status
   end
-
-  def approved?
-    if is_valid_numeric_value?
-      value >= 10
-    else
-      false
-    end
-  end
-
-  def repproved?
-    if is_valid_numeric_value?
-      value < 10
-    else
-      false
-    end
-  end
-
   def conv_type
     type = I18n.t(self.type_q)
     type = type[1]
@@ -115,18 +99,9 @@ class Qualification < ApplicationRecord
     # end
   end
 
-  def is_valid_numeric_value?
-    !value.blank? and (value.is_a? Integer or value.is_a? Float)
-  end
-
   def value_to_acta
     academic_record&.pi? ? 'PI' : value_to_02i
   end
-
-  def value_to_02i
-    is_valid_numeric_value? ? sprintf("%02i", value) : nil
-  end
-
 
   rails_admin do
     edit do

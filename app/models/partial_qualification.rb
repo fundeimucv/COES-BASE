@@ -18,6 +18,7 @@
 #  fk_rails_...  (academic_record_id => academic_records.id)
 #
 class PartialQualification < ApplicationRecord
+  include Qualifying
   # ASSOCIATIONS:
   belongs_to :academic_record
 
@@ -48,13 +49,5 @@ class PartialQualification < ApplicationRecord
       self.academic_record.qualifications.create!(type_q: :final, value: total, definitive: true)
     end
   end
-
-  def value_to_02
-    is_valid_numeric_value? ?  sprintf("%02.2f", value) : nil
-  end
-
-  def is_valid_numeric_value?
-    !value.blank? and (value.is_a? Integer or value.is_a? Float)
-  end   
 
 end

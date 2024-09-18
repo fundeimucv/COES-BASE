@@ -185,6 +185,10 @@ class AcademicRecord < ApplicationRecord
 
 
   # FUNCTIONS:
+  def label_partial_qualifications
+    partial_qualifications.map(&:label_qualification).join(' ').html_safe
+  end
+
   def header_for_report
     # ['#', 'CI', 'NOMBRES', 'APELLIDOS','ESCUELA','CATEDRA','CÓDIGO ASIG', 'NOMBRE ASIG','PERIODO','SECCIÓN','ESTADO']
     ['#', 'CÉDULA', 'NOMBRES', 'APELLIDOS','ESCUELA','CATEDRA','CÓDIGO ASIG', 'NOMBRE ASIG', 'CRÉDITOS', 'NOTA_FINAL', 'NOTA_DEF', 'TIPO_EXAM', 'PER_LECTI', 'ANO_LECT','SECCIÓN', 'PLAN']
@@ -493,7 +497,7 @@ class AcademicRecord < ApplicationRecord
   def num_to_s num = definitive_q_value 
     if pi?
       I18n.t("activerecord.scopes.academic_record.PI")&.humanize.upcase
-    elsif retirado? or (subject&.absoluta?) or num.nil? or !(num.is_a? Integer or num.is_a? Float)
+    elsif retirado? or (subject&.absoluta?) or num.nil? or !(num.is_a? Integer or num.is_a? Float or num.is_a? BigDecimal)
       status&.humanize&.upcase
     else
       numeros = %W(CERO UNO DOS TRES CUATRO CINCO SEIS SIETE OCHO NUEVE DIEZ ONCE DOCE TRECE CATORCE QUINCE DIECISÉIS DIECISIETE DIECIOCHO DIE)
