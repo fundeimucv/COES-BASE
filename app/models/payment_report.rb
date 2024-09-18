@@ -155,10 +155,11 @@ class PaymentReport < ApplicationRecord
 
       search_by :custom_search
       scopes [:todos, :pagos_escuela, :pagos_inscripcion, :Pendiente, :Validado, :Invalidado]
+      filters [:school]
+      field :school
       field :id do
         sticky true
       end
-
       field :created_at do
         sticky true
       end
@@ -210,7 +211,7 @@ class PaymentReport < ApplicationRecord
     end
 
     show do
-      fields :id, :created_at, :amount, :status, :transaction_id, :transaction_type, :transaction_date, :origin_bank, :receiving_bank_account, :voucher, :owner_account_ci, :owner_account_name
+      fields :school, :id, :created_at, :amount, :status, :transaction_id, :transaction_type, :transaction_date, :origin_bank, :receiving_bank_account, :voucher, :owner_account_ci, :owner_account_name
     end
 
     edit do
@@ -237,7 +238,7 @@ class PaymentReport < ApplicationRecord
     end
 
     export do
-      fields :id, :created_at, :amount, :transaction_id, :transaction_type, :transaction_date, :origin_bank, :origin_bank, :owner_account_ci, :owner_account_name
+      fields :school, :id, :created_at, :amount, :transaction_id, :transaction_type, :transaction_date, :origin_bank, :origin_bank, :owner_account_ci, :owner_account_name
       field :payable_type do
         label 'Tipo'
       end
