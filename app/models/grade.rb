@@ -553,7 +553,7 @@ class Grade < ApplicationRecord
 
     if is_new? or !any_approved?
       # Si es nuevo o no tiene asignaturas aporvadas, le ofertamos las de 1er año
-      Subject.independents#.where(ordinal: 1)
+      school.subjects.independents#.where(ordinal: 1)
     else
       # Buscamos los ids de las asignaturas aprobadas
       asig_aprobadas_ids = self.subjects_approved_ids
