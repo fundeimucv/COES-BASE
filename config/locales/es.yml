@@ -726,6 +726,7 @@ es:
       language:
         name: Nombre
       payment_report:
+        school: Escuela
         status: Estado
         student: Estudiante
         payable: Pagable      
