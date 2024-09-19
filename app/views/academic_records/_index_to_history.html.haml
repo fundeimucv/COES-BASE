@@ -15,7 +15,7 @@
         %th.text-center{style: 'width:10px;'} Tipo
         %th.text-center{style: 'width:10px;'} Sec
         %th.text-center{style: 'width:10px;'} Tipo
-        - if study_plan.school.have_partial_qualification?
+        - if study_plan&.school&.have_partial_qualification?
           %th.text-center Parciales
 
         %th.text-center{style: 'width:10px;'} Final
@@ -37,7 +37,7 @@
           %td.text-center{'data-bs-toggle': :tooltip, title: 'Ir al detalle de la sección'}
             = link_to_if (logged_as_admin and admin.authorized_manage? 'Section'), academic_record.section.code, "/admin/section/#{academic_record.section.id}"
           %td.text-center= academic_record.section.label_modality true
-          - if study_plan.school.have_partial_qualification?
+          - if study_plan&.school&.have_partial_qualification?
             %th.text-center= academic_record.label_partial_qualifications  
           %td.text-center= academic_record.q_value_to_02i
           %td.text-center.align-middle= academic_record.badge_status.html_safe
