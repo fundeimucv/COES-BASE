@@ -1,5 +1,5 @@
 class EnrollAcademicProcessesController < ApplicationController
-  before_action :set_enroll_academic_process, only: %i[ show edit update destroy study_constance total_retire update_permanece_status]
+  before_action :set_enroll_academic_process, only: %i[ show edit update destroy study_constance total_retire update_permanece_status preinscribir_admin]
 
   # GET /enroll_academic_processes or /enroll_academic_processes.json
   def index
@@ -202,7 +202,7 @@ class EnrollAcademicProcessesController < ApplicationController
       permanence_status = !(grade.enroll_academic_processes.any?) ? :nuevo : :regular
       @enroll_academic_process = EnrollAcademicProcess.new(grade_id: grade.id, academic_process_id: academic_process.id, permanence_status: permanence_status)
       @enroll_academic_process.enroll_status = @enroll_academic_process.historical? ?
-      :confirmado : :reservado
+      :preinscrito : :reservado
       if @enroll_academic_process.save!
         flash[:success] = 'Proceso de Inscripción Iniciado'
         redirect_to "/admin/enroll_academic_process/#{@enroll_academic_process.id}"
@@ -241,6 +241,27 @@ class EnrollAcademicProcessesController < ApplicationController
   end
 
   # PATCH/PUT /enroll_academic_processes/1 or /enroll_academic_processes/1.json
+  def preinscribir_admin
+    if @enroll_academic_process.update(enroll_status: params[:enroll_status])
+      flash[:success] = "¡#{@enroll_academic_process.enroll_status&.titleize} con éxito!"
+      if params[:send_confirmation]
+        begin
+        # info_bitacora "Envío de correo de Preinscripcion #{enroll_academic_process.estudiante_id} Preinscrito en el periodo #{enroll_academic_process.periodo.id} en #{enroll_academic_process.escuela.descripcion}.", Bitacora::CREACION, enroll_academic_process if EstudianteMailer.preinscrito(enroll_academic_process.estudiante.usuario, enroll_academic_process).deliver
+          if @enroll_academic_process.preinscrito?
+            flash[:info] = '¡Correo de Preinscripción Enviado!' if StudentMailer.preinscrito(@enroll_academic_process).deliver_now
+          else
+            flash[:info] = '¡Correo de Confirmación Enviado!' if UserMailer.enroll_confirmation(@enroll_academic_process.id).deliver_now
+          end
+        rescue Exception => e
+          flash[:warning] = "Correo de completación de proceso de preinscripción no enviado: #{e}" 
+        end
+      end
+    else
+      flash[:danger] = "Error: #{@enroll_academic_process.errors.full_messages.to_sentence}"
+    end
+    redirect_back fallback_location: "/admin/student"
+  end
+
   def update
     respond_to do |format|
       send_confirmation = (params['enroll_academic_process'] and params['enroll_academic_process']['enroll_status'] and params['enroll_academic_process']['enroll_status'].eql? 'confirmado') ? true : false

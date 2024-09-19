@@ -7,7 +7,8 @@ class UserMailerPreview < ActionMailer::Preview
   end
 
   def enroll_confirmation
-    UserMailer.enroll_confirmation(EnrollAcademicProcess.first.id)
+    enroll = EnrollAcademicProcess.find params[:enroll_id]
+    UserMailer.enroll_confirmation(params[:enroll_id])
   end
 
 end

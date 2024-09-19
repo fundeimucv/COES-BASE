@@ -40,6 +40,7 @@ Rails.application.routes.draw do
     member do
       put :total_retire
       post :update_permanece_status
+      post :preinscribir_admin
     end
     collection do
       post :reserve_space
