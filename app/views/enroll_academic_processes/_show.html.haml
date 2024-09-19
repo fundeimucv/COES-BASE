@@ -52,8 +52,12 @@
               - content = render template: "/payment_reports/show"
               = render partial: '/layouts/scaffold-modal', locals: {content: content, title: titlePayment, id: id}
               
+            - elsif current_user.student? and (session[:rol].eql? 'student') and academic_process.payments_active?
+              %div{rel: :tooltip, 'data-bs-toggle': :tooltip, 'data-bs-original-title': 'Reportar Pago'}
+                %a.btn.btn-danger.btn-sm.float-end.fa-fade{"data-bs-target": "#paymentReportModal#{enroll_academic_process.id}", "data-bs-toggle": :modal, type: :button}
+                  .fa.fa-dollar
             - else
-              %b.btn.btn-secondary.btn-sm.float-end.mx-2{rel: :tooltip, 'data-bs-toggle': :tooltip, 'data-bs-original-title': 'Sin reporte de pago'}
+              %b.btn.btn-secondary.btn-sm.float-end{rel: :tooltip, 'data-bs-toggle': :tooltip, 'data-bs-original-title': 'Sin reporte de pago'}
                 .fa.fa-receipt
 
       
