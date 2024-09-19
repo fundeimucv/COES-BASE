@@ -221,6 +221,6 @@ class AcademicProcessesController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def academic_process_params
-      params.require(:academic_process).permit(:school_id, :period_id, :max_credits, :max_subjects, :active, :enroll, :post_qualification)
+      params.require(:academic_process).permit(:school_id, :period_id, :max_credits, :max_subjects, :active, :enroll, :post_qualification, :payments_active)
     end
 end

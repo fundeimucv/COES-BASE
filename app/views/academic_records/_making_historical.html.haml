@@ -12,30 +12,9 @@
   .border.mb-3
     %h5.bg-info.p-1.text-center.mb-0 Registros de Inscripciones
     = render partial: 'academic_records/index_to_history', locals: {academic_records: enroll.academic_records, enabled_delete: true, enabled_change: false, enabled_retire: false}
-    = form_tag "/enroll_academic_processes/#{enroll.id}/preinscribir_admin" do
-      .text-center
-        %p
-          %label.btn.btn-success.btn-sm.tooltip-btn
-            - url = "/rails/mailers/student_mailer/preinscrito?enroll_id=#{enroll.id}"
-            = radio_button_tag 'enroll_status', :preinscrito, enroll.preinscrito?, onclick: "setUrlToEmailLink('#{url}')"
-            Preinscrito
-          
-          %label.btn.btn-success.btn-sm.tooltip-btn
-            - urlC = "/rails/mailers/user_mailer/enroll_confirmation?enroll_id=#{enroll.id}"
-            = radio_button_tag 'enroll_status', :confirmado, enroll.confirmado?, onclick: "setUrlToEmailLink('#{urlC}')"
-            Confirmado
-        %p
-          .btn.btn-sm.btn-info
-            = check_box_tag :send_confirmation, true
-            Enviar Correo Informativo de Completación de Proceso al Estudiante
-          = link_to "#{enroll.preinscrito? ? url : urlC}", id: 'previewMail', class: 'btn btn-sm btn-info', 'data-bs-toggle': :tooltip, 'data-bs-title': 'Previsualizar', target: '_blank', rel: 'noopener noreferrer' do
-            %i.fa.fa-search
-        %p
-          %button.btn.bt.btn-primary{id: 'submitBtn', type: :submit} Completar
+    - if false
+      = form_tag "/enroll_academic_processes/#{enroll.id}/preinscribir_admin" do
+        = render partial: 'enroll_academic_processes/complete_and_send_email', locals: {enroll: enroll}
 
-:javascript
-
-  function setUrlToEmailLink(url) {
-    const elem = document.getElementById("previewMail");
-    elem.setAttribute('href', url);
-  }
+        %p
+            %button.btn.bt.btn-primary{id: 'submitBtn', type: :submit} Completar

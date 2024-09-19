@@ -564,7 +564,9 @@ es:
         process_before: Período Anterior
         enrollment_days: Jornadas de Inscripción por Cita Horaria
         enroll_instructions: Instrucciones Para la Inscripción
-        registration_amount: 'Arancel de Inscripción (Bs.)'
+        registration_amount: 'Arancel de Inscripción Regulares (Bs.)'
+        registration_amount_new: 'Arancel de Inscripción Nuevos (Bs.)'
+        registration_amount_restart: 'Arancel de Inscripción Reincorporados (Bs.)'
       academic_record:
         section: 'Sección'
         enroll_academic_process: 'Inscripción en Período'

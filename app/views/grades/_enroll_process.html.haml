@@ -1,16 +1,16 @@
 .row
     .col-md-8
         - school = @grade.school
-        - school.academic_processes.enrolls.each do |academic_process|
-            .text-center
-                - if enroll_academic_process = @grade.enroll_academic_processes.where(academic_process: academic_process).first 
-                    = link_to "/admin/enroll_academic_process/#{enroll_academic_process.id}", class: "btn btn-lg float-start btn-warning my-3" do
-                        .fa.fa-calendar-check
-                        = "Modificar Inscripción #{academic_process.process_name}"
-                - else
-                    = link_to "/enroll_academic_processes?academic_process_id=#{academic_process.id}&grade_id=#{@grade.id}", class: "btn btn-lg btn-success float-start my-3", method: :post do
-                        .fa.fa-calendar-check
-                        = "Preinscribirse en #{academic_process.process_name}"
+        - academic_process = school.academic_processes.first #enrolls.each do |academic_process|
+        .text-center
+            - if enroll_academic_process = @grade.enroll_academic_processes.where(academic_process: academic_process).first 
+                = link_to "/admin/enroll_academic_process/#{enroll_academic_process.id}", class: "btn btn-lg float-start btn-warning my-3" do
+                    .fa.fa-calendar-check
+                    = "Modificar Inscripción #{academic_process.process_name}"
+            - else
+                = link_to "/enroll_academic_processes?academic_process_id=#{academic_process.id}&grade_id=#{@grade.id}", class: "btn btn-lg btn-success float-start my-3", method: :post do
+                    .fa.fa-calendar-check
+                    = "Preinscribirse en #{academic_process.process_name}"
     .col-md-4
         - id = 'addInscriptionModal'
         %a.btn.btn-info.float-end.btn-lg.my-3{"data-bs-target": "##{id}", "data-bs-toggle": :modal, type: :button}

@@ -172,7 +172,24 @@ class EnrollAcademicProcessesController < ApplicationController
     elsif (enroll_academic_process.total_subjects > enroll_academic_process.academic_process.max_subjects)
       flash[:danger] = "Supera el límite de asignaturas permitidas para este proceso de inscripción. Por favor, corrija su inscripción e inténtelo de nuevo. Se anularon las selecciones previas."
       
-      any_error = true      
+      any_error = true
+    elsif params[:enroll_status]
+      if enroll_academic_process.update(enroll_status: params[:enroll_status])
+        flash[:success] = "¡#{enroll_academic_process.enroll_status&.titleize} con éxito!"
+        if params[:send_confirmation]
+          begin
+            if enroll_academic_process.preinscrito?
+              flash[:info] = '¡Correo de Preinscripción Enviado!' if StudentMailer.preinscrito(enroll_academic_process).deliver_now
+            else
+              flash[:info] = '¡Correo de Confirmación Enviado!' if UserMailer.enroll_confirmation(enroll_academic_process.id).deliver_now
+            end
+          rescue Exception => e
+            flash[:warning] = "Correo de completación de proceso de preinscripción no enviado: #{e}" 
+          end
+        end
+      else
+        flash[:danger] = "Error: #{enroll_academic_process.errors.full_messages.to_sentence}"
+      end
     elsif (enroll_academic_process.update(enroll_status: :preinscrito))
       # info_bitacora "Estudiante #{enroll_academic_process.estudiante_id} Preinscrito en el periodo #{enroll_academic_process.periodo.id} en #{enroll_academic_process.escuela.descripcion}.", Bitacora::CREACION, enroll_academic_process
       begin

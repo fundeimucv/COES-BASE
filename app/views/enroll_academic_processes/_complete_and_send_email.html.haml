@@ -1,0 +1,22 @@
+%div
+    %label.btn.btn-success.btn-sm.tooltip-btn.me-2
+        - url = "/rails/mailers/student_mailer/preinscrito?enroll_id=#{enroll.id}"
+        = radio_button_tag 'enroll_status', :preinscrito, enroll.preinscrito?, onclick: "setUrlToEmailLink('#{url}')"
+        Preinscrito
+    
+    %label.btn.btn-success.btn-sm.tooltip-btn.me-2
+        - urlC = "/rails/mailers/user_mailer/enroll_confirmation?enroll_id=#{enroll.id}"
+        = radio_button_tag 'enroll_status', :confirmado, enroll.confirmado?, onclick: "setUrlToEmailLink('#{urlC}')"
+        Confirmado
+    .btn.btn-sm.btn-info.me-2
+        = check_box_tag :send_confirmation, true
+        Enviar Correo Informativo de Completación de Proceso al Estudiante
+    = link_to "#{enroll.preinscrito? ? url : urlC}", id: 'previewMail', class: 'me-2 btn btn-sm btn-info', 'data-bs-toggle': :tooltip, 'data-bs-title': 'Previsualizar', target: '_blank', rel: 'noopener noreferrer' do
+        %i.fa.fa-search
+
+:javascript
+
+    function setUrlToEmailLink(url) {
+        const elem = document.getElementById("previewMail");
+        elem.setAttribute('href', url);
+    }
