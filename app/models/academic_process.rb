@@ -2,17 +2,23 @@
 #
 # Table name: academic_processes
 #
-#  id                  :bigint           not null, primary key
-#  max_credits         :integer
-#  max_subjects        :integer
-#  modality            :integer          default("Semestral"), not null
-#  name                :string
-#  registration_amount :float            default(0.0)
-#  created_at          :datetime         not null
-#  updated_at          :datetime         not null
-#  period_id           :bigint           not null
-#  process_before_id   :bigint
-#  school_id           :bigint           not null
+#  id                          :bigint           not null, primary key
+#  active                      :boolean          default(FALSE), not null
+#  enroll                      :boolean          default(FALSE), not null
+#  max_credits                 :integer
+#  max_subjects                :integer
+#  modality                    :integer          default("Semestral"), not null
+#  name                        :string
+#  payments_active             :boolean          default(FALSE), not null
+#  post_qualification          :boolean          default(FALSE), not null
+#  registration_amount         :float            default(0.0)
+#  registration_amount_new     :float            default(0.0)
+#  registration_amount_restart :float            default(0.0)
+#  created_at                  :datetime         not null
+#  updated_at                  :datetime         not null
+#  period_id                   :bigint           not null
+#  process_before_id           :bigint
+#  school_id                   :bigint           not null
 #
 # Indexes
 #
@@ -76,6 +82,7 @@ class AcademicProcess < ApplicationRecord
   scope :actives, -> {where(active: true)}
   scope :enrolls, -> {where(enroll: true)}
   scope :post_qualifications, -> {where(post_qualification: true)}
+  scope :payments_actives, -> {where(payments_active: true)}
   scope :without_enroll_academic_processes, -> {left_joins(:enroll_academic_processes).where('enroll_academic_processes.academic_process_id': nil)}
   # Atention: To be commented by not use
   scope :sort_by_period, -> {unscoped.joins(:period).order('periods.year desc').second}
@@ -332,6 +339,10 @@ class AcademicProcess < ApplicationRecord
   def label_post_q
     label_process post_qualification?
   end 
+  
+  def label_payment_actives
+    label_process payments_active?
+  end
 
   rails_admin do
     navigation_label 'Config Específica'
@@ -379,7 +390,7 @@ class AcademicProcess < ApplicationRecord
       #   end
       # end
       field :enroll do
-        label '¿Inscripción?'
+        label 'Inscripción'
         # pretty_value do
         #   "#{bindings[:object].label_active} p".html_safe
         # end
@@ -391,11 +402,22 @@ class AcademicProcess < ApplicationRecord
             bindings[:object].label_enroll&.html_safe
           end
         end
+      end
 
+      field :payments_active do
+        label 'Pagos'
+        pretty_value do
+          current_user = bindings[:view]._current_user
+          if current_user&.admin&.authorized_manage? 'AcademicProcess'
+            bindings[:view].render(partial: "/academic_processes/active_process", locals: {academic_process: bindings[:object], mode: 'payments_active'})
+          else
+            bindings[:object].label_payment_actives&.html_safe
+          end
+        end
       end
 
       field :active do
-        label '¿Activo?'
+        label 'Activo'
         pretty_value do
           current_user = bindings[:view]._current_user
           if current_user&.admin&.authorized_manage? 'AcademicProcess'
@@ -407,7 +429,7 @@ class AcademicProcess < ApplicationRecord
       end
 
       field :post_qualification do
-        label '¿Califi Post?'
+        label 'Cal. Posterior'
 
         pretty_value do
           if GeneralSetup.enabled_post_qualification?
@@ -524,11 +546,7 @@ class AcademicProcess < ApplicationRecord
         help 'Si desea agregar imágenes tome en cuenta el tamaño de misma y su ajuste a la pantalla dónde se desplegará'
       end
 
-      field :registration_amount do
-        # pretty_value do
-        #   bindings[:view].content_tag()
-        # end
-      end
+      fields :registration_amount, :registration_amount_new, :registration_amount_restart
     end
 
     update do

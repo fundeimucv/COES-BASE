@@ -294,24 +294,24 @@ class School < ApplicationRecord
       #   end
       # end
 
-      field :enable_enroll_payment_report do
-        label '¿Reportar Pagos?'
-        queryable false
-        filterable false
-        searchable false
-        sortable false
-        sortable false
-        pretty_value do
+      # field :enable_enroll_payment_report do
+      #   label '¿Reportar Pagos?'
+      #   queryable false
+      #   filterable false
+      #   searchable false
+      #   sortable false
+      #   sortable false
+      #   pretty_value do
 
-          current_user = bindings[:view]._current_user
+      #     current_user = bindings[:view]._current_user
 
-          if current_user&.admin&.authorized_manage? 'School'
-            bindings[:view].render(partial: "/schools/form_enroll_payment_reports", locals: {school: bindings[:object]})
-          else
-            value ? 'Si' : 'No'
-          end
-        end
-      end
+      #     if current_user&.admin&.authorized_manage? 'School'
+      #       bindings[:view].render(partial: "/schools/form_enroll_payment_reports", locals: {school: bindings[:object]})
+      #     else
+      #       value ? 'Si' : 'No'
+      #     end
+      #   end
+      # end
 
       field :show_process_enrolls do
         label 'Períodos en Inscripción'

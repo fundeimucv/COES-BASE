@@ -238,7 +238,18 @@ class EnrollAcademicProcess < ApplicationRecord
   #   !(grade.school&.id.eql? academic_process.school_id)
   # end
   def enrolling?
-    academic_process&.enrolling?
+    # academic_process&.enrolling?
+    academic_process.eql? school.academic_processes.first
+  end
+
+  def pay_amount
+    if self.nuevo?
+      academic_process.registration_amount_new
+    elsif self.reincorporado?
+      academic_process.registration_amount_restart
+    else
+      academic_process.registration_amount
+    end
   end
 
   def historical?
@@ -342,7 +353,7 @@ class EnrollAcademicProcess < ApplicationRecord
             totalCreditsReserved = bindings[:object].total_credits_not_retired
             totalSubjectsReserved = bindings[:object].total_subjects_not_retired
 
-            bindings[:view].render(partial: '/enroll_academic_processes/form', locals: {grade: bindings[:object].grade, academic_process: bindings[:object].academic_process, totalCreditsReserved: totalCreditsReserved, totalSubjectsReserved: totalSubjectsReserved})
+            bindings[:view].render(partial: '/enroll_academic_processes/form', locals: {enroll: bindings[:object], grade: bindings[:object].grade, academic_process: bindings[:object].academic_process, totalCreditsReserved: totalCreditsReserved, totalSubjectsReserved: totalSubjectsReserved})
           else
             bindings[:view].render(partial: "/academic_records/making_historical", locals: {enroll: bindings[:object]})
           end
