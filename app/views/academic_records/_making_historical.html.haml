@@ -12,9 +12,8 @@
   .border.mb-3
     %h5.bg-info.p-1.text-center.mb-0 Registros de Inscripciones
     = render partial: 'academic_records/index_to_history', locals: {academic_records: enroll.academic_records, enabled_delete: true, enabled_change: false, enabled_retire: false}
-    - if false
+    - if current_user&.admin? and session[:rol].eql? 'admin' and enroll
       = form_tag "/enroll_academic_processes/#{enroll.id}/preinscribir_admin" do
-        = render partial: 'enroll_academic_processes/complete_and_send_email', locals: {enroll: enroll}
-
-        %p
-            %button.btn.bt.btn-primary{id: 'submitBtn', type: :submit} Completar
+        .text-center.p-2.alert.alert-warning
+          = render partial: 'enroll_academic_processes/complete_and_send_email', locals: {enroll: enroll}
+          %button.mt-3.btn.btn-primary{id: 'submitBtn', type: :submit} Completar
