@@ -57,12 +57,12 @@ class EnrollmentDay < ApplicationRecord
   def own_grades_to_csv
 
     CSV.generate do |csv|
-      csv << ['Cédula', 'Apellido y Nombre', 'Sede', 'Desde', 'Hasta', 'Eficiencia', 'Promedio', 'Ponderado']
+      csv << ['Cédula', 'Apellido y Nombre', 'Correo', 'Sede', 'Desde', 'Hasta', 'Eficiencia', 'Promedio', 'Ponderado']
       own_grades_sort_by_appointment.each do |grade|
         user = grade.user
         eap = grade.enroll_academic_processes.joins(:period).order(['periods.year': :desc, 'periods.period_type_id': :desc]).first
         
-        csv << [user.ci, user.reverse_name, grade.student.sede, grade.appointment_from, grade.appointment_to, eap.efficiency_desc, eap.simple_average_desc, eap.weighted_average_desc]
+        csv << [user.ci, user.reverse_name, user.email, grade.student.sede, grade.appointment_from, grade.appointment_to, eap.efficiency_desc, eap.simple_average_desc, eap.weighted_average_desc]
       end
     end
   end
