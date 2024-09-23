@@ -423,7 +423,7 @@ class AcademicProcess < ApplicationRecord
           if current_user&.admin&.authorized_manage? 'AcademicProcess'
             bindings[:view].render(partial: "/academic_processes/active_process", locals: {academic_process: bindings[:object], mode: 'active'})
           else
-            label_active
+            bindings[:object].label_active&.html_safe
           end
         end
       end
