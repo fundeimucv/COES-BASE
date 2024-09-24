@@ -576,6 +576,14 @@ class Section < ApplicationRecord
         label 'Profesor Principal'
         inline_edit false
         inline_add false
+
+        associated_collection_cache_all false
+        associated_collection_scope do
+          Proc.new { |scope|
+            scope = Teacher.all
+            scope = scope.limit(10) # 'order' does not work here
+          }
+        end
       end
 
       field :secondary_teachers do
