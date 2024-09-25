@@ -228,7 +228,8 @@ class AcademicProcess < ApplicationRecord
   
   def btn_total_enrolls_by_status 
     total = []
-    link = "/admin/enroll_academic_process?query=#{process_name}"
+
+    link = "/admin/enroll_academic_process?f[school][99071][o]=like&f[school][99071][v]=#{school&.short_name}&f[academic_process][99124][o]=like&f[academic_process][99124][v]=#{process_name}"
     total << ApplicationController.helpers.label_link_with_tooptip(link, 'bg-secondary', self.enroll_academic_processes.count, 'Total')
 
     total << ApplicationController.helpers.label_link_with_tooptip("#{link}&model_name=enroll_academic_process&scope=con_reporte_de_pago", 'bg-success', self.enroll_academic_processes.total_with_payment_report, 'Con Reportes de Pago')    
@@ -454,11 +455,7 @@ class AcademicProcess < ApplicationRecord
           user = bindings[:view]._current_user
           if (user&.admin&.authorized_read? 'Section')
 
-
-            
-
-
-            %{<a href='/admin/section?f%5Bacademic_process%5D%5B83223%5D%5Bo%5D=like&f%5Bacademic_process%5D%5B83223%5D%5Bv%5D=#{bindings[:object].process_name}' data-bs-toggle = 'tooltip', title='Total Secciones'><span class='badge bg-info'>#{value} en #{bindings[:object].courses.count} Cursos</span></a> #{bindings[:object].link_to_massive_actas_generation if bindings[:object].sections.qualified.any?}}.html_safe
+            %{<a href='/admin/section?f%5Bacademic_process%5D%5B83223%5D%5Bo%5D=like&f%5Bacademic_process%5D%5B83223%5D%5Bv%5D=#{bindings[:object].process_name}&f%5Bschool%5D%5B96616%5D%5Bo%5D=like&f%5Bschool%5D%5B96616%5D%5Bv%5D=#{bindings[:object].school.short_name}' data-bs-toggle = 'tooltip', title='Total Secciones'><span class='badge bg-info'>#{value} en #{bindings[:object].courses.count} Cursos</span></a> #{bindings[:object].link_to_massive_actas_generation if bindings[:object].sections.qualified.any?}}.html_safe
           else
             %{<span class='badge bg-info'>#{value}</span>}.html_safe
           end
@@ -479,7 +476,9 @@ class AcademicProcess < ApplicationRecord
         pretty_value do
           user = bindings[:view]._current_user
           if (user and user.admin and user.admin.authorized_read? 'AcademicRecord')
-            a = %{<a href='/admin/academic_record?query=#{bindings[:object].process_name}' data-bs-toggle='tooltip' title='Total Inscripciones En Asignaturas'><span class='badge bg-info'>#{value}</span></a>}.html_safe
+
+            link = "/admin/academic_record?f[school][03085][o]=like&f[school][03085][v]=#{bindings[:object].school&.short_name}&f[academic_process][03111][o]=like&f[academic_process][03111][v]=#{bindings[:object].process_name}"
+            a = %{<a href=#{link} data-bs-toggle='tooltip' title='Total Inscripciones En Asignaturas'><span class='badge bg-info'>#{value}</span></a>}.html_safe
             "#{a} #{ApplicationController.helpers.link_academic_records_csv bindings[:object]}".html_safe
           else
             %{<span class='badge bg-info'>#{value}</span>}.html_safe
@@ -494,7 +493,8 @@ class AcademicProcess < ApplicationRecord
           user = bindings[:view]._current_user
           total = bindings[:object].enroll_academic_processes.count
           if (user&.admin&.authorized_read? 'EnrollAcademicProcess')
-            a = %{<a href='/admin/enroll_academic_process?query=#{bindings[:object].process_name}' data-bs-toggle='tooltip' title='Total Inscripciones En Periodo'><span class='badge bg-info'>#{total}</span></a>}.html_safe
+            link = "/admin/enroll_academic_process?f[school][99071][o]=like&f[school][99071][v]=#{bindings[:object].school&.short_name}&f[academic_process][99124][o]=like&f[academic_process][99124][v]=#{bindings[:object].process_name}"
+            a = %{<a href=#{link} data-bs-toggle='tooltip' title='Total Inscripciones En Periodo'><span class='badge bg-info'>#{total}</span></a>}.html_safe
             "#{a} #{ApplicationController.helpers.link_enroll_academic_process_csv bindings[:object]}".html_safe
           else
             %{<span class='badge bg-info'>#{value}</span>}.html_safe
