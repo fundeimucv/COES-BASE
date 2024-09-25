@@ -18,7 +18,9 @@
   = f.association :origin_bank, required: true
   =# f.association :payable
 
-  = f.association :receiving_bank_account, include_blank: false
+  - bank_accounts = @payment_report_new.school_by_payable&.bank_accounts
+  - bank_accounts = @payment_report_new.school_by_payable&.faculty&.bank_accounts unless bank_accounts.any?
+  = f.association :receiving_bank_account, collection: bank_accounts, include_blank: false
 
   = f.input :voucher, required: true, input_html: {accept: "image/jpeg,image/jpg,image/png"}
   = f.input :owner_account_name, required: true, input_html: {onInput: "$(this).val($(this).val().toUpperCase().replace(/[^A-Z| ]/g,''))"}
