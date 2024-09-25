@@ -48,12 +48,14 @@ class StudyPlan < ApplicationRecord
   validates :name, presence: true
   validates :modality, presence: true
   validates :levels, presence: true
-  validates :requirement_by_subject_types, presence: true
+  # validates :requirement_by_subject_types, presence: true
   validates :school, presence: true
   validates :structure, presence: true
 
   # ENUMS:
-  enum modality: [:Anual, :Semestral]
+  #AcademicProcess.modalities: {Semestral: 0, Anual: 1, Componente: 4} # Antes: [:Semestral, :Anual, :Intensivo, :Unico, :Componente]
+  # enum modality: [:Anual, :Semestral, :Componente]
+  enum modality: {Anual: 0, Semestral: 1, Componente: 4}
   enum structure: {por_dependencia: 0, por_nivel: 1, sin_restricciones: 2}
   # CALLBACKS:
   before_save :clean_values

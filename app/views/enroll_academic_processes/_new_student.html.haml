@@ -25,7 +25,7 @@
       - content = render partial: "/payment_reports/form"
       = render partial: '/layouts/scaffold-modal', locals: {content: content, title: titlePayment, id: id}
 
-- school.academic_processes.enrolls.each do |academic_process|
+- school.academic_processes.where(modality: @grade.study_plan_modality).enrolls.each do |academic_process|
   - academic_process_before = academic_process&.process_before
   - # INSCRIPCIÓN ABIERTA!
   .border.border-success.mb-3
@@ -79,6 +79,7 @@
             - enabled_to_enroll = true
 
         - if enabled_to_enroll
+          - @academic_process = academic_process
           .m-3.p-3.text-center= render template: 'enroll_academic_processes/new'
       - elsif ['articulo3', 'articulo6', 'articulo7'].include? @grade.current_permanence_status
         - # ROYER RABIT

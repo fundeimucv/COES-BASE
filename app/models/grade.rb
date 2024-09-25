@@ -149,8 +149,12 @@ class Grade < ApplicationRecord
   scope :custom_search, -> (keyword) { joins(:user, :school).where("users.ci ILIKE '%#{keyword}%' OR schools.name ILIKE '%#{keyword}%'") }
 
   # FUNCTIONS:
-  # Current_permanece_status
 
+  # PARCHE PARA CONTEMPLR CASOS DE EDUCACIÓN:
+
+  def study_plan_modality
+    study_plan&.modality
+  end
   def get_current_permanence_status
     # current_permanence_status: nuevo: 0, regular: 1, reincorporado: 2, articulo3: 3
     # articulo6: 4, articulo7: 5, intercambio: 6, desertor: 7, egresado: 8, 
@@ -181,7 +185,7 @@ class Grade < ApplicationRecord
   def import_new_grade grado
 
     self.current_permanence_status = grado.reglamento
-	
+  
     if grado.reincorporado?
       self.current_permanence_status = :reincorporado
       self.enrollment_status = :confirmado
@@ -283,7 +287,7 @@ class Grade < ApplicationRecord
   end
 
   def academic_processes_unenrolled
-    school.academic_processes.joins(period: :period_type).order('periods.year DESC, period_types.code DESC').reject{|ap|self.academic_processes.ids.include?(ap.id)}
+    school.academic_processes.where(modality: study_plan_modality).joins(period: :period_type).order('periods.year DESC, period_types.code DESC').reject{|ap|self.academic_processes.ids.include?(ap.id)}
   end
 
   # ENROLLMENT

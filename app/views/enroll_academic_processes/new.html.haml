@@ -1,18 +1,19 @@
 - school = @grade.school
 
-- school.academic_processes.enrolls.each do |academic_process|
-  - enroll_in_process = @grade.enroll_academic_processes.where(academic_process_id: academic_process.id).first
+-# school.academic_processes.enrolls.each do |academic_process|
 
-  - totalCreditsReserved = enroll_in_process ? enroll_in_process.total_credits : 0
-  - totalSubjectsReserved = enroll_in_process ? enroll_in_process.total_subjects : 0
+- enroll_in_process = @grade.enroll_academic_processes.where(academic_process_id: @academic_process.id).first
 
-  %button.btn.btn-lg.btn-success{"data-bs-target": "#Enrollment#{@grade.id}", "data-bs-toggle": :modal, type: :button}
-    .fa.fa-graduation-cap
-    = "Preinscribirse en Período Académico #{academic_process.process_name} de la #{school.name}"
-  -# msgDanger = "Seleccione las asignaturas que desea preinscribir. Recuerde mover el scroll para ver todas las asignaturas ofertadas."
+- totalCreditsReserved = enroll_in_process ? enroll_in_process.total_credits : 0
+- totalSubjectsReserved = enroll_in_process ? enroll_in_process.total_subjects : 0
 
-  - title1 = "Preinscripción en Período Académico #{academic_process.process_name}"
-  - title2 = "#{school.name}"
-  - content = render partial: '/enroll_academic_processes/form', locals: {totalCreditsReserved: totalCreditsReserved, totalSubjectsReserved: totalSubjectsReserved, academic_process: academic_process}
+%button.btn.btn-lg.btn-success{"data-bs-target": "#Enrollment#{@grade.id}", "data-bs-toggle": :modal, type: :button}
+  .fa.fa-graduation-cap
+  = "Preinscribirse en Período Académico #{@academic_process.process_name} de la #{school.name}"
+-# msgDanger = "Seleccione las asignaturas que desea preinscribir. Recuerde mover el scroll para ver todas las asignaturas ofertadas."
 
-  = render partial: '/layouts/scaffold-modal-static', locals: {content: content, title1: title1, title2: title2, id: "Enrollment#{@grade.id}"}
+- title1 = "Preinscripción en Período Académico #{@academic_process.process_name}"
+- title2 = "#{school.name}"
+- content = render partial: '/enroll_academic_processes/form', locals: {totalCreditsReserved: totalCreditsReserved, totalSubjectsReserved: totalSubjectsReserved, academic_process: @academic_process}
+
+= render partial: '/layouts/scaffold-modal-static', locals: {content: content, title1: title1, title2: title2, id: "Enrollment#{@grade.id}"}

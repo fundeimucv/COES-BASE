@@ -238,8 +238,14 @@ class EnrollAcademicProcess < ApplicationRecord
   #   !(grade.school&.id.eql? academic_process.school_id)
   # end
   def enrolling?
-    # academic_process&.enrolling?
-    academic_process.eql? school.academic_processes.first
+    # school.academic_processes.where(modality: grade.study_plan_modality).enrolls
+    # academic_process.eql? school.academic_processes.first
+    academic_process&.enrolling?
+
+  end
+
+  def admin_enrolling?
+    academic_process&.enrolling? or academic_process.eql? school.academic_processes.where(modality: grade.study_plan_modality).first
   end
 
   def pay_amount
@@ -349,7 +355,7 @@ class EnrollAcademicProcess < ApplicationRecord
           (current_user and current_user.admin and current_user.admin.authorized_manage? 'EnrollAcademicProcess')
         end
         formatted_value do          
-          if bindings[:object].enrolling?
+          if bindings[:object].admin_enrolling?
             totalCreditsReserved = bindings[:object].total_credits_not_retired
             totalSubjectsReserved = bindings[:object].total_subjects_not_retired
 
