@@ -3,6 +3,7 @@
 # Table name: enrollment_days
 #
 #  id                    :bigint           not null, primary key
+#  by_before_process     :boolean          default(TRUE), not null
 #  max_grades            :integer
 #  slot_duration_minutes :integer
 #  start                 :datetime
@@ -60,9 +61,13 @@ class EnrollmentDay < ApplicationRecord
       csv << ['Cédula', 'Apellido y Nombre', 'Correo', 'Sede', 'Desde', 'Hasta', 'Eficiencia', 'Promedio', 'Ponderado']
       own_grades_sort_by_appointment.each do |grade|
         user = grade.user
-        eap = grade.enroll_academic_processes.joins(:period).order(['periods.year': :desc, 'periods.period_type_id': :desc]).first
+        if self.by_before_process
+          obj = grade.enroll_academic_processes.joins(:period).order(['periods.year': :desc, 'periods.period_type_id': :desc]).first
+        else
+          obj = grade
+        end
         
-        csv << [user.ci, user.reverse_name, user.email, grade.student.sede, grade.appointment_from, grade.appointment_to, eap.efficiency_desc, eap.simple_average_desc, eap.weighted_average_desc]
+        csv << [user.ci, user.reverse_name, user.email, grade.student.sede, grade.appointment_from, grade.appointment_to, obj.efficiency_desc, obj.simple_average_desc, obj.weighted_average_desc]
       end
     end
   end

@@ -50,7 +50,7 @@ class EnrollmentDaysController < ApplicationController
 
         appointment_time = @enrollment_day.start+(a*@enrollment_day.slot_duration_minutes).minutes
 
-        total_updated += academic_process.update_grades_enrollment_day params[:by_before_process], grades_by_timeslot, appointment_time, duration_slot_time
+        total_updated += academic_process.update_grades_enrollment_day @enrollment_day.by_before_process, grades_by_timeslot, appointment_time, duration_slot_time
 
       end
 
@@ -59,7 +59,7 @@ class EnrollmentDaysController < ApplicationController
       if rest > 0
         appointment_time = @enrollment_day.start+(total_timeslots*@enrollment_day.slot_duration_minutes).minutes
 
-        total_updated += academic_process.update_grades_enrollment_day params[:by_before_process], rest-1, appointment_time, duration_slot_time
+        total_updated += academic_process.update_grades_enrollment_day @enrollment_day.by_before_process, rest-1, appointment_time, duration_slot_time
 
       end
 
@@ -109,6 +109,6 @@ class EnrollmentDaysController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def enrollment_day_params
-      params.require(:enrollment_day).permit(:academic_process_id, :start, :total_duration_hours, :max_grades, :slot_duration_minutes)
+      params.require(:enrollment_day).permit(:academic_process_id, :start, :total_duration_hours, :max_grades, :slot_duration_minutes, :by_before_process)
     end
 end

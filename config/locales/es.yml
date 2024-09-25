@@ -691,6 +691,7 @@ es:
         total_duration_hours: Total Duración de la Jornada
         max_grades: Total Inscritos Permitidos
         slot_duration_minutes: Duración franja horaria (en minutos)
+        by_before_process: Aplicar sobre el periodo anterior
       faculty:
         code: 'Código'
         name: 'Nombre'

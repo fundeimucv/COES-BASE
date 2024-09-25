@@ -26,8 +26,7 @@
     = f.input :slot_duration_minutes, collection: [["30 Minutos", 30],["60 Minutos", 60],["120 Minutos", 120]], as: :radio_buttons, required: true      
     %hr
     .alert.alert-warning
-      = check_box_tag :by_before_process, true, checked: true
-      Aplicar sobre el periodo anterior
+      = f.input :by_before_process
   .modal-footer
     = f.button :submit, value: 'Crear Jornada de inscripción por cita horaria', class: 'btn btn-success'
 

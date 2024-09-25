@@ -150,6 +150,31 @@ class Grade < ApplicationRecord
 
   # FUNCTIONS:
 
+  def efficiency_desc
+    if efficiency.nil?
+      '--'
+    else
+      (efficiency).round(2)
+    end
+  end
+
+  def simple_average_desc
+    if simple_average.nil?
+      '--'
+    else
+      (simple_average).round(2)
+    end
+  end
+
+  def weighted_average_desc
+    if weighted_average.nil?
+      '--'
+    else
+      (weighted_average).round(2)
+    end
+  end
+
+
   # PARCHE PARA CONTEMPLR CASOS DE EDUCACIÓN:
 
   def study_plan_modality

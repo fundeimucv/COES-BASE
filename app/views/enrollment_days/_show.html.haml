@@ -11,14 +11,17 @@
         %th.col-4.text-center Desde
         %th.col-4.text-center Hasta
         %th.text-center.align-middle Est. Permanencia
-        %th.text-center{width: '50px'}= "Eficiencia #{academic_process.process_before.process_name}"
-        %th.col-1.text-center= "Promedio #{academic_process.process_before.process_name}" 
-        %th.col-1.text-center= "Ponderado #{academic_process.process_before.process_name}" 
+        %th.text-center{width: '50px'}= "Eficiencia #{academic_process.process_before.process_name if day.by_before_process}"
+        %th.col-1.text-center= "Promedio #{academic_process.process_before.process_name if day.by_before_process}" 
+        %th.col-1.text-center= "Ponderado #{academic_process.process_before.process_name if day.by_before_process}" 
     %tbody
       - grades.each do |grade, i|
         - student = grade.student
         - reverse_name = student.user.reverse_name
-        - eap = grade.enroll_academic_processes.joins(:period).order(['periods.year': :desc, 'periods.period_type_id': :desc]).first
+        - if day.by_before_process
+          - obj = grade.enroll_academic_processes.joins(:period).order(['periods.year': :desc, 'periods.period_type_id': :desc]).first
+        - else
+          - obj = grade
         %tr
           %td.text-center= grade.label_status_enroll_academic_process(academic_process.id)
           %td= student.sede 
@@ -27,6 +30,6 @@
           %td.text-center= grade.appointment_from 
           %td.text-center= grade.appointment_to
           %td.text-center.align-middle= grade.label_current_permanence_status
-          %td= eap.efficiency
-          %td= eap.simple_average
-          %td= eap.weighted_average
+          %td= obj.efficiency
+          %td= obj.simple_average
+          %td= obj.weighted_average
