@@ -65,6 +65,8 @@ class Grade < ApplicationRecord
   belongs_to :study_plan
   belongs_to :admission_type
   belongs_to :enabled_enroll_process, foreign_key: 'enabled_enroll_process_id', class_name: 'AcademicProcess', optional: true
+  belongs_to :academic_process, foreign_key: 'start_process_id', class_name: 'AcademicProcess', optional: true
+  # Igual al siguiente
   belongs_to :start_process, foreign_key: 'start_process_id', class_name: 'AcademicProcess', optional: true
 
   has_one :school, through: :study_plan
@@ -149,6 +151,10 @@ class Grade < ApplicationRecord
   scope :custom_search, -> (keyword) { joins(:user, :school).where("users.ci ILIKE '%#{keyword}%' OR schools.name ILIKE '%#{keyword}%'") }
 
   # FUNCTIONS:
+  def payment_process
+    start_process
+  end
+
 
   def efficiency_desc
     if efficiency.nil?

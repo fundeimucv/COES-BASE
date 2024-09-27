@@ -115,6 +115,11 @@ class EnrollAcademicProcess < ApplicationRecord
   end
 
   # FUNCTIONS:
+  def payment_process
+    academic_process
+  end
+
+
   def resume_payment_reports
     payment_reports.map(&:name)
   end

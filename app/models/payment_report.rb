@@ -66,6 +66,8 @@ class PaymentReport < ApplicationRecord
   scope :custom_search, -> (keyword) {joins(:user, :school).where("payment_reports.owner_account_name ILIKE '%#{keyword}%' OR payment_reports.owner_account_ci ILIKE '%#{keyword}%' OR payment_reports.transaction_id ILIKE '%#{keyword}%' OR payment_reports.amount = #{keyword} OR users.ci ILIKE '%#{keyword}%' OR users.first_name ILIKE '%#{keyword}%' OR users.last_name ILIKE '%#{keyword}%' OR users.email ILIKE '%#{keyword}%' OR schools.name ILIKE '%#{keyword}%'") }  
 
 
+  # scope :payment_process, -> (payable){joins("INNER JOIN #{payable} on payable_type = '#{payable.singularize.camelize}' and payable_id = #{payable}.id").where("#{payable}.pa") }
+  
   attr_accessor :remove_voucher
   after_save { voucher.purge if remove_voucher.eql? '1' }   
 
@@ -93,6 +95,10 @@ class PaymentReport < ApplicationRecord
   enum status: [:Pendiente, :Validado, :Invalidado]
 
   # SPECIALS FUNCTIONS OF POLYMORPHIC:
+  def payment_process
+    payable.payment_process
+  end
+
   def student_by_payable
     payable&.student
   end
@@ -136,11 +142,9 @@ class PaymentReport < ApplicationRecord
   end
 
   def label_show_modal label_id, label_title 
-
     "<button class='btn btn-sm btn-success mx-2' data-bs-target='##{label_id}' data-bs-toggle='modal' type='button' aria-label='#{label_title}' data-bs-original-title='#{label_title}'>
     <i class='fa fa-receipt'></i>
     </button>"
-
   end
 
   # OTHERS FUNCTIONS:
@@ -156,7 +160,11 @@ class PaymentReport < ApplicationRecord
       search_by :custom_search
       scopes [:todos, :pagos_escuela, :pagos_inscripcion, :Pendiente, :Validado, :Invalidado]
       filters [:school]
-      field :school
+      field :school do 
+        pretty_value do
+          bindings[:object].school.short_name
+        end        
+      end
       field :id do
         sticky true
       end
@@ -171,12 +179,51 @@ class PaymentReport < ApplicationRecord
       end      
 
       field :amount
-      field :academic_process do
-        label 'Período'
+
+      # field :academic_process do
+      #   filterable true
+      #   label 'Período'
+      #   formatted_value do
+      #     if bindings[:object].payable_type.eql? 'EnrollAcademicProcess'
+      #       bindings[:object].academic_process&.process_name 
+      #     elsif 
+      #       bindings[:object].payable_type.eql? 
+      #     end
+      #   end
+      # end
+
+      field :payment_process do
+        label 'Periodo'
+        # filterable true
         formatted_value do
-          bindings[:object].academic_process&.name if bindings[:object].payable_type.eql? 'EnrollAcademicProcess'
+          bindings[:object].payment_process&.process_name
         end
+
+        # associated_collection_cache_all false
+        # associated_collection_scope do
+        #   payment = bindings[:object]
+
+        #   Proc.new { |scope|
+        #     table = payment.payable.class.name.underscore.to_sym
+        #     scope = joins(table {:academic_process}).where('academic_processes.id': payment.payment_process.id)
+        #     scope = scope.limit(10) # 'order' does not work here
+        #   }
+        # end
+
+  #     associated_collection_scope do
+  #       # bindings[:object] & bindings[:controller] are available, but not in scope's block!
+  #       # team = bindings[:object]
+  #       Proc.new { |scope|
+  #         # scoping all Players currently, let's limit them to the team's league
+  #         # Be sure to limit if there are a lot of Players and order them by position
+  #         scope = scope.joins(:course)
+  #         scope = scope.limit(30) # 'order' does not work here
+  #       }
+  #     end
+
+        
       end
+
       field :student do
         pretty_value do
           if bindings[:view]._current_user&.admin&.authorized_read? 'Student'
@@ -256,21 +303,21 @@ class PaymentReport < ApplicationRecord
       field :user_name do
         label 'Nombre Usuario'
         formatted_value do
-          bindings[:object].student.user.first_name
+          bindings[:object].user.first_name
         end
       end
 
       field :user_last_name do
         label 'Apellido Usuario'
         formatted_value do
-          bindings[:object].student.user.last_name
+          bindings[:object].user.last_name
         end
       end
       
       field :user_ci do
         label 'Ci Usuario'
         formatted_value do
-          bindings[:object].student.user.ci
+          bindings[:object].user.ci
         end
       end
     end
