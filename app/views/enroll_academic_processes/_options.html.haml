@@ -28,7 +28,7 @@
 
 - if (session[:rol].eql? 'student') or (enabled_to_admin and (current_user&.admin&.authorized_manage? 'AcademicRecord'))
 
-  - if enroll_academic_process.confirmado? and (enroll_academic_process&.academic_process&.active_or_enroll?)
+  - if (enroll_academic_process&.academic_process&.active_or_enroll?) and enroll_academic_process.confirmado?
 
     - if !enroll_academic_process.any_permanence_articulo?
       - msg = 'Generar Constancia de Estudio'
