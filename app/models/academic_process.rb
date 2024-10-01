@@ -99,6 +99,9 @@ class AcademicProcess < ApplicationRecord
   #   p "max_subjects: #{max_subjects}"
   # end
 
+  def name_without_school
+    name.split(" | ").last
+  end
   def conv_type
     "#{I18n.t("activerecord.scopes.academic_process."+self.modality)}#{self.period.period_type.code.upcase}"
   end
@@ -194,7 +197,7 @@ class AcademicProcess < ApplicationRecord
   end
 
   def link_to_massive_confirmation
-    "<a href='/academic_processes/#{id}/massive_confirmation' data-bs-toggle='tooltip' title='Confirmar todos los preinscritos' data-confirm='Está acción confirmará todos los preinscritos. ¿Está completamente seguro?' class='label bg-info'><i class= 'fa-regular fa-list-check'></i></a>".html_safe
+    "<a href='/academic_processes/#{id}/massive_confirmation' data-bs-toggle='tooltip' title='Confirmar preinscritos y reservados con reporte de pago' data-confirm='Está acción confirmará #{self.enroll_academic_processes.not_confirmado.total_with_payment_report} estudiantes (preinscritos o reservados) con reporte de pago. ¿Está completamente seguro?' class='label bg-info'><i class= 'fa-regular fa-list-check'></i></a>".html_safe
   end
 
   def link_to_massive_actas_generation

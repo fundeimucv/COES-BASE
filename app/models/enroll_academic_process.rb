@@ -142,6 +142,10 @@ class EnrollAcademicProcess < ApplicationRecord
     return false
   end
 
+	def confirm_with_email
+		UserMailer.enroll_confirmation(self.id).deliver_later if self.update(enroll_status: :confirmado)
+	end
+  
   def not_confirmado?
     (reservado? or preinscrito?)
   end

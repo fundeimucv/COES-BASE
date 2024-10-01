@@ -2,12 +2,13 @@ class AcademicProcessesController < ApplicationController
   before_action :set_academic_process, only: %i[ show edit update destroy clone_sections clean_courses run_regulation massive_confirmation massive_actas_generation]
 
   def massive_confirmation
-    total = @academic_process.enroll_academic_processes.not_confirmado
-
-    if total.update_all(enroll_status: :confirmado)
-      flash[:success] = "Se actualizaron #{total.count} inscripciones"
-    else
-      flash[:danger] = "No fue posible completar la operación: #{total.errors.full_messages.to_sentence}"
+    total = @academic_process.enroll_academic_processes.not_confirmado.with_payment_report
+    total_count = total.count
+    begin
+      total.each {|ins| ins.confirm_with_email}
+      flash[:success] = "Se actualizaron #{total_count} inscripciones"
+    rescue Exception => e
+      flash[:danger] = "No fue posible completar la operación: #{e}"
     end
     redirect_back fallback_location: '/admin/enroll_academic_process'
   end
