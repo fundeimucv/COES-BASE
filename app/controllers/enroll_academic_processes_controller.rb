@@ -23,6 +23,7 @@ class EnrollAcademicProcessesController < ApplicationController
         file_name = "ConstanciaEstudio#{@enroll_academic_process.short_name}"
         event = 'Se generó Constancia de Estudio'
         @title = 'CONSTANCIA DE ESTUDIO'
+        @study_contance = true
       end
       respond_to do |format|
         format.html

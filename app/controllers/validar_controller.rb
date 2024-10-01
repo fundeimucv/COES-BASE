@@ -2,6 +2,7 @@ class ValidarController < ApplicationController
   before_action :set_version, only: %i[ constancias ]
   skip_before_action :authenticate_user!, only: [ :constancias ]
 
+  layout 'logged'
   def constancias
 
     if (@version and @version.item.is_a? EnrollAcademicProcess and (params[:study] and @version.event.eql? 'Se generó Constancia de Estudio') or (@version.event.eql? 'Se generó Constancia de Inscripción'))
@@ -10,6 +11,7 @@ class ValidarController < ApplicationController
 
       flash[:success] = '¡Documento Válido!'
       @item = @version.item
+      
     else
       flash[:danger] = 'Recurso no accesible. Puede que el documento no sea válido o halla sido alterado. Contacte a las autoridades para la validación del documento.'
       redirect_to root_path
