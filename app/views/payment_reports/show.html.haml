@@ -22,5 +22,13 @@
     = @payment_report.receiving_bank_account&.name
 
   %p
+    %b Nombre del titular de la cuenta:
+    = @payment_report.owner_account_name
+
+  %p
+    %b CI del titular de la cuenta:
+    = @payment_report.owner_account_ci
+
+  %p
     %b Comprobante de Pago:
   = render partial: "layouts/set_image", locals: {image: @payment_report.voucher, size: '100', alt: 'Comprobante'}

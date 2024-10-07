@@ -5,8 +5,9 @@
   = f.input :payable_id, as: :hidden
   = f.input :payable_type, as: :hidden
 
-  = f.input :amount, disabled: true, input_html: { class: 'disabled' }, as: :currency
-  = f.input :amount, as: :hidden
+  =# f.input :amount, disabled: true, input_html: { class: 'disabled' }, as: :currency
+  =# f.input :amount, as: :hidden
+  = f.input :amount, as: :currency
   = f.input :transaction_id, input_html: {aria: {required: true}, oninput: "onlyNumbers($(this))"}, required: true
   =# f.input :transaction_type, collection: PaymentReport.transaction_types.map{|e| e}#,  as: :radio
   =# f.collection_radio_buttons :transaction_type, PaymentReport.transaction_types.keys, nil, nil
