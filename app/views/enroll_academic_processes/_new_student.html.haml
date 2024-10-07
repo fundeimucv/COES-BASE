@@ -46,7 +46,7 @@
 
       - if inscripcion&.reservado? or @grade.valid_to_enroll_in academic_process
         - # "REGULAR"
-        - # ROYER RABIT
+        - # ROYER RABIT 
         = render partial: '/grades/regulation'
 
         - if (inscripcion.nil? or inscripcion&.reservado?)
@@ -94,8 +94,13 @@
           %b ATENCIÓN: 
           Su estado actual de permanencia lo imposibilita para inscribirse. Contacte al personal de Control de Estudio de la escuela para solventar su situación si considera que el caso lo amerita.
           = @grade.help_msg
-      - elsif (academic_process_before and @grade.enroll_academic_processes.of_academic_process(academic_process_before.id).any?)
+      - elsif (academic_process_before and !@grade.enroll_academic_processes.of_academic_process(academic_process_before.id).any?)
         .alert.alert-danger 
           %b ATENCIÓN: 
-          = "Usted no realizó un proceso de inscripción en el período anterior (#{academic_process_before&.process_name}) por lo que su preinscripción no podrá realizarla. Debe dirigirse a Control de Estudio para solventar su situación."
+          = "Usted no se inscribió en el período anterior (#{academic_process_before&.process_name}) por lo que su preinscripción no podrá realizarse por esta vía. Debe dirigirse a Control de Estudio para solventar su situación."
           = @grade.help_msg
+
+      - else
+        %h4.alert.alert-danger
+          %b ATENCIÓN:
+          Comuníquese con el personal de Control de Estudio para que le permita realizar su preinscripción
