@@ -891,7 +891,7 @@ class Grade < ApplicationRecord
     end
 
     export do
-      fields :student, :study_plan, :admission_type, :registration_status, :efficiency, :weighted_average, :simple_average
+      fields :student, :study_plan, :admission_type, :registration_status, :efficiency, :weighted_average, :simple_average, :region
       field :total_subjects_coursed do
         label 'Total Créditos Cursados'
       end

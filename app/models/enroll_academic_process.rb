@@ -348,6 +348,9 @@ class EnrollAcademicProcess < ApplicationRecord
     return ApplicationController.helpers.label_status("bg-#{label_color}", self.permanence_status&.titleize)
   end
 
+  def region
+    grade&.region&.titleize
+  end
 
   rails_admin do
     navigation_label 'Reportes'
@@ -453,6 +456,16 @@ class EnrollAcademicProcess < ApplicationRecord
           bindings[:object].payment_reports&.map(&:label_status).to_sentence.html_safe
         end
       end
+
+      field :region do
+        label 'Región'
+        # searchable :enroll_status
+        
+        queryable false
+        filterable false
+        sortable false
+      end
+
       
       fields :efficiency, :simple_average, :weighted_average
     end

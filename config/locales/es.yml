@@ -721,6 +721,7 @@ es:
         current_permanece_status: Régimen Actual de Permanencia
         language1: Idioma 1
         language2: Idioma 2
+        region: Región
       mention:
         name: Nombre
         study_plan: Plan de Estudio
