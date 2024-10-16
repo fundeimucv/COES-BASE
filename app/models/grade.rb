@@ -881,6 +881,11 @@ class Grade < ApplicationRecord
       field :start_process do
         inline_edit false
         inline_add false
+
+        render do
+          bindings[:view].render(partial: 'rails_admin/main/grade/custom_academic_process_id_field', locals: {schools_auh: bindings[:view]._current_user&.admin&.schools_auh, value: bindings[:object].start_process_id})
+        end
+        
       end
       field :appointment_time do
         label 'Fecha y Hora Cita Horaria'

@@ -1,0 +1,2 @@
+.form-row
+    .col-md-4= grouped_collection_select :grade, :start_process_id, schools_auh, :academic_processes, :name, :id, :period_desc_and_modality, {prompt: "Seleccione Periodo...", selected: value}, { class: "form-control input"}
