@@ -193,8 +193,8 @@ class Grade < ApplicationRecord
 
     if is_new?
       :nuevo
-    elsif current_process = self.school.academic_process.first
-      before_eap = self.enroll_academic_processes.where(academic_process_id: current_process.id)
+    elsif current_process = self.school.academic_processes.first
+      before_eap = self.enroll_academic_processes.where(academic_process_id: current_process.id).first
       if before_eap.nil? 
         :reincorporado
       else
@@ -849,7 +849,7 @@ class Grade < ApplicationRecord
         inline_add false
         inline_edit false
       end
-      fields :enrollment_status, :study_plan, :current_permanence_status, :admission_type, :registration_status, :enabled_enroll_process
+      fields :enrollment_status, :study_plan, :current_permanence_status, :admission_type, :registration_status
 
       field :appointment_time do
         label 'Fecha y Hora Cita Horaria'
