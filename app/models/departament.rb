@@ -21,7 +21,7 @@ class Departament < ApplicationRecord
 	belongs_to :school
 	has_and_belongs_to_many :areas
 	# has_many :areas#, dependent: :restrict_with_error
-	has_many :subjects, through: :areas
+	has_many :subjects
 	has_many :teachers, dependent: :restrict_with_error
 	has_many :courses, through: :subjects
 	has_many :sections, through: :courses

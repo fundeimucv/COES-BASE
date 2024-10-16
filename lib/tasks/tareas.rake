@@ -2,6 +2,55 @@ def print_error e
 	p "     ERROR: <#{e}>     ".center 800, '!'
 end
 
+desc "Actualizar subjects' departaments"
+task :update_subject_departaments => :environment do
+	total = 0
+	with_subject_errors = []
+	with_dpto_not_found = []
+	with_subject_not_found = []
+	Subject.all.each_with_index do |subject, i|
+		code = subject.code
+
+		asignatura = Asignatura.where(id: code).first
+		
+		dsc = subject.name
+		
+		asignatura ||= Asignatura.where("lower(descripcion) ILIKE ?", dsc).first
+		if asignatura
+			departamento = asignatura.departamento
+			school = departamento.escuela.find_school
+			# departament = school.departaments.find(name: departamento.descripcion)
+			departament = school.departaments.where(name: departamento.descripcion.upcase).first
+			departament ||= school.departaments.where("lower(name) ILIKE ?", departamento.descripcion.downcase).first
+
+			if departament
+				if subject.update(departament_id: departament.id)
+					total += 1
+					print "√"
+				else
+					with_subject_errors << subject.id
+					print "X"
+				end
+				
+			else
+				print "D"
+				with_dpto_not_found << subject.id
+			end
+		else
+			print "S"
+			with_subject_not_found << subject.id
+		end
+	end
+
+	p "Total Migradas: #{total}"
+	p "Total Error al guardar #{with_subject_errors.count}: #{with_subject_errors}"
+	p "Total dpto no encontrada #{with_dpto_not_found.count}: #{with_dpto_not_found}"
+	p "Total subject no encontrada #{with_subject_not_found.count}: #{with_subject_not_found}"
+rescue Exception => e
+	print_error e
+end
+
+
 desc "Actualizar estados de permanencia"
 task :update_permanece_status => :environment do
 	School.pregrado.each do |escuela|

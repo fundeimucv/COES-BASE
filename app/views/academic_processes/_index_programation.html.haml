@@ -1,6 +1,5 @@
   
-- areas = academic_process.school.areas.all.order(name: :asc).uniq
-- params[:area] ||= areas.first.id
+- params[:area] ||= academic_process.school.areas.order(name: :asc).uniq.first.id
 - @academic_process_id = academic_process.id
 - @academic_process = academic_process
 - @school = @academic_process.school
@@ -9,12 +8,14 @@
   - @dpts = current_user&.admin&.departaments
 - else
   - @dpts = @school.departaments
+- params[:dpt_id] ||= @dpts.first.id.to_s
 
-- @current_dpt = Departament.find params[:dpt_id] if params[:dpt_id]
-- areas = @current_dpt.nil? ? @dpts.first.areas : @current_dpt.areas
-
+- @current_dpt = params[:dpt_id] ? (Departament.find params[:dpt_id]) : @dpts.first
+-# areas = @current_dpt.nil? ? @dpts.first.areas : @current_dpt.areas
+- areas = @current_dpt&.areas
+= areas.count
 - # ATENCIÓN: HAY QUE VERIFICAR ESTA VISTA YA QUE SE ESTÁ FUCIONANDO: OFFER Y PFFER_PCI
-- if !areas.any?
+- if false #!areas.any?
   .alert.alert-danger.text-center 
     %b Atención:
     Primero debe registar las cátedras de la escuela.
@@ -37,7 +38,7 @@
           - url = "/admin/academic_process/#{@academic_process_id}/programation?area=#{area.id}"
           - url += "&dpt_id="+params[:dpt_id] if params[:dpt_id]
           %a.nav-link{:href => url, class: active_area_tab, style: 'font-size: small;'}
-            = ApplicationController.helpers.total_sections_stiky area.sections.where('courses.academic_process_id': @academic_process_id).count
+            = ApplicationController.helpers.total_sections_stiky area.sections.joins(:departament).where('courses.academic_process_id': @academic_process_id, 'departaments.id': params[:dpt_id]).count
             = area.name.titleize
 
     .tab-content.col-9.p-0
@@ -51,7 +52,7 @@
         - show_area_cont = active_area ? 'show' : ''
 
         - sections = area.sections.where('courses.academic_process_id': @academic_process_id)
-        - if area.subjects.where(school_id: @school.id).any?
+        - if area.subjects.where(school_id: @school.id, departament_id: params[:dpt_id]).any?
           .tab-pane.fade{class: "#{active_area_cont} #{show_area_cont}", role: :tabpanel} 
             %ul#moda_selector.nav.nav-tabs
               - modalities.each do |moda|
@@ -71,7 +72,8 @@
                   .tab-pane.fade.active.text-primary.show{role: :tabpanel} 
                     %h6.text-primary.text-center
                       = "#{moda&.name&.downcase.pluralize.titleize} de #{area&.name&.titleize}"
-                    - subjects = academic_process.school.subjects.joins(:subject_type).where('subject_types.code': params[:moda], area_id: params[:area]).sort_by_code.uniq
+                    -# subjects = academic_process.school.subjects.joins(:subject_type).joins(:departaments).where('subject_types.code': params[:moda], area_id: params[:area], 'departaments.id': 3 ).sort_by_code.uniq
+                    - subjects = @current_dpt.subjects.joins(:subject_type).where('subject_types.code': params[:moda], area_id: params[:area], departament_id: params[:dpt_id]).sort_by_code.uniq
                     = render partial: '/academic_processes/table_subjects_programation', locals: {subjects: subjects, academic_process_id: @academic_process_id}
         - else
           .alert.alert-danger.text-center 

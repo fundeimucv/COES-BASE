@@ -44,6 +44,7 @@ class Section < ApplicationRecord
   has_one :subject, through: :course
   has_one :subject_type, through: :subject
   has_one :area, through: :subject
+  has_one :departament, through: :subject
   # accepts_nested_attributes_for :subject
 
   has_one :academic_process, through: :course

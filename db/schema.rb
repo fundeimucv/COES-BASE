@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_09_25_222835) do
+ActiveRecord::Schema[7.0].define(version: 2024_10_16_194706) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -843,7 +843,9 @@ ActiveRecord::Schema[7.0].define(version: 2024_09_25_222835) do
     t.boolean "force_absolute", default: false
     t.bigint "subject_type_id", null: false
     t.bigint "school_id"
+    t.bigint "departament_id"
     t.index ["area_id"], name: "index_subjects_on_area_id"
+    t.index ["departament_id"], name: "index_subjects_on_departament_id"
     t.index ["school_id"], name: "index_subjects_on_school_id"
     t.index ["subject_type_id"], name: "index_subjects_on_subject_type_id"
   end
@@ -1004,6 +1006,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_09_25_222835) do
   add_foreign_key "subject_links", "subjects", column: "depend_subject_id"
   add_foreign_key "subject_links", "subjects", column: "prelate_subject_id"
   add_foreign_key "subjects", "areas"
+  add_foreign_key "subjects", "departaments"
   add_foreign_key "subjects", "schools"
   add_foreign_key "subjects", "subject_types"
   add_foreign_key "teachers", "departaments"

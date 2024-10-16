@@ -13,18 +13,21 @@
 #  created_at         :datetime         not null
 #  updated_at         :datetime         not null
 #  area_id            :bigint           not null
+#  departament_id     :bigint
 #  school_id          :bigint
 #  subject_type_id    :bigint           not null
 #
 # Indexes
 #
 #  index_subjects_on_area_id          (area_id)
+#  index_subjects_on_departament_id   (departament_id)
 #  index_subjects_on_school_id        (school_id)
 #  index_subjects_on_subject_type_id  (subject_type_id)
 #
 # Foreign Keys
 #
 #  fk_rails_...  (area_id => areas.id)
+#  fk_rails_...  (departament_id => departaments.id)
 #  fk_rails_...  (school_id => schools.id)
 #  fk_rails_...  (subject_type_id => subject_types.id)
 #
@@ -39,11 +42,11 @@ class Subject < ApplicationRecord
 
   # ASSOCIATIONS:
   belongs_to :area
+  belongs_to :departament
   belongs_to :school
   belongs_to :subject_type
 
   has_and_belongs_to_many :mentions
-
   has_many :courses, dependent: :destroy
   has_many :academic_processes, through: :courses 
   has_many :periods, through: :academic_processes 
@@ -643,7 +646,6 @@ class Subject < ApplicationRecord
   end
 
   private
-
 
     def paper_trail_update
       # changed_fields = self.changes.keys - ['created_at', 'updated_at']
