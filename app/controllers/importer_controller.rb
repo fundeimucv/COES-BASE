@@ -8,7 +8,7 @@ class ImporterController < ApplicationController
 		when 'sections'
 			require_fields = ['numero', 'codigo', 'capacidad', 'profesor_ci'] 
 		when 'academic_records'
-			require_fields = ['ci', 'codigo', 'numero'] 
+			require_fields = ['ci', 'codigo', 'seccion'] 
 		end
 	
 		if require_fields and params[:entity]
