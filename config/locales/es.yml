@@ -1,4 +1,6 @@
 es:
+  is_present: "Presente"
+  contains: 'Contiene'
   js: 'Javascript'
   delete: Eliminar
   edit: Editar

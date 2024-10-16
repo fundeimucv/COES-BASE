@@ -1,7 +1,9 @@
 # Traducciones adicionales en https://github.com/plataformatec/devise/wiki/I18n
   
 es:
+  contains: 'Contiene'
   admin:
+    contains: 'Contiene'
     home:
       name: "Principal"
     pagination:
@@ -10,8 +12,12 @@ es:
       truncate: 'Truncar'
     toggle_navigation: 'Navegación'
     loading: 'cargando'
+    operators:
+      contains: 'Contiene'    
     misc:
+      contains: 'Contiene'
       operators:
+        contains: 'Contiene'
         like: Contiene      
       discard: 'Seleccione'
       chose_all: 'Agregar Todos'
@@ -33,6 +39,7 @@ es:
     form:
       show_all_items: 'Ver Todos'
       operators:
+        contains: 'Contiene'
         like: Contiene
       bulk_delete: 'Confirmación de Eliminación'
       new_model: 'Nuevo'
