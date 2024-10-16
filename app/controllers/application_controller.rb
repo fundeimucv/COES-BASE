@@ -1,6 +1,5 @@
 class ApplicationController < ActionController::Base
   before_action :authenticate_user!
-  before_action :set_paper_trail_whodunnit
   before_action :set_current_process
   before_action :set_paper_trail_whodunnit
 
@@ -79,6 +78,28 @@ class ApplicationController < ActionController::Base
       end
     end
   end
+
+
+  def set_current_academic_process
+    if current_admin
+      if current_admin.desarrollador?
+        session[:period_id] = Period.last&.id
+      else
+        
+        if env_auths.pluck(:env_authorizable_type).uniq.first.to_s.eql? 'School'
+          ids = env_auths.pluck(:env_authorizable_id)
+          School.where(id: ids)
+        elsif env_auths.pluck(:env_authorizable_type).uniq.first.to_s.eql? 'Departament'
+          ids = env_auths.pluck(:env_authorizable_id)
+          school_ids = Departament.where(id: ids).pluck(:school_id)
+          School.where(id: school_ids)
+        end
+
+        session[:env_ids] = current_admin.env_auths.map(&:env_authorizable_id)
+      end
+    end
+  end
+
 
   def set_session_id_if_multirols
     session[:rol] = params[:rol] if (params[:rol] and current_user)
