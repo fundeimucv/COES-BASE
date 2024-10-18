@@ -14,76 +14,68 @@
 -# areas = @current_dpt.nil? ? @dpts.first.areas : @current_dpt.areas
 - areas = @current_dpt&.areas
 = areas.count
-- # ATENCIÓN: HAY QUE VERIFICAR ESTA VISTA YA QUE SE ESTÁ FUCIONANDO: OFFER Y PFFER_PCI
-- if false #!areas.any?
-  .alert.alert-danger.text-center 
-    %b Atención:
-    Primero debe registar las cátedras de la escuela.
-    = link_to '/admin/area/new', class: 'btn btn-sm btn-info' do
-      %i.fa.fa-plus
-      Nueva Cátedra
+- # ATENCIÓN: HAY QUE VERIFICAR ESTA VISTA YA QUE SE ESTÁ FUCIONANDO: OFFER Y OFFER_PCI
 
-- else
-  .row
-    %ul#area_selector.nav.nav-tabs.flex-column.col-3.p-0
+.row
+  %ul#area_selector.nav.nav-tabs.flex-column.col-3.p-0
+    %li.nav-item.bg-primary
+      .nav-link
+        = select nil, 'Dpto', @dpts.map{|dpto| [dpto.total_section_by_process_and_name(@academic_process_id), dpto.id]}, {selected: @current_dpt&.id}, {class: 'form-control', onchange: "select_dpt(this)"}
+    
+      .text-light.ms-3 Áreas:
+
+    - areas.each do |area|
+      - active_area_tab = (params[:area] and area.id.eql? params[:area].to_i) ? 'active' : 'text-light'
       %li.nav-item.bg-primary
-        .nav-link
-          = select nil, 'Dpto', @dpts.map{|dpto| [dpto.total_section_by_process_and_name(@academic_process_id), dpto.id]}, {selected: @current_dpt&.id}, {class: 'form-control', onchange: "select_dpt(this)"}
-      
-        .text-light.ms-3 Áreas:
+        - url = "/admin/academic_process/#{@academic_process_id}/programation?area=#{area.id}"
+        - url += "&dpt_id="+params[:dpt_id] if params[:dpt_id]
+        %a.nav-link{:href => url, class: active_area_tab, style: 'font-size: small;'}
+          = ApplicationController.helpers.total_sections_stiky area.sections.joins(:departament).where('courses.academic_process_id': @academic_process_id, 'departaments.id': params[:dpt_id]).count
+          = area.name.titleize
 
-      - areas.each do |area|
-        - active_area_tab = (params[:area] and area.id.eql? params[:area].to_i) ? 'active' : 'text-light'
-        %li.nav-item.bg-primary
-          - url = "/admin/academic_process/#{@academic_process_id}/programation?area=#{area.id}"
-          - url += "&dpt_id="+params[:dpt_id] if params[:dpt_id]
-          %a.nav-link{:href => url, class: active_area_tab, style: 'font-size: small;'}
-            = ApplicationController.helpers.total_sections_stiky area.sections.joins(:departament).where('courses.academic_process_id': @academic_process_id, 'departaments.id': params[:dpt_id]).count
-            = area.name.titleize
+  .tab-content.col-9.p-0
+    -# modalities = Subject.modalities
+    - modalities = SubjectType.all
+    - params[:moda] ||= modalities.first.code
+    .text-dark.ms-3 Tipología:
+    - areas.each do |area|
+      - active_area = (params[:area] and area.id.eql? params[:area].to_i)
+      - active_area_cont = active_area ? 'active' : 'text-light'
+      - show_area_cont = active_area ? 'show' : ''
 
-    .tab-content.col-9.p-0
-      -# modalities = Subject.modalities
-      - modalities = SubjectType.all
-      - params[:moda] ||= modalities.first.code
-      .text-dark.ms-3 Tipología:
-      - areas.each do |area|
-        - active_area = (params[:area] and area.id.eql? params[:area].to_i)
-        - active_area_cont = active_area ? 'active' : 'text-light'
-        - show_area_cont = active_area ? 'show' : ''
+      - sections = area.sections.where('courses.academic_process_id': @academic_process_id)
+      - if area.subjects.where(school_id: @school.id, departament_id: params[:dpt_id]).any?
+        .tab-pane.fade{class: "#{active_area_cont} #{show_area_cont}", role: :tabpanel} 
+          %ul#moda_selector.nav.nav-tabs
+            - modalities.each do |moda|
+              - active_moda = (active_area and params[:moda] and (moda.code.eql? params[:moda]))
+              - active_moda = active_moda ? 'active text-primary' : 'text-light'
+              - show = active_moda ? 'show' : ''
+              %li.nav-item.bg-primary
+                - url = "/admin/academic_process/#{@academic_process_id}/programation?area=#{area.id}&moda=#{moda.code}"
+                - url += "&dpt_id="+params[:dpt_id] if params[:dpt_id]
+                %a.nav-link.position-relative{:href => url, class: active_moda, style: 'font-size: small;'}
+                  = ApplicationController.helpers.total_sections_stiky sections.joins(:subject_type).where('subject_types.code': moda.code).count
+                  = moda&.name&.downcase.pluralize.titleize
 
-        - sections = area.sections.where('courses.academic_process_id': @academic_process_id)
-        - if area.subjects.where(school_id: @school.id, departament_id: params[:dpt_id]).any?
-          .tab-pane.fade{class: "#{active_area_cont} #{show_area_cont}", role: :tabpanel} 
-            %ul#moda_selector.nav.nav-tabs
-              - modalities.each do |moda|
-                - active_moda = (active_area and params[:moda] and (moda.code.eql? params[:moda]))
-                - active_moda = active_moda ? 'active text-primary' : 'text-light'
-                - show = active_moda ? 'show' : ''
-                %li.nav-item.bg-primary
-                  - url = "/admin/academic_process/#{@academic_process_id}/programation?area=#{area.id}&moda=#{moda.code}"
-                  - url += "&dpt_id="+params[:dpt_id] if params[:dpt_id]
-                  %a.nav-link.position-relative{:href => url, class: active_moda, style: 'font-size: small;'}
-                    = ApplicationController.helpers.total_sections_stiky sections.joins(:subject_type).where('subject_types.code': moda.code).count
-                    = moda&.name&.downcase.pluralize.titleize
+          .tab-content.border-bottom.border-end.border-start.p-3
+            - modalities.each do |moda|
+              - if active_area and params[:moda] and (moda.code.eql? params[:moda])
+                .tab-pane.fade.active.text-primary.show{role: :tabpanel} 
+                  %h6.text-primary.text-center
+                    = "#{moda&.name&.downcase.pluralize.titleize} de #{area&.name&.titleize}"
+                  -# subjects = academic_process.school.subjects.joins(:subject_type).joins(:departaments).where('subject_types.code': params[:moda], area_id: params[:area], 'departaments.id': 3 ).sort_by_code.uniq
+                  - subjects = @current_dpt.subjects.joins(:subject_type).where('subject_types.code': params[:moda], area_id: params[:area], departament_id: params[:dpt_id]).sort_by_code.uniq
+                  = render partial: '/academic_processes/table_subjects_programation', locals: {subjects: subjects, academic_process_id: @academic_process_id}
+      - else
+        .alert.alert-danger.text-center 
+          %b Atención:
+          %a= "Sin asignaturas registradas para #{area.name}."
+          %p Para activar esta vista agregue Asignaturas:
 
-            .tab-content.border-bottom.border-end.border-start.p-3
-              - modalities.each do |moda|
-                - if active_area and params[:moda] and (moda.code.eql? params[:moda])
-                  .tab-pane.fade.active.text-primary.show{role: :tabpanel} 
-                    %h6.text-primary.text-center
-                      = "#{moda&.name&.downcase.pluralize.titleize} de #{area&.name&.titleize}"
-                    -# subjects = academic_process.school.subjects.joins(:subject_type).joins(:departaments).where('subject_types.code': params[:moda], area_id: params[:area], 'departaments.id': 3 ).sort_by_code.uniq
-                    - subjects = @current_dpt.subjects.joins(:subject_type).where('subject_types.code': params[:moda], area_id: params[:area], departament_id: params[:dpt_id]).sort_by_code.uniq
-                    = render partial: '/academic_processes/table_subjects_programation', locals: {subjects: subjects, academic_process_id: @academic_process_id}
-        - else
-          .alert.alert-danger.text-center 
-            %b Atención:
-            %a= "Sin asignaturas registradas para #{area.name}."
-            %p Para activar esta vista agregue Asignaturas:
-
-            = link_to "/admin/subject/new?area_id=#{area.id}", class: 'btn btn-sm btn-info' do
-              %i.fa.fa-plus
-              Nueva Asignatura
+          = link_to "/admin/subject/new?area_id=#{area.id}", class: 'btn btn-sm btn-info' do
+            %i.fa.fa-plus
+            Nueva Asignatura
 
   :javascript
 

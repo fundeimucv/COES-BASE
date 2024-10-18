@@ -1,0 +1,18 @@
+- schools_auh = _current_user&.admin&.schools_auh&.order(:name)
+- selected = params[:departament_id]
+- selected ||= @object&.departament_id
+- enabled = (@object.departament_id.nil? and params[:school_id].nil?)
+= grouped_collection_select :subject, :departament_id, schools_auh, :departaments_sort, :short_name, :id, :name, {prompt: "Seleccione Departamento...", selected: selected}, { class: "form-control", required: true, onchange: 'set_catedras();', disabled: enabled, readonly: enabled}
+
+:javascript
+
+    set_catedras = () => {
+        let dpt = $('#subject_departament_id option:selected').text();
+        let subject_area_id = $('#subject_area_id');
+        $('#subject_area_id optgroup').hide();
+        subject_area_id.attr('disabled', false);
+        subject_area_id.attr('readonly', false);
+        subject_area_id.attr('required', true);
+        subject_area_id.prop('selectedIndex', 0);
+        $("#subject_area_id optgroup[label='" + dpt + "']").show();
+    }

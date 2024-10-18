@@ -4,6 +4,7 @@
       %td Código
       %td{style: 'width:30%'} Nombre
       %td{style: 'width:30%'} Escuela
+      %td{style: 'width:30%'} Departamento
       %td{style: 'width:30%'} Cátedra
       %td Orden
       %td Tipo
@@ -15,6 +16,8 @@
       %td= ApplicationController.helpers.label_status("bg-info", subject.code)
       %td{'data-bs-toggle': :tooltip, title: subject.name}= subject.name
       %td{'data-bs-toggle': :tooltip, title: subject.name}= subject.school&.short_name
+      - active_link = (subject.departament and current_user&.admin&.authorized_read? 'Departament')
+      %td= link_to_if active_link, subject.departament&.name, "/admin/departament/#{subject.area_id}"
       - active_link = (subject.area and current_user&.admin&.authorized_read? 'Area')
       %td= link_to_if active_link, subject.area.name, "/admin/area/#{subject.area_id}"
       %td= ApplicationController.helpers.label_status("bg-info", subject.ordinal)

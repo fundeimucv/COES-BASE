@@ -106,6 +106,11 @@ class School < ApplicationRecord
   def areas_sort
     areas.order(:name)
   end
+
+  def departaments_sort
+    departaments.order(:name)
+  end
+
   def all_grades_to_csv
 
     CSV.generate do |csv|

@@ -79,7 +79,10 @@ class Subject < ApplicationRecord
   validates :qualification_type, presence: true
   validates :unit_credits, presence: true
   validates :area, presence: true
+  validates :departament, presence: true
   validates :school, presence: true
+  validates_with SameSchoolInSubjectValidator, field_name: false  
+  validates_with SameDepartamentAreaOnSubjectValidator, field_name: false  
 
   # SCOPES: 
 
@@ -466,12 +469,16 @@ class Subject < ApplicationRecord
     end
 
     edit do
-
-      field :area do
-        inline_add false
-        inline_edit false
-        partial 'subject/custom_area_field'
+      field :school do
+        partial 'subject/custom_school_id_field'
       end
+      field :departament do
+        partial 'subject/custom_departament_id_field'
+      end
+      field :area do
+        partial 'subject/custom_area_id_field'
+      end      
+
       field :code do
         html_attributes do
           {length: 20, size: 20, onInput: "$(this).val($(this).val().toUpperCase().replace(/[^A-Za-z0-9]/g,''))"}
@@ -507,15 +514,16 @@ class Subject < ApplicationRecord
     end
 
     update do
-      field :area do
-        inline_edit false
-        inline_add false
-        partial 'subject/custom_area_field'
-        # read_only true
-        # pretty_value do
-        #   bindings[:object].area.full_description
-        # end
+      field :school do
+        partial 'subject/custom_school_id_field'
       end
+      field :departament do
+        partial 'subject/custom_departament_id_field'
+      end
+      field :area do
+        partial 'subject/custom_area_id_field'
+      end      
+
       field :code do
         html_attributes do
           {length: 20, size: 20, onInput: "$(this).val($(this).val().toUpperCase().replace(/[^A-Za-z0-9]/g,''))"}
@@ -527,8 +535,8 @@ class Subject < ApplicationRecord
         end  
       end      
       field :subject_type do
-      inline_add false
-      inline_edit false
+        inline_add false
+        inline_edit false
       end
       field :unit_credits      
 

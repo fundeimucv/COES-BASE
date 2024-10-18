@@ -1,0 +1,7 @@
+- departaments = _current_user&.admin&.departaments.order(:name)
+- selected = params[:area_id]
+- selected ||= @object&.area_id
+
+- enabled = @object.area_id.nil?
+
+= grouped_collection_select :subject, :area_id, departaments, :areas, :name, :id, :name, {prompt: "Seleccione Cátedra...", selected: selected}, { class: "form-control mt-3", disabled: enabled, readonly: enabled, required: true}

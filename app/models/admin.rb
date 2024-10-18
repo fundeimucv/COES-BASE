@@ -84,7 +84,11 @@ class Admin < ApplicationRecord
   end
 
   def departaments
-    ids = env_auths.pluck(:env_authorizable_id)
+    if is_departament?
+      ids = env_auths.pluck(:env_authorizable_id)
+    else
+      ids = schools_auh.joins(:departaments).pluck(:"departaments.id")
+    end
     Departament.where(id: ids)
   end
 

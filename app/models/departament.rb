@@ -58,6 +58,10 @@ class Departament < ApplicationRecord
 		"#{name} - #{school&.name}"
 	end
 
+	def areas_sort
+		areas.order(:name)
+	end
+
 	rails_admin do
 		visible do
 			bindings[:controller].current_user&.admin&.authorized_read? 'Subject'
