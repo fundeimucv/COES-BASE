@@ -22,7 +22,7 @@
       .nav-link
         = select nil, 'Dpto', @dpts.map{|dpto| [dpto.total_section_by_process_and_name(@academic_process_id), dpto.id]}, {selected: @current_dpt&.id}, {class: 'form-control', onchange: "select_dpt(this)"}
     
-    %li.nav-item.bg-info.py-2.px-3.mt-3 Área:
+    %li.nav-item.bg-info.py-2.px-3.mt-3 Área/Cátedra:
 
     - areas.each do |area|
       - active_area_tab = (params[:area] and area.id.eql? params[:area].to_i) ? 'active' : 'text-light'
