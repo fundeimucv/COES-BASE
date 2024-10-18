@@ -17,7 +17,7 @@
 
 .row
   %ul#area_selector.nav.nav-tabs.flex-column.col-3.p-1
-    %li.nav-item.bg-info.py-2.px-3 Departamento: 
+    %li.nav-item.bg-info.py-2.px-3{style: 'margin-top: 90px;'} Departamento: 
     %li.nav-item.bg-primary
       .nav-link
         = select nil, 'Dpto', @dpts.map{|dpto| [dpto.total_section_by_process_and_name(@academic_process_id), dpto.id]}, {selected: @current_dpt&.id}, {class: 'form-control', onchange: "select_dpt(this)"}
