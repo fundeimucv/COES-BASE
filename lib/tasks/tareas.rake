@@ -15,7 +15,7 @@ task :update_subject_departaments => :environment do
 		
 		dsc = subject.name
 		
-		asignatura ||= Asignatura.where("lower(descripcion) ILIKE ?", dsc).first
+		asignatura ||= Asignatura.where("lower(descripcion) ILIKE LOWER('%#{dsc}%')").first
 		if asignatura
 			departamento = asignatura.departamento
 			school = departamento.escuela.find_school
