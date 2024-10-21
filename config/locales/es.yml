@@ -485,8 +485,8 @@ es:
         one: 'Facultad'
         other: 'Facultades'
       grade:
-        one: 'Grado'
-        other: 'Grados'
+        one: 'Expediente'
+        other: 'Expedientes'
       general_setup:
         one: 'Configuración General'
         other: 'Configuraciones generales'
@@ -564,7 +564,7 @@ es:
         enroll: ¿Inscripción?
         max_subjects: 'Máximas Asignaturas'
         enroll_academic_processes: 'Inscripciones en Período'
-        grades: 'Grados'
+        grades: 'Expedientes'
         students: 'Estudiantes'
         modality: 'Tipo'
         process_before: Período Anterior
@@ -586,7 +586,7 @@ es:
         student: 'Estudiante'
         period: 'Período'
         subject: 'Asignatura'
-        grade: 'Grado'
+        grade: 'Expediente'
         academic_process: 'Período'
         period_type: 'Tipo de Período'
         school: Escuela
@@ -677,7 +677,7 @@ es:
       env_ath:
         env_authorizable: Entorno Autoridado
       enroll_academic_process:
-        grade: 'Grado'
+        grade: 'Expediente'
         academic_process: 'Período'
         enroll_status: 'Estado de Inscripción'
         permanence_status: 'Estado de Permanencia'
@@ -809,7 +809,7 @@ es:
         faculty: Facultad
         academic_records: 'Registros Académicos'
         enroll_academic_process: Inscripción en Registro Académico
-        grades: Grados
+        grades: Expedientes
         students: Estudiantes
         schedules: Horarios
         classroom: 'Aula'
@@ -827,7 +827,7 @@ es:
         address: 'Dirección'
         created_at: 'Fecha de Registro'
         user: 'Usuario'
-        grades: Grados
+        grades: Expedientes
         study_plans: Planes de Estudio
         admission_types: Tipos de Admisión
         grade_title: Título Obtenido

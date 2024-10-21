@@ -821,12 +821,12 @@ class Grade < ApplicationRecord
       field :language2
     end
 
+    # Update is edit's form
     update do
       # field :study_plan do
       #   partial 'grade/custom_study_plan_id'
       # end
       field :school do
-
         label 'Escuela'
         render do
           bindings[:view].content_tag(:p, bindings[:object].school.short_name)
@@ -836,7 +836,7 @@ class Grade < ApplicationRecord
 
       field :study_plan do
         render do
-          bindings[:view].render partial: '/grades/history_plans', locals: {grade: bindings[:object]}
+          bindings[:view].render(partial: '/grades/custom_study_plan_id', locals: {grade: bindings[:object], study_plan: bindings[:object].study_plan, study_plans: bindings[:object].school&.study_plans})
         end
       end      
       
@@ -844,12 +844,22 @@ class Grade < ApplicationRecord
         inline_add false
         inline_edit false
       end
-      field :registration_status
+
       field :enabled_enroll_process do
         inline_add false
         inline_edit false
       end
-      fields :enrollment_status, :study_plan, :current_permanence_status, :admission_type, :registration_status
+      fields :enrollment_status, :current_permanence_status, :registration_status
+
+      field :start_process do
+        inline_edit false
+        inline_add false
+
+        render do
+          bindings[:view].render(partial: 'rails_admin/main/grade/custom_academic_process_id_field', locals: {schools_auh: bindings[:view]._current_user&.admin&.schools_auh, value: bindings[:object].start_process_id})
+        end
+        
+      end      
 
       field :appointment_time do
         label 'Fecha y Hora Cita Horaria'
@@ -867,10 +877,22 @@ class Grade < ApplicationRecord
       end
     end
 
+    # Edit is new's form
     edit do
+
+      field :student do
+        render do
+          student = Student.where(user_id: bindings[:view].params[:student_id]).first 
+          bindings[:view].render(partial: '/grades/custom_student_id', locals: {student: student})
+        end
+      end
+
       field :study_plan do
         inline_add false
         inline_edit false
+        render do
+          bindings[:view].render(partial: '/grades/custom_study_plan_id', locals: {grade: bindings[:object], study_plan: bindings[:object].study_plan, study_plans: bindings[:object].school&.study_plans})
+        end
       end
       field :admission_type do
         inline_add false        

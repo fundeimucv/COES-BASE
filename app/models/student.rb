@@ -190,31 +190,26 @@ class Student < ApplicationRecord
     navigation_icon 'fa-regular fa-user-graduate'
     weight 4
 
-    update do
-      field :user do
-        inline_add false
-      end
+    edit do
+      field :user
 
-      field :grades do
-        active true
-      end
-
-      field :address do
-        inline_add false
-      end
+      # field :grades do
+      #   read_only true
+      #   # visible do
+      #   #   user = bindings[:view]._current_user
+          
+      #   #   p "Value: #{value.name}".center 1000, "#"
+      #   #   (user&.admin&.authorized_manage? 'Grade' )
+      #   #   false
+      #   # end
+        
+      #   active do
+      #     user = bindings[:view]._current_user
+      #     true
+      #   end
+      # end
 
       fields :nacionality, :origin_country, :origin_city, :birth_date, :marital_status, :disability, :grade_title, :grade_university, :graduate_year
-
-    end
-
-    edit do
-      field :user do
-        inline_edit false
-      end
-
-      field :grades
-
-      fields :nacionality, :origin_country, :origin_city, :birth_date, :marital_status, :grade_title, :grade_university, :graduate_year
 
     end
 

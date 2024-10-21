@@ -10,7 +10,10 @@
 		- active = (i.eql? 0) ? 'active' : ''
 		%li.nav-item{role: "presentation"}
 			= link_to g.school.short_name, "#", class: "nav-link #{active}", id: "gradeTab#{g.id}", "aria-controls": "gradeContent#{g.id}", "aria-selected": true, "data-bs-target": "#gradeContent#{g.id}", "data-bs-toggle": :tab, role: :tab
-
+	%li.nav-item.bg-success.bg-opacity-50{role: "presentation"}
+		= link_to "/admin/grade/new?student_id=#{@student.id}", class: "nav-link", 'data-bs-toggle': :tooltip, title: 'Agregar Nuevo Expediente' do
+			%i.fa.fa-plus
+			Agregar Nuevo Expediente
 #GradesContent.tab-content
 	- @grades.each_with_index do |g,i|
 		- show = (i.eql? 0) ? 'active show' : ''

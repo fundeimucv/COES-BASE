@@ -1,7 +1,7 @@
 - history_plans = grade.get_changed_plain
 - if history_plans.count < 3
     - study_plans = grade.school.study_plans
-    = render partial: '/grades/custom_study_plan_id', locals: {study_plan: grade.study_plan, study_plans: study_plans}
+    = render partial: '/grades/custom_study_plan_id', locals: {grade: grade, study_plan: grade.study_plan, study_plans: study_plans}
 - else
     %p.alert.alert-danger El estudiante ha superado el número máximo de cambios de planes de estudio
 

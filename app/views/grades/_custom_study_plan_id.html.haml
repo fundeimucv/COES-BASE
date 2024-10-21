@@ -1,9 +1,17 @@
-
-- study_plans.each do |sp|
-    - checked = false
-    - klazz = 'btn-light'
-    - if (sp.id.eql? study_plan.id)
-        - checked = true
-        -# klazz = 'text-primary'
-    = radio_button "grade", "study_plan_id", sp.id, class: 'btn-check', required: true, checked: checked
-    %label.btn{for: "grade_study_plan_id_#{sp.id}", class: klazz}= sp.code_name
+- if study_plans.nil?
+    - schools = current_user&.admin&.schools_auh
+    =# collection_select :grade, :study_plan_id, StudyPlan.all, :name, :id
+    .col-sm-10.controls
+        = grouped_collection_select :grade, :study_plan_id, schools, :study_plans, :name, :id, :desc, {:prompt => "Seleccione el Plan de Estudio..."}, { class: 'form-control', required: true}
+-elsif _current_user&.admin&.schools_auh.include? grade.school
+    - schools = current_user&.admin&.schools_auh
+    - study_plans&.each do |sp|
+        - checked = false
+        - klazz = 'btn-light'
+        - if (sp.id.eql? study_plan.id)
+            - checked = true
+            -# klazz = 'text-primary'
+        = radio_button :grade, :study_plan_id, sp.id, class: 'btn-check', required: true, checked: checked
+        %label.btn{for: "grade_study_plan_id_#{sp.id}", class: klazz}= sp.code_name
+- else
+    = grade.study_plan&.name

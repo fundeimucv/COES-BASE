@@ -1,0 +1,28 @@
+- if student
+    = link_to student.name, "/admin/student/#{student.id}"
+    = hidden_field :grade, :student_id, value: student.id
+
+- if false
+    - # Atención: Este formulario se está mostrando incorrectamente y afecta el resto de los formularios. 
+    - # En todo caso es necesario agregar primero el estudiante para luego agregarle el grado. De modo que no debería pedirse solo el expediente
+    .col-sm-10.controls
+        .row
+            .col-sm-4
+                %select#grade_student_id{"data-filteringselect" => "true", "data-options" => "{\"xhr\":true,\"remote_source\":\"/admin/student?associated_collection=student\\u0026compact=true\\u0026current_action=create\\u0026source_abstract_model=grade\"}", :name => "grade[student_id]", :placeholder => "Buscar", :style => "display: none;"}
+                    %option{:selected => "selected", :value => ""}
+                        .input-group.filtering-select{"data-input-for" => "grade_student_id"}
+                            %input.form-control.ra-filtering-select-input.ui-autocomplete-input{:autocomplete => "off", :placeholder => "Buscar", :required => "required", :style => "", :type => "text"}/
+                            %span.input-group-btn
+                            %label.btn.btn-info.dropdown-toggle{:role => "button", :title => "Show All Items"}
+                %input#grade{:autocomplete => "off", :name => "grade", :type => "hidden", :value => "22958"}/
+                .col-sm-8.mt-2.mt-md-0.modal-actions
+                    %a.btn.btn-info.create{"data-link" => "/admin/student/new?modal=true", :href => "#"}
+                        %i.fas.fa-plus
+                        Agregar
+                    %a.btn.btn-info.update.ms-2{"data-link" => "/admin/student/__ID__/edit?modal=true", :href => "#"}
+                        %i.fas.fa-pencil-alt
+                        editar
+        .form-text
+            %span.label.label-danger> Requerido
+            \.
+
