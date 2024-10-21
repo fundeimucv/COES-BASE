@@ -32,7 +32,7 @@ class PartialQualification < ApplicationRecord
   
   #ENUMS:
   # enum partial: [:primera, :segunda, :tercera]
-  enum partial: {primera: 1, segunda: 2, tercera: 3}
+  enum partial: {primer_lapso: 1, segundo_lapso: 2, tercer_lapso: 3}
   
   #CALLBACKS:
   after_save :totalize_qualification
