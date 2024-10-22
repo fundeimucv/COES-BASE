@@ -836,7 +836,7 @@ class Grade < ApplicationRecord
 
       field :study_plan do
         render do
-          bindings[:view].render(partial: '/grades/custom_study_plan_id', locals: {grade: bindings[:object], study_plan: bindings[:object].study_plan, study_plans: bindings[:object].school&.study_plans})
+          bindings[:view].render(partial: '/grades/history_plans', locals: {grade: bindings[:object], study_plan: bindings[:object].study_plan, study_plans: bindings[:object].school&.study_plans})
         end
       end      
       
