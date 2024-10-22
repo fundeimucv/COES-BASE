@@ -345,7 +345,11 @@ class AcademicRecord < ApplicationRecord
     (absolute? or pi? or rt?)
   end
   def desc_conv
-    I18n.t("activerecord.models.academic_record.status."+self.status)
+    if any_equivalencia?
+      I18n.t("activerecord.scopes.section."+self.section.modality)
+    else
+      I18n.t("activerecord.models.academic_record.status."+self.status)
+    end
   end  
 
   def cal_alfa

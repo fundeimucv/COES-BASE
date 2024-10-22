@@ -27,6 +27,7 @@ class Qualification < ApplicationRecord
 
   has_one :enroll_academic_process, through: :academic_record
   has_one :grade, through: :enroll_academic_process
+  has_one :section, through: :academic_record
 
 
   scope :by_type_q, -> (type_q) {where(type_q: type_q)}
@@ -90,7 +91,12 @@ class Qualification < ApplicationRecord
   def desc_conv
 
     # OJO: Hay un problema con el estado, no puede ser el mismo de la definitiva (academic_record) ya que es A y debe ser AP
-    I18n.t(self.type_q)
+    
+    if section.any_equivalencia?
+      I18n.t("activerecord.scopes.section."+self.section.modality)
+    else
+      I18n.t(self.type_q)
+    end
     # OJO
     # if self.final? and (self.academic_record.absolute_pi_or_rt?)
     #   I18n.t(self.academic_record.status)
