@@ -341,6 +341,12 @@ class AcademicRecord < ApplicationRecord
     subject&.absoluta?
   end
 
+  def force_absolute?
+    subject&.force_absolute?
+  end
+
+  
+
   def absolute_pi_or_rt?
     (absolute? or pi? or rt?)
   end
@@ -351,6 +357,41 @@ class AcademicRecord < ApplicationRecord
       I18n.t("activerecord.models.academic_record.status."+self.status)
     end
   end  
+  
+  # To CSV rows
+  def cal_alfa_to_csv type='definitive'
+    if (!qualifications.any? and (absolute_pi_or_rt? or force_absolute?))
+      I18n.t("activerecord.models.academic_record.status."+self.status)
+    elsif type.eql? 'definitive'
+      qualifications.definitive.last&.value_to_02i
+    else
+      qualifications.where(type_q: type).last&.value_to_02i
+    end
+  end
+
+  def to_csv_row
+
+    est = student
+    sec = section
+    asig = subject
+
+    # ============ Mover a Inscripcionseccion =========== #
+    nota_def = cal_alfa_to_csv
+    nota_final = cal_alfa_to_csv 'final'
+    # ============ Mover a Inscripcionseccion =========== #
+
+    csv = []
+    csv << [user.ci, asig.code, asig.name, asig.unit_credits, nota_final, nota_def, 'F', self.academic_process&.period_type&.code, self.academic_process&.period&.year, sec&.code, self.study_plan&.code]
+
+    if self.post_q?
+      nota_final = nota_def = self.post_q&.value_to_02i
+      csv << [user.ci, asig.code, asig.name, asig.unit_credits, nota_final, nota_def, 'F', self.academic_process&.period_type&.code, self.academic_process&.period&.year, sec&.code, self.study_plan&.code]
+    end
+    return csv
+  end
+
+
+
 
   def cal_alfa
     (absolute_pi_or_rt? and !qualifications.any?) ? I18n.t("activerecord.models.academic_record.status."+self.status) : I18n.t(qualifications.last&.type_q)
