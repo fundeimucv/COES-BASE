@@ -1,7 +1,15 @@
+.p-2
+  - if session[:rol].eql? 'admin' and (current_user&.admin&.authorized_delete? 'Grade' or current_user&.admin&.authorized_manage? 'Grade')
+    = link_to '/admin/grade/8537/delete', class: 'btn btn-danger btn-sm float-end' do
+      %span.fa.fa-trash
+  .m-0.p-2.bg-primary.text-white.text-center
+    = "Plan: #{@grade.study_plan&.desc}"
+    - if session[:rol].eql? 'admin' and (current_user&.admin?)
+      = label_link_with_tooltip("/admin/grade/#{@grade.id}/edit", 'btn btn-sm btn-info', "<i class='fa fa-pencil'></i>", 'Editar valores', placement='top')
 
 = render partial: 'grades/general'
 - if (current_user&.admin&.authorized_manage? 'EnrollAcademicProcess')
-	= render partial: 'grades/enroll_process'
+  = render partial: 'grades/enroll_process'
 
 - id = 'ChangePermanenceStatus'
 - title = 'Cambiar Estado de Permanencia'
@@ -15,12 +23,12 @@
 
 :javascript
 
-	function setValuesPermanenceStatus(id, status){
-		// $('#formChangePermanenceStatus').action(`/enroll_academic_processes/${id}/update_permanece_status`);
+  function setValuesPermanenceStatus(id, status){
+    // $('#formChangePermanenceStatus').action(`/enroll_academic_processes/${id}/update_permanece_status`);
 
-		$('#formChangePermanenceStatus').attr('action', `/enroll_academic_processes/${id}/update_permanece_status`);
-		$('#permanenceStatusId').val(status);
-		// console.log('This: '+this);
-		// console.log('$(This): '+$(this));
-		// $('#_sectioncourse_id').val(this.attributes['course_id'].value);
-	}
+    $('#formChangePermanenceStatus').attr('action', `/enroll_academic_processes/${id}/update_permanece_status`);
+    $('#permanenceStatusId').val(status);
+    // console.log('This: '+this);
+    // console.log('$(This): '+$(this));
+    // $('#_sectioncourse_id').val(this.attributes['course_id'].value);
+  }

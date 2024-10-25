@@ -1,13 +1,8 @@
 
-.p-2
-  .p-1.bg-primary.text-white.text-center
-    = "Plan: #{@grade.study_plan&.desc}"
-    - if session[:rol].eql? 'admin' and (current_user&.admin?)
-      = label_link_with_tooltip("/admin/grade/#{@grade.id}/edit", 'text-info', "<i class='fa fa-pencil'></i>", 'Editar valores', placement='top')
-  - if false #current_user.eql? @student.user and grade and grade.reportepago.nil? and grade.asignado? and !@grado.enroll_academic_process.any?
-    - # REPORTE DE PAGO DE LA ESCUELA
-    = # render template: 'payment_reports/new'  
-  - if session[:rol].eql? 'admin' and (current_user&.admin?)
-    = render partial: '/grades/show_admin'
-  - else
-    = render partial: 'grades/show_student'
+- if false #current_user.eql? @student.user and grade and grade.reportepago.nil? and grade.asignado? and !@grado.enroll_academic_process.any?
+  - # REPORTE DE PAGO DE LA ESCUELA
+  = # render template: 'payment_reports/new'  
+- if session[:rol].eql? 'admin' and (current_user&.admin?)
+  = render partial: '/grades/show_admin'
+- else
+  = render partial: 'grades/show_student'
