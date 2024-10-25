@@ -1,11 +1,13 @@
-.p-2
+.p-0
   - if session[:rol].eql? 'admin' and (current_user&.admin&.authorized_delete? 'Grade' or current_user&.admin&.authorized_manage? 'Grade')
-    = link_to '/admin/grade/8537/delete', class: 'btn btn-danger btn-sm float-end' do
+    = link_to '/admin/grade/8537/delete', class: 'btn btn-danger float-end' do
       %span.fa.fa-trash
-  .m-0.p-2.bg-primary.text-white.text-center
+  .m-0.bg-primary.text-white.text-center
     = "Plan: #{@grade.study_plan&.desc}"
     - if session[:rol].eql? 'admin' and (current_user&.admin?)
-      = label_link_with_tooltip("/admin/grade/#{@grade.id}/edit", 'btn btn-sm btn-info', "<i class='fa fa-pencil'></i>", 'Editar valores', placement='top')
+      =# label_link_with_tooltip("/admin/grade/#{@grade.id}/edit", 'btn btn-info', "<i class='fa fa-pencil'></i>", 'Editar valores', placement='top')
+      =link_to "/admin/grade/#{@grade.id}/edit", class: 'btn btn-info', 'data-bs-toggle': :tooltip, placement: 'top' do
+        %i.fa.fa-pencil
 
 = render partial: 'grades/general'
 - if (current_user&.admin&.authorized_manage? 'EnrollAcademicProcess')
