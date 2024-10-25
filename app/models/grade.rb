@@ -886,7 +886,7 @@ class Grade < ApplicationRecord
         inline_add false
         inline_edit false
       end
-      fields :enrollment_status, :current_permanence_status, :registration_status
+      fields :enrollment_status, :current_permanence_status, :registration_status, :graduate_status
 
       field :start_process do
         inline_edit false
