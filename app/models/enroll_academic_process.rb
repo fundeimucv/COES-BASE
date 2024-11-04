@@ -108,6 +108,8 @@ class EnrollAcademicProcess < ApplicationRecord
   
   scope :total_with_payment_report, -> {with_payment_report.count}
   scope :total_without_payment_report, -> {without_payment_report.count}
+
+  scope :student_merito, -> (academic_process_ids) {includes(:user, :grade, :academic_process).where('acamidec_process.ids': academic_process_ids)}
   
   scope :qualfied_complety, -> {joins(:academic_records).where('academic_records.status != 0')}
   def total_retire?

@@ -63,6 +63,8 @@ module RailsAdmin
           end
 
         end
+      else
+        scope = scope.joins(:school)
       end
 
       scope = scope.merge(auth_scope) if auth_scope

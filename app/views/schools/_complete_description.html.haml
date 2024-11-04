@@ -2,16 +2,25 @@
 
     .col-6
         .card{style: "width: 18rem;"}
-            .card-header.text-sm.text-center= school.name
+            - school_name = school.name
+            .card-header.text-sm.text-center= school_name
             .card-body.text-center
-                .card-title= school.show_process_actives
-                .card-subtitle.mb-2.text-muted.border-bottom Periodos Activos
-                .card-title= school.show_process_enrolls
-                .card-subtitle.mb-2.text-muted.border-bottom Periodo de Inscripción
-                - if last_ap = school&.academic_processes.first
-                    - linked = (current_user&.admin&.authorized_read? 'EnrollAcademicProcess')
-                    .card-title= last_ap&.label_total_enrolls_by_status(linked).html_safe
-                    .card-subtitle.mb-2.text-muted= "Última Inscripción (#{last_ap&.process_name})"
+                - if @last_academic_process = school.academic_processes.first
+                    %h5.card-title.title.bg-info= "Procesos Académicos"
+                    .card-title.title= link_to @last_academic_process.process_name, "/admin/last_academic_process/#{@last_academic_process.id}" 
+                    - year = @last_academic_process.period&.year
+                    - href = "/admin/enroll_academic_process?f%5Bacademic_process%5D%5B06995%5D%5Bo%5D=like&f%5Bacademic_process%5D%5B06995%5D%5Bv%5D=#{year}&f%5Bschool%5D%5B05796%5D%5Bo%5D=like&f%5Bschool%5D%5B05796%5D%5Bv%5D=#{school_name}&model_name=enroll_academic_process&sort=weighted_average&sort_reverse=true"
+                    = ApplicationController.helpers.label_link_with_tooltip(href, 'bg-info me-1', "<i class='fa fa-star'></i>", "Mérito Académico #{year}")
+                    .card-subtitle.mb-2.text-muted.border-bottom Último Registrado
+                    
+                    .card-title= school.show_process_actives
+                    .card-subtitle.mb-2.text-muted.border-bottom Activos
+                    .card-title= school.show_process_enrolls
+                    .card-subtitle.mb-2.text-muted.border-bottom de Inscripción
+                    - if last_ap = school&.academic_processes.first
+                        - linked = (current_user&.admin&.authorized_read? 'EnrollAcademicProcess')
+                        .card-title= last_ap&.label_total_enrolls_by_status(linked).html_safe
+                        .card-subtitle.mb-2.text-muted= "Última Inscripción (#{last_ap&.process_name})"
 
     .col-6
         %table.float-end
