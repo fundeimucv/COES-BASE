@@ -473,18 +473,9 @@ class EnrollAcademicProcess < ApplicationRecord
     end
 
     export do
-      fields :enroll_status, :permanence_status, :grade, :study_plan
-
-      field :period do
-        label 'Período'
-        column_width 100
-        searchable :name
-        # filterable 'periods.name'
-        sortable :name
-      end
-
       fields :student, :user
-
+      fields :grade, :enroll_status, :permanence_status, :study_plan
+      
       field :efficiency do
         label 'Eficiencia en el Período'
       end
@@ -494,6 +485,14 @@ class EnrollAcademicProcess < ApplicationRecord
       end
       field :weighted_average do
         label 'Ponderado en el Período'
+      end
+
+      field :period do
+        label 'Período'
+        column_width 100
+        searchable :name
+        # filterable 'periods.name'
+        sortable :name
       end
 
       field :resume_sections do
@@ -508,8 +507,6 @@ class EnrollAcademicProcess < ApplicationRecord
       field :payment_reports do
         label 'Reporte de Pago'
       end
-
-      fields :efficiency, :simple_average, :weighted_average
 
     end
   end
