@@ -64,7 +64,7 @@ module RailsAdmin
 
         end
       else
-        scope = scope.joins(:school)
+        scope = scope.joins(:school) if @abstract_model.to_s.eql? 'EnrollAcademicProcess'
       end
 
       scope = scope.merge(auth_scope) if auth_scope
