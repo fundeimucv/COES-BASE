@@ -14,6 +14,8 @@
 #period_field.control-group.row.mb-3.enum_type
   %label.col-sm-2.col-form-label.text-md-end{for: "period_field"} Período
   .col-sm-10.controls
+    -# Advenced way to get the academic process name
+    =# collection_select(nil, :nombre_periodo, AcademicProcess.all.map(&:name_without_school).uniq.count, :name, :name, {prompt: "-- Seleccione Periodo --"}, {class: 'text-field form-control', required: true})
     = grouped_collection_select nil, :nombre_periodo, School.all, :academic_processes, :name, :name, :name, {:prompt => "Seleccione periodo por defecto...", selected: @academic_process_name}, { class: 'form-control', required: true}
 
     .form-text
