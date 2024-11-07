@@ -394,7 +394,12 @@ class EnrollAcademicProcess < ApplicationRecord
       field :school do
         sticky true 
         searchable :name
-        sortable :name               
+        sortable :name
+      end
+
+      field :study_plan do
+        filterable :code
+        searchable :code
       end
       
       field :academic_process do
