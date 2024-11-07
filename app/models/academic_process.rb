@@ -133,6 +133,18 @@ class AcademicProcess < ApplicationRecord
 
   # FUNCTIONS:
 
+  
+  def last_2_academic_process_ids
+    if before = process_before
+      aux = [before.id]
+      aux << before.process_before_id if !Anual?
+    end
+  end
+
+  def last_2_academic_processes
+    AcademicProcess.where(id: last_2_academic_process_ids)
+  end
+
   # def self.translate_modality letter
   #   case letter
   #   when 'I'
