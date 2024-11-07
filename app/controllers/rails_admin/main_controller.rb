@@ -33,10 +33,11 @@ module RailsAdmin
             schoolables = ['Subject', 'Teacher', 'StudyPlan', 'Departament', 'AcademicProcess', 'EnrollAcademicProcess', 'PaymentReport', 'Grade', 'Area', 'Section', 'Course', 'AcademicRecord']
           end
           schoolables.delete 'Teacher' if (session[:env_type]&.to_s.eql? 'School' and session[:env_ids].include? 11)
-          departamentables = ['Teacher', 'Area']
+          departamentables = ['Teacher', 'Area', 'Section']
           if session[:env_type]&.to_s.eql? 'Departament'
             if departamentables.include? @abstract_model.to_s
-              scope = scope.joins(:departaments).where('departaments.id': session[:env_ids])
+
+              scope = (@abstract_model.to_s.eql? 'Section') ? scope.joins(:departament).where('departaments.id': session[:env_ids]) : scope.joins(:departaments).where('departaments.id': session[:env_ids])
             else
               school_ids = Departament.where(id: session[:env_ids]).map(&:school_id).uniq
               if @abstract_model.to_s.eql? 'Student'

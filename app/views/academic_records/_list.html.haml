@@ -1,8 +1,6 @@
 - @academic_records = academic_records if !academic_records.nil? and @academic_records.nil?
 
-.alert.alert-info.text-center
-  Sección de solo lectura
-- if admin
+- if admin and current_user&.admin&.authorized_manage? 'AcademicProcesss'
   .alert.alert-warning
     Para activar las calificaciones, cierre todo proceso de inscripción de la escuela respectiva en el listado de períodos y seguidamente active el periodo correspondiente a esta sección  
 

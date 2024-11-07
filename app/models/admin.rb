@@ -258,9 +258,10 @@ class Admin < ApplicationRecord
       # field :created_at
       field :link_to_reset_password do
         label 'Opciones'
-        # link_icon do 
-        #   'fa-regular fa-user-cog'
-        # end
+        visible do
+          user = bindings[:view]._current_user
+          user&.admin&.authorized_manage? 'Admin'
+        end
       end
     end
 

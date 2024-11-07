@@ -23,7 +23,7 @@
         %td.string_type= user.email
         %td.string_type= user.number_phone
 
-        - if (session[:rol]&.eql? 'admin' and current_user&.admin&.authorized_read? 'Student')
+        - if (session[:rol]&.eql? 'admin' and current_user&.admin&.authorized_manage? 'Student')
           %td
             .btn.btn-sm.btn-info= user.link_to_reset_password
             = link_to "/admin/student/#{student_id}/personal_data", 'data-bs-toggle': :tooltip, title: 'Más detalles' do

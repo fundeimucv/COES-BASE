@@ -419,6 +419,9 @@ class User < ApplicationRecord
       field :profile_picture
       field :link_to_reset_password do
         label 'Opciones'
+        visible do
+          bindings[:view].current_user&.admin&.authorized_manage? 'User'
+        end
         # link_icon do 
         #   'fa-regular fa-user-cog'
         # end

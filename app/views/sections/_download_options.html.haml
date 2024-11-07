@@ -1,8 +1,12 @@
-- if (section.academic_records.any? and (current_user.admin? and session[:rol]&.eql? 'admin') or section.academic_process.post_qualification?)
-  = link_to "/sections/#{section.id}.pdf", class: 'btn btn-success btn-sm float-right m-3', target: '_blank', rel: "noopener noreferrer" do
-    .fa.fa-download.fa-list
-    Generar Acta  
+- admin_can_manage = (session[:rol]&.eql? 'admin' and current_user&.admin&.authorized_manage? 'Seccion')
+- is_his_teacher = section.current_user_is_a_teacher_of_this? current_user&.id
+- if section.academic_records.any?
+  - if ((is_his_teacher and section.academic_process.active? and section.qualified?) or admin_can_manage)
+    = link_to "/sections/#{section.id}.pdf", class: 'btn btn-success btn-sm float-right m-3', target: '_blank', rel: "noopener noreferrer" do
+      .fa.fa-download.fa-list
+      Generar Acta  
 
-= link_to "/sections/#{section.id}/export.xls", class: 'btn btn-success btn-sm float-end m-3', target: '_blank', rel: "noopener noreferrer" do
-  .fa.fa-download
-  Generar Listado Estudiantes
+  - if (section.academic_process.active? and (is_his_teacher or admin_can_manage))
+    = link_to "/sections/#{section.id}/export.xls", class: 'btn btn-success btn-sm float-end m-3', target: '_blank', rel: "noopener noreferrer" do
+      .fa.fa-download
+      Generar Listado Estudiantes

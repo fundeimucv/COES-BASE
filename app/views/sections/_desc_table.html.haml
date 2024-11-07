@@ -22,14 +22,14 @@
       %td= section.course.label_pci_yes_or_not
       %td{'data-bs-toggle': :tooltip, title: section.subject.desc}
         - if section.subject
-          - if current_user.admin? and session[:rol].eql? 'admin'
+          - if current_user&.admin&.authorized_manage? 'Subject'
             %a{href: "/admin/subject/#{section.subject_id}"}= section.course.subject_desc_with_pci 
           - else
             = section.course.subject_desc_with_pci
       - teacher_desc = section.teacher.desc if section.teacher
       %td{'data-bs-toggle': :tooltip, title: teacher_desc}
         - if section.teacher 
-          - if current_user.admin? and session[:rol].eql? 'admin'
+          - if current_user&.admin&.authorized_manage? 'Teacher'
             %a{href: "/admin/teacher/#{section.teacher_id}"}= section.teacher.desc 
           - else
             = section.teacher.desc
@@ -46,5 +46,5 @@
         .badge.bg-info= section.capacity
       %td
         = section.label_qualified
-        - if current_user.admin? and session[:rol].eql? 'admin'
+        - if session[:rol].eql? 'admin' and current_user&.admin&.authorized_manage? 'Seccion'
           = badge_toggle_section_qualified section

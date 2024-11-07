@@ -128,6 +128,14 @@ class Section < ApplicationRecord
 
   # FUNCTIONS:
   # ATTENTION: FUNCTION TO PRINT COMMANDS BY CONSOLE 
+
+  def has_teachers?
+    !teacher.nil? or secondary_teachers.any?
+  end
+
+  def current_user_is_a_teacher_of_this? current_user_id
+    has_teachers? and (teacher_id.eql? current_user_id or secondary_teachers.ids.include? current_user_id)
+  end
   def self.print_to_system_command
     require 'benchmark'
     memory_command = "ps -o rss= -p #{Process.pid}"
@@ -505,13 +513,13 @@ class Section < ApplicationRecord
 
       field :options do
         label 'Opciones'
-        pretty_value do
+        visible do
           current_user = bindings[:view]._current_user
-
+          (bindings[:view].current_user&.admin&.authorized_manage? 'Seccion' and bindings[:object].academic_records.any?)
+        end
+        pretty_value do
           display = ApplicationController.helpers.badge_toggle_section_qualified bindings[:object]
-          if (current_user.admin? and bindings[:view].session[:rol] and bindings[:view].session[:rol].eql? 'admin' and current_user.admin.authorized_manage? 'Section' and bindings[:object].academic_records.any?) #and bindings[:object].qualified?
-            display += ApplicationController.helpers.btn_toggle_download 'mx-3 btn-success', "/sections/#{bindings[:object].id}.pdf", 'Generar Acta', nil
-          end
+          display += ApplicationController.helpers.btn_toggle_download 'mx-3 btn-success', "/sections/#{bindings[:object].id}.pdf", 'Generar Acta', nil
           display
         end
       end      
@@ -549,7 +557,8 @@ class Section < ApplicationRecord
       field :academic_records_table do
         label 'Registros Académicos'
         formatted_value do
-          if bindings[:object].is_in_process_active? and not bindings[:object].is_inrolling?
+          current_user = bindings[:view]._current_user
+          if bindings[:object].is_in_process_active? and not bindings[:object].is_inrolling? and current_user&.admin&.authorized_manage? 'Seccion'
             bindings[:view].render(partial: 'academic_records/qualify', locals: {section: bindings[:object]})
           else
             bindings[:view].render(partial: 'academic_records/list', locals: {academic_records: bindings[:object].academic_records, admin: true}) 
