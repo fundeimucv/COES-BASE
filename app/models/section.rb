@@ -558,7 +558,7 @@ class Section < ApplicationRecord
         label 'Registros Académicos'
         formatted_value do
           current_user = bindings[:view]._current_user
-          if bindings[:object].is_in_process_active? and not bindings[:object].is_inrolling? and current_user&.admin&.authorized_manage? 'Seccion'
+          if bindings[:object].is_in_process_active? and not bindings[:object].is_inrolling? and current_user&.admin&.authorized_manage? 'Section'
             bindings[:view].render(partial: 'academic_records/qualify', locals: {section: bindings[:object]})
           else
             bindings[:view].render(partial: 'academic_records/list', locals: {academic_records: bindings[:object].academic_records, admin: true}) 
