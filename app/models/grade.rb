@@ -45,6 +45,7 @@
 #  fk_rails_...  (study_plan_id => study_plans.id)
 #
 class Grade < ApplicationRecord
+  include Numerizable
   has_paper_trail on: [:create, :destroy, :update], limit: nil
 
   before_create :paper_trail_create
@@ -153,31 +154,6 @@ class Grade < ApplicationRecord
   # FUNCTIONS:
   def payment_process
     start_process
-  end
-
-
-  def efficiency_desc
-    if efficiency.nil?
-      '--'
-    else
-      (efficiency).round(2)
-    end
-  end
-
-  def simple_average_desc
-    if simple_average.nil?
-      '--'
-    else
-      (simple_average).round(2)
-    end
-  end
-
-  def weighted_average_desc
-    if weighted_average.nil?
-      '--'
-    else
-      (weighted_average).round(2)
-    end
   end
 
 	def csv_academic_records
@@ -678,11 +654,6 @@ class Grade < ApplicationRecord
 
   # NUMBERSTINY:
 
-  def numbers
-    "Efi: #{efficiency}, Prom. Ponderado: #{weighted_average}, Prom. Simple: #{simple_average}"
-    # redear una tabla descripción. OJO Sí es posible estandarizar
-  end
-
   def academic_records_from_subjects_approved
     self.academic_records.aprobado.joins(:subject)
   end
@@ -786,53 +757,6 @@ class Grade < ApplicationRecord
       ponderado = (cursados > 0) ? (aux.to_f/cursados.to_f).round(4) : 0.0
     end
 
-  end
-
-  def calculate_efficiency periods_ids = nil 
-    cursados = self.total_subjects_coursed
-    aprobados = self.total_subjects_approved
-    if cursados < 0 or aprobados < 0
-      0.0
-    elsif cursados == 0 or (cursados > 0 and aprobados >= cursados)
-      1.0
-    else
-      (aprobados.to_f/cursados.to_f).round(4)
-    end
-  end
-
-  def calculate_average periods_ids = nil
-    if periods_ids
-      aux = academic_records.of_periods(periods_ids).promedio
-    else
-      aux = academic_records.promedio
-    end
-
-    (aux and aux.is_a? BigDecimal) ? aux.to_f.round(4) : 0.0
-
-  end
-
-  def calculate_weighted_average periods_ids = nil
-    if periods_ids
-      aux = academic_records.of_periods(periods_ids).weighted_average
-    else
-      aux = academic_records.weighted_average
-    end
-    cursados = self.total_credits_coursed periods_ids
-
-    (cursados > 0 and aux) ? (aux.to_f/cursados.to_f).round(4) : 0.0
-  end
-
-  def calculate_weighted_average_approved
-
-    aprobados = self.academic_records.total_credits_approved
-    aux = self.academic_records.weighted_average_approved
-    ((aprobados > 0) and aux&.is_a? Integer) ? (aux.to_f/aprobados.to_f).round(4) : 0.0
-    
-  end
-
-  def calculate_average_approved
-    aux = self.academic_records.promedio_approved
-    (aux and aux.is_a? BigDecimal) ? aux.round(4) : 0.0
   end
 
   def get_changed_plain

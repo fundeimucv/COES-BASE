@@ -24,7 +24,7 @@
 #  fk_rails_...  (grade_id => grades.id)
 #
 class EnrollAcademicProcess < ApplicationRecord
-
+include Numerizable
   # HISTORY:
   has_paper_trail on: [:create, :destroy, :update]
 
@@ -519,63 +519,6 @@ class EnrollAcademicProcess < ApplicationRecord
   def is_the_last_enroll_of_grade?
     self.grade.last_enrolled.eql? self
   end
-
-
-  def total_credits_coursed
-    academic_records.total_credits_coursed
-  end
-
-  def total_credits_approved
-    academic_records.total_credits_approved
-  end
-
-  def efficiency_desc
-    if efficiency.nil?
-      '--'
-    else
-      (efficiency).round(2)
-    end
-  end
-
-  def simple_average_desc
-    if simple_average.nil?
-      '--'
-    else
-      (simple_average).round(2)
-    end
-  end
-
-  def weighted_average_desc
-    if weighted_average.nil?
-      '--'
-    else
-      (weighted_average).round(2)
-    end
-  end
-
-  def calculate_efficiency
-    cursados = self.total_subjects_coursed
-    aprobados = self.total_subjects_approved
-    if cursados < 0 or aprobados < 0
-      0.0
-    elsif cursados == 0 or (cursados > 0 and aprobados >= cursados)
-      1.0
-    else
-      (aprobados.to_f/cursados.to_f).round(4)
-    end
-  end
-
-  def calculate_average
-    aux = academic_records.promedio
-    (aux&.is_a? BigDecimal) ? aux.to_f.round(4) : self.simple_average
-  end
-
-  def calculate_weighted_average 
-    aux = academic_records.weighted_average
-    cursados = self.total_credits_coursed
-    (cursados > 0 and aux) ? (aux.to_f/cursados.to_f).round(4) : self.weighted_average
-  end
-
 
   private
 
