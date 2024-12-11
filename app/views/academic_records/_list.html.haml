@@ -13,7 +13,10 @@
         %th Correo
         %th Apellidos
         %th Nombres
-        %th Cal. Final
+        - if @section&.school&.have_partial_qualification?
+          - PartialQualification.partials.map do |ord|
+            %th.text-center= ord[0]&.titleize
+        %th Final
         %th Estado
 
     %tbody
@@ -27,6 +30,9 @@
           %td= user.email
           %td= user.last_name
           %td= user.first_name
-          %td= academic_record.definitive_label
+          - if @section&.school&.have_partial_qualification?
+            - academic_record.partial_qualifications.each do |pq|
+              %td.text-center= pq&.value_to_02i
+          %td.text-center= academic_record.definitive_label
           %td
             .badge.bg-info= academic_record.status.titleize
