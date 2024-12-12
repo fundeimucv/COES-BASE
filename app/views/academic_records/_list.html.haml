@@ -1,4 +1,6 @@
-- @academic_records = academic_records if !academic_records.nil? and @academic_records.nil?
+- @academic_records = section.academic_records #if !academic_records.nil? and @academic_records.nil?
+
+- have_partials = section&.school&.have_partial_qualification?
 
 - if admin and current_user&.admin&.authorized_manage? 'AcademicProcesss'
   .alert.alert-warning
@@ -13,7 +15,7 @@
         %th Correo
         %th Apellidos
         %th Nombres
-        - if @section&.school&.have_partial_qualification?
+        - if have_partials
           - PartialQualification.partials.map do |ord|
             %th.text-center= ord[0]&.titleize
         %th Final
@@ -30,9 +32,7 @@
           %td= user.email
           %td= user.last_name
           %td= user.first_name
-          - if @section&.school&.have_partial_qualification?
-            - academic_record.partial_qualifications.each do |pq|
-              %td.text-center= pq&.value_to_02i
+          = academic_record.force_partial_values if have_partials
           %td.text-center= academic_record.definitive_label
           %td
             .badge.bg-info= academic_record.status.titleize

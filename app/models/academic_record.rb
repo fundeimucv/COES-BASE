@@ -187,6 +187,21 @@ class AcademicRecord < ApplicationRecord
 
 
   # FUNCTIONS:
+
+  def force_partial_values
+    aux = ''
+    PartialQualification.partials.each do |partial|
+      aux += "<td class='text-center'>"
+      if pq = partial_qualifications.where(partial: partial).first
+        aux += pq.value_to_02i
+      else
+        aux += '--'
+      end
+      aux += "</td>"
+    end
+    return aux.html_safe
+  end
+
   def label_partial_qualifications
     partial_qualifications.map(&:label_qualification).join(' ').html_safe
   end

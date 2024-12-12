@@ -561,7 +561,7 @@ class Section < ApplicationRecord
           if bindings[:object].is_in_process_active? and not bindings[:object].is_inrolling? and current_user&.admin&.authorized_manage? 'Section'
             bindings[:view].render(partial: 'academic_records/qualify', locals: {section: bindings[:object]})
           else
-            bindings[:view].render(partial: 'academic_records/list', locals: {academic_records: bindings[:object].academic_records, admin: true}) 
+            bindings[:view].render(partial: 'academic_records/list', locals: {section: bindings[:object], admin: true}) 
           end
         end
       end
