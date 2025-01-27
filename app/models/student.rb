@@ -240,7 +240,7 @@ class Student < ApplicationRecord
     list do
       search_by :custom_search
       checkboxes false
-      filters [:schools]
+      filters [:schools, :admission_types]
       field :schools do
         label 'Escuelas'
         sticky true
@@ -326,9 +326,44 @@ class Student < ApplicationRecord
       end
 
       field :admission_types do
-        label 'Ingreso'
+        label 'Admisión'
         # filterable true
+
+        searchable :name
+        sortable :name
+        filterable :name
+        sort_reverse true 
+        associated_collection_cache_all false
+        associated_collection_scope do
+          # bindings[:object] & bindings[:controller] are available, but not in scope's block!
+          Proc.new { |scope|
+            # scoping all Players currently, let's limit them to the team's league
+            # Be sure to limit if there are a lot of Players and order them by position
+            scope = scope.joins(:admission_types)
+            scope = scope.limit(30) # 'order' does not work here
+          }
+        end        
       end
+
+      field :study_plans do
+        label 'Planes'
+        # filterable true
+
+        searchable :code
+        sortable :code
+        filterable :code
+        sort_reverse true 
+        associated_collection_cache_all false
+        associated_collection_scope do
+          # bindings[:object] & bindings[:controller] are available, but not in scope's block!
+          Proc.new { |scope|
+            # scoping all Players currently, let's limit them to the team's league
+            # Be sure to limit if there are a lot of Players and order them by position
+            scope = scope.joins(:study_plans)
+            scope = scope.limit(30) # 'order' does not work here
+          }
+        end        
+      end      
 
       field :user_phone do
         label 'Número Telefónico'
@@ -355,6 +390,37 @@ class Student < ApplicationRecord
 
     export do
       fields :user, :nacionality, :origin_country, :sede, :origin_city, :birth_date, :marital_status, :address, :created_at
+
+      field :admission_types do
+        label 'Tipos de Admisión'
+
+        associated_collection_cache_all false
+        associated_collection_scope do
+          # bindings[:object] & bindings[:controller] are available, but not in scope's block!
+          Proc.new { |scope|
+            # scoping all Players currently, let's limit them to the team's league
+            # Be sure to limit if there are a lot of Players and order them by position
+            scope = scope.joins(:admission_types)
+            scope = scope.limit(30) # 'order' does not work here
+          }
+        end        
+      end
+
+      field :study_plans do
+        label 'Planes de Estudio'
+        filterable :code
+
+        associated_collection_cache_all false
+        associated_collection_scope do
+          # bindings[:object] & bindings[:controller] are available, but not in scope's block!
+          Proc.new { |scope|
+            # scoping all Players currently, let's limit them to the team's league
+            # Be sure to limit if there are a lot of Players and order them by position
+            scope = scope.joins(:study_plans)
+            scope = scope.limit(30) # 'order' does not work here
+          }
+        end        
+      end            
     end
 
     import do

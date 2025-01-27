@@ -36,19 +36,18 @@ module RailsAdmin
         register_instance_option :controller do
           proc do
             format = params[:json] && :json || params[:csv] && :csv || params[:xml] && :xml
-            if format
+            if format              
               request.format = format
 
               @schema = HashHelper.symbolize(params[:schema].slice(:except, :include, :methods, :only).permit!.to_h) if params[:schema] # to_json and to_xml expect symbols for keys AND values.
               @objects = list_entries(@model_config, :export)
               
-
               begin
 
                 params[:csv_options][:encoding_to] = 'utf-8' 
                 params[:csv_options][:generator][:col_sep] = ';' 
 
-
+                @objects = @objects.joins(:admission_types, :schools, :study_plans).uniq if params[:model_name].eql? 'student'
                 unless @model_config.list.scopes.empty?
                   if params[:scope].blank?
                     @objects = @objects.send(@model_config.list.scopes.first) unless @model_config.list.scopes.first.nil?
