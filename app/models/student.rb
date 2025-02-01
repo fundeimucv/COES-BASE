@@ -557,7 +557,7 @@ class Student < ApplicationRecord
         
         # Año de Admisión
 
-        grado.admission_year = (row[8].present? and !row[8].blank? and (row[8].is_a? Integer)) ? row[8].to_i : fields[:admission_year]
+        grado.admission_year = row[8] ? row[8] : fields[:admission_year]
 
         # print "AT: <#{grado.admission_type_id}>"
 
