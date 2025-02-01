@@ -3,8 +3,9 @@
 		%tr
 			%th.text-center Ingreso
 			%th.text-center Admisión
+			%th.text-center Año Admisión
 			%th.text-center Registro
-			%th.text-center Carrera
+			%th.text-center Edo. Carrera
 			%th.text-center Permanencia
 			- if @grade&.school&.have_language_combination?
 				%th.text-center Combinación Idiomas
@@ -17,6 +18,7 @@
 		%tr
 			%td.text-center= @grade.label_start_process
 			%td.text-center= @grade.label_admission_type
+			%td.text-center= @grade.label_admission_year
 			%td.text-center= @grade.label_registration_status
 			%td.text-center{'data-bs-toggle': :tooltip, title: 'Estado de la Carrera'}= @grade.label_graduate_status
 			%td.text-center{'data-bs-toggle': :tooltip, title: 'Régimen Actual de Permanencia'}= @grade.label_current_permanence_status

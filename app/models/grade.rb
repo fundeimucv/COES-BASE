@@ -443,6 +443,10 @@ class Grade < ApplicationRecord
   def label_admission_type
     ApplicationController.helpers.label_status('bg-info', admission_type&.name&.titleize)
   end
+
+  def label_admission_year
+    ApplicationController.helpers.label_status('bg-info', admission_year)
+  end 
   
   def label_start_process
     ApplicationController.helpers.label_status('bg-info', start_process&.process_name)
@@ -842,10 +846,16 @@ class Grade < ApplicationRecord
         label 'Duración Cita Horaria (minutos)'
       end
       field :language1 do
+        visible do
+          bindings[:object].school.have_language_combination?
+        end
         inline_edit false
         inline_add false        
       end
       field :language2 do
+        visible do
+          bindings[:object].school.have_language_combination?
+        end        
         inline_edit false
         inline_add false        
       end

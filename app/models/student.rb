@@ -459,7 +459,7 @@ class Student < ApplicationRecord
   def self.import row, fields
     total_newed = total_updated = 0
     no_registred = nil
-
+    
     # Cédula de Identidad
     if row[0]
       row[0].strip!
@@ -524,11 +524,10 @@ class Student < ApplicationRecord
 
       if estudiante.save!
         # grado = Grade.find_or_initialize_by(student_id: estudiante.id, study_plan_id: fields[:study_plan_id])
-
         if row[6]
           # Proceso Academico de Ingreso
           year, type = row[6].split('-')
-          period_type = PeriodType.find_by_code(type)
+          period_type = PeriodType.find_by_code(type[0..1])
           modality = type[2]
           period = Period.find_or_create_by(year: year, period_type_id: period_type.id)
 
@@ -545,7 +544,7 @@ class Student < ApplicationRecord
           grado.start_process_id = fields[:start_process_id]
         end
 
-        if row[7].present? and !row[7].blank?
+        if row[7]#.present? and !row[7].blank?
           # Tipo de Admisión
           if aux_admission = AdmissionType.find_by_code(row[7])
             grado.admission_type_id = aux_admission&.id
@@ -557,10 +556,8 @@ class Student < ApplicationRecord
         end
         
         # Año de Admisión
-        p "     Row8: #{row[8]}           ".center(1000, "R")
 
         grado.admission_year = (row[8].present? and !row[8].blank? and (row[8].is_a? Integer)) ? row[8].to_i : fields[:admission_year]
-
 
         # print "AT: <#{grado.admission_type_id}>"
 
