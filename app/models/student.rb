@@ -509,6 +509,9 @@ class Student < ApplicationRecord
     # Numero Telefónico
     usuario.number_phone = row[5] if row[5]
 
+    usuario.password = usuario.ci if usuario.password.blank?
+    usuario.password_confirmation = usuario.ci if usuario.password_confirmation.blank?
+
     if usuario.save!(validate: false)
       estudiante = Student.find_or_initialize_by(user_id: usuario.id)
 
@@ -542,7 +545,7 @@ class Student < ApplicationRecord
           grado.start_process_id = fields[:start_process_id]
         end
 
-        if row[7]
+        if row[7].present? and !row[7].blank?
           # Tipo de Admisión
           if aux_admission = AdmissionType.find_by_code(row[7])
             grado.admission_type_id = aux_admission&.id
@@ -552,10 +555,12 @@ class Student < ApplicationRecord
         else
           grado.admission_type_id = AdmissionType.first.id
         end
-
         
         # Año de Admisión
-        grado.admission_year = row[8] ? row[8] : fields[:admission_year]
+        p "     Row8: #{row[8]}           ".center(1000, "R")
+
+        grado.admission_year = (row[8].present? and !row[8].blank? and (row[8].is_a? Integer)) ? row[8].to_i : fields[:admission_year]
+
 
         # print "AT: <#{grado.admission_type_id}>"
 
