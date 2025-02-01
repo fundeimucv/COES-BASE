@@ -766,7 +766,7 @@ class Grade < ApplicationRecord
 
   # RAILS_ADMIN:
   rails_admin do
-    visible false
+    # visible false
     navigation_label 'Gestión de Usuarios'
     navigation_icon 'fa-solid fa-graduation-cap'
     weight 5
