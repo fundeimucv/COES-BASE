@@ -27,6 +27,20 @@
       = grouped_collection_select nil, :start_process_id, schools, :academic_processes, :name, :id, :name, {:prompt => "Seleccione el Periodo de Inicio por defecto..."}, { class: 'form-control'}
       .form-text
         %span.label.label-default Opcional
+        Atención: Sí no coloca ningún valor en el archivo, se tomará el valor indicado en este campo para la migración.
+
+  #admission_year_field.control-group.row.mb-3.enum_type
+    %label.col-sm-2.col-form-label.text-md-end{for: "admission_year_field"} Año de Admisión
+    .col-sm-10.controls
+      =# select_tag :admission_year, [Date.today.year-50..Date.today.year+10], {prompt: "Seleccione el año de admisión...", class: 'form-control'}
+      =# date_select nil, :admission_year, start_year: Date.today.year-50, end_year: Date.today.year+10, selected: Date.today, class: 'form-control'
+      = select_year(Date.today, {start_year: Date.today.year-50, end_year: Date.today.year+10}, {name: :admission_year, id: :admission_year, class: 'form-control'})
+      .form-text
+        %span.label.label-default Opcional
+        Atención: Sí no coloca ningún valor en el archivo, se tomará el valor indicado en este campo para la migración.
+
+
+        
 
 - if false
   #registration_status_field.control-group.row.mb-3

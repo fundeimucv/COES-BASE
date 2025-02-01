@@ -512,7 +512,7 @@ class Student < ApplicationRecord
     if usuario.save!(validate: false)
       estudiante = Student.find_or_initialize_by(user_id: usuario.id)
 
-      estudiante.birth_date = row[8] if row[8]
+      # estudiante.birth_date = row[8] if row[8]
       # p "    Estudiante: #{estudiante.attributes.to_a.to_sentence}    ".center(600, "E")
 
       new_grade = !estudiante.grades.where(study_plan_id: fields[:study_plan_id]).any?
@@ -523,6 +523,7 @@ class Student < ApplicationRecord
         # grado = Grade.find_or_initialize_by(student_id: estudiante.id, study_plan_id: fields[:study_plan_id])
 
         if row[6]
+          # Proceso Academico de Ingreso
           year, type = row[6].split('-')
           period_type = PeriodType.find_by_code(type)
           modality = type[2]
@@ -542,6 +543,7 @@ class Student < ApplicationRecord
         end
 
         if row[7]
+          # Tipo de Admisión
           if aux_admission = AdmissionType.find_by_code(row[7])
             grado.admission_type_id = aux_admission&.id
           end
@@ -550,6 +552,10 @@ class Student < ApplicationRecord
         else
           grado.admission_type_id = AdmissionType.first.id
         end
+
+        
+        # Año de Admisión
+        grado.admission_year = row[8] ? row[8] : fields[:admission_year]
 
         # print "AT: <#{grado.admission_type_id}>"
 

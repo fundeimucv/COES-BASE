@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_10_16_194706) do
+ActiveRecord::Schema[7.0].define(version: 2025_01_31_225045) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -450,6 +450,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_10_16_194706) do
     t.bigint "language1_id"
     t.bigint "language2_id"
     t.integer "region", default: 0
+    t.integer "admission_year"
     t.index ["admission_type_id"], name: "index_grades_on_admission_type_id"
     t.index ["enabled_enroll_process_id"], name: "index_grades_on_enabled_enroll_process_id"
     t.index ["start_id"], name: "index_grades_on_start_id"

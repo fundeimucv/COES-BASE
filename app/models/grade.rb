@@ -3,6 +3,7 @@
 # Table name: grades
 #
 #  id                        :bigint           not null, primary key
+#  admission_year            :integer
 #  appointment_time          :datetime
 #  current_permanence_status :integer          default("nuevo"), not null
 #  duration_slot_time        :integer
@@ -766,12 +767,20 @@ class Grade < ApplicationRecord
   # RAILS_ADMIN:
   rails_admin do
     visible false
-    navigation_label 'Inscripciones'
+    navigation_label 'Gestión de Usuarios'
     navigation_icon 'fa-solid fa-graduation-cap'
+    weight 5
 
     list do
       search_by :custom_search
-      fields :student, :study_plan, :admission_type, :registration_status, :efficiency, :weighted_average, :simple_average
+      fields :student, :study_plan, :admission_type
+
+      field :admission_year do
+        filterable true
+        label 'Año de Admisión'
+      end
+
+      fields :registration_status, :efficiency, :weighted_average, :simple_average
     end
 
     show do
@@ -820,7 +829,11 @@ class Grade < ApplicationRecord
           bindings[:view].render(partial: 'rails_admin/main/grade/custom_academic_process_id_field', locals: {schools_auh: bindings[:view]._current_user&.admin&.schools_auh, value: bindings[:object].start_process_id})
         end
         
-      end      
+      end   
+      
+      field :admission_year do
+        label 'Año de Admisión'
+      end
 
       field :appointment_time do
         label 'Fecha y Hora Cita Horaria'
@@ -870,6 +883,10 @@ class Grade < ApplicationRecord
         end
         
       end
+
+      field :admission_year do
+        label 'Año de Admisión'
+      end
       field :appointment_time do
         label 'Fecha y Hora Cita Horaria'
       end
@@ -880,6 +897,9 @@ class Grade < ApplicationRecord
 
     export do
       fields :student, :study_plan, :admission_type, :registration_status, :efficiency, :weighted_average, :simple_average, :region
+      field :admission_year do
+        label 'Año de Admisión'
+      end
       field :total_subjects_coursed do
         label 'Total Créditos Cursados'
       end

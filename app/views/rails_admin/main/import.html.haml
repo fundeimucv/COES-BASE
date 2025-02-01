@@ -1,6 +1,6 @@
 - if entity = params[:model_name].pluralize #= request.path.split("/")[2].pluralize
   - if entity.eql? 'students' or entity.eql? 'teachers'
-    - headers = 'ci, email, nombres, apellidos, sexo, telefono'
+    - headers = 'ci, email, nombres, apellidos, sexo, telefono, ingreso, codigo_admision, año_ingreso'
   - elsif entity.eql? 'subjects'
     - headers = 'id, nombre, creditos, modalidad, tipo_calificacion'
   - elsif entity.eql? 'sections'

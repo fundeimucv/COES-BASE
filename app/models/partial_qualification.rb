@@ -3,7 +3,7 @@
 # Table name: partial_qualifications
 #
 #  id                 :bigint           not null, primary key
-#  partial            :integer          default("primera"), not null
+#  partial            :integer          default("primer_lapso"), not null
 #  value              :decimal(4, 2)
 #  created_at         :datetime         not null
 #  updated_at         :datetime         not null
