@@ -22,14 +22,14 @@
       %td= section.course.label_pci_yes_or_not
       %td{'data-bs-toggle': :tooltip, title: section.subject.desc}
         - if section.subject
-          - if current_user&.admin&.authorized_manage? 'Subject'
-            %a{href: "/admin/subject/#{section.subject_id}"}= section.course.subject_desc_with_pci 
+          - if current_user&.admin&.authorized_manage? 'Subject' and session[:rol].eql? 'admin'
+            %a{href: "/admin/subject/#{section.subject.id}"}= section.course.subject_desc_with_pci 
           - else
             = section.course.subject_desc_with_pci
       - teacher_desc = section.teacher.desc if section.teacher
       %td{'data-bs-toggle': :tooltip, title: teacher_desc}
         - if section.teacher 
-          - if current_user&.admin&.authorized_manage? 'Teacher'
+          - if current_user&.admin&.authorized_manage? 'Teacher' and session[:rol].eql? 'admin'
             %a{href: "/admin/teacher/#{section.teacher_id}"}= section.teacher.desc 
           - else
             = section.teacher.desc
