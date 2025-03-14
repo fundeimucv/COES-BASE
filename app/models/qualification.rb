@@ -58,7 +58,7 @@ class Qualification < ApplicationRecord
     definitive_q_value = self.academic_record.definitive_q_value
     if definitive_q_value and !self.academic_record.pi?
       status = (definitive_q_value >= 10) ? :aprobado : :aplazado
-      self.academic_record.update(status: status)
+      self.academic_record.update_attribute(:status, status)
     end
     update_status
   end
