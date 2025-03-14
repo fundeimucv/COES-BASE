@@ -1079,8 +1079,11 @@ class AcademicRecord < ApplicationRecord
     self.enroll_academic_process.update(permanence_status: enroll_academic_process.get_regulation) if is_last_academic_record_qualified_of_enroll?
   end
   def set_options_q
-    self.qualifications.destroy_all if (self.pi? or self.retirado? or self.sin_calificar? or (self.subject&.absoluta?))
-    self.qualifications.create(type_q: :final, value: 0) if self.pi?
+    if (self.pi? or self.retirado? or self.sin_calificar? or (self.subject&.absoluta?))
+      self.qualifications.destroy_all 
+      self.qualifications.create(type_q: :final, value: 0) if self.pi?
+      self.partial_qualifications.destroy_all
+    end
   end
 
   def destroy_enroll_academic_process

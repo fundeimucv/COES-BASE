@@ -21,6 +21,10 @@ class PartialQualification < ApplicationRecord
   include Qualifying
   # ASSOCIATIONS:
   belongs_to :academic_record
+  has_one :section, through: :academic_record
+  has_one :course, through: :section
+  has_one :subject, through: :course
+  has_one :area, through: :subject
 
   # VALIDATIONS:
   validates :academic_record, presence: true
@@ -37,12 +41,53 @@ class PartialQualification < ApplicationRecord
   #CALLBACKS:
   after_save :totalize_qualification
 
+  def get_percent_value
+    if (self.area&.name&.upcase.eql? 'IDIOMA BÁSICO' or self.area&.name&.upcase.eql? 'LINGUÍSTICA' or self.area&.name&.upcase.eql? 'LENGUA ESPAÑOLA')
+      
+      if primer_lapso? 
+        25
+      elsif segundo_lapso?
+        35
+      else
+        40
+      end
+    else
+      if primer_lapso? or segundo_lapso?
+        30
+      else
+        40
+      end
+    end
+  end
+
+
+  def get_qualification_percent
+    # percent.to_f.percent_of(self.value.to_f)
+		# porcen1 = (p1*nota1)/100;
+		# porcen1 =  Math.round(porcen1 * 10) / 10;
+    
+    # percent = (get_percent_value*self.value)/100
+    # (percent*10).round(0)/10
+    percent_partial = area&.get_percent_partial self.partial
+
+    (percent_partial*self.value)/100
+  end
+
   def totalize_qualification
     require 'numeric'
     if self.academic_record.is_totality_partial?
       total = 0
       self.academic_record.partial_qualifications.each do |pq|
-        total += (pq.value).percent_of(33)
+
+        # porcen1 = (p1*nota1)/100;
+        # porcen1 =  Math.round(porcen1 * 10) / 10;
+        # porcen2 = (p2*nota2)/100;
+        # porcen2 =  Math.round(porcen2 * 10) / 10;
+        # porcen3 = (p3*nota3)/100;
+        # porcen3 =  Math.round(porcen3 * 10) / 10;
+        percent = pq.get_qualification_percent
+
+        total += percent #(pq.value).percent_of(get_percent_value)
       end
       total = total.round(0)
       self.academic_record.qualifications.destroy_all

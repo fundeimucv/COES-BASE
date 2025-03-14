@@ -72,6 +72,26 @@ class Area < ApplicationRecord
     subjects.count
   end
 
+  def get_percent_partial lapso
+    if (self.name&.upcase.eql? 'IDIOMA BÁSICO' or self.name&.upcase.eql? 'LINGUÍSTICA' or self.name&.upcase.eql? 'LENGUA ESPAÑOLA')
+      
+      if lapso.eql? 'primer_lapso'
+        25
+      elsif lapso.eql? 'segundo_lapso'
+        35
+      else
+        40
+      end
+    else
+      if (lapso.eql? 'primer_lapso') or (lapso.eql? 'segundo_lapso')
+        30
+      else
+        40
+      end
+    end
+  end
+
+
   rails_admin do
     visible do
       bindings[:controller].current_user&.admin?

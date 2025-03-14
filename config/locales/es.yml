@@ -502,6 +502,10 @@ es:
       departament:
         one: 'Departamento'
         other: 'Departamentos'
+      partial_qualification:
+        primer_lapso: '1er. Lapso'
+        segundo_lapso: '2do. Lapso'
+        tercer_lapso: '3er. Lapso'
       period:
         one: 'Período'
         other: 'Períodos'
