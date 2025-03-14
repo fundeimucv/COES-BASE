@@ -34,7 +34,7 @@ class Ability
             end
             if authd.authorizable.klazz.eql? 'Student' and authd.can_manage?
                 can :manage, [Address, Grade]
-                can :read, [AdmissionType, StudyPlan]
+                can :read, [AdmissionType, StudyPlan, Language]
             end
             if authd.authorizable.klazz.eql? 'AcademicProcess' and authd.can_read?
                 can :programation, [AcademicProcess]
