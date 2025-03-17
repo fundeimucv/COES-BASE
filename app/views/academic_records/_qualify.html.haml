@@ -5,6 +5,12 @@
 - @academic_process = section.academic_process
 - if !enabled_to_admin and teacher_authorized_to_qualify
   %h5.alert.alert-success.text-center Autorizado para Calificar
+
+%p.alert.alert-danger.text-justify
+  %b Atención:
+  Calificar es un proceso unitario, por lo que cada registro será guardado mientras se esté realizando la calificación en sí. Al completar cada carga correctamente, deberá aparecer un mensaje de color verde en la esquina superior derecha de la pantalla indicando que los datos fueron guardados con éxito. Del mismo modo, se deberá actualizarse el estado final de la calificación. De no ser así, por favor verifique su conexión a Internet, refresque la pantalla e inténtelo nuevamente. Finalmente, puede hacer clic en el botón 
+  %b Finalizar Calificación
+  para completar la acción general.
 .table-responsive
   %table.table.table-condensed.table-striped.table-hover.border.table-bordered.table-sm.border-success
     %thead
