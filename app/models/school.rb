@@ -45,9 +45,10 @@ class School < ApplicationRecord
   belongs_to :enroll_process, foreign_key: 'enroll_process_id', class_name: 'AcademicProcess', optional: true
 
   belongs_to :faculty
-
-  has_many :admission_types 
-  accepts_nested_attributes_for :admission_types
+  
+  # Atención: La admission_type no está asociada a la escuela, no bebería ir la línea de abajo
+  # has_many :admission_types 
+  # accepts_nested_attributes_for :admission_types
 
   has_many :academic_processes
   has_many :departaments, dependent: :destroy
