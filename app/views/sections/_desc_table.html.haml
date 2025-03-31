@@ -34,11 +34,8 @@
           - else
             = section.teacher.desc
 
-      - if section.schedules
-        %td{'data-bs-toggle': :tooltip, title: section.schedule_name}
-          = section.schedule_short_name
-      -else 
-        %td
+      %td= section.schedules_short_desc_label
+
       %td= section.subject.unit_credits
       %td
         .badge.bg-secondary= section.total_academic_records

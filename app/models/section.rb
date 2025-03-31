@@ -230,7 +230,7 @@ class Section < ApplicationRecord
 
   def description_with_quotes
     aux = "[#{self.teacher.user.short_name}]" if self.teacher
-    schedule = "#{self.schedule_short_name}" if self.schedules
+    schedule = "#{self.schedule_name}" if self.schedules
     "#{code} #{aux} - #{schedule} (#{capacity_vs_enrolls})"
   end
 
@@ -310,6 +310,10 @@ class Section < ApplicationRecord
   def schedule_name
     schedules.map{|s| s.name}.to_sentence
   end
+  
+  def schedule_table
+    schedules.each{|s| s.name}.to_sentence
+  end
 
   def schedule_teacher_desc_short
       aux = ""
@@ -323,12 +327,16 @@ class Section < ApplicationRecord
     schedules.map{|s| s.short_name}.to_sentence    
   end
 
-  def teacher_desc 
-    teacher.user.ci_fullname if (teacher and teacher.user)
+  def schedules_short_desc_label
+    if schedules.any?
+      ApplicationController.helpers.label_status_with_tooltip 'bg-info', schedule_short_name, schedule_name
+    else
+      ApplicationController.helpers.label_status 'bg-secondary', 'Sin Horario'
+    end
   end
 
-  def schedule_table
-    schedules.each{|s| s.name}.to_sentence
+  def teacher_desc 
+    teacher.user.ci_fullname if (teacher and teacher.user)
   end
 
 

@@ -31,7 +31,12 @@ class Schedule < ApplicationRecord
   validates_uniqueness_of :section_id, scope: [:day, :endtime], message: 'Ya existe un horario con una hora de salida igual para la sección.', field_name: false
 
   def short_name
-    "#{day[0..1]} #{I18n.l(starttime, format: "%I%P")} #{I18n.l(endtime, format: "a %I%P")}" if day and starttime and endtime
+    if day and starttime and endtime      
+      start_format = (starttime.to_a[1]&.to_i.eql? 0) ? "%I%P" : "%I:%M%P"
+      end_format = (endtime.to_a[1]&.to_i.eql? 0) ? "%I%P" : "%I:%M%P"
+      "#{day[0..1]} #{I18n.l(starttime, format: start_format)} #{I18n.l(endtime, format: end_format)}" 
+    end
+
   end
 
   def name
