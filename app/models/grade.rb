@@ -594,6 +594,10 @@ class Grade < ApplicationRecord
   end
 
 
+  def subjects_offer_by_study_plan
+      Subject.where("id LIKE '%#{study_plan_id}%'")
+  end
+
   def subjects_offer_by_dependent
 
     if is_new? or !any_approved?

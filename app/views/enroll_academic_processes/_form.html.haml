@@ -8,14 +8,20 @@
 - study_plan = @grade.study_plan
 
 - if current_user.student? and (session[:rol].eql? 'student')
-  - if false #study_plan.por_nivel?
+
+  - if study_plan.school.postgrado?
+    - courses_offer = courses_offer.joins(:subject).where("subjects.code ILIKE '%#{study_plan.code}%' and subjects.id NOT IN (#{@grade.subjects_approved_ids.join(',')})")
+
+  - elsif study_plan.por_nivel?
     - # forzada a false para que, por el momento, no entre en ningún caso por aquí
     - subjects_offer_by_level_approved = @grade.subjects_offer_by_level_approved
     - courses_offer = courses_offer.where(subject_id: subjects_offer_by_level_approved.ids)
+
   - elsif study_plan.por_dependencia?
     - # Forzada a true para que siempre entre por aquí
     - subjects_offer_by_dependency = @grade.subjects_offer_by_dependent
     - courses_offer = courses_offer.where(subject_id: subjects_offer_by_dependency.ids)
+
 
 - courses_offer = courses_offer.order_by_subject_code.uniq
 - limitCredits = academic_process.max_credits
