@@ -497,35 +497,36 @@ end
         end
       end
 
-      # field :prelate_subjects do
-      #   label do
-      #     if bindings[:object].prelate_subjects.any?
-      #       "#{bindings[:object].name} es prelada por la(s) siguiente(s) asignatura(s):"
-      #     else
-      #       "#{bindings[:object].name} No tiene prelación"
-      #     end
-      #   end
-      #   pretty_value do
-      #     if bindings[:object].prelate_subjects.any?
-      #       bindings[:view].render(partial: "/subject_links/index", locals: {subject: bindings[:object], adelante: false})
-      #     else
-      #       "<span class='alert alert-success'>Sin prelaciones: No hay otras asignaturas que sean requisito para cursar #{bindings[:object].name}.</span>".html_safe
-      #     end
-      #   end
-      # end
-      # field :depend_subjects do
-      #   label do
-      #     "Asignaturas que prela #{bindings[:object].name}:"
-      #   end        
-      #   pretty_value do
-      #     if bindings[:object].depend_subjects.any?
-      #       bindings[:view].render(partial: "/subject_links/index", locals: {subject: bindings[:object], adelante: true})
+      field :depend_subjects do
+        label do
+          "#{bindings[:object].name} es prelada por la(s) siguiente(s) asignatura(s):"
+        end        
+        pretty_value do
+          if bindings[:object].depend_subjects.any?
+            bindings[:view].render(partial: "/subject_links/index", locals: {subject: bindings[:object], adelante: true})
 
-      #     else
-      #       "<span class='alert alert-success'>No hay otras asignaturas que el estudiante pueda cursar una vez apruebe #{bindings[:object].name}.</span>".html_safe
-      #     end
-      #   end
-      # end
+          else
+            "<span class='alert alert-success'>Sin prelaciones: No hay otras asignaturas que sean requisito para cursar #{bindings[:object].name}.</span>".html_safe
+          end
+        end
+      end
+
+      field :prelate_subjects do
+        label do
+          if bindings[:object].prelate_subjects.any?
+            "Asignaturas que prela #{bindings[:object].name}:"
+          else
+            "#{bindings[:object].name} No tiene prelación"
+          end
+        end
+        pretty_value do
+          if bindings[:object].prelate_subjects.any?
+            bindings[:view].render(partial: "/subject_links/index", locals: {subject: bindings[:object], adelante: false})
+          else
+            "<span class='alert alert-success'>No hay otras asignaturas que el estudiante pueda cursar una vez apruebe #{bindings[:object].name}.</span>".html_safe
+          end
+        end
+      end      
     end
 
     edit do
@@ -626,7 +627,7 @@ end
       #   # partial 'subject/custom_prelate_subject_ids_field'#, locals: {subjects: bindings[:object].school.subjects} 
       # end
 
-      field :depend_subjects do
+      field :prelate_subjects do
         inline_add false
         inline_edit false
         label do

@@ -8,10 +8,10 @@
           %tr.trFiltrable
             %th
               = ApplicationController.helpers.subject_full_description_badges(asig).html_safe
-              - dependencies = asig.depend_links.joins(:depend_subject).order('subjects.ordinal': :asc)
+              - dependencies = asig.prelate_links.joins(:prelate_subject).where('subjects.id != ?', asig.id).order('subjects.ordinal': :desc)
               - if dependencies.any?
                 - id = "asig#{asig.id}"
+                .collapse.collapsable{id: id}
+                  = render partial: '/subject_links/tree', locals: {subject_links: dependencies, adelante: false}
                 = link_to "##{id}", 'aria-controls': "##{id}", 'aria-expanded': false, "data-bs-toggle": :collapse, onclick: "$(this).find('i').toggleClass('fa-rotate-90');" do
                   %i.fa.fa-chevron-right.text-success
-                .collapse.collapsable{id: id}
-                  = render partial: '/subject_links/tree', locals: {subject_links: dependencies, adelante: true}

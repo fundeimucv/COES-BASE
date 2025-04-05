@@ -12,17 +12,6 @@
               - links = dep.depend_subject.depend_links.joins(:depend_subject).order('subjects.ordinal': :asc)
               - id = "treeDepend#{dep.id}"
 
-              = ApplicationController.helpers.description_subject_tree(dep, adelante, current_user.admin).html_safe
-              - if links.any?
-                = link_to "##{id}", 'aria-controls': "##{id}", 'aria-expanded': false, "data-bs-toggle": :collapse, onclick: "$(this).find('i').toggleClass('fa-rotate-90');" do
-                  %i.fa.fa-chevron-right.text-success
-
-                .collapse.collapsable{id: id}
-                  = render partial: '/subject_links/tree', locals: {subject_links: links, adelante: adelante}
-            - else
-              - links = dep.prelate_subject.prelate_links.joins(:prelate_subject).order('subjects.ordinal': :asc)
-              - id = "treePrelate#{dep.id}"
-
               - if links.any?
                 = link_to "##{id}", 'aria-controls': "##{id}", 'aria-expanded': false, "data-bs-toggle": :collapse, onclick: "$(this).find('i').toggleClass('fa-rotate-90');" do
                   %i.fa.fa-chevron-up.text-success
@@ -30,3 +19,14 @@
                 .collapse.collapsable{id: id}
                   = render partial: '/subject_links/tree', locals: {subject_links: links, adelante: adelante}
               = ApplicationController.helpers.description_subject_tree(dep, adelante, current_user.admin).html_safe
+            - else
+              - links = dep.prelate_subject.prelate_links.joins(:prelate_subject).order('subjects.ordinal': :asc)
+              - id = "treePrelate#{dep.id}"
+
+              = ApplicationController.helpers.description_subject_tree(dep, adelante, current_user.admin).html_safe
+              - if links.any?
+                = link_to "##{id}", 'aria-controls': "##{id}", 'aria-expanded': false, "data-bs-toggle": :collapse, onclick: "$(this).find('i').toggleClass('fa-rotate-90');" do
+                  %i.fa.fa-chevron-right.text-success
+
+                .collapse.collapsable{id: id}
+                  = render partial: '/subject_links/tree', locals: {subject_links: links, adelante: adelante}

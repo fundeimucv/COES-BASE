@@ -5,6 +5,7 @@ end
 
 desc "Importar dependencias desde asignaturas"
 task :import_dependencias => :environment do
+	SubjectLink.delete_all
 	begin
 		Subject.importar_dependencias
 		p "     Dependencias importadas     ".center 800, '!'
