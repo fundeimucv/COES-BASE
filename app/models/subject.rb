@@ -101,6 +101,8 @@ class Subject < ApplicationRecord
 
   scope :independents, -> {left_joins(:prelate_links).where('subject_links.depend_subject_id': nil, 'subject_links.prelate_subject_id': nil)}
 
+  scope :independientes, -> {joins('LEFT JOIN subject_links ON subject_links.prelate_subject_id = subjects.id').where('subject_links.prelate_subject_id IS NULL')}
+
   scope :not_inicial, -> {where('ordinal != 1')}
 
   scope :sort_by_code, -> {order(code: :asc)}
@@ -130,6 +132,64 @@ class Subject < ApplicationRecord
 
   # GENERALS FUNCTIONS: 
   
+  # FUNCIONES DE IMPORTACIÓN DESDE ASIGNATURAS:
+
+  def self.importar_dependencias
+    require 'csv'
+    migracion_dependencias = CSV.read("#{Rails.root}/public/migracion_dependencias.csv", headers: true)
+    File.open("#{Rails.root}/public/importacion_resultados.txt", 'w') do |file|
+      migracion_dependencias.each_with_index do |fila,i|
+        asignatura_id = fila['asignatura_id']
+        asignatura_dependiente_id = fila['asignatura_dependiente_id']
+        
+        # p "  Asignatura: #{asignatura_id}, #{asignatura_dependiente_id}   ".center(500, 'X')
+        dependen_subject = buscar_subject_por_code(asignatura_id)
+        prelate_subject = buscar_subject_por_code(asignatura_dependiente_id)
+
+        if dependen_subject and prelate_subject
+          print "#{i}👍🏽"
+
+          begin
+            subject_link = SubjectLink.new(prelate_subject_id: prelate_subject.id, depend_subject_id: dependen_subject.id)
+            # p SubjectLink.create!(prelate_subject_id: prelate_subject.id, depend_subject_id: dependen_subject.id, validate: false)
+            p "√" if subject_link.save(validate: false)
+
+          rescue Exception => e
+
+            file.puts "Fila #{i}: Error al importar Asignatura #{asignatura_id} y Asignatura Dependiente #{asignatura_dependiente_id}"
+            file.puts "  Escuela: #{prelate_subject.school.code}"
+            file.puts "  Error: #{e.message}"
+
+          end
+        else
+          file.puts "Fila #{i}: Error subject no found: #{asignatura_id} #{asignatura_dependiente_id}"
+        end
+        
+      end
+    end
+
+end
+
+def self.buscar_subject_por_code(code)
+    # subject = Subject.find_by(code: code)
+    # # p "  Buscando con #{code}...  ".center(500, 'X')
+    # if subject.nil?
+    #     # p "  Buscando con 0#{code}...  ".center(500, 'X')
+    #     subject = Subject.find_by(code: "0#{code}")
+    # else
+    #   # p "   Encontrado #{subject.code} #{subject.name}  ".center(500, '√')
+    # end
+    # subject
+
+  subject = Subject.find_by(code: [code, "0#{code}"])
+  if subject
+    return subject
+  else
+    raise "Subject con code #{code} no encontrado"
+  end    
+end
+
+
   def enroll_desc_ordinal
     case ordinal
     when 1..12
@@ -437,35 +497,35 @@ class Subject < ApplicationRecord
         end
       end
 
-      field :prelate_subjects do
-        label do
-          if bindings[:object].prelate_subjects.any?
-            "#{bindings[:object].name} es prelada por la(s) siguiente(s) asignatura(s):"
-          else
-            "#{bindings[:object].name} No tiene prelación"
-          end
-        end
-        pretty_value do
-          if bindings[:object].prelate_subjects.any?
-            bindings[:view].render(partial: "/subject_links/index", locals: {subject: bindings[:object], adelante: false})
-          else
-            "<span class='alert alert-success'>Sin prelaciones: No hay otras asignaturas que sean requisito para cursar #{bindings[:object].name}.</span>".html_safe
-          end
-        end
-      end
-      field :depend_subjects do
-        label do
-          "Asignaturas que prela #{bindings[:object].name}:"
-        end        
-        pretty_value do
-          if bindings[:object].depend_subjects.any?
-            bindings[:view].render(partial: "/subject_links/index", locals: {subject: bindings[:object], adelante: true})
+      # field :prelate_subjects do
+      #   label do
+      #     if bindings[:object].prelate_subjects.any?
+      #       "#{bindings[:object].name} es prelada por la(s) siguiente(s) asignatura(s):"
+      #     else
+      #       "#{bindings[:object].name} No tiene prelación"
+      #     end
+      #   end
+      #   pretty_value do
+      #     if bindings[:object].prelate_subjects.any?
+      #       bindings[:view].render(partial: "/subject_links/index", locals: {subject: bindings[:object], adelante: false})
+      #     else
+      #       "<span class='alert alert-success'>Sin prelaciones: No hay otras asignaturas que sean requisito para cursar #{bindings[:object].name}.</span>".html_safe
+      #     end
+      #   end
+      # end
+      # field :depend_subjects do
+      #   label do
+      #     "Asignaturas que prela #{bindings[:object].name}:"
+      #   end        
+      #   pretty_value do
+      #     if bindings[:object].depend_subjects.any?
+      #       bindings[:view].render(partial: "/subject_links/index", locals: {subject: bindings[:object], adelante: true})
 
-          else
-            "<span class='alert alert-success'>No hay otras asignaturas que el estudiante pueda cursar una vez apruebe #{bindings[:object].name}.</span>".html_safe
-          end
-        end
-      end
+      #     else
+      #       "<span class='alert alert-success'>No hay otras asignaturas que el estudiante pueda cursar una vez apruebe #{bindings[:object].name}.</span>".html_safe
+      #     end
+      #   end
+      # end
     end
 
     edit do

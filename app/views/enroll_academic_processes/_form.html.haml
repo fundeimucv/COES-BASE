@@ -9,14 +9,16 @@
 
 - if current_user.student? and (session[:rol].eql? 'student')
 
-  - if study_plan.por_nivel?
+  - if false #study_plan.por_nivel?
     - # forzada a false para que, por el momento, no entre en ningún caso por aquí
     - subjects_offer_by_level_approved = @grade.subjects_offer_by_level_approved
     - courses_offer = courses_offer.where(subject_id: subjects_offer_by_level_approved.ids)
 
   - elsif study_plan.por_dependencia?
     - # Forzada a true para que siempre entre por aquí
-    - subjects_offer_by_dependency = @grade.subjects_offer_by_dependent
+    - # subjects_offer_by_dependency = @grade.subjects_offer_by_dependent
+    - subjects_offer_by_dependency = @grade.asignaturas_ofertables_segun_dependencia
+
     - courses_offer = courses_offer.where(subject_id: subjects_offer_by_dependency.ids)
 
 - subjects_approved_ids = @grade.subjects_approved_ids

@@ -598,6 +598,33 @@ class Grade < ApplicationRecord
       Subject.where("id LIKE '%#{study_plan_id}%'")
   end
 
+  def asignaturas_ofertables_segun_dependencia
+    # Buscamos los ids de las asignaturas aprobadas
+    aprobadas_ids = self.academic_records.aprobado.includes(:subject).map{|ins| ins.subject.id}.uniq
+
+    # Buscamos por ids de las asignaturas que dependen de las aprobadas
+    asignaturas_dependientes_ids = SubjectLink.where('depend_subject_id IN (?)', aprobadas_ids).map{|dep| dep.prelate_subject_id}
+
+    ids_asignaturas_positivas = []
+
+    # Ahora por cada asignatura habilitada miramos sus respectivas dependencias a ver si todas están aprobadas
+
+    asignaturas_dependientes_ids.each do |asig_id|
+      ids_aux = SubjectLink.where(prelate_subject_id: asig_id).map{|dep| dep.depend_subject_id}
+      ids_aux.reject!{|id| aprobadas_ids.include? id}
+      ids_asignaturas_positivas << asig_id if (ids_aux.eql? []) #Si aprobó todas las dependencias
+    end
+
+    # Buscamos las asignaturas sin prelación
+    ids_asignaturas_independientes = self.school.subjects.independientes.ids
+
+    # Sumamos todas las ids ()
+    asignaturas_disponibles_ids = ids_asignaturas_positivas + ids_asignaturas_independientes
+
+    Subject.where('subjects.id IN (?)', asignaturas_disponibles_ids)
+  end
+
+
   def subjects_offer_by_dependent
 
     if is_new? or !any_approved?

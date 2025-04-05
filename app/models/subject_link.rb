@@ -24,6 +24,7 @@ class SubjectLink < ApplicationRecord
   belongs_to :prelate_subject, class_name: 'Subject', foreign_key: :prelate_subject_id
   belongs_to :depend_subject, class_name: 'Subject', foreign_key: :depend_subject_id
 
+  has_one :school, through: :prelate_subject
   validates_uniqueness_of :prelate_subject_id, scope: [:depend_subject_id], message: 'la relación ya existe', field_name: false
   validates :prelate_subject_id, presence: true
   validates :depend_subject_id, presence: true

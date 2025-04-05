@@ -2,6 +2,19 @@ def print_error e
 	p "     ERROR: <#{e}>     ".center 800, '!'
 end
 
+
+desc "Importar dependencias desde asignaturas"
+task :import_dependencias => :environment do
+	begin
+		Subject.importar_dependencias
+		p "     Dependencias importadas     ".center 800, '!'
+	rescue Exception => e
+		print_error e
+	end
+end
+
+
+
 desc "Actualizar subjects' departaments"
 task :update_subject_departaments => :environment do
 	total = 0
