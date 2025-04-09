@@ -44,6 +44,10 @@ Rails.application.configure do
   # Apache or NGINX already handles this.
   config.public_file_server.enabled = ENV["RAILS_SERVE_STATIC_FILES"].present?
 
+
+  # config.active_storage.resolve_model_to_route = :rails_storage_proxy
+  # https://spinacms.com/docs/getting-started/caching-uploads
+
   # Compress CSS using a preprocessor.
   # config.assets.css_compressor = :sass
   # config.assets.precompile += ['pdf.css', 'pdf.js']
