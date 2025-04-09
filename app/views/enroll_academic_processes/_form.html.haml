@@ -21,6 +21,13 @@
 
     - courses_offer = courses_offer.where(subject_id: subjects_offer_by_dependency.ids)
 
+- #@departament1 = @grade.departament1
+- #@departament2 = @grade.departament2
+
+- if false #@grade.school&.code.eql? 'IDIO' and !departament1.nil? and !departament2.nil?
+  - courses_offer = courses_offer.joins(:departament).joins(:area).where('departaments.id': [departament1.id, departament2.id], 'areas.name': ['CULTURA, TEMAS Y TEXTOS', 'IDIOMA BÁSICO'])
+  -# - courses_offer = courses_offer.joins(:departament).joins(:area).where("departaments.id IN (#{departament1.id}, #{departament2.id}) and areas.name = 'CULTURA, TEMAS Y TEXTOS' and areas.name = 'IDIOMA BÁSICO'")
+
 - subjects_approved_ids = @grade.subjects_approved_ids
 - courses_offer = courses_offer.joins(:subject).where("subjects.id NOT IN (#{subjects_approved_ids.join(',')})") if subjects_approved_ids&.any?
 - courses_offer = courses_offer.order_by_subject_code.uniq

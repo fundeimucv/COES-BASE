@@ -153,6 +153,23 @@ class Grade < ApplicationRecord
   scope :custom_search, -> (keyword) { joins(:user, :school).where("users.ci ILIKE '%#{keyword}%' OR schools.name ILIKE '%#{keyword}%'") }
 
   # FUNCTIONS:
+
+  def departament2
+    if self.language2.nil?
+      nil
+    else
+      school.departaments.where(name: language2.name).first
+    end
+  end
+
+  def departament1
+    if self.language1.nil?
+      nil
+    else
+      school.departaments.where(name: language1.name).first
+    end
+  end
+
   def payment_process
     start_process
   end

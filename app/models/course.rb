@@ -41,6 +41,7 @@ class Course < ApplicationRecord
   has_one :school, through: :academic_process
   belongs_to :subject
   has_one :area, through: :subject
+  has_one :departament, through: :subject
   
   # has_many
   has_many :sections, dependent: :destroy
