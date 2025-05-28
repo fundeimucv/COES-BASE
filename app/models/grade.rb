@@ -831,7 +831,7 @@ class Grade < ApplicationRecord
     list do
       search_by :custom_search
       checkboxes false
-      filters [:school, :study_plan, :enrollment_status, :admission_type]      
+      filters [:school, :study_plan, :enrollment_status, :admission_type, :region, :current_permanence_status ]
       field :school do
         label 'Escuela'
         pretty_value do
@@ -896,6 +896,28 @@ class Grade < ApplicationRecord
         end
 
       end
+
+      field :graduate_status do
+        label 'Edo. Graduación'
+        pretty_value do
+          ApplicationController.helpers.label_status('bg-info', value&.titleize)
+        end
+      end
+
+      field :current_permanence_status do
+        label 'Edo. Permanencia'
+        pretty_value do
+          ApplicationController.helpers.label_status('bg-info', value&.titleize)
+        end
+      end
+
+      field :region do
+        label 'Región'
+        pretty_value do
+          ApplicationController.helpers.label_status('bg-info', value&.titleize)
+        end
+      end
+
       field :student do
         column_width 300
       end
@@ -910,12 +932,39 @@ class Grade < ApplicationRecord
         label 'Ponderado'
       end
 
+      field :total_subjects_coursed do
+        label 'T. Asig. Cursadas'
+      end
+      field :total_subjects_approved do
+        label 'T. Asig. Aprobadas'
+      end
+
     end
 
     show do
+      field :school do
+        label 'Escuela'
+        render do
+          bindings[:view].content_tag(:p, bindings[:object].school.short_name)
+        end
+      end
+
+      field :study_plan do
+        render do
+          bindings[:view].render(partial: '/grades/history_plans', locals: {grade: bindings[:object], study_plan: bindings[:object].study_plan, study_plans: bindings[:object].school&.study_plans})
+        end
+      end
+      
+      field :admission_type
+      field :region do
+        pretty_value do
+          ApplicationController.helpers.label_status('bg-info', value&.titleize)
+        end
+      end
+
+
       fields :student, :enroll_academic_processes, :enabled_enroll_process
       field :numbers
-      field :description
       field :language1
       field :language2
     end
@@ -957,9 +1006,9 @@ class Grade < ApplicationRecord
         render do
           bindings[:view].render(partial: 'rails_admin/main/grade/custom_academic_process_id_field', locals: {schools_auh: bindings[:view]._current_user&.admin&.schools_auh, value: bindings[:object].start_process_id})
         end
-        
       end   
       
+      field :region
       field :admission_year do
         label 'Año de Admisión'
       end
@@ -1031,16 +1080,34 @@ class Grade < ApplicationRecord
     end
 
     export do
-      fields :student, :school, :study_plan, :admission_type, :registration_status, :efficiency, :weighted_average, :simple_average, :region, :enrollment_status
+      field :school do
+        associated_collection_cache_all false
+        associated_collection_scope do
+          Proc.new { |scope|
+            scope = scope.joins(:school)
+            scope = scope.limit(100)
+          }
+        end        
+      end
+      field :study_plan do
+        associated_collection_cache_all false
+        associated_collection_scope do
+          Proc.new { |scope|
+            scope = scope.joins(:study_plan)
+            scope = scope.limit(100)
+          }
+        end
+      end    
+      fields :student, :admission_type, :registration_status, :region, :enrollment_status, :current_permanence_status, :registration_status, :graduate_status, :efficiency, :weighted_average, :simple_average
       field :admission_year do
         label 'Año de Admisión'
       end
       field :total_subjects_coursed do
-        label 'Total Créditos Cursados'
+        label 'Total Asignaturas Cursadas'
       end
       field :total_subjects_approved do
-        label 'Total Créditos Aprobados'
-      end      
+        label 'Total Asignaturas Aprobadas'
+      end
     end
   end
 
