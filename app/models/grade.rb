@@ -453,6 +453,11 @@ class Grade < ApplicationRecord
     ApplicationController.helpers.label_status('bg-info', registration_status&.titleize)
   end
 
+  def label_enrollment_status
+    ApplicationController.helpers.label_status('bg-info', enrollment_status&.titleize)
+  end
+  
+
   def label_graduate_status
     ApplicationController.helpers.label_status('bg-info', graduate_status&.titleize)
   end
@@ -825,14 +830,86 @@ class Grade < ApplicationRecord
 
     list do
       search_by :custom_search
-      fields :student, :study_plan, :admission_type
+      checkboxes false
+      filters [:school, :study_plan, :enrollment_status, :admission_type]      
+      field :school do
+        label 'Escuela'
+        pretty_value do
+          value&.short_name
+        end 
+        sticky true
+        searchable :name
+        sortable :name
+        filterable :name
+        sort_reverse true 
+        associated_collection_cache_all false
+        associated_collection_scope do
+          Proc.new { |scope|
+            scope = scope.joins(:school)
+            scope = scope.limit(10)
+          }
+        end
+
+      end
+      field :study_plan do
+        label 'Plan Estudio'
+        sticky true
+        searchable :code
+        sortable :code
+        filterable :code
+
+        pretty_value do
+          value.code
+        end
+
+        associated_collection_cache_all false
+        associated_collection_scope do
+          Proc.new { |scope|
+            scope = scope.joins(:study_plan)
+            scope = scope.limit(10)
+          }
+        end        
+      end
+      field :enrollment_status do
+        label 'Insc. Facultad'
+        pretty_value do
+          ApplicationController.helpers.label_status('bg-info', value&.titleize)
+        end
+      end
+
+      fields :admission_type do
+        label 'Admisión'
+        pretty_value do
+          ApplicationController.helpers.label_status('bg-info', value&.name&.titleize)
+        end
+      end
 
       field :admission_year do
         filterable true
-        label 'Año de Admisión'
+        label 'Año Admisión'
+      end
+      
+      field :registration_status do
+        label 'Edo. Registro'
+        pretty_value do
+          ApplicationController.helpers.label_status('bg-info', value&.titleize)
+        end
+
+      end
+      field :student do
+        column_width 300
+      end
+      field :efficiency do
+        label 'Efici.'
       end
 
-      fields :registration_status, :efficiency, :weighted_average, :simple_average
+      field :simple_average do
+        label 'Promedio'
+      end
+      field :weighted_average do
+        label 'Ponderado'
+      end
+
     end
 
     show do
@@ -954,7 +1031,7 @@ class Grade < ApplicationRecord
     end
 
     export do
-      fields :student, :study_plan, :admission_type, :registration_status, :efficiency, :weighted_average, :simple_average, :region
+      fields :student, :school, :study_plan, :admission_type, :registration_status, :efficiency, :weighted_average, :simple_average, :region, :enrollment_status
       field :admission_year do
         label 'Año de Admisión'
       end

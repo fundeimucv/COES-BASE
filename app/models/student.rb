@@ -209,7 +209,7 @@ class Student < ApplicationRecord
       #   end
       # end
 
-      fields :nacionality, :origin_country, :origin_city, :birth_date, :marital_status, :disability, :grade_title, :grade_university, :graduate_year
+      fields :grades, :nacionality, :origin_country, :origin_city, :birth_date, :marital_status, :disability, :grade_title, :grade_university, :graduate_year
 
     end
 

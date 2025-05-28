@@ -3,6 +3,7 @@
 		%tr
 			%th.text-center Ingreso
 			%th.text-center Admisión
+			%th.text-center Ins. Facultad
 			%th.text-center Año Admisión
 			%th.text-center Registro
 			%th.text-center Edo. Carrera
@@ -18,6 +19,7 @@
 		%tr
 			%td.text-center= @grade.label_start_process
 			%td.text-center= @grade.label_admission_type
+			%td.text-center= @grade.label_enrollment_status
 			%td.text-center= @grade.label_admission_year
 			%td.text-center= @grade.label_registration_status
 			%td.text-center{'data-bs-toggle': :tooltip, title: 'Estado de la Carrera'}= @grade.label_graduate_status
