@@ -28,7 +28,7 @@ class Timetable < ApplicationRecord
 
   after_initialize :set_default_color, if: :new_record?
 
-  # validates :timeblocks, presence: true, length: { minimum: 1, message: 'Debe tener al menos un bloque horario.' }
+  validates :timeblocks, presence: true, length: { minimum: 1, message: 'Debe tener al menos un bloque horario.' }
 
   scope :without_timeblocks, -> {left_outer_joins(:timeblocks).where(timeblocks: { id: nil }) }
 
