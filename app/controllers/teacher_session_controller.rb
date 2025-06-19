@@ -5,6 +5,8 @@ class TeacherSessionController < ApplicationController
 	layout 'logged'
 
 	def dashboard
+		@teacher = current_teacher
+		@title = "Sessión del Profesor #{@teacher.user_description}"
 	end
 
 end

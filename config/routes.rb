@@ -20,7 +20,7 @@ Rails.application.routes.draw do
     end
   end
 
-  resources :timetables, only: [:index, :show]
+  resources :timetables, only: [:show]
   get 'timetables/:type/:id', to: 'timetables#show', as: 'specific_timetable'
 
   resources :subject_links, only: :destroy

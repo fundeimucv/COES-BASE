@@ -1,6 +1,18 @@
 .justify-content-center
   = render 'layouts/main_banner'
 
+  %h3.bg-primary.text-center.text-light.p-2= @title
+
+  - ap = @teacher.academic_processes.enrolls.first
+  - ap ||= @teacher.academic_processes.actives.first
+
+  - if ap 
+    - if @teacher.timeblocks.joins(:timetable => {:section => {:course => :academic_process}}).where("academic_processes.id": ap.id)
+      = link_to "/timetables/Teacher/#{@teacher.id}?academic_process_id=#{ap.id}&return_to=#{request.fullpath}", class: 'btn btn-sm btn-success float-end', 'data-bs-toggle': :tooltip,'data-bs-title': 'Ver Horarios de Clases' do
+        %i.fa.fa-clock
+        %i.fa.fa-calendar
+        = "Horarios #{ap.short_desc}"
+
 
   .nav.nav-tabs{role: "tablist"}
     .nav-item{role: "presentation"}

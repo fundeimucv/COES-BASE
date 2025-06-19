@@ -1,22 +1,10 @@
 class TimetablesController < ApplicationController
   before_action :set_viewable, only: [:show]
-  layout :select_layout
 
-  def select_layout
-    if current_user&.admin?
-      'rails_admin/application'
-    elsif current_user&.is_a?(Student)
-      'logged'
-    else
-      'logged'
-    end
-  end
-  def index
-    @teachers = Teacher.includes(:user).order('users.last_name').limit(10)
-    @sections = Section.includes(:subject, :course, :academic_process).order('subjects.code').limit(10)
-  end
+  layout 'logged'
   
   def show
+
     @days = Timeblock.days.keys
     @start_hour = Timeblock::ALLOWED_START #7 # 7 AM
     @end_hour = Timeblock::ALLWOED_END #21  # 9 PM
@@ -25,23 +13,24 @@ class TimetablesController < ApplicationController
     when 'Teacher'
       @teacher = Teacher.find(params[:id])
       # @academic_process = @teacher.school.academic_processes.actives.or(@teacher.school.academic_processes.enrolls).first
-      @academic_process = AcademicProcess.find(id: params[:academic_process_id]) if params[:academic_process_id].present?
-
-      @timeblocks = Timeblock.joins(:timetable => {:section => {:course => :academic_process}})
-                            .where("academic_processes.id": @academic_process.id)
-                            .where(teacher_id: @teacher.id)
-      @title = "Horario del Profesor: #{@teacher.user_description}"
-    when 'Student'
-      @student = Student.find(params[:id])
-      # ids = @student.schools.joins(:academic_processes).where("active IS TRUE OR enroll IS TRUE").pluck(:'academic_processes.id')
-      # @academic_process = AcademicProcess.where(id: ids).first
       @academic_process = AcademicProcess.find(params[:academic_process_id]) if params[:academic_process_id].present?
 
-      @timeblocks = Timeblock.joins(:timetable => {:section => {:academic_records => {:enroll_academic_process => :academic_process}}})
-                            .where(enroll_academic_processes: {grade_id: @student.grades.pluck(:id)})
+      @timeblocks = @teacher.timeblocks.joins(:timetable => {:section => {:course => :academic_process}})
                             .where("academic_processes.id": @academic_process.id)
-                            .where.not('academic_records.status': 3) # Not retired
-      @title = "Horario del Estudiante: #{@student.user.reverse_name}"
+      @title = "Horario del Profesor #{@teacher.user_description} en #{@academic_process.short_desc}" if @academic_process
+    when 'EnrollAcademicProcess'
+      @timeblocks = Timeblock.joins(:timetable => {:section => {:academic_records => :enroll_academic_process} })
+                            .where(enroll_academic_processes: {id: params[:id]})
+      @enroll_academic_process = EnrollAcademicProcess.find(params[:id])
+      @academic_process = @enroll_academic_process.academic_process
+      @title = "Horario Semanal de #{@enroll_academic_process.user&.first_name} en #{@academic_process.short_desc}"
+
+    when 'Course'
+      @course = Course.find(params[:id])
+      @academic_process = @course.academic_process
+      @timeblocks = Timeblock.joins(timetable: {section: :course}).where(courses: {id: @course.id})
+      @title = "Horario del Curso: #{@course.subject_desc} (#{@academic_process.short_desc})"
+
     when 'Section'
       @section = Section.find(params[:id])
       @academic_process = @section.academic_process

@@ -27,6 +27,7 @@
 class Timeblock < ApplicationRecord
   belongs_to :teacher, optional: true
   belongs_to :timetable
+  has_one :section, through: :timetable
 
   ALLOWED_START= 6
   ALLWOED_END= 21
@@ -177,7 +178,16 @@ class Timeblock < ApplicationRecord
 
       field :end_time
       field :modality
-      field :teacher
+      field :teacher do
+        # associated_collection_scope do
+        #   Proc.new { |scope|
+        #     scope = scope.joins(:section).where(timetables: {id: bindings[:object].timetable_id})
+        #     scope = scope.limit(10)
+        #   }
+        # end
+        inline_edit false
+        inline_add false        
+      end
       field :classroom
     end
   end

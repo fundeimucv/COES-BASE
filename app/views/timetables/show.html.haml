@@ -1,21 +1,10 @@
-%h1
-  - if current_user&.admin?
-    rails_admin
-  - elsif current_user&.is_a?(Student)
-    logged
-  - else
-    otro
-  = "| #{current_user&.name}"
-
-
 .container-fluid
   .row.mb-3
     .col-12
       %h4.m-4.text-center= @title
-      - if false #No se agrega retorno ya que puede ser visto desde admin
-        = link_to student_session_dashboard_path, class: 'btn btn-secondary' do
-          %i.fa.fa-arrow-left
-          Volver a Principal
+      = link_to request.referer, class: 'btn btn-secondary' do
+        %i.fa.fa-arrow-left
+        Volver a Principal
       
   .row
     .col-12
@@ -82,7 +71,7 @@
                     .list-group-item.text-muted No hay clases programadas
 
 :javascript
-  document.addEventListener('DOMContentLoaded', function() {
+  document.addEventListener('turbo:load', function() {
     // Switch between week and list views
     document.querySelectorAll('[data-view]').forEach(button => {
       button.addEventListener('click', function() {

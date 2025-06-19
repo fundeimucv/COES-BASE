@@ -38,6 +38,10 @@ class Teacher < ApplicationRecord
   has_and_belongs_to_many :secondary_sections, class_name: 'Section'
 
   has_many :sections
+  has_many :timetables, through: :sections
+  has_many :timeblocks, through: :timetables
+
+  has_many :academic_processes, through: :sections
 
   # SCOPES:
   scope :find_by_user_ci, -> (ci) {joins(:user).where('users.ci': ci).first}
