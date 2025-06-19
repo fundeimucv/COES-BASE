@@ -19,6 +19,10 @@ Rails.application.routes.draw do
       get 'constancias'
     end
   end
+
+  resources :timetables, only: [:index, :show]
+  get 'timetables/:type/:id', to: 'timetables#show', as: 'specific_timetable'
+
   resources :subject_links, only: :destroy
   resources :page, only: :show
   resources :qualifications, only: :update

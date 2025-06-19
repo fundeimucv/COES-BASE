@@ -73,6 +73,10 @@ class Teacher < ApplicationRecord
     secondary_sections.count
   end
 
+  def user_description
+    user.description
+  end
+  
   def description
     if user
       aux = user.description

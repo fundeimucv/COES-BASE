@@ -328,6 +328,8 @@ es:
       <<: *errors
   activerecord:
     errors:
+      messages:
+        required: Requerido
       models:
         academic_record:
           attributes:
@@ -418,6 +420,23 @@ es:
         subject_link:
           attributes:
             depend_subject:
+              required: requerido
+        timeblock:
+          attributes:
+            start_time:
+              required: requerido
+              too_close_to_end: "debe ser al menos 30 minutos antes que la hora de fin"
+            end_time:
+              required: requerido
+            day_of_week:
+              required: requerido
+        timetable:
+          attributes:
+            timeblocks:
+              required: requerido
+            course:
+              required: requerido
+            section:
               required: requerido
         qualification:
           attributes:
@@ -548,6 +567,13 @@ es:
       teacher:
         one: 'Profesor'
         other: 'Profesores'
+      timetable:
+        one: Horario
+        other: Horarios
+      timeblock:
+        one: 'bloque Horario'
+        other: 'bloques Horarios'        
+
       tutorial: 
         one: 'Tutorial'
         other: 'Tutoriales'
@@ -820,6 +846,8 @@ es:
         secondary_teachers: 'Profesores secundarios'
         created_at: Fecha Creación
         updated_at: Fecha Última Actualización
+        timetable: Horario
+        timeblocks: Bloques Horarios
       student:
         active: 'Activo'
         disability: 'Discapacidad'
@@ -875,6 +903,21 @@ es:
         subject_type: Tipo de Asignatura
         study_plan: Plan de Estudio
         required_credits: Créditos Requeridos 
+      timetable:
+        teacher: Profesor
+        classroom: Aula
+        section: Sección
+        name: Nombre
+        timeblocks: Bloques Horarios
+      timeblock:
+        day: Día
+        start_time: Hora Inicio
+        end_time: Hora Final
+        classroom: Aula
+        modality: Modalidad
+        teacher: Profesor
+        timetable: Horario
+
       teacher:
         departament: 'Departamento'
         school: Escuela

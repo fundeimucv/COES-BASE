@@ -69,20 +69,20 @@ class Section < ApplicationRecord
   # has_and_belongs_to_many :teachers#, class_name: 'SectionTeacher', dependent: :delete_all
   has_and_belongs_to_many :secondary_teachers, class_name: 'Teacher'
 
+  has_one :timetable, dependent: :destroy
+  accepts_nested_attributes_for :timetable, allow_destroy: true
+
+  has_many :timeblocks, through: :timetable#, dependent: :destroy
+  accepts_nested_attributes_for :timeblocks#, allow_destroy: true
+
   # has_many :secondary_teachers, through: :section_teachers, class_name: 'Teacher'
   # accepts_nested_attributes_for :section_teachers
-
-
 
 	# has_many :secciones_profesores_secundarios,
 	# 	class_name: 'SeccionProfesorSecundario', dependent: :delete_all
 	# accepts_nested_attributes_for :secciones_profesores_secundarios
 
 	# has_many :profesores, through: :secciones_profesores_secundarios, source: :profesor
-
-
-
-
 
   # # has_and_belongs_to_namy
   # has_and_belongs_to_many :section_teachers, class_name: 'SectionTeacher'
@@ -127,7 +127,6 @@ class Section < ApplicationRecord
   scope :equivalence, -> {where('sections.modality': [:equivalencia_externa, :equivalencia_interna])}
 
   # FUNCTIONS:
-  # ATTENTION: FUNCTION TO PRINT COMMANDS BY CONSOLE 
 
   def has_teachers?
     !teacher.nil? or secondary_teachers.any?
@@ -184,11 +183,7 @@ class Section < ApplicationRecord
 
     @book = Spreadsheet::Workbook.new
     @sheet = @book.create_worksheet :name => "Seccion #{self.name}"
-
-
     enrolls = self.academic_records.not_retirado.sort_by_user_name
-
-
     @sheet.column(0).width = 15 #estudiantes.collect{|e| e.cal_usuario_ci.length if e.cal_usuario_ci}.max+2;
     @sheet.column(1).width = 50 #estudiantes.collect{|e| e.cal_usuario.apellido_nombre.length if e.cal_usuario.apellido_nombre}.max+2;
     @sheet.column(2).width = 15 #estudiantes.collect{|e| e.cal_usuario.correo_electronico.length if e.cal_usuario.correo_electronico}.max+2;
@@ -308,27 +303,40 @@ class Section < ApplicationRecord
   end
 
   def schedule_name
-    schedules.map{|s| s.name}.to_sentence
+    timeblocks.map{|s| s.name}.to_sentence
   end
   
   def schedule_table
-    schedules.each{|s| s.name}.to_sentence
+    timeblocks.each{|s| s.name}.to_sentence
+  end
+
+  def timetable_desc_with_link
+    if timeblocks.any?
+      aux = ApplicationController.helpers.link_to("/admin/section/#{self.id}", class: 'btn btn-sm btn-primary', 'data-bs-toggle': :tooltip, title: 'Editar Horario') do
+        '<i class="fa-solid fa-pencil"></i> '.html_safe
+      end
+      aux += " <div data-bs-toggle='tooltip' title='#{schedule_name}'>#{schedule_name}</div>".html_safe
+    else
+      ApplicationController.helpers.link_to("/admin/timetable/new?section_id=#{self.id}", class: 'btn btn-sm btn-success', 'data-bs-toggle': :tooltip, title: 'Agregar Horario') do
+        "<i class='fa-solid fa-plus'></i>".html_safe
+      end
+    end
   end
 
   def schedule_teacher_desc_short
       aux = ""
-      aux += schedules.any? ? schedule_short_name : 'Sin Horario Asignado'
+      aux += timeblocks.any? ? schedule_short_name : 'Sin Horario Asignado'
       aux += teacher ? " | #{teacher&.user&.reverse_name }" : " | Sin profesor Asignado"
       aux += classroom.blank? ? " | Sin aula" : " | #{classroom}"
       return aux
   end
 
   def schedule_short_name
-    schedules.map{|s| s.short_name}.to_sentence    
+    timeblocks.map{|s| s.short_name}.to_sentence    
   end
 
   def schedules_short_desc_label
-    if schedules.any?
+    if timeblocks.any?
       ApplicationController.helpers.label_status_with_tooltip 'bg-info', schedule_short_name, schedule_name
     else
       ApplicationController.helpers.label_status 'bg-secondary', 'Sin Horario'
@@ -486,8 +494,8 @@ class Section < ApplicationRecord
 
       # end
 
-      field :schedule_name do
-        label 'Horarios'
+      field :timeblocks do
+        label 'Horario'
       end
 
       field :capacity do
@@ -621,7 +629,7 @@ class Section < ApplicationRecord
         end
       end
 
-      field :schedules
+      field :timetable
 
     end
 
@@ -665,7 +673,7 @@ class Section < ApplicationRecord
         end
       end
 
-      field :schedules
+      field :timetable
 
     end
 
@@ -699,6 +707,8 @@ class Section < ApplicationRecord
       field :qualifications_average do
         label 'Promedio de Calificaciones'
       end
+
+      field :timetables
 
     end
   end
