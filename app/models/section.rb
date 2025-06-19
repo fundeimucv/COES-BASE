@@ -617,11 +617,11 @@ class Section < ApplicationRecord
         inline_add false
       end
 
-      field :classroom do
-        html_attributes do
-          {:onInput => "$(this).val($(this).val().toUpperCase().replace(/[^A-Za-z0-9| ]/g,''))"}
-        end
-      end
+      # field :classroom do
+      #   html_attributes do
+      #     {:onInput => "$(this).val($(this).val().toUpperCase().replace(/[^A-Za-z0-9| ]/g,''))"}
+      #   end
+      # end
 
       field :capacity do
         html_attributes do
@@ -661,11 +661,11 @@ class Section < ApplicationRecord
 
       field :qualified
 
-      field :classroom do
-        html_attributes do
-          {:onInput => "$(this).val($(this).val().toUpperCase().replace(/[^A-Za-z0-9| ]/g,''))"}
-        end
-      end
+      # field :classroom do
+      #   html_attributes do
+      #     {:onInput => "$(this).val($(this).val().toUpperCase().replace(/[^A-Za-z0-9| ]/g,''))"}
+      #   end
+      # end
 
       field :capacity do
         html_attributes do

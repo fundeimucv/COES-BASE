@@ -89,11 +89,11 @@ class Timeblock < ApplicationRecord
   end
   # FUNCTIONS FOR SCHEDULES
   def start_time_to_schedule
-    start_time.strftime("%H:%M%P")
+    start_time.strftime("%I:%M%P")
   end
 
   def end_time_to_schedule
-    end_time.strftime("%H:%M%P")
+    end_time.strftime("%I:%M%P")
   end
 
   def title
@@ -188,7 +188,11 @@ class Timeblock < ApplicationRecord
         inline_edit false
         inline_add false        
       end
-      field :classroom
+      field :classroom do
+        html_attributes do
+          {:onInput => "$(this).val($(this).val().toUpperCase().replace(/[^A-Za-z0-9| ]/g,''))"}
+        end        
+      end
     end
   end
 

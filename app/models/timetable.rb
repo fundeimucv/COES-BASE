@@ -25,6 +25,7 @@ class Timetable < ApplicationRecord
 	accepts_nested_attributes_for :timeblocks, allow_destroy: true
 
 	validates :section, presence: true, uniqueness: true
+  validates :color, presence: true, format: { with: /\A\d{1,3},\d{1,3},\d{1,3}\z/, message: 'Debe ser un color RGB en formato "r,g,b".' }
 
   after_initialize :set_default_color, if: :new_record?
 
@@ -41,7 +42,7 @@ class Timetable < ApplicationRecord
       field :name
       field :color do
         formatted_value do
-          value ? "<span style='background-color: rgb(#{value}); width: 20px; height: 20px; display: inline-block;'></span>".html_safe : ''
+          value ? "<span style='background-color: #{value}; width: 20px; height: 20px; display: inline-block;'></span>".html_safe : ''
         end
       end
       field :timeblocks do
@@ -54,13 +55,18 @@ class Timetable < ApplicationRecord
       field :section
       field :color do
         formatted_value do
-          value ? "<span style='background-color: rgb(#{value}); width: 20px; height: 20px; display: inline-block;'></span>".html_safe : ''
+          value ? "<span style='background-color: #{value}; width: 20px; height: 20px; display: inline-block;'></span>".html_safe : ''
         end
       end
       field :timeblocks
     end    
     edit do
-      field :color
+      field :color do
+        read_only true
+        formatted_value do
+          value ? "<label style='background-color: #{value}; width: 20px; height: 20px; display: inline-block;'></span>".html_safe : ''
+        end
+      end
       field :timeblocks
     end
 
