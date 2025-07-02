@@ -28,7 +28,7 @@ class ExportCsvController < ActionController::Base
       response.headers['Last-Modified'] = '0'
       response.headers['Content-Disposition'] = "attachment; filename=#{aux}"    
 
-      a = @object.header_for_report #['#', 'CI', 'NOMBRES', 'APELLIDOS', 'ESCUELA', 'CATEDRA','CÓDIGO ASIG', 'NOMBRE ASIG','PERIODO','SECCIÓN','ESTADO']
+      a = AcademicRecord.header_for_report #['#', 'CI', 'NOMBRES', 'APELLIDOS', 'ESCUELA', 'CATEDRA','CÓDIGO ASIG', 'NOMBRE ASIG','PERIODO','SECCIÓN','ESTADO']
       
       @object.academic_records.includes(:section, :user, :period, :subject, :area).find_each(batch_size: 500).with_index do |academic_record, i|
         response.stream.write "#{a.join(';')}\n" if (i.eql? 0) 
@@ -72,7 +72,7 @@ class ExportCsvController < ActionController::Base
       response.headers['Last-Modified'] = '0'
       response.headers['Content-Disposition'] = "attachment; filename=#{aux}"    
 
-      a = @object.header_for_report #['#', 'CI', 'NOMBRES', 'APELLIDOS','ESCUELA','PERIODO','ESTADO INSCRIP','ESTADO PERMANENCIA','REPORTE PAGO']
+      a = EnrollAcademicProcess.header_for_report #['#', 'CI', 'NOMBRES', 'APELLIDOS','ESCUELA','PERIODO','ESTADO INSCRIP','ESTADO PERMANENCIA','REPORTE PAGO']
       
       @object.enroll_academic_processes.includes(:user, :grade, :academic_process, :payment_reports).find_each(batch_size: 500).with_index do |enroll_academic_process, i|
         response.stream.write "#{a.join(';')}\n" if (i.eql? 0) 
