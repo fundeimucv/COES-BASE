@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2025_06_18_145452) do
+ActiveRecord::Schema[7.0].define(version: 2025_06_24_181949) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -845,6 +845,7 @@ ActiveRecord::Schema[7.0].define(version: 2025_06_18_145452) do
     t.bigint "subject_type_id", null: false
     t.bigint "school_id"
     t.bigint "departament_id"
+    t.string "color"
     t.index ["area_id"], name: "index_subjects_on_area_id"
     t.index ["departament_id"], name: "index_subjects_on_departament_id"
     t.index ["school_id"], name: "index_subjects_on_school_id"

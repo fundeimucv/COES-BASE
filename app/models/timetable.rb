@@ -19,13 +19,14 @@
 #
 class Timetable < ApplicationRecord
   belongs_to :section
+  has_one :subject, through: :section
 
 
 	has_many :timeblocks, dependent: :destroy
 	accepts_nested_attributes_for :timeblocks, allow_destroy: true
 
 	validates :section, presence: true, uniqueness: true
-  validates :color, presence: true, format: { with: /\A\d{1,3},\d{1,3},\d{1,3}\z/, message: 'Debe ser un color RGB en formato "r,g,b".' }
+  validates :color, presence: true#, format: { with: /\A\d{1,3},\d{1,3},\d{1,3}\z/, message: 'Debe ser un color RGB en formato "r,g,b".' }
 
   after_initialize :set_default_color, if: :new_record?
 
@@ -97,8 +98,19 @@ class Timetable < ApplicationRecord
 	end
 
   def generate_color
-    # Genera un color pastel aleatorio en formato "rgb(r,g,b)"
-    "rgba(#{rand(150..230)},#{rand(150..230)},#{rand(150..230)},0.3)"
+    # Genera un color similar al de subject, variando ligeramente cada componente
+    base_color = subject&.color
+    if base_color.present?# && base_color =~ /\A(\d{1,3}),(\d{1,3}),(\d{1,3})\z/
+      r, g, b = base_color.split(',').map(&:to_i)
+      # Variar cada componente en ±20, manteniéndolo en el rango 0..255
+      r = [[r + rand(-20..20), 0].max, 255].min
+      g = [[g + rand(-20..20), 0].max, 255].min
+      b = [[b + rand(-20..20), 0].max, 255].min
+      "#{r},#{g},#{b}"
+    else
+      # Si no hay color base, generar uno pastel aleatorio
+      "#{rand(150..230)},#{rand(150..230)},#{rand(150..230)}"
+    end
   end
 
 	def color_rgb_to_hex intensidad = nil

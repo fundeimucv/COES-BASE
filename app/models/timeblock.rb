@@ -169,7 +169,7 @@ class Timeblock < ApplicationRecord
       end
     end
     edit do
-      field :day
+      field :day, :enum
       field :start_time do
         html_attributes do
           { step: '900' } # 15 minutes step
