@@ -69,7 +69,6 @@ class SectionsController < ApplicationController
 
   # PATCH/PUT /sections/1 or /sections/1.json
   def update
-    1/0
     if @section.totaly_qualified?
       msg, type = @section.update(section_params) ? ["¡Sección calificada con éxito!", 'success'] : [@section.errors.full_messages.to_sentence, 'danger']
     else
