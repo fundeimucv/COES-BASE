@@ -71,12 +71,14 @@ Rails.application.routes.draw do
     member do
       get 'massive_confirmation'
       get 'massive_actas_generation'
+      get 'massive_actas_generation_async'
       get 'clean_courses'
       get 'run_regulation'
     end
     collection do
       post :change_process_session
       post 'clone_sections'
+      get 'download_actas'
     end
   end
 

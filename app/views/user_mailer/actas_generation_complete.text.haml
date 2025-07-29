@@ -1,0 +1,19 @@
+Generación de Actas Completada
+
+Hola #{@user.name},
+
+La generación de actas para el período académico ha sido completada exitosamente.
+
+Detalles:
+- Archivo: #{@filename}
+- Fecha de generación: #{Time.current.strftime('%d/%m/%Y %H:%M')}
+
+El archivo PDF con todas las actas está adjunto a este email.
+
+Si prefieres descargarlo desde el sistema, puedes hacerlo desde el siguiente enlace:
+#{@download_url}
+
+Este archivo estará disponible temporalmente en el sistema.
+
+Saludos,
+Equipo COES 

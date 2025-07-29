@@ -1,5 +1,5 @@
 class AcademicProcessesController < ApplicationController
-  before_action :set_academic_process, only: %i[ show edit update destroy clone_sections clean_courses run_regulation massive_confirmation massive_actas_generation]
+  before_action :set_academic_process, only: %i[ show edit update destroy clone_sections clean_courses run_regulation massive_confirmation massive_actas_generation massive_actas_generation_async]
 
   def massive_confirmation
     total = @academic_process.enroll_academic_processes.not_confirmado.with_payment_report
@@ -14,22 +14,90 @@ class AcademicProcessesController < ApplicationController
   end
 
   def massive_actas_generation
-
     sections = @academic_process.sections.qualified
-    pdf = CombinePDF.new
-
-    sections.each do |section|
-
-      footer_html = view_context.render template: "/sections/signatures", locals: {teacher: section.teacher&.user&.acte_name}
-      header_html = view_context.render template: "/sections/acta_header", locals: {school: section.school, section: section}
-
-      pdf << CombinePDF.parse(render_to_string(delete_temporary_files: true, pdf: 'actas_sections', 
-      template: "sections/acta", page_size: 'letter', margin: {top: 72, bottom: 68},
-      locals: {section: section}, formats: [:html],
-      footer: {content: footer_html},
-      header: {content: header_html}))
+    
+    # Usar procesamiento paralelo para generar PDFs más rápido
+    pdf_parts = []
+    threads = []
+    max_threads = 5 # Ajustar según el servidor
+    
+    sections.each_slice(max_threads) do |section_batch|
+      batch_threads = []
+      
+      section_batch.each do |section|
+        thread = Thread.new do
+          begin
+            footer_html = view_context.render template: "/sections/signatures", locals: {teacher: section.teacher&.user&.acte_name}
+            header_html = view_context.render template: "/sections/acta_header", locals: {school: section.school, section: section}
+            
+            pdf_data = render_to_string(
+              delete_temporary_files: true, 
+              pdf: "acta_#{section.id}", 
+              template: "sections/acta", 
+              page_size: 'letter', 
+              margin: {top: 72, bottom: 68},
+              locals: {section: section}, 
+              formats: [:html],
+              footer: {content: footer_html},
+              header: {content: header_html}
+            )
+            
+            {section_id: section.id, pdf_data: pdf_data}
+          rescue => e
+            Rails.logger.error "Error generando PDF para sección #{section.id}: #{e.message}"
+            nil
+          end
+        end
+        
+        batch_threads << thread
+      end
+      
+      # Esperar a que termine este batch antes de continuar
+      batch_threads.each(&:join)
+      threads.concat(batch_threads)
     end
-    send_data pdf.to_pdf, filename: "Total Actas Periodo #{@academic_process.name}.pdf", type: "application/pdf", disposition: :attachment #:inline
+    
+    # Recolectar resultados y combinar PDFs
+    pdf = CombinePDF.new
+    
+    threads.each do |thread|
+      result = thread.value
+      if result
+        begin
+          pdf << CombinePDF.parse(result[:pdf_data])
+        rescue => e
+          Rails.logger.error "Error combinando PDF de sección #{result[:section_id]}: #{e.message}"
+        end
+      end
+    end
+    
+    send_data pdf.to_pdf, 
+              filename: "Total Actas Periodo #{@academic_process.name}.pdf", 
+              type: "application/pdf", 
+              disposition: :attachment
+  end
+
+  def massive_actas_generation_async
+    # Iniciar el job en background
+    MassiveActasGenerationJob.perform_later(@academic_process.id, current_user&.id)
+    
+    flash[:info] = "La generación de actas ha comenzado en segundo plano. Recibirás una notificación por email cuando esté lista."
+    redirect_back fallback_location: '/admin/academic_process'
+  end
+
+  def download_actas
+    filename = params[:filename]
+    file_path = Rails.root.join('tmp', filename)
+    
+    if File.exist?(file_path)
+      send_file file_path, 
+                filename: filename, 
+                type: 'application/pdf', 
+                disposition: 'attachment'
+    else
+      flash[:danger] = "El archivo solicitado no existe o ha expirado."
+      redirect_back fallback_location: '/admin/academic_process'
+    end
   end
 
 

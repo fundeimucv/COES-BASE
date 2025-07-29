@@ -217,6 +217,10 @@ class AcademicProcess < ApplicationRecord
     "<a href='/academic_processes/#{id}/massive_actas_generation' data-bs-toggle='tooltip' title='Generar todas las actas de las secciones calificadas (#{sections.qualified.count})' data-confirm='Está acción generará todos las actas de las secciones calificadas. ¿Está completamente seguro?' class='label bg-info' target='_blank' rel='noopener noreferrer'><i class='fa-regular fa-list'></i></a>".html_safe
   end 
 
+  def link_to_massive_actas_generation_async
+    "<a href='/academic_processes/#{id}/massive_actas_generation_async' data-bs-toggle='tooltip' title='Generar todas las actas de las secciones calificadas (#{sections.qualified.count})' data-confirm='Está acción generará todos las actas de las secciones calificadas. Se notificará cuando esté lista mediante un correo electrónico. ¿Está completamente seguro?' class='label bg-success' target='_blank' rel='noopener noreferrer'><i class='fa-regular fa-list-check'></i></a>".html_safe
+  end   
+
   def label_total_enrolls_by_status(linked=false)
     # label_status_with_tooptip
     total = []    
@@ -464,13 +468,13 @@ class AcademicProcess < ApplicationRecord
 
       field :total_sections do
 
-        column_width 180
+        column_width 230
         label 'Secciones'
         pretty_value do 
           user = bindings[:view]._current_user
           if (user&.admin&.authorized_read? 'Section')
 
-            %{<a href='/admin/section?f%5Bacademic_process%5D%5B83223%5D%5Bo%5D=like&f%5Bacademic_process%5D%5B83223%5D%5Bv%5D=#{bindings[:object].process_name}&f%5Bschool%5D%5B96616%5D%5Bo%5D=like&f%5Bschool%5D%5B96616%5D%5Bv%5D=#{bindings[:object].school.short_name}' data-bs-toggle = 'tooltip', title='Total Secciones'><span class='badge bg-info'>#{value} en #{bindings[:object].courses.count} Cursos</span></a> #{bindings[:object].link_to_massive_actas_generation if bindings[:object].sections.qualified.any?}}.html_safe
+            %{<a href='/admin/section?f%5Bacademic_process%5D%5B83223%5D%5Bo%5D=like&f%5Bacademic_process%5D%5B83223%5D%5Bv%5D=#{bindings[:object].process_name}&f%5Bschool%5D%5B96616%5D%5Bo%5D=like&f%5Bschool%5D%5B96616%5D%5Bv%5D=#{bindings[:object].school.short_name}' data-bs-toggle = 'tooltip', title='Total Secciones'><span class='badge bg-info'>#{value} en #{bindings[:object].courses.count} Cursos</span></a> #{bindings[:object].link_to_massive_actas_generation if bindings[:object].sections.qualified.any?} #{bindings[:object].link_to_massive_actas_generation_async if bindings[:object].sections.qualified.any?} }.html_safe
           else
             %{<span class='badge bg-info'>#{value}</span>}.html_safe
           end
