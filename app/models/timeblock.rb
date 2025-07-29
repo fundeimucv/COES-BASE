@@ -69,7 +69,9 @@ class Timeblock < ApplicationRecord
     if day and start_time and end_time      
       start_format = (start_time.to_a[1]&.to_i.eql? 0) ? "%I%P" : "%I:%M%P"
       end_format = (end_time.to_a[1]&.to_i.eql? 0) ? "%I%P" : "%I:%M%P"
-      "#{day[0..1]} #{I18n.l(start_time, format: start_format)} #{I18n.l(end_time, format: end_format)}" 
+      aux = "#{day[0..1]} #{I18n.l(start_time, format: start_format)} #{I18n.l(end_time, format: end_format)}" 
+      aux += "| #{classroom}" unless classroom.blank?
+      return aux
     end
 
   end

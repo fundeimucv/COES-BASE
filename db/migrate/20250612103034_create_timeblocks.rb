@@ -12,6 +12,7 @@ class CreateTimeblocks < ActiveRecord::Migration[7.0]
       t.index [:timetable_id, :day, :end_time], unique: true, name: 'index_timeblocks_on_timetable_and_day_and_end_time'
 
       # Incluir en nuevos projectos ya que es válido
+      # Falla cuando clonas: Habría que incluirlo referente al periodo
       # t.index [:teacher_id, :day, :start_time], unique: true, name: 'index_timeblocks_on_teacher_and_day_and_start_time'
       # t.index [:teacher_id, :day, :end_time], unique: true, name: 'index_timeblocks_on_teacher_and_day_and_end_time'
       # t.index [:teacher_id, :timetable_id, :day, :start_time], unique: true, name: 'index_timeblocks_on_teacher_timetable_day_starttime'

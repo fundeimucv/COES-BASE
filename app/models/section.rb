@@ -327,7 +327,7 @@ class Section < ApplicationRecord
       aux = ""
       aux += timeblocks.any? ? schedule_short_name : 'Sin Horario Asignado'
       aux += teacher ? " | #{teacher&.user&.reverse_name }" : " | Sin profesor Asignado"
-      aux += classroom.blank? ? " | Sin aula" : " | #{classroom}"
+      # aux += classroom.blank? ? " | Sin aula" : " | #{classroom}"
       return aux
   end
 
