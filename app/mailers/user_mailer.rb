@@ -27,21 +27,19 @@ class UserMailer < ApplicationMailer
     
   end
 
-  def actas_generation_complete(user, file_path, filename)
+  def actas_generation_complete(user, blob, filename)
     @user = user
     @filename = filename
-    # Usar la ruta correcta para la descarga del archivo de actas
-
+    @blob = blob
+    
+    # Generar URL de descarga para el blob
     @download_url = Rails.application.routes.url_helpers.rails_blob_url(
-      ActiveStorage::Blob.create_and_upload!(
-        io: File.open(file_path),
-        filename: filename,
-        content_type: 'application/pdf'
-      ),
+      blob,
       only_path: true
     )
     
-    attachments[filename] = File.read(file_path) if File.exist?(file_path)
+    # Adjuntar el archivo al correo
+    attachments[filename] = blob.download
     
     mail(
       to: @user.email,

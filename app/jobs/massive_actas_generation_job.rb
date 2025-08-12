@@ -61,22 +61,30 @@ class MassiveActasGenerationJob < ApplicationJob
     
 
     
-    # Guardar el PDF final
+    # Guardar el PDF final usando Active Storage
     filename = "actas_periodo_#{academic_process.name}_#{Time.current.strftime('%Y%m%d_%H%M%S')}.pdf"
-    file_path = Rails.root.join('tmp', filename)
-
-    Rails.logger.info "Escribiendo Archivo"
-    p "     Escribiendo Archivo    ".center(1000, "#")
     
-    File.open(file_path, 'wb') do |file|
-      file.write(combined_pdf.to_pdf)
+    Rails.logger.info "Guardando archivo en S3"
+    p "     Guardando archivo en S3    ".center(1000, "#")
+    
+    # Crear un blob temporal para el PDF
+    begin
+      blob = ActiveStorage::Blob.create_and_upload!(
+        io: StringIO.new(combined_pdf.to_pdf),
+        filename: filename,
+        content_type: 'application/pdf'
+      )
+      Rails.logger.info "Archivo guardado en S3 exitosamente: #{blob.key}"
+    rescue => e
+      Rails.logger.error "Error guardando archivo en S3: #{e.message}"
+      raise e
     end
     
     # Notificar al usuario si se proporcionó
     if user_id
       user = User.find(user_id)
-      p "Envinado Correo"
-      UserMailer.actas_generation_complete(user, file_path, filename).deliver_now
+      p "Enviando Correo"
+      UserMailer.actas_generation_complete(user, blob, filename).deliver_now
     end
     
     p "Generación de actas completada: #{filename}"
