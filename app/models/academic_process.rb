@@ -218,7 +218,7 @@ class AcademicProcess < ApplicationRecord
   end 
 
   def link_to_massive_actas_generation_async
-    "<a href='/academic_processes/#{id}/massive_actas_generation_async' data-bs-toggle='tooltip' title='Generar todas las actas de las secciones calificadas (#{sections.qualified.count})' data-confirm='Está acción generará todos las actas de las secciones calificadas. Se notificará cuando esté lista mediante un correo electrónico. ¿Está completamente seguro?' class='label bg-success' target='_blank' rel='noopener noreferrer'><i class='fa-regular fa-list-check'></i></a>".html_safe
+    "<a href='/academic_processes/#{id}/massive_actas_generation_async' data-bs-toggle='tooltip' title='Generar todas las actas de las secciones calificadas (#{sections.qualified.count})' data-confirm='Está acción generará todos las actas de las secciones calificadas. Se notificará cuando esté lista mediante un correo electrónico. ¿Está completamente seguro?' class='label bg-success'><i class='fa-regular fa-list-check'></i></a>".html_safe
   end   
 
   def label_total_enrolls_by_status(linked=false)
