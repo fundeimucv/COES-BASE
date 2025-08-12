@@ -31,13 +31,14 @@ class UserMailer < ApplicationMailer
     @user = user
     @filename = filename
     # Usar la ruta correcta para la descarga del archivo de actas
+
     @download_url = Rails.application.routes.url_helpers.rails_blob_url(
       ActiveStorage::Blob.create_and_upload!(
         io: File.open(file_path),
         filename: filename,
         content_type: 'application/pdf'
       ),
-      only_path: false
+      only_path: true
     )
     
     attachments[filename] = File.read(file_path) if File.exist?(file_path)

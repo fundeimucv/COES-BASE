@@ -1,20 +1,20 @@
 %h2 Generación de Actas Completada
 
-%p Hola #{@user.name},
+%p= "Hola #{@user.name},"
 
 %p La generación de actas para el período académico ha sido completada exitosamente.
 
 %h3 Detalles:
 %ul
-  %li Archivo: #{@filename}
-  %li Fecha de generación: #{Time.current.strftime('%d/%m/%Y %H:%M')}
+  %li= "Archivo: #{@filename}"
+  %li= "Fecha de generación: #{Time.current.strftime('%d/%m/%Y %H:%M')}"
 
 %p El archivo PDF con todas las actas está adjunto a este email.
 
 %p Si prefieres descargarlo desde el sistema, puedes hacerlo desde el siguiente enlace:
-%p= link_to "Descargar Actas", @download_url, class: "btn btn-primary"
+%p= link_to "Descargar Actas", @download_url, class: "btn btn-primary", target: "_blank"
 
 %p Este archivo estará disponible temporalmente en el sistema.
 
 %p Saludos,
-%p Equipo COES 
+%p Equipo de COES 
