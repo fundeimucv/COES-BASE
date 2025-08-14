@@ -63,6 +63,8 @@ group :development, :production do
   gem "sassc-rails"
 
   gem 'wicked_pdf'
+  gem 'prawn'
+  gem 'prawn-table'  
   gem 'combine_pdf'
 
   # gem 'prawn', '~> 2.4'

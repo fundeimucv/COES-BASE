@@ -94,9 +94,9 @@ class AcademicRecord < ApplicationRecord
   scope :custom_search, -> (keyword) {joins(:user, :course, :section, :period, :subject).where("users.ci ILIKE '%#{keyword}%' OR users.first_name ILIKE '%#{keyword}%' OR users.last_name ILIKE '%#{keyword}%' OR subjects.name ILIKE '%#{keyword}%' OR subjects.code ILIKE '%#{keyword}%' OR sections.code ILIKE '%#{keyword}%' OR periods.name ILIKE '%#{keyword}%'") }
 
 
-  scope :prenroll, -> {joins(:enroll_academic_process).where('enroll_academic_processes.enroll_status = ?', :preinscrito)}
+  scope :prenroll, -> {joins(:enroll_academic_process).where('enroll_academic_processes.enroll_status = ?', EnrollAcademicProcess.enroll_statuses[:preinscrito])} # 
 
-  scope :confirmed, -> {joins(:enroll_academic_process).where('enroll_academic_processes.enroll_status = ?', :confirmado)}
+  scope :confirmed, -> {joins(:enroll_academic_process).where('enroll_academic_processes.enroll_status = ?', EnrollAcademicProcess.enroll_statuses[:confirmado])} #
 
   scope :with_totals, ->(school_id, period_id) {joins(:school).where("schools.id = ?", school_id).of_period(period_id).joins(:user).joins(:subject).joins(grade: :study_plan).group(:grade_id).select('study_plans.id plan_id, study_plans.total_credits plan_creditos, grados.*, SUM(subjects.unit_credits) total_creditos, COUNT(*) subjects, SUM(IF (academic_records.status = 1, subjects.creditos, 0)) aprobados')}
 
@@ -209,6 +209,16 @@ class AcademicRecord < ApplicationRecord
   def self.header_for_report
     # ['#', 'CI', 'NOMBRES', 'APELLIDOS','ESCUELA','CATEDRA','CÓDIGO ASIG', 'NOMBRE ASIG','PERIODO','SECCIÓN','ESTADO']
     ['#', 'CÉDULA', 'NOMBRES', 'APELLIDOS','ESCUELA','CATEDRA','CÓDIGO ASIG', 'NOMBRE ASIG', 'CRÉDITOS', 'NOTA_FINAL', 'NOTA_DEF', 'TIPO_EXAM', 'PER_LECTI', 'ANO_LECT','SECCIÓN', 'PLAN']
+  end
+
+  def data_tr_acta i, absolute
+    if !qualifications.any? or absolute
+      [i, self.user.ci, self.user&.reverse_name, self.study_plan&.code, self.desc_conv, self.cal_alfa, self.q_value_to_acta, self.num_to_s]
+    else
+      self.qualifications.each do |q|
+        [i+1, self.user.ci, self.user&.reverse_name, self.study_plan&.code, q.cal_alfa, q.desc_conv, q.value_to_acta, q.num_to_s]
+      end
+    end
   end
 
   def values_for_report

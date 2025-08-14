@@ -3,91 +3,63 @@ class MassiveActasGenerationJob < ApplicationJob
 
   def perform(academic_process_id, user_id = nil)
 
-    p "     Iniciando proceso de actas masivas    ".center(1000, "#")
-
-    academic_process = AcademicProcess.find(academic_process_id)
-    sections = academic_process.sections.qualified
+    # p "     Iniciando proceso de actas masivas    ".center(300, "-")
     
-    # Procesar todas las secciones secuencialmente
+    academic_process = AcademicProcess.find(academic_process_id)
+    sections = academic_process.sections.qualified#.limit(1)
+    
 
+    # Crear un PDF combinado
     combined_pdf = CombinePDF.new
     
+    # Generar PDFs y combinarlos usando la misma lógica que funciona en el controlador
     sections.each_with_index do |section, index|
-
-      p "     Procesando Acta sección #{section.name}    ".center(1000, "#")
-
+      # p "     Procesando Acta sección #{section.name}    ".center(1000, "#")
       Rails.logger.info "Procesando sección #{index + 1} de #{sections.count}: #{section.id}"
       
       begin
-        # Crear un nuevo contexto de renderizado para cada sección
-        renderer = ApplicationController.renderer.new(
-          http_host: Rails.application.config.action_mailer.default_url_options[:host],
-          https: Rails.application.config.force_ssl
-        )
           
-        footer_html = renderer.render(
-          template: "/sections/signatures", 
-          locals: {teacher: section.teacher&.user&.acte_name}
-        )
-          
-        header_html = renderer.render(
-          template: "/sections/acta_header", 
-          locals: {school: section.school, section: section}
-        )
-              
-        pdf_data = renderer.render(
-          template: "sections/acta",
-          layout: false,
-          page_size: 'letter', 
-          margin: {top: 72, bottom: 68},
-          locals: {section: section}, 
-          formats: [:html],
-          footer: {content: footer_html},
-          header: {content: header_html}
-        )
-        
+        # Generar el PDF usando WickedPDF
+        pdf_data = ExportarPdfPrawn.acta_seccion section.id #WickedPdf.new.pdf_from_string(pdf_html)
         # Verificar que el PDF se generó correctamente antes de combinarlo
-        if pdf_data && pdf_data.bytesize > 0
-          combined_pdf << CombinePDF.parse(pdf_data)
-          Rails.logger.info "Sección #{section.id} procesada y combinada exitosamente - Tamaño: #{pdf_data.bytesize} bytes"
-        else
-          Rails.logger.error "Sección #{section.id} generó un PDF vacío o inválido"
-        end
+        
+        combined_pdf << CombinePDF.parse(pdf_data.render)
+        # p "     Sección #{section.id} procesada correctamente    ".center(1000, "#")
+        Rails.logger.info "Sección #{section.id} procesada y combinada exitosamente"
 
       rescue => e
+        # p "<     Error: #{e}        >".center(500, 'X')
         Rails.logger.error "Error procesando sección #{section.id}: #{e.message}"
       end
     end
     
-
-    
     # Guardar el PDF final usando Active Storage
     filename = "actas_periodo_#{academic_process.name}_#{Time.current.strftime('%Y%m%d_%H%M%S')}.pdf"
     
-    Rails.logger.info "Guardando archivo en S3"
-    p "     Guardando archivo en S3    ".center(1000, "#")
-    
     # Crear un blob temporal para el PDF
-    begin
-      blob = ActiveStorage::Blob.create_and_upload!(
-        io: StringIO.new(combined_pdf.to_pdf),
-        filename: filename,
-        content_type: 'application/pdf'
-      )
-      Rails.logger.info "Archivo guardado en S3 exitosamente: #{blob.key}"
-    rescue => e
-      Rails.logger.error "Error guardando archivo en S3: #{e.message}"
-      raise e
-    end
+    # begin
+    #   Rails.logger.info "Guardando archivo en S3"
+    #   p "     Guardando archivo en S3    ".center(1000, "#")
+      
+    #   blob = ActiveStorage::Blob.create_and_upload!(
+    #     io: StringIO.new(combined_pdf.to_pdf),
+    #     filename: filename,
+    #     content_type: 'application/pdf'
+    #   )
+    #   Rails.logger.info "Archivo guardado en S3 exitosamente: #{blob.key}"
+    # rescue => e
+    #   Rails.logger.error "Error guardando archivo en S3: #{e.message}"
+    #   raise e
+    # end
     
     # Notificar al usuario si se proporcionó
     if user_id
       user = User.find(user_id)
-      p "Enviando Correo"
-      UserMailer.actas_generation_complete(user, blob, filename).deliver_now
+      
+      p "Enviando Correo" if UserMailer.actas_generation_complete(user, combined_pdf.to_pdf, filename).deliver_now
     end
     
     p "Generación de actas completada: #{filename}"
     Rails.logger.info "Generación de actas completada: #{filename}"
   end
-end 
+end
