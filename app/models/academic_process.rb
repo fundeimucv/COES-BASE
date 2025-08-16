@@ -218,7 +218,7 @@ class AcademicProcess < ApplicationRecord
   end 
 
   def link_to_massive_actas_generation_async
-    "<a href='/academic_processes/#{id}/massive_actas_generation_async' data-bs-toggle='tooltip' title='Generar todas las actas de las secciones calificadas (#{sections.qualified.count})' data-confirm='Está acción generará todos las actas de las secciones calificadas. Se notificará cuando esté lista mediante un correo electrónico. ¿Está completamente seguro?' class='label bg-success'><i class='fa-regular fa-list-check'></i></a>".html_safe
+    "<a href='/academic_processes/#{id}/massive_actas_generation_async' data-bs-toggle='tooltip' title='Generar todas las actas de las #{sections.qualified.count} secciones calificadas (Asíncrono)' data-confirm='Atención: Debido a la gran cantidad de actas (#{sections.qualified.count}), el sistema realizará la compilación y posteriormente se le enviará el archivo con las actas a su correo electrónico registrado. ¿Está deacuerdo?' class='label bg-success'><i class='fa-regular fa-list-check'></i></a>".html_safe
   end   
 
   def label_total_enrolls_by_status(linked=false)
@@ -364,6 +364,20 @@ class AcademicProcess < ApplicationRecord
     label_process payments_active?
   end
 
+  def link_to_total_sections
+    "<a href='/admin/section?f%5Bacademic_process%5D%5B83223%5D%5Bo%5D=like&f%5Bacademic_process%5D%5B83223%5D%5Bv%5D=#{self.process_name}&f%5Bschool%5D%5B96616%5D%5Bo%5D=like&f%5Bschool%5D%5B96616%5D%5Bv%5D=#{self.school.short_name}' data-bs-toggle = 'tooltip', title='Total Secciones'><span class='badge bg-info'>#{self.total_sections} en #{self.courses.count} Cursos</span></a>"
+  end
+
+  def link_to_actes_generations
+    if self.sections.qualified.any?
+      if self.sections.qualified.count < 50
+        "#{self.link_to_massive_actas_generation}".html_safe
+      else
+        "#{self.link_to_massive_actas_generation_async}".html_safe
+      end
+    end
+  end
+
   rails_admin do
     navigation_label 'Config Específica'
     navigation_icon 'fa-solid fa-calendar'
@@ -474,7 +488,7 @@ class AcademicProcess < ApplicationRecord
           user = bindings[:view]._current_user
           if (user&.admin&.authorized_read? 'Section')
 
-            %{<a href='/admin/section?f%5Bacademic_process%5D%5B83223%5D%5Bo%5D=like&f%5Bacademic_process%5D%5B83223%5D%5Bv%5D=#{bindings[:object].process_name}&f%5Bschool%5D%5B96616%5D%5Bo%5D=like&f%5Bschool%5D%5B96616%5D%5Bv%5D=#{bindings[:object].school.short_name}' data-bs-toggle = 'tooltip', title='Total Secciones'><span class='badge bg-info'>#{value} en #{bindings[:object].courses.count} Cursos</span></a> #{bindings[:object].link_to_massive_actas_generation if bindings[:object].sections.qualified.any?} #{bindings[:object].link_to_massive_actas_generation_async if bindings[:object].sections.qualified.any?} }.html_safe
+            %{#{bindings[:object].link_to_total_sections} #{bindings[:object].link_to_actes_generations} }.html_safe
           else
             %{<span class='badge bg-info'>#{value}</span>}.html_safe
           end
