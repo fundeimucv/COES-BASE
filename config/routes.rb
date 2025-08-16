@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  default_url_options :host => "coesfhe.com"
   mount RailsAdmin::Engine => '/admin', as: 'rails_admin'
 
   # match "/admin/:model_name/import" => "custom_admin#import" , :as => "import", :via => [:get, :post]
