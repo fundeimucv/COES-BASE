@@ -35,23 +35,23 @@ class AcademicProcessesController < ApplicationController
       # Generar PDFs y combinarlos
       sections.each_with_index do |section, index|
         begin
-          footer_html = view_context.render template: "/sections/signatures", locals: {teacher: section.teacher&.user&.acte_name}
-          header_html = view_context.render template: "/sections/acta_header", locals: {school: section.school, section: section}
+          # footer_html = view_context.render template: "/sections/signatures", locals: {teacher: section.teacher&.user&.acte_name}
+          # header_html = view_context.render template: "/sections/acta_header", locals: {school: section.school, section: section}
           
-          pdf_data = render_to_string(
-            delete_temporary_files: true, 
-            pdf: "acta_#{section.id}", 
-            template: "sections/acta", 
-            page_size: 'letter', 
-            margin: {top: 72, bottom: 68},
-            locals: {section: section}, 
-            formats: [:html],
-            footer: {content: footer_html},
-            header: {content: header_html}
-          )
-          
+          # pdf_data = render_to_string(
+          #   delete_temporary_files: true, 
+          #   pdf: "acta_#{section.id}", 
+          #   template: "sections/acta", 
+          #   page_size: 'letter', 
+          #   margin: {top: 72, bottom: 68},
+          #   locals: {section: section}, 
+          #   formats: [:html],
+          #   footer: {content: footer_html},
+          #   header: {content: header_html}
+          # )
+          pdf_data = ExportarPdfPrawn.acta_seccion section.id
           # Agregar el PDF al combinado
-          combined_pdf << CombinePDF.parse(pdf_data)
+          combined_pdf << CombinePDF.parse(pdf_data.render)
           
           Rails.logger.info "PDF generado para sección #{section.id} (#{index + 1}/#{sections.count})"
         rescue => e
