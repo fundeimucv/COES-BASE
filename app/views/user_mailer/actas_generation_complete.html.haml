@@ -6,8 +6,8 @@
 
 %h3 Detalles:
 %ul
-  %li= "Archivo: #{@filename}"
   %li= "Fecha de generación: #{Time.current.strftime('%d/%m/%Y %H:%M')}"
+  = link_to "Descargar Actas", @download_url, class: "btn btn-primary", target: "_blank"
 
 %p El archivo PDF con todas las actas está adjunto a este email.
 

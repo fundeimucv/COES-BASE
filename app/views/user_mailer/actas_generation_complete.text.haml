@@ -5,10 +5,10 @@ Generación de Actas Completada
 La generación de actas para el período académico ha sido completada exitosamente.
 
 Detalles:
-= "- Archivo: #{@filename}"
+
 = "- Fecha de generación: #{Time.current.strftime('%d/%m/%Y %H:%M')}"
 
-El archivo PDF con todas las actas está adjunto a este email.
+= link_to "Descargar Actas", @download_url, class: "btn btn-primary", target: "_blank"
 
 Este archivo estará disponible temporalmente en el sistema.
 

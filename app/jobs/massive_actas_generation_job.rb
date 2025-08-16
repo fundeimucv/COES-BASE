@@ -37,26 +37,27 @@ class MassiveActasGenerationJob < ApplicationJob
     filename = "actas_periodo_#{academic_process.name}_#{Time.current.strftime('%Y%m%d_%H%M%S')}.pdf"
     
     # Crear un blob temporal para el PDF
-    # begin
-    #   Rails.logger.info "Guardando archivo en S3"
-    #   p "     Guardando archivo en S3    ".center(1000, "#")
+    begin
+      Rails.logger.info "Guardando archivo en S3"
+      p "     Guardando archivo en S3    ".center(1000, "#")
       
-    #   blob = ActiveStorage::Blob.create_and_upload!(
-    #     io: StringIO.new(combined_pdf.to_pdf),
-    #     filename: filename,
-    #     content_type: 'application/pdf'
-    #   )
-    #   Rails.logger.info "Archivo guardado en S3 exitosamente: #{blob.key}"
-    # rescue => e
-    #   Rails.logger.error "Error guardando archivo en S3: #{e.message}"
-    #   raise e
-    # end
+      blob = ActiveStorage::Blob.create_and_upload!(
+        io: StringIO.new(combined_pdf.to_pdf),
+        filename: filename,
+        content_type: 'application/pdf'
+      )
+      Rails.logger.info "Archivo guardado en S3 exitosamente: #{blob.key}"
+    rescue => e
+      Rails.logger.error "Error guardando archivo en S3: #{e.message}"
+      raise e
+    end
     
     # Notificar al usuario si se proporcionó
     if user_id
       user = User.find(user_id)
       
-      p "Enviando Correo" if UserMailer.actas_generation_complete(user, combined_pdf.to_pdf, filename).deliver_now
+      # p "Enviando Correo" if UserMailer.actas_generation_complete(user, combined_pdf.to_pdf, filename).deliver_now
+      p "Enviando Correo S3" if UserMailer.actas_generation_complete(user, blob, filename).deliver_now
     end
     
     p "Generación de actas completada: #{filename}"
