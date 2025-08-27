@@ -79,6 +79,7 @@ Rails.application.routes.draw do
       post :change_process_session
       post 'clone_sections'
       get 'download_actas'
+      get 'get_school_processes'
     end
   end
 

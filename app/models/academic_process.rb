@@ -50,7 +50,7 @@ class AcademicProcess < ApplicationRecord
   belongs_to :period
   has_one :period_type, through: :period
 
-  belongs_to :process_before, class_name: 'AcademicProcess', optional: true, dependent: :delete
+  belongs_to :process_before, class_name: 'AcademicProcess', optional: true#, dependent: :delete
 
   #has_many:
   has_many :enrollment_days, dependent: :destroy
@@ -170,6 +170,7 @@ class AcademicProcess < ApplicationRecord
   def process_name
     "#{period&.name}#{self.modality[0]&.upcase}"
   end
+
   def period_desc_and_modality
     "#{period&.name}#{self.modality[0]&.upcase}"
   end
@@ -253,9 +254,6 @@ class AcademicProcess < ApplicationRecord
 
     total << ApplicationController.helpers.label_link_with_tooptip("#{link}&model_name=enroll_academic_process&scope=con_reporte_de_pago", 'bg-success', self.enroll_academic_processes.total_with_payment_report, 'Con Reportes de Pago')    
     total << ApplicationController.helpers.label_link_with_tooptip("#{link}&model_name=enroll_academic_process&scope=sin_reporte_de_pago", 'bg-warning', self.enroll_academic_processes.total_without_payment_report, 'Sin Reportes de Pago')    
-
-
-    
 
     EnrollAcademicProcess.enroll_statuses.map do |k,v|
       total_aux = self.enroll_academic_processes.where(enroll_status: v).count 
@@ -382,6 +380,7 @@ class AcademicProcess < ApplicationRecord
     navigation_label 'Config Específica'
     navigation_icon 'fa-solid fa-calendar'
     weight -3
+    
     list do
       items_per_page 12
       checkboxes false

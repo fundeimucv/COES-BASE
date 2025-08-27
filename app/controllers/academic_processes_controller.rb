@@ -283,6 +283,27 @@ class AcademicProcessesController < ApplicationController
     end
   end
 
+  # GET /academic_processes/get_school_processes
+  def get_school_processes
+    school_id = params[:school_id]
+    
+    if school_id.present?
+      school = School.find(school_id)
+      processes = school.academic_processes.order(created_at: :desc)
+      
+      processes_data = processes.map do |process|
+        {
+          id: process.id,
+          period_desc_and_modality: process.period_desc_and_modality
+        }
+      end
+      
+      render json: { processes: processes_data }
+    else
+      render json: { processes: [] }
+    end
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_academic_process

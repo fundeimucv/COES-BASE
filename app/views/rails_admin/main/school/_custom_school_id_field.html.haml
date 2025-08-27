@@ -1,11 +1,51 @@
 - model = @object.class.name.underscore
 
 - if params[:school_id]
-    .form-control= School.find(params[:school_id]).short_name
-    = hidden_field model, 'school_id', value: params[:school_id]
+  .form-control= School.find(params[:school_id]).short_name
+  = hidden_field model, 'school_id', value: params[:school_id]
 - else 
-    - schools_auh = _current_user&.admin&.schools_auh
-    - if schools_auh.count.eql? 1
-        = collection_select model, 'school_id', schools_auh, :id, :name, {selected: schools_auh.first.id }, {class: 'input-group form-control required', required: true}
-    - else
-        = collection_select model, 'school_id', schools_auh, :id, :name, {include_blank: 'Seleccione...', selected: @object.school_id}, {class: 'input-group form-control required', required: true}
+  - schools_auh = _current_user&.admin&.schools_auh
+  - if schools_auh.count.eql? 1
+    = collection_select model, 'school_id', schools_auh, :id, :name, {selected: schools_auh.first.id }, {class: 'input-group form-control required', required: true}
+  - else
+    = collection_select model, 'school_id', schools_auh, :id, :name, {include_blank: 'Seleccione...', selected: @object.school_id}, {class: 'input-group form-control required', required: true, id: 'school_select_field'}
+
+- if model == 'academic_process' && schools_auh.count > 1
+  :javascript
+    document.addEventListener('rails_admin.dom_ready', function() {
+      const schoolSelect = document.getElementById('school_select_field');
+      const processBeforeField = document.getElementById('process_before_select');
+      
+      if (schoolSelect && processBeforeField) {
+        schoolSelect.addEventListener('change', function() {
+          const selectedSchoolId = this.value;
+          
+          if (selectedSchoolId) {
+            // Realizar petición AJAX para obtener los procesos académicos de la escuela seleccionada
+            fetch(`/academic_processes/get_school_processes?school_id=${selectedSchoolId}`)
+              .then(response => response.json())
+              .then(data => {
+                // Limpiar opciones actuales
+                processBeforeField.innerHTML = '<option value="">Seleccione Periodo...</option>';
+                
+                // Agregar nuevas opciones
+                data.processes.forEach(process => {
+                  const option = document.createElement('option');
+                  option.value = process.id;
+                  option.textContent = process.period_desc_and_modality;
+                  processBeforeField.appendChild(option);
+                });
+                
+                // Resetear el valor seleccionado
+                processBeforeField.value = '';
+              })
+              .catch(error => {
+                console.error('Error al cargar los procesos académicos:', error);
+              });
+          } else {
+            // Si no hay escuela seleccionada, limpiar el campo
+            processBeforeField.innerHTML = '<option value="">Seleccione periodo...</option>';
+          }
+        });
+      }
+    });

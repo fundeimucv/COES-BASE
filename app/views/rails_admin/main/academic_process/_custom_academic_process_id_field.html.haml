@@ -1,8 +1,8 @@
 - if params[:school_id]
     - school = School.find params[:school_id]
-    = collection_select :academic_process, :process_before_id, school.academic_processes, :id, :period_desc_and_modality, {prompt: "Seleccione Periodo..."}, {class: "form-control"}
+    = collection_select :academic_process, :process_before_id, school.academic_processes, :id, :period_desc_and_modality, {prompt: "Seleccione Periodo..."}, {class: "form-control", id: "process_before_select"}
 - elsif @object&.school
-    = collection_select :academic_process, :process_before_id, @object.school.academic_processes.reject{|ap| @object.id and (ap.id.eql? @object.id)}, :id, :period_desc_and_modality, {prompt: "Seleccione periodo de #{@object&.school.short_name}...", selected: @object.id}, {class: "form-control"}
+    = collection_select :academic_process, :process_before_id, @object.school.academic_processes.reject{|ap| @object.id and (ap.id.eql? @object.id)}, :id, :period_desc_and_modality, {prompt: "Seleccione periodo de #{@object&.school.short_name}...", selected: @object.id}, {class: "form-control", id: "process_before_select"}
 - else
     - schools_auh = _current_user&.admin&.schools_auh
-    = grouped_collection_select :academic_process, :proccess_before_id, schools_auh, :academic_processes, :name, :id, :period_desc_and_modality, {prompt: "Seleccione Periodo..."}, { class: "form-control"}
+    = grouped_collection_select :academic_process, :process_before_id, schools_auh, :academic_processes, :name, :id, :period_desc_and_modality, {prompt: "Seleccione Periodo..."}, { class: "form-control", id: "process_before_select"}
