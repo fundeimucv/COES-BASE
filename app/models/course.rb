@@ -23,6 +23,7 @@
 #
 class Course < ApplicationRecord
   include Totalizable
+  include AcademicProcessable
   # Course.all.map{|ap| ap.update(name: 'x')}  
   # HISTORY:
 
@@ -118,7 +119,7 @@ class Course < ApplicationRecord
 
   rails_admin do
     # visible false
-    navigation_label 'Reportes'
+    navigation_label 'Planif. Periódica'
     navigation_icon 'fa-solid fa-shapes'
     weight -2
 
@@ -130,13 +131,29 @@ class Course < ApplicationRecord
     list do
       sort_by ['courses.name']
       search_by :custom_search
+      field :school do
+        sticky true
+        filterable :name
+        visible do
+          admin = bindings[:view]._current_user&.admin
+          admin&.multiple_schools?
+        end
+        associated_collection_cache_all false
+        associated_collection_scope do
+          Proc.new { |scope|
+            scope = scope.joins(:school)
+            scope = scope.limit(30) # 'order' does not work here
+          }
+        end
+
+      end
       field :academic_process do
         sticky true
         queryable true
-        label 'Periodo'
+        label 'Periodo' 
         column_width 150
         pretty_value do
-          value.name
+          value.process_name
         end
       end
       field :area do
@@ -237,7 +254,10 @@ class Course < ApplicationRecord
 
 
     export do
-      fields :academic_process, :period, :subject, :area, :offer
+      fields :subject, :area, :offer
+      field :process_name do
+        label 'Período'
+      end
       field :total_sections do
         label 'T. Sec'
       end

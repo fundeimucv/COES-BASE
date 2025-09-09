@@ -25,6 +25,7 @@
 #
 class EnrollAcademicProcess < ApplicationRecord
 include Numerizable
+include AcademicProcessable
   # HISTORY:
   has_paper_trail on: [:create, :destroy, :update]
 
@@ -382,7 +383,7 @@ include Numerizable
   end
 
   rails_admin do
-    navigation_label 'Reportes'
+    navigation_label 'Planif. Periódica'
     navigation_icon 'fa-solid fa-calendar-check'
     weight 0
     
@@ -422,6 +423,10 @@ include Numerizable
         sticky true 
         searchable :name
         sortable :name
+        visible do
+          admin = bindings[:view]._current_user&.admin
+          admin&.multiple_schools?
+        end        
       end
 
       field :study_plan do
@@ -505,7 +510,11 @@ include Numerizable
     end
 
     export do
+
       fields :student, :user
+      field :process_name do
+        label 'Período'
+      end      
       fields :grade, :enroll_status, :permanence_status, :study_plan
       
       field :efficiency do

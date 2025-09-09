@@ -7,6 +7,7 @@ module RailsAdmin
     include RailsAdmin::ApplicationHelper
 
     before_action :set_current_env
+    before_action :set_current_period
     before_action :check_for_cancel
 
     
@@ -64,8 +65,22 @@ module RailsAdmin
 
         end
       else
-        scope = scope.joins(:school) if @abstract_model.to_s.eql? 'EnrollAcademicProcess'
+        scope = scope.joins(:school) if @abstract_model.to_s.eql? 'EnrollAcademicProcess' or @abstract_model.to_s.eql? 'AcademicRecord' or @abstract_model.to_s.eql? 'Section' or @abstract_model.to_s.eql? 'Course'
       end
+
+      if session[:period_name]
+        case @abstract_model.to_s
+        when 'Section'
+          scope = scope.joins(:period).where('periods.name': session[:period_name])
+        when 'EnrollAcademicProcess'
+          scope = scope.joins(:period).where('periods.name': session[:period_name])
+        when 'Course'
+          scope = scope.joins(:period).where('periods.name': session[:period_name])
+        when 'AcademicRecord'
+          scope = scope.joins(:period).where('periods.name': session[:period_name])
+        end
+      end
+
 
       scope = scope.merge(auth_scope) if auth_scope
       scope = scope.instance_eval(&additional_scope) if additional_scope
@@ -80,16 +95,19 @@ module RailsAdmin
     end
 
     def set_current_env
-        if current_admin
-          if !(current_admin.desarrollador?)
-            session[:env_type] = current_admin.env_auths.map(&:env_authorizable_type).first
-            session[:env_ids] = current_admin.env_auths.map(&:env_authorizable_id)
-          end
+      if current_admin
+        if !(current_admin.desarrollador?)
+          session[:env_type] = current_admin.env_auths.map(&:env_authorizable_type).first
+          session[:env_ids] = current_admin.env_auths.map(&:env_authorizable_id)
         end
-      end    
+      end
+    end    
 
   private
 
+    def set_current_period
+      session[:period_name] ||= current_user.admin.periods&.first&.name
+    end
 
     def action_missing(name, *_args)
       action = RailsAdmin::Config::Actions.find(name.to_sym)
@@ -141,6 +159,20 @@ module RailsAdmin
           model_config.list.sort_by
         else
           field.sort_column
+          # Filtrar por período actual para los modelos indicados
+          # if @current_period.present? and !scope.nil?
+          #   case @abstract_model.to_s
+          #   when 'Section'
+          #     scope = scope.where('periods.id': @current_period.id)
+          #   when 'EnrollAcademicProcess'
+          #     scope = scope.where('periods.id': @current_period.id)
+          #   when 'Course'
+          #     scope = scope.where('periods.id': @current_period.id)
+          #   when 'AcademicRecord'
+          #     scope = scope.where('periods.id': @current_period.id)
+          #   end
+          # end
+
         end
 
       params[:sort_reverse] ||= 'false'

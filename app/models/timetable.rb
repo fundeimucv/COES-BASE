@@ -35,7 +35,7 @@ class Timetable < ApplicationRecord
   scope :without_timeblocks, -> {left_outer_joins(:timeblocks).where(timeblocks: { id: nil }) }
 
   rails_admin do
-    navigation_label 'Config Específica'
+    navigation_label 'Planif. Periódica'
     navigation_icon 'fa-solid fa-clock'
     visible false
     list do

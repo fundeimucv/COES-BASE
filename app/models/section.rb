@@ -27,6 +27,7 @@
 #
 class Section < ApplicationRecord
   include Totalizable
+  include AcademicProcessable
   # HISTORY:
   has_paper_trail on: [:create, :destroy, :update]
 
@@ -204,8 +205,6 @@ class Section < ApplicationRecord
     return file_name if (@book.write file_name)
   end
 
-
-
   # def own_grades_to_csv
 
   #   CSV.generate do |csv|
@@ -354,13 +353,12 @@ class Section < ApplicationRecord
 
   # RAILS_ADMIN:
   rails_admin do
-    navigation_label 'Config Específica'
+    navigation_label 'Planif. Periódica'
     navigation_icon 'fa-solid fa-list'
     weight -1
 
     list do
       sort_by ['periods.name', 'areas.name', 'courses.name', 'subjects.code']
-      filters [:school]
       checkboxes false
       search_by :custom_search
       
@@ -378,6 +376,10 @@ class Section < ApplicationRecord
         sticky true 
         searchable :name
         sortable :name
+        visible do
+          admin = bindings[:view]._current_user&.admin
+          admin&.multiple_schools?
+        end
         pretty_value do
           value.code
         end           
@@ -388,6 +390,7 @@ class Section < ApplicationRecord
         searchable :name
         sortable :name
         sticky true
+        filterable false
         pretty_value do
           value.process_name
         end
@@ -679,8 +682,11 @@ class Section < ApplicationRecord
 
 
     export do
-      fields :period, :area, :subject, :code, :classroom, :user, :qualified, :modality, :schedules, :capacity
+      fields :school, :area, :subject, :code, :classroom, :user, :qualified, :modality, :capacity
 
+      field :process_name do
+        label 'Período'
+      end
       field :total_students do 
         label 'Total inscritos'
         formatted_value do
@@ -708,7 +714,7 @@ class Section < ApplicationRecord
         label 'Promedio de Calificaciones'
       end
 
-      field :timetables
+      field :timetable
 
     end
   end

@@ -13,12 +13,14 @@ Rails.application.routes.draw do
   match "/export/history_grade/:id" => "export#history_grade", via: :get
   match "/export_csv/academic_records/:id" => "export_csv#academic_records", via: :get
   match "/export_csv/enroll_academic_processes/:id" => "export_csv#enroll_academic_processes", via: :get
+  
+  match "/session_admin/change_period_session" => "session_admin#change_period_session", via: :post
 
   resources :validar, only: :index do
     member do
       get 'constancias'
     end
-  end
+  end  
 
   resources :timetables, only: [:show]
   get 'timetables/:type/:id', to: 'timetables#show', as: 'specific_timetable'

@@ -17,3 +17,8 @@
     %br
     = render 'layouts/remote-modal'
     = render '/layouts/footer'
+    - if session[:period_name]
+      - title = 'Cambiar Periodo de la Sesión'
+      - id = 'changePeriodSession'
+      - content = render partial: '/session_admin/change_period_session'
+      = render partial: '/layouts/scaffold-modal', locals: {content: content, title: title, id: id}

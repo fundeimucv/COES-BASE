@@ -12,13 +12,13 @@
 	- if schools_auh&.any?
 		- schools_auh.order(:name).each do |school|
 			- @process_name = nil
-			- ap = school.academic_processes.actives.first
-			- ap ||= school.academic_processes.first
+			- period = Period.where(name: session[:period_name]).first
+			- ap = school.academic_processes.where(period_id: period&.id).first
 			- @process_name = ap&.process_name 
-			- ap = school.academic_processes.enrolls.first
+			- ap ||= school.academic_processes.enrolls.first
 			- ap ||= school.academic_processes.first
 			- @process_enroll_name = ap&.process_name
-			- @query = "&query=#{@process_name}" unless @process_name.blank?
+			-# @query = "&query=#{@process_name}" unless @process_name.blank?
 			- school_auth = current_user&.admin&.authorized_read? 'School'
 
 			.col.mx-3.mb-3				
@@ -35,7 +35,7 @@
 						- object = I18n.t("activerecord.models.academic_record.other")
 
 						-# url = "/admin/academic_record?f%5Bschool%5D%5B81356%5D%5Bo%5D=like&f%5Bschool%5D%5B81356%5D%5Bv%5D=#{school.short_name}&#{@query}"
-						- url = "/admin/academic_record?f[school][81356][o]=like&f[school][81356][v]=#{school.short_name}&f[academic_process][35634][o]=like&f[academic_process][35634][v]=#{@process_name}"
+						- url = "/admin/academic_record?f[school][81356][o]=like&f[school][81356][v]=#{school.short_name}"
 
 						= link_to url, class: 'btn btn-primary' do
 							%h4.fa.fa-signature
@@ -45,7 +45,7 @@
 						- object = I18n.t("activerecord.models.section.other")
 						-# url = "/admin/section?f%5Bschool%5D%5B81356%5D%5Bo%5D=like&f%5Bschool%5D%5B81356%5D%5Bv%5D=#{school.short_name}&#{@query}"
 						-# url = "/admin/enroll_academic_process?f[school][81356][o]=like&f[school][81356][v]=#{school.short_name}&#{@query}"
-						- url = "/admin/section?f[school][81356][o]=like&f[school][81356][v]=#{school.short_name}&f[academic_process][35634][o]=like&f[academic_process][35634][v]=#{@process_name}"
+						- url = "/admin/section?f[school][81356][o]=like&f[school][81356][v]=#{school.short_name}"
 						= link_to url, class: 'btn btn-primary' do
 							%h4.fa.fa-list
 							%h6.text-center= "#{object.upcase} #{@process_name}"
@@ -53,7 +53,7 @@
 					.row
 						- object = I18n.t("activerecord.models.enroll_academic_process.other")
 						-# url = "/admin/enroll_academic_process?f%5Bschool%5D%5B81356%5D%5Bo%5D=like&f%5Bschool%5D%5B81356%5D%5Bv%5D=#{school.short_name}&#{@query}"
-						- url = "/admin/enroll_academic_process?f[school][81356][o]=like&f[school][81356][v]=#{school.short_name}&f[academic_process][35634][o]=like&f[academic_process][35634][v]=#{@process_enroll_name}"
+						- url = "/admin/enroll_academic_process?f[school][81356][o]=like&f[school][81356][v]=#{school.short_name}"
 						= link_to url, class: 'btn btn-primary' do
 							%h4.fa.fa-calendar-check
 							%h6.text-center= "#{object.upcase} #{@process_enroll_name}"

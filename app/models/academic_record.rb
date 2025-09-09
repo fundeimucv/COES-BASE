@@ -21,7 +21,7 @@
 #  fk_rails_...  (section_id => sections.id)
 #
 class AcademicRecord < ApplicationRecord
-
+  include AcademicProcessable
   # ENUMERIZE:
   enum status: {sin_calificar: 0, aprobado: 1, aplazado: 2, retirado: 3, perdida_por_inasistencia: 4}
 
@@ -624,7 +624,7 @@ class AcademicRecord < ApplicationRecord
 
   # RAILS_ADMIN
   rails_admin do
-    navigation_label 'Reportes'
+    navigation_label 'Planif. Periódica'
     navigation_icon 'fa-solid fa-signature'
     weight 1
     # visible false
@@ -651,6 +651,10 @@ class AcademicRecord < ApplicationRecord
 
       field :school do
         sticky true
+        visible do
+          admin = bindings[:view]._current_user&.admin
+          admin&.multiple_schools?
+        end        
         associated_collection_cache_all false
         associated_collection_scope do
           Proc.new { |scope|
@@ -859,10 +863,8 @@ class AcademicRecord < ApplicationRecord
     export do
       fields :section, :enroll_academic_process
 
-      field :period do
+      field :process_name do
         label 'Período'
-        searchable :name
-        sortable :name
       end
 
       field :area do

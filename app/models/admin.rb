@@ -92,6 +92,18 @@ class Admin < ApplicationRecord
     Departament.where(id: ids)
   end
 
+  def academic_processes
+    AcademicProcess.joins(:school).where('schools.id': schools_auh&.pluck(:id)).order('name': :desc).distinct
+  end
+
+  def periods
+    Period.joins(:schools).where('schools.id': schools_auh&.pluck(:id)).order('periods.name': :desc).distinct
+  end
+
+  def multiple_schools?
+    schools_auh&.count > 1
+  end
+
   def schools_auh
     if (desarrollador?)
       School.all

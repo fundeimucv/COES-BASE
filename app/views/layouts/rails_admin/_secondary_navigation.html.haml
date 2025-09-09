@@ -1,5 +1,13 @@
+  
+
 - if _current_user
   %ul.navbar-nav.ms-auto.root_links
+    - if session[:period_name]
+      - id = 'changePeriodSession'
+      %li.nav-item.btn.btn-outline-success.me-2{"data-bs-target": "##{id}", "data-bs-toggle": "modal", type: "button"}
+        .fa.fa-calendar
+        Período de la Sesión: #{session[:period_name]}
+
     %li.nav-item
       - if _current_user&.profile_picture&.attached?
         - begin

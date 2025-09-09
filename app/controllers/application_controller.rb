@@ -1,12 +1,12 @@
 class ApplicationController < ActionController::Base
   before_action :authenticate_user!
-  before_action :set_current_process
+  # before_action :set_current_process
   before_action :set_paper_trail_whodunnit
 
 
   # around_action :set_session_data
 
-  helper_method :logged_as_teacher_or_admin?, :logged_as_teacher?, :logged_as_student?, :logged_as_admin?, :current_admin, :current_teacher, :current_student, :current_academic_process#, :set_current_course
+  helper_method :logged_as_teacher_or_admin?, :logged_as_teacher?, :logged_as_student?, :logged_as_admin?, :current_admin, :current_teacher, :current_student #, :set_current_course
 
 
   def user_for_paper_trail
@@ -80,26 +80,6 @@ class ApplicationController < ActionController::Base
   end
 
 
-  def set_current_academic_process
-    if current_admin
-      if current_admin.desarrollador?
-        session[:period_id] = Period.last&.id
-      else
-        
-        if env_auths.pluck(:env_authorizable_type).uniq.first.to_s.eql? 'School'
-          ids = env_auths.pluck(:env_authorizable_id)
-          School.where(id: ids)
-        elsif env_auths.pluck(:env_authorizable_type).uniq.first.to_s.eql? 'Departament'
-          ids = env_auths.pluck(:env_authorizable_id)
-          school_ids = Departament.where(id: ids).pluck(:school_id)
-          School.where(id: school_ids)
-        end
-
-        session[:env_ids] = current_admin.env_auths.map(&:env_authorizable_id)
-      end
-    end
-  end
-
 
   def set_session_id_if_multirols
     session[:rol] = params[:rol] if (params[:rol] and current_user)
@@ -120,7 +100,6 @@ class ApplicationController < ActionController::Base
         pages_multirols_path(roles: rols)
       elsif current_user.admin?
         session[:rol] = 'admin'
-        session[:academic_processes_id] = School.first&.academic_processes&.first&.id 
         rails_admin_path
       elsif current_user.student?
         session[:rol] = 'student'
@@ -135,15 +114,6 @@ class ApplicationController < ActionController::Base
     end
   end
 
-
-  # def filtro_admin_alto_o_profe
-  #   if !session[:administrador_id] or (current_admin and !current_admin.alto?) or !session[:profesor_id] 
-  #     reset_session
-  #     flash[:danger] = "Debe iniciar sesión como Profesor o Administrador superior"  
-  #     redirect_to root_path
-  #     return false
-  #   end
-  # end
 
 
   def authenticate_teacher!
