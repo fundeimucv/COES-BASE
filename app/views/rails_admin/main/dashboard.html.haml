@@ -11,7 +11,7 @@
 	- schools_auh = current_user&.admin&.schools_auh
 	- if schools_auh&.any?
 		- schools_auh.order(:name).each do |school|
-			- @process_name = nil
+
 			- period = Period.where(name: session[:period_name]).first
 			- ap = school.academic_processes.where(period_id: period&.id).first
 			- @process_name = ap&.process_name 
