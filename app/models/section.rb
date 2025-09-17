@@ -127,7 +127,11 @@ class Section < ApplicationRecord
   scope :not_equivalence, -> {where('sections.modality': [:nota_final, :suficiencia])}
   scope :equivalence, -> {where('sections.modality': [:equivalencia_externa, :equivalencia_interna])}
 
-  # FUNCTIONS:
+  # FUNCTIONS: 
+
+  def simply_desc
+    "#{self.subject.code.upcase}#{self.code.upcase} - #{self.subject.name} (#{self.academic_process.process_name})"
+  end
 
   def has_teachers?
     !teacher.nil? or secondary_teachers.any?

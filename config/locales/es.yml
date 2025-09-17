@@ -586,8 +586,11 @@ es:
     
     attributes:
       academic_process:
+        id: Identificador
         school: 'Escuela'
+        school_id: Identificador Escuela
         period: 'Período'
+        period_id: Identificador Período
         subjects: Asignaturas
         max_credits: 'Máximo Créditos'
         active: ¿Activo?
@@ -603,6 +606,12 @@ es:
         registration_amount: 'Arancel de Inscripción Regulares (Bs.)'
         registration_amount_new: 'Arancel de Inscripción Nuevos (Bs.)'
         registration_amount_restart: 'Arancel de Inscripción Reincorporados (Bs.)'
+        post_qualification: Calificación Posterior
+        payments_active: Reportes de Pago
+        process_before_id: Id periodo Anterior
+        created_at: Registrado
+        name: Nombre
+        
       academic_record:
         section: 'Sección'
         enroll_academic_process: 'Inscripción en Período'
@@ -822,6 +831,9 @@ es:
         starttime: Hora Inicio
         endtime: Hora Final
       section:
+        id: Identificador
+        course_id: Identificador de Curso
+        teacher_id: Identificador Profesor
         area: 'Cátedra'
         code: 'Sección'
         capacity: 'Capacidad'
@@ -941,6 +953,13 @@ es:
         created_at: 'Creado'
         updated_at: 'Actualizado'
       user:
+        sign_in_count: 'Número de Inicios de Sesión'
+        last_sign_in_at: 'Último Inicio de Sesión'
+        current_sign_in_at: 'Inicio de Sesión Actual'
+        id: Identidificador
+        encrypted_password: 'Contraseña Encriptada'
+        reset_password_token: 'Token de Reseteo de Contraseña'
+        reset_password_sent_at: 'Reseteo de Contraseña Enviado'
         email: 'Correo Electrónico'
         ci: 'Cédula de identidad'
         password: 'Contraseña'

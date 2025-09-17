@@ -125,10 +125,6 @@ class Student < ApplicationRecord
     JSON.parse(file)
   end
 
-  def name
-    user.ci_fullname if user
-  end
-
   def user_ci
     self.user.ci if self.user
   end

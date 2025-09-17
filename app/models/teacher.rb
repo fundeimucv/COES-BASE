@@ -56,10 +56,6 @@ class Teacher < ApplicationRecord
     "(#{user.ci}) #{user.reverse_name}" if user
   end
 
-  def name
-    self.user.name if self.user
-  end
-
   # CALLBACKS:
   after_destroy :check_user_for_destroy
   

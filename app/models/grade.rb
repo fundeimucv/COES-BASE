@@ -1128,7 +1128,7 @@ class Grade < ApplicationRecord
 
   def paper_trail_create
     object = I18n.t("activerecord.models.#{self.model_name.param_key}.one")
-    self.paper_trail_event = "¡Completada inscripción en oferta académica!"
+    self.paper_trail_event = "¡Expediente Registrado con Éxito!"
   end  
 
   def paper_trail_destroy

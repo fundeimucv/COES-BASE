@@ -86,6 +86,7 @@ class AcademicProcess < ApplicationRecord
   scope :without_enroll_academic_processes, -> {left_joins(:enroll_academic_processes).where('enroll_academic_processes.academic_process_id': nil)}
   # Atention: To be commented by not use
   scope :sort_by_period, -> {unscoped.joins(:period).order('periods.year desc').second}
+
   # CALLBACKS:
   # before_validation :set_numbers_default
   before_save :set_name
@@ -98,6 +99,8 @@ class AcademicProcess < ApplicationRecord
   #   p "max_credits: #{max_credits}"
   #   p "max_subjects: #{max_subjects}"
   # end
+
+  # FUNCTIONS:
 
   def name_without_school
     name.split(" | ").last
