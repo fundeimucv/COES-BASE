@@ -171,7 +171,9 @@ class Timeblock < ApplicationRecord
       end
     end
     edit do
-      field :day, :enum
+      field :day do
+        partial 'timeblock/custom_day_field'
+      end
       field :start_time do
         html_attributes do
           { step: '900' } # 15 minutes step
@@ -179,7 +181,9 @@ class Timeblock < ApplicationRecord
       end
 
       field :end_time
-      field :modality
+      field :modality do 
+        partial 'timeblock/custom_modality_field'
+      end
       field :teacher do
         # associated_collection_scope do
         #   Proc.new { |scope|
