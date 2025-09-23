@@ -778,14 +778,6 @@ class Grade < ApplicationRecord
   # end
 
   # TOTALS SUBJECTS:
-  def total_subjects_coursed
-    academic_records.total_subjects_coursed
-  end
-
-  def total_subjects_approved
-    academic_records.total_subjects_approved
-  end
-
   def total_subjects_eq
     academic_records.total_subjects_equivalence
   end  

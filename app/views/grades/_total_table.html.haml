@@ -1,6 +1,9 @@
 %h6.fw-bold.text-center Totales
 %table.table.table-sm.border
 	%tr
+		%td.text-end Registro de Asignaturas Cursadas:
+		%td.text-start.fw-bold= @grade.total_records_coursed
+	%tr
 		%td.text-end Asignaturas Cursadas:
 		%td.text-start.fw-bold= @grade.total_subjects_coursed
 	%tr

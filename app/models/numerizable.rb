@@ -18,8 +18,8 @@ module Numerizable
     end
     
     def calculate_efficiency
-        cursados = self.total_subjects_coursed
-        aprobados = self.total_subjects_approved
+        cursados = self.total_records_coursed
+        aprobados = self.total_records_approved
         if cursados < 0 or aprobados < 0
           0.0
         elsif cursados == 0 or (cursados > 0 and aprobados >= cursados)
@@ -65,6 +65,7 @@ module Numerizable
         self.academic_records.weighted_average_approved
     end
       
+    # Total Credits:
     def total_credits_coursed
         academic_records.total_credits_coursed
     end
@@ -80,5 +81,25 @@ module Numerizable
     def total_credits_coursed_not_equivalence
         academic_records.total_credits_coursed_not_equivalence
     end
+
+    # Total Records:
+    def total_records_coursed
+        academic_records.coursed.count
+    end
+    def total_records_approved
+        academic_records.aprobado.count
+    end
+
+    # Total Subjects:
+
+    def total_subjects_coursed
+        academic_records.total_subjects_coursed
+    end
+
+    def total_subjects_approved
+        academic_records.total_subjects_approved
+    end
+
+
 
 end

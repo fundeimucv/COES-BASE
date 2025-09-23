@@ -313,14 +313,6 @@ include AcademicProcessable
     subjects.count
   end
 
-  def total_subjects_coursed
-    academic_records.total_subjects_coursed
-  end
-
-  def total_subjects_approved
-    academic_records.total_subjects_approved
-  end
-
   def total_subjects_not_retired
     subjects.where.not('academic_records.status': 3).count
   end
