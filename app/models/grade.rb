@@ -621,29 +621,23 @@ class Grade < ApplicationRecord
   end
 
   def asignaturas_ofertables_segun_dependencia
-    # Buscamos los ids de las asignaturas aprobadas
-    aprobadas_ids = self.academic_records.aprobado.includes(:subject).map{|ins| ins.subject.id}.uniq
+    aprobadas_ids = self.academic_records.aprobado.includes(:subject).map { |ins| ins.subject.id }.uniq
 
-    # Buscamos por ids de las asignaturas que dependen de las aprobadas
-    asignaturas_dependientes_ids = SubjectLink.where('depend_subject_id IN (?)', aprobadas_ids).map{|dep| dep.prelate_subject_id}
+    # Todas las asignaturas de la escuela
+    subjects = self.school.subjects
 
-    ids_asignaturas_positivas = []
+    # Filtrar asignaturas que no estén aprobadas y que todas sus dependencias estén aprobadas
+    ofertables_ids = subjects.select do |subject|
+      next false if aprobadas_ids.include?(subject.id) # Ya aprobada, no ofertar
+      
+      # Obtener las IDs de las asignaturas de las que depende la actual
+      dependencias = subject.depend_subjects.pluck(:id)
+      
+      # Si no tiene dependencias, o todas están aprobadas
+      dependencias.empty? || dependencias.all? { |dep_id| aprobadas_ids.include?(dep_id) }
+    end.map(&:id)
 
-    # Ahora por cada asignatura habilitada miramos sus respectivas dependencias a ver si todas están aprobadas
-
-    asignaturas_dependientes_ids.each do |asig_id|
-      ids_aux = SubjectLink.where(prelate_subject_id: asig_id).map{|dep| dep.depend_subject_id}
-      ids_aux.reject!{|id| aprobadas_ids.include? id}
-      ids_asignaturas_positivas << asig_id if (ids_aux.eql? []) #Si aprobó todas las dependencias
-    end
-
-    # Buscamos las asignaturas sin prelación
-    ids_asignaturas_independientes = self.school.subjects.independientes.ids
-
-    # Sumamos todas las ids ()
-    asignaturas_disponibles_ids = ids_asignaturas_positivas + ids_asignaturas_independientes
-
-    Subject.where('subjects.id IN (?)', asignaturas_disponibles_ids)
+    Subject.where(id: ofertables_ids)
   end
 
 
@@ -1133,5 +1127,4 @@ class Grade < ApplicationRecord
       self.registration_status = :secretaria
     end
   end  
-
 end
