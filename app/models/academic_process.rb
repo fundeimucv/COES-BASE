@@ -366,7 +366,7 @@ class AcademicProcess < ApplicationRecord
   end
 
   def link_to_total_sections
-    "<a href='/admin/section?f%5Bacademic_process%5D%5B83223%5D%5Bo%5D=like&f%5Bacademic_process%5D%5B83223%5D%5Bv%5D=#{self.process_name}&f%5Bschool%5D%5B96616%5D%5Bo%5D=like&f%5Bschool%5D%5B96616%5D%5Bv%5D=#{self.school.short_name}' data-bs-toggle = 'tooltip', title='Total Secciones'><span class='badge bg-info'>#{self.total_sections} en #{self.courses.count} Cursos</span></a>"
+    "<a href='/admin/section?f%5Bschool%5D%5B96616%5D%5Bo%5D=like&f%5Bschool%5D%5B96616%5D%5Bv%5D=#{self.school.short_name}' data-bs-toggle = 'tooltip', title='Total Secciones'><span class='badge bg-info'>#{self.total_sections} en #{self.courses.count} Cursos</span></a>"
   end
 
   def link_to_actes_generations
@@ -493,7 +493,7 @@ class AcademicProcess < ApplicationRecord
         label 'Secciones'
         pretty_value do 
           user = bindings[:view]._current_user
-          if (user&.admin&.authorized_read? 'Section')
+          if (user&.admin&.authorized_read? 'Section') and bindings[:view].session[:period_name] == bindings[:object].period.name
 
             %{#{bindings[:object].link_to_total_sections} #{bindings[:object].link_to_actes_generations} }.html_safe
           else
@@ -506,7 +506,7 @@ class AcademicProcess < ApplicationRecord
         column_width 300
         label 'Estudiantes'
         formatted_value do
-          bindings[:view].render(partial: '/academic_processes/numbers_labels', locals: {ap: bindings[:object], authorized: (bindings[:view]._current_user&.admin&.authorized_read? 'EnrollAcademicProcess')})
+          bindings[:view].render(partial: '/academic_processes/numbers_labels', locals: {ap: bindings[:object], authorized: (bindings[:view]._current_user&.admin&.authorized_read? 'EnrollAcademicProcess' and bindings[:view].session[:period_name] == bindings[:object].period.name)})
         end
       end
       
