@@ -202,7 +202,12 @@ class EnrollAcademicProcessesController < ApplicationController
       any_error = true
     end
     enroll_academic_process.destroy if any_error
-    redirect_back fallback_location: 'student_session/dashboard'
+
+    if session[:rol].eql? 'admin'
+      redirect_to "/admin/student/#{enroll_academic_process.student.id}"
+    else
+      redirect_to '/student_session/dashboard'
+    end
   end
 
   # POST /enroll_academic_processes?academic_process_id=x&grade_id=y
