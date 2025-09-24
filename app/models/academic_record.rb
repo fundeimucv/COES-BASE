@@ -150,21 +150,25 @@ class AcademicRecord < ApplicationRecord
 
   scope :total_credits_coursed, -> {coursed.total_credits}
   scope :total_credits_coursed_not_equivalence, -> {section_not_equivalencias.total_credits_coursed}
+  scope :total_credits_coursed_not_equivalence_numeric, -> {numerica.total_credits_coursed_not_equivalence}
 
   scope :total_credits_approved, -> {aprobado.total_credits}
-  scope :total_credits_approved_equivalence, -> {section_equivalencias.total_credits_approved}
+  scope :total_credits_approved_equivalence, -> {numerica.section_equivalencias.total_credits_approved}
   scope :total_credits_approved_not_equivalence, -> {section_not_equivalencias.total_credits_approved}  
+  scope :total_credits_approved_not_equivalence_numeric, -> {numerica.total_credits_approved_not_equivalence}  
 
   scope :total_credits_equivalence, -> {section_equivalencias.total_credits}
   
   
   scope :definitives, -> {joins(:qualifications).where('qualifications.definitive': true)}
   
-  scope :promedio, -> {joins(:qualifications).section_not_equivalencias.coursed.definitives.average('qualifications.value')}
-  scope :promedio_approved, -> {aprobado.section_not_equivalencias.promedio}
+  scope :promedio, -> {joins(:qualifications).numerica.section_not_equivalencias.coursed.definitives.average('qualifications.value')}
+  scope :promedio_approved, -> {aprobado.numerica.section_not_equivalencias.promedio}
 
-  scope :weighted_average, -> {joins(:subject).joins(:qualifications).section_not_equivalencias.definitives.coursed.sum('subjects.unit_credits * qualifications.value')}
-  scope :weighted_average_approved, -> {aprobado.section_not_equivalencias.weighted_average}
+  scope :numerica, -> {joins(:subject).where('subjects.qualification_type': Subject.qualification_types[:numerica])}
+
+  scope :weighted_average, -> {joins(:subject).numerica.joins(:qualifications).section_not_equivalencias.definitives.coursed.sum('subjects.unit_credits * qualifications.value')}
+  scope :weighted_average_approved, -> {aprobado.numerica.section_not_equivalencias.weighted_average}
 
   scope :student_enrolled_by_period, -> (period_id) {joins(:academic_process).where("academic_processes.period_id": period_id).group(:student).count } 
 

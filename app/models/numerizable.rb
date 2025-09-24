@@ -50,14 +50,14 @@ module Numerizable
         else
             aux = academic_records.weighted_average
         end
-        total_coursed_credits = self.total_credits_coursed_not_equivalence
+        total_coursed_credits = self.total_credits_coursed_not_equivalence_numeric
 
         (total_coursed_credits > 0 and aux) ? (aux.to_f/total_coursed_credits.to_f).round(4) : self.weighted_average
     end
 
     def calculate_weighted_average_approved
         aux = self.weighted_average_approved
-        creadits_approved = self.total_credits_approved_not_equivalence
+        creadits_approved = self.total_credits_approved_not_equivalence_numeric
         ((creadits_approved  > 0) and aux&.is_a? Integer) ? (aux.to_f/creadits_approved.to_f).round(4) : 0.0     
     end
       
@@ -72,6 +72,14 @@ module Numerizable
     
     def total_credits_approved
         academic_records.total_credits_approved
+    end
+
+    def total_credits_approved_not_equivalence_numeric
+        academic_records.total_credits_approved_not_equivalence_numeric
+    end
+
+    def total_credits_coursed_not_equivalence_numeric
+        academic_records.total_credits_coursed_not_equivalence_numeric
     end
 
     def total_credits_approved_not_equivalence
