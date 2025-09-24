@@ -99,9 +99,9 @@ class ExportarPdfPrawn
 		data << ["EJERCICIO: <b>#{academic_process.process_name}</b>", "PERIODO ACADÉMICO: <b>#{academic_process.process_name}</b>" ]
 		data << ["FACULTAD: <b>#{section.school&.faculty&.name}</b>", "<a style='text-align: right;'>TIPO DE CONVOCATORIA: <b>#{section.conv_type}</b></a>" ]
 		if section.school.postgrado?
-			
-			code_plan = section.subject.code&[0..3]
-			if study_plan = StudyPlan.where(code: code_plan).first 
+
+			code_plan = section.subject.code[0..3] if section.subject.code.present?
+			if study_plan = StudyPlan.where(code: code_plan).first
 				descripcion = study_plan.name.upcase
 			else
 				descripcion = section.subject.name.upcase
