@@ -6,7 +6,7 @@
       .fa.fa-download.fa-list
       Generar Acta  
 
-  - if (section.academic_process.active? and (is_his_teacher or admin_can_manage))
+  - if (is_his_teacher or admin_can_manage)
     = link_to "/sections/#{section.id}/export.xls", class: 'btn btn-success btn-sm float-end m-3', target: '_blank', rel: "noopener noreferrer" do
       .fa.fa-download
       Generar Listado Estudiantes
