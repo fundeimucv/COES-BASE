@@ -66,7 +66,8 @@ group :development, :production do
   gem 'prawn'
   gem 'prawn-table'  
   gem 'combine_pdf'
-
+  
+  gem 'xlsxtream'
   # gem 'prawn', '~> 2.4'
   # gem 'prawn-table'
 
