@@ -120,7 +120,7 @@ class AcademicProcessesController < ApplicationController
   def run_regulation
     total_actualizados = 0
     total_error = 0
-    @academic_process.school.enrollment_days.each{|ed| ed.destroy}    
+    @academic_process.school.enrollment_days.each{|ed| ed.destroy}
     @academic_process.enroll_academic_processes.each do |iep|
 
       grade = iep.grade
@@ -129,7 +129,7 @@ class AcademicProcessesController < ApplicationController
         
         iep.update(permanence_status: iep.get_regulation)
         iep.reload
-        if grade.update(current_permanence_status: iep.permanence_status, efficiency: grade.calculate_efficiency, weighted_average: grade.calculate_weighted_average, simple_average: grade.calculate_average) and iep.update(efficiency: iep.calculate_efficiency, simple_average: iep.calculate_average, weighted_average: iep.calculate_weighted_average)
+        if grade.update(appointment_time: nil, duration_slot_time: nil, current_permanence_status: iep.permanence_status, efficiency: grade.calculate_efficiency, weighted_average: grade.calculate_weighted_average, simple_average: grade.calculate_average) and iep.update(efficiency: iep.calculate_efficiency, simple_average: iep.calculate_average, weighted_average: iep.calculate_weighted_average)
           total_actualizados += 1
         else
           total_error += 1
