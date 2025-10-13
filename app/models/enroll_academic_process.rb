@@ -63,7 +63,7 @@ include AcademicProcessable
   # ENUMERIZE:
   # IDEA CON ESTADO DE INSCRIPCIÓN EN GRADE Y ENROLL ACADEMIC PROCESS
   enum enroll_status: [:preinscrito, :reservado, :confirmado]
-  enum permanence_status: [:nuevo, :regular, :reincorporado, :articulo3, :articulo6, :articulo7, :intercambio, :desertor, :egresado, :egresado_doble_titulo, :permiso_para_no_cursar, :retiro_total, :por_calificar]  
+  enum permanence_status: PERMANENCE_STATUSES
 
   # VALIDATIONS:
   validates :grade, presence: true
@@ -197,9 +197,10 @@ include AcademicProcessable
   def get_permanece_status
     get_regulation
   end
+  
   def get_regulation
-    if permiso_para_no_cursar?
-      reglamento_aux = :permiso_para_no_cursar
+    if PERMANENCE_STATUSES_SETTLED.include? self.permanence_status&.to_sym
+      return self.permanence_status.to_sym
     else
       reglamento_aux = :regular
       if !(self.grade.academic_records.qualified.any?)
@@ -354,20 +355,6 @@ include AcademicProcessable
       aux += "<a href='/enroll_academic_processes/#{self.id}/update_permanece_status?enroll_academic_process[enroll_status]=confirmado' data-method='POST' class='label label-sm bg-success ms-1' data-bs-placement='right' data-bs-original-title='Confirmación rápida' rel='tooltip' data-bs-toggle='tooltip'><i class='fa fa-check'></i></a>".html_safe
     end
     return aux
-  end
-
-  def label_permanence_status
-    # [:nuevo, :regular, :reincorporado, :articulo3, :articulo6, :articulo7, :intercambio, :desertor, :egresado, :egresado_doble_titulo]  
-    label_color = 'info'
-    case self.permanence_status
-    when 'articulo3'
-      label_color = 'warning'
-    when 'articulo6'
-      label_color = 'danger'
-    when 'articulo7'
-      label_color = 'dark'
-    end
-    return ApplicationController.helpers.label_status("bg-#{label_color}", self.permanence_status&.titleize)
   end
 
   def region

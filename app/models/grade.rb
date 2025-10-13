@@ -87,7 +87,7 @@ class Grade < ApplicationRecord
   enum registration_status: {pendiente: 0, secretaria: 1, facultad: 2, escuela: 3}
   enum enrollment_status: {preinscrito: 0, asignado: 1, confirmado: 2}
   enum graduate_status: {cursante: 0, tesista: 1, posible_graduando: 2, graduando: 3, graduado: 4, postgrado: 5}
-  enum current_permanence_status: {nuevo: 0, regular: 1, reincorporado: 2, articulo3: 3, articulo6: 4, articulo7: 5, intercambio: 6, desertor: 7, egresado: 8, egresado_doble_titulo: 8, permiso_para_no_cursar: 9, retiro_total: 10, por_calificar: 11}
+  enum current_permanence_status: PERMANENCE_STATUSES
   enum region: {no_aplica: 0, amazonas: 1, barcelona: 2, barquisimeto: 3, bolivar: 4, capital: 5}
 
 
@@ -427,19 +427,6 @@ class Grade < ApplicationRecord
       aux += " | duración: #{duration_slot_time} minutos" if duration_slot_time
       return aux
     end
-  end
-
-  def label_current_permanence_status
-    # [:nuevo, :regular, :reincorporado, :articulo3, :articulo6, :articulo7, :intercambio, :desertor, :egresado, :egresado_doble_titulo]
-    if self.nuevo? or self.regular? or self.reincorporado? or self.intercambio? or self.egresado? or self.egresado_doble_titulo?
-      label = 'bg-info'
-    elsif self.articulo3?
-      label = 'bg-warning'
-    else 
-      label = 'bg-danger'
-    end
-
-    ApplicationController.helpers.label_status(label, current_permanence_status.titleize)
   end
 
   def label_languages
