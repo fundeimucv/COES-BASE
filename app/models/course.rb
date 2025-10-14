@@ -134,6 +134,8 @@ class Course < ApplicationRecord
       field :school do
         sticky true
         filterable :name
+        queryable true
+        searchable :name        
         visible do
           admin = bindings[:view]._current_user&.admin
           admin&.multiple_schools?
@@ -175,9 +177,9 @@ class Course < ApplicationRecord
       field :offer
 
       field :sections do
-        column_width '300'
+        column_width '330'
         pretty_value do
-          bindings[:object].sections.map{|sec| ApplicationController.helpers.link_to(sec.code, "/admin/section/#{sec.id}")}.to_sentence.html_safe
+          bindings[:object].sections.order(:code).map{|sec| ApplicationController.helpers.link_to(sec.code, "/admin/section/#{sec.id}")}.to_sentence.html_safe
         end
       end
       field :total_academic_records do
