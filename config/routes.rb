@@ -16,6 +16,9 @@ Rails.application.routes.draw do
   
   match "/session_admin/change_period_session" => "session_admin#change_period_session", via: :post
 
+  match "/admin/course/:id/move_academic_records_progress" => "rails_admin/main#move_academic_records", via: :get, as: :move_academic_records_progress
+
+  
   resources :validar, only: :index do
     member do
       get 'constancias'
