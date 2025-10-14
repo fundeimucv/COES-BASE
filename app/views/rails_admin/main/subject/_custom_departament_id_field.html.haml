@@ -1,7 +1,7 @@
 - schools_auh = _current_user&.admin&.schools_auh&.order(:name)
 - selected = params[:departament_id]
 - selected ||= @object&.departament_id
-- enabled = (@object.departament_id.nil? and params[:school_id].nil?)
+- enabled = (@object.departament_id.nil? and params[:school_id].nil? and schools_auh.count > 1)
 = grouped_collection_select :subject, :departament_id, schools_auh, :departaments_sort, :short_name, :id, :name, {prompt: "Seleccione Departamento...", selected: selected}, { class: "form-control", required: true, onchange: 'set_catedras();', disabled: enabled, readonly: enabled}
 
 :javascript
