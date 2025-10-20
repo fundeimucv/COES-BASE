@@ -366,7 +366,7 @@ class AcademicProcess < ApplicationRecord
   end
 
   def link_to_total_sections
-    "<a href='/admin/section?f%5Bschool%5D%5B96616%5D%5Bo%5D=like&f%5Bschool%5D%5B96616%5D%5Bv%5D=#{self.school.short_name}' data-bs-toggle = 'tooltip', title='Total Secciones'><span class='badge bg-info'>#{self.total_sections} en #{self.courses.count} Cursos</span></a>"
+    "<a href='/admin/section?f%5Bschool%5D%5B96616%5D%5Bo%5D=like&f%5Bschool%5D%5B96616%5D%5Bv%5D=#{self.school.short_name}' data-bs-toggle = 'tooltip', title='Total Secciones'><span class='badge bg-info text-dark'>#{self.total_sections} en #{self.courses.count} Cursos</span></a>"
   end
 
   def link_to_actes_generations
@@ -376,6 +376,9 @@ class AcademicProcess < ApplicationRecord
       else
         "#{self.link_to_massive_actas_generation_async}".html_safe
       end
+    else
+      # Agregar enlace desactivado que indique que aun hay secciones sin calificar
+      "<span class='badge bg-secondary disabled text-dark' data-bs-toggle='tooltip' title='Aun hay secciones sin calificar. Para descargar masivamente las actas, debe tener todas las secciones calificadas.'><i class='fas fa-list'></i></span>" if self.active?
     end
   end
 
@@ -493,11 +496,11 @@ class AcademicProcess < ApplicationRecord
         label 'Secciones'
         pretty_value do 
           user = bindings[:view]._current_user
-          if (user&.admin&.authorized_read? 'Section') and bindings[:view].session[:period_name] == bindings[:object].period.name
+          if (user&.admin&.authorized_read? 'Section') && bindings[:object].active? #and bindings[:view].session[:period_name] == bindings[:object].period.name
 
             %{#{bindings[:object].link_to_total_sections} #{bindings[:object].link_to_actes_generations} }.html_safe
           else
-            %{<span class='badge bg-info'>#{value}</span>}.html_safe
+            %{<span class='badge bg-info text-dark'>#{value}</span>}.html_safe
           end
         end
       end
