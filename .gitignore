@@ -8,22 +8,11 @@
 /.bundle
 
 # Ignore all logfiles and tempfiles.
-/log/*
-/tmp/*
-!/log/.keep
-!/tmp/.keep
-
-# Ignore pidfiles, but keep the directory.
-/tmp/pids/*
-!/tmp/pids/
-!/tmp/pids/.keep
+/log/
+/tmp/
 
 # Ignore uploaded files in development.
-/storage/*
-!/storage/.keep
-/tmp/storage/*
-!/tmp/storage/
-!/tmp/storage/.keep
+/storage/
 
 /public/assets
 
@@ -43,3 +32,4 @@
 /config/credentials/production.key
 .vs
 .qodo
+.claude/settings.local.json
